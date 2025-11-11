@@ -1,16 +1,11 @@
-.header-section {
-  margin-bottom: 2rem;
-}
-
 .summary-section {
-  margin-top: 1.5rem;
+  margin-top: 1rem;
 }
 
 .summary-cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1rem;
-  margin-bottom: 1rem;
 }
 
 .summary-card {
