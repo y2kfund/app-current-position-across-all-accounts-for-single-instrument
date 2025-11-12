@@ -75,32 +75,9 @@ const columns: ColumnDefinition[] = [
     headerHozAlign: 'left'
   },
   {
-    title: 'Financial Instrument',
-    field: 'symbol',
+    title: 'Accounting Qty',
+    field: 'accounting_quantity',
     minWidth: 100,
-    headerHozAlign: 'left',
-    formatter: (cell: any) => {
-      const tags = extractTagsFromSymbol(cell.getValue())
-      return tags.map(tag => `<span class="fi-tag">${tag}</span>`).join(' ')
-    }
-  },
-  {
-    title: 'Asset Class',
-    field: 'asset_class',
-    minWidth: 100,
-    headerHozAlign: 'left'
-  },
-  {
-    title: 'Conid',
-    field: 'conid',
-    minWidth: 100,
-    hozAlign: 'right',
-    headerHozAlign: 'right'
-  },
-  {
-    title: 'Contract Qty',
-    field: 'contract_quantity',
-    minWidth: 130,
     hozAlign: 'right',
     headerHozAlign: 'right',
     formatter: 'money',
@@ -116,14 +93,6 @@ const columns: ColumnDefinition[] = [
       thousand: ',',
       precision: 0
     }
-  },
-  {
-    title: 'Accounting Qty',
-    field: 'accounting_quantity',
-    minWidth: 100,
-    hozAlign: 'right',
-    headerHozAlign: 'right',
-    formatter: 'money'
   },
   {
     title: 'Avg Price',
