@@ -1,55 +1,50 @@
 import { ref, watch, type Ref } from 'vue'
+import { useSupabase } from '@y2kfund/core'
 
-interface MarketDataResponse {
-  '31'?: string
-  conid?: number
-  conidEx?: string
-  _updated?: number
-  [key: string]: any
+interface MarketPriceData {
+  symbol: string
+  conid: number
+  market_price: number
+  last_fetched_at: string
 }
 
 export function useMarketPrice(conid: Ref<number | null>) {
-  const price = ref<number | null>(null)
+  const supabase = useSupabase()
+  const marketData = ref<MarketPriceData | null>(null)
   const isLoading = ref(false)
   const error = ref<string | null>(null)
 
-  const fetchMarketPrice = async (conidValue: number, retryCount = 0): Promise<void> => {
-    const maxRetries = 3
+  const fetchMarketPrice = async (conidValue: number): Promise<void> => {
     isLoading.value = true
     error.value = null
 
     try {
-      console.log(`🔍 Fetching market price for conid: ${conidValue}, attempt: ${retryCount + 1}`)
+      console.log(`🔍 Fetching market price for conid: ${conidValue}`)
       
-      const baseUrl = import.meta.env.VITE_IBKR_BANSI_URL
-      const response = await fetch(
-        `${baseUrl}/api/marketdata?conid=${conidValue}`
-      )
+      const { data, error: dbError } = await supabase
+        .schema('hf')
+        .from('market_price')
+        .select('symbol, conid, market_price, last_fetched_at')
+        .eq('conid', conidValue)
+        .order('id', { ascending: false })
+        .limit(1)
+        .single()
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
+      if (dbError) {
+        throw new Error(`Database error: ${dbError.message}`)
       }
 
-      const data: MarketDataResponse = await response.json()
-      console.log('📊 Market data response:', data)
-
-      // Check if '31' key exists
-      if (data['31']) {
-        // Remove 'C' prefix if present and parse the price
-        const priceString = data['31'].replace(/^C/, '')
-        price.value = parseFloat(priceString)
-        console.log(`✅ Market price fetched: $${price.value}`)
-      } else if (retryCount < maxRetries) {
-        // Retry after a short delay
-        console.log(`⏳ Retry ${retryCount + 1}/${maxRetries} for conid ${conidValue}`)
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        return fetchMarketPrice(conidValue, retryCount + 1)
+      if (data) {
+        marketData.value = data
+        console.log(`✅ Market price fetched: $${data.market_price} for ${data.symbol}`)
       } else {
-        throw new Error('Market price (key "31") not available after retries')
+        marketData.value = null
+        console.log('⚠️ No market price found for conid:', conidValue)
       }
     } catch (err) {
       error.value = err instanceof Error ? err.message : 'Failed to fetch market price'
       console.error('❌ Error fetching market price:', err)
+      marketData.value = null
     } finally {
       isLoading.value = false
     }
@@ -64,7 +59,7 @@ export function useMarketPrice(conid: Ref<number | null>) {
         fetchMarketPrice(newConid)
       } else {
         console.log('⚠️ No valid conid available yet')
-        price.value = null
+        marketData.value = null
         error.value = null
       }
     },
@@ -78,7 +73,7 @@ export function useMarketPrice(conid: Ref<number | null>) {
   }
 
   return {
-    price,
+    marketData,
     isLoading,
     error,
     refetch

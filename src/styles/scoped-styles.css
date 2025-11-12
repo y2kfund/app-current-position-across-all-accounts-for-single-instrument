@@ -177,3 +177,17 @@
   background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
   border-left: 4px solid #e91e63;
 }
+
+/* Price with timestamp display */
+.summary-value-container-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.timestamp-info {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: 400;
+  opacity: 0.8;
+}

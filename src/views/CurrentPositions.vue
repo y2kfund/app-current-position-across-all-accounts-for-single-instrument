@@ -24,13 +24,50 @@ const { data: positions, isLoading, isError, error, isSuccess, _cleanup } = useC
   props.symbolRoot
 )
 
-// Get conid from first position
+// Get conid from first position (convert string to number)
 const firstConid = computed(() => {
-  return positions.value?.[0]?.conid ?? null
+  const conidStr = positions.value?.[0]?.conid
+  return conidStr ? parseInt(conidStr, 10) : null
 })
 
 // Fetch market price using the composable
-const { price: currentMarketPrice, isLoading: isPriceLoading, error: priceError } = useMarketPrice(firstConid)
+const { marketData, isLoading: isPriceLoading, error: priceError } = useMarketPrice(firstConid)
+
+// Extract current market price from marketData
+const currentMarketPrice = computed(() => marketData.value?.market_price ?? null)
+const last_fetched_at_market_price = computed(() => marketData.value?.last_fetched_at ?? null)
+
+// Format the timestamp for display with timezone
+const formattedTimestamp = computed(() => {
+  if (!last_fetched_at_market_price.value) return null
+  
+  const date = new Date(last_fetched_at_market_price.value)
+  
+  // Get timezone
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+  
+  // Format: Nov 11, 2025 at 08:53:02 PM IST
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true,
+    timeZone: timeZone,
+    timeZoneName: 'short'
+  }
+  
+  const formatted = date.toLocaleString('en-US', options)
+  
+  // Replace GMT+5:30 with IST for India timezone
+  let result = formatted.replace(/,(\s+\d)/, ' $1')
+  result = result.replace('GMT+5:30', 'IST')
+  result = result.replace('GMT+530', 'IST')
+  
+  return result
+})
 
 // Calculate totals
 const totalContractQuantity = computed(() => {
@@ -237,8 +274,13 @@ onBeforeUnmount(() => {
               <div v-else-if="priceError" class="summary-value error">
                 ❌ Error
               </div>
-              <div v-else-if="currentMarketPrice !== null" class="summary-value">
-                ${{ currentMarketPrice.toFixed(2) }}
+              <div v-else-if="currentMarketPrice !== null" class="summary-value-container-vertical">
+                <div class="summary-value">
+                  ${{ currentMarketPrice.toFixed(2) }}
+                </div>
+                <div v-if="formattedTimestamp" class="timestamp-info">
+                  Updated: {{ formattedTimestamp }}
+                </div>
               </div>
               <div v-else class="summary-value">
                 N/A
