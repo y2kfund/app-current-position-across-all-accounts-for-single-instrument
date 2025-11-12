@@ -3,7 +3,7 @@ import { computed, onMounted, onBeforeUnmount, ref } from 'vue'
 import type { ColumnDefinition } from 'tabulator-tables'
 import { useCurrentPositionQuery } from '@y2kfund/core/currentPositionsForSingleInstrument'
 import { useTabulator } from '../composables/useTabulator'
-import type { Position } from '@y2kfund/core/core'
+import { useMarketPrice } from '../composables/useMarketPrice'
 
 interface currentPositionsProps {
   symbolRoot: string
@@ -24,20 +24,18 @@ const { data: positions, isLoading, isError, error, isSuccess, _cleanup } = useC
   props.symbolRoot
 )
 
+// Get conid from first position
+const firstConid = computed(() => {
+  return positions.value?.[0]?.conid ?? null
+})
+
+// Fetch market price using the composable
+const { price: currentMarketPrice, isLoading: isPriceLoading, error: priceError } = useMarketPrice(firstConid)
+
 // Calculate totals
 const totalContractQuantity = computed(() => {
   if (!positions.value || positions.value.length === 0) return 0
   return positions.value.reduce((sum, pos) => sum + (pos.contract_quantity || 0), 0)
-})
-
-const totalMarketValue = computed(() => {
-  if (!positions.value || positions.value.length === 0) return 0
-  return positions.value.reduce((sum, pos) => sum + (pos.market_value || 0), 0)
-})
-
-const totalCostBasis = computed(() => {
-  if (!positions.value || positions.value.length === 0) return 0
-  return positions.value.reduce((sum, pos) => sum + (pos.cost_basis || 0), 0)
 })
 
 const totalUnrealizedPL = computed(() => {
@@ -77,7 +75,7 @@ const columns: ColumnDefinition[] = [
     headerHozAlign: 'left'
   },
   {
-    title: 'Symbol',
+    title: 'Financial Instrument',
     field: 'symbol',
     minWidth: 100,
     headerHozAlign: 'left',
@@ -246,7 +244,7 @@ onBeforeUnmount(() => {
         <!-- Summary Cards (Always Visible) -->
         <div v-else class="summary-section">
           <div class="summary-cards">
-            <div class="summary-card clickable" @click="toggleDetails">
+            <div class="summary-card clickable card-blue" @click="toggleDetails">
               <div class="summary-label">Total Accounts</div>
               <div class="summary-value-container">
                 <div class="summary-value">{{ positions?.length || 0 }}</div>
@@ -257,22 +255,34 @@ onBeforeUnmount(() => {
               </div>
             </div>
             
-            <div class="summary-card highlight">
+            <div class="summary-card highlight-1 card-green">
               <div class="summary-label">Total Contract Quantity</div>
               <div class="summary-value">{{ totalContractQuantity.toLocaleString() }}</div>
             </div>
 
-            <div class="summary-card">
-              <div class="summary-label">Total Market Value</div>
-              <div class="summary-value" :class="{ 'positive': totalMarketValue > 0, 'negative': totalMarketValue < 0 }">
-                ${{ totalMarketValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+            <div class="summary-card card-purple">
+              <div class="summary-label">Current market price of {{ props.symbolRoot }}</div>
+              <div v-if="isPriceLoading" class="summary-value">
+                <span class="loading-spinner">⏳</span> Loading...
+              </div>
+              <div v-else-if="priceError" class="summary-value error">
+                ❌ Error
+              </div>
+              <div v-else-if="currentMarketPrice !== null" class="summary-value">
+                ${{ currentMarketPrice.toFixed(2) }}
+              </div>
+              <div v-else class="summary-value">
+                N/A
               </div>
             </div>
 
-            <div class="summary-card">
-              <div class="summary-label">Total Unrealized P&L</div>
-              <div class="summary-value" :class="{ 'positive': totalUnrealizedPL > 0, 'negative': totalUnrealizedPL < 0 }">
+            <div class="summary-card card-orange">
+              <div class="summary-label">Average cost price of {{ props.symbolRoot }} per share</div>
+              <!--div class="summary-value" :class="{ 'positive': totalUnrealizedPL > 0, 'negative': totalUnrealizedPL < 0 }">
                 ${{ totalUnrealizedPL.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+              </div-->
+              <div class="summary-value">
+                Comming Soon
               </div>
             </div>
           </div>
