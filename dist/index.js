@@ -1,7 +1,7 @@
 var oi = Object.defineProperty;
 var ri = (l, e, t) => e in l ? oi(l, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : l[e] = t;
 var w = (l, e, t) => ri(l, typeof e != "symbol" ? e + "" : e, t);
-import { inject as ai, ref as A, watch as He, nextTick as Et, onBeforeUnmount as zt, computed as X, defineComponent as li, onMounted as hi, createElementBlock as H, openBlock as _, createElementVNode as y, toDisplayString as T, unref as V, createVNode as Rt, createTextVNode as Be, createCommentVNode as ye, Transition as xt, withCtx as Tt, withDirectives as kt, Fragment as Ve, renderList as Ne, vShow as Mt } from "vue";
+import { inject as ai, ref as A, watch as He, nextTick as Et, onBeforeUnmount as zt, computed as X, defineComponent as li, onMounted as hi, createElementBlock as H, openBlock as _, createElementVNode as y, toDisplayString as T, unref as V, createVNode as Rt, createTextVNode as Be, createCommentVNode as ye, Transition as xt, withCtx as Tt, withDirectives as kt, vShow as Mt, Fragment as Ve, renderList as Ne } from "vue";
 import { useQueryClient as di, useQuery as ui } from "@tanstack/vue-query";
 import { useSupabase as Ft, generatePositionMappingKey as Ie } from "@y2kfund/core";
 const ci = Symbol.for("y2kfund.supabase");
@@ -11392,20 +11392,20 @@ const Wn = { class: "current-positions-for-single-instrument-view" }, Gn = { cla
 }, po = {
   key: 1,
   class: "summary-value error"
-}, mo = { class: "summary-value-container-vertical" }, go = { key: 0 }, bo = { key: 1 }, vo = { class: "toggle-icon" }, wo = { class: "calculation-details" }, Co = { class: "group-header" }, yo = { class: "position-line main-position" }, Eo = { class: "position-symbol" }, Ro = { class: "position-calc" }, xo = {
+}, mo = { class: "summary-value-container-vertical" }, go = { key: 0 }, bo = { key: 1 }, vo = { class: "toggle-icon" }, wo = { class: "table-wrapper" }, Co = { class: "calculation-details" }, yo = { class: "group-header" }, Eo = { class: "position-line main-position" }, Ro = { class: "position-symbol" }, xo = { class: "position-calc" }, To = {
   key: 0,
   class: "call-positions-wrapper"
-}, To = { class: "position-symbol" }, ko = { class: "position-calc" }, Mo = { class: "call-subtotal" }, Lo = {
+}, ko = { class: "position-symbol" }, Mo = { class: "position-calc" }, Lo = { class: "call-subtotal" }, So = {
   key: 1,
   class: "put-positions-wrapper"
-}, So = { class: "position-symbol" }, Do = { class: "position-calc" }, zo = { class: "group-calculation" }, Fo = { class: "calc-line indent" }, Ho = { class: "calc-line indent" }, _o = {
+}, Do = { class: "position-symbol" }, zo = { class: "position-calc" }, Fo = { class: "group-calculation" }, Ho = { class: "calc-line indent" }, _o = { class: "calc-line indent" }, Po = {
   key: 0,
   class: "overall-adjusted-section"
-}, Po = { class: "overall-adjusted-header" }, Ao = { class: "overall-calculation-breakdown" }, Oo = { class: "breakdown-line" }, Bo = { class: "breakdown-line" }, Vo = { class: "breakdown-line" }, No = { class: "table-wrapper" }, Io = /* @__PURE__ */ li({
+}, Ao = { class: "overall-adjusted-header" }, Oo = { class: "overall-calculation-breakdown" }, Bo = { class: "breakdown-line" }, Vo = { class: "breakdown-line" }, No = { class: "breakdown-line" }, Io = /* @__PURE__ */ li({
   __name: "CurrentPositions",
   props: {
     symbolRoot: { default: "META" },
-    userId: { default: "67e578fd-2cf7-48a4-b028-a11a3f89bb9b" }
+    userId: { default: "4fbec15d-2316-4805-b2a4-5cd2115a5ac8" }
   },
   setup(l) {
     const e = l, t = A(!1), i = A(!1), { data: s, isLoading: n, isError: o, error: r, isSuccess: a, _cleanup: h } = gi(
@@ -11609,82 +11609,83 @@ const Wn = { class: "current-positions-for-single-instrument-view" }, Gn = { cla
                     }, [
                       V(p) !== null ? (_(), H("span", go, " $" + T(V(p).toFixed(2)), 1)) : (_(), H("span", bo, "N/A")),
                       y("span", vo, T(i.value ? "▼" : "▶"), 1)
-                    ]),
-                    Rt(xt, { name: "slide-fade" }, {
-                      default: Tt(() => [
-                        kt(y("div", wo, [
-                          (_(!0), H(Ve, null, Ne(V(E), (x, U) => (_(), H("div", {
-                            key: `group-${U}`,
-                            class: "position-group"
-                          }, [
-                            y("div", Co, "Client " + T(U + 1) + ": " + T(x.mainPosition.account), 1),
-                            y("div", yo, [
-                              b[5] || (b[5] = y("span", { class: "position-icon" }, "📍", -1)),
-                              y("span", Eo, T(x.mainPosition.symbol), 1),
-                              y("span", Ro, "@ $" + T(x.mainPosition.avgPrice.toFixed(2)) + " × " + T(x.mainPosition.quantity.toLocaleString()) + " = $" + T(x.mainPosition.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
-                            ]),
-                            x.callPositions.length > 0 ? (_(), H("div", xo, [
-                              b[7] || (b[7] = y("div", { class: "call-header" }, "📞 Call Positions (subtract from cost)", -1)),
-                              (_(!0), H(Ve, null, Ne(x.callPositions, (O, re) => (_(), H("div", {
-                                key: `call-${U}-${re}`,
-                                class: "position-line call-position"
-                              }, [
-                                b[6] || (b[6] = y("span", { class: "position-icon" }, null, -1)),
-                                y("span", To, T(O.symbol), 1),
-                                y("span", ko, "@ $" + T(O.avgPrice.toFixed(2)) + " × " + T(O.quantity.toLocaleString()) + " = $" + T(O.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
-                              ]))), 128)),
-                              y("div", Mo, " Subtotal Calls: $" + T(Math.abs(x.callPositionsTotalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
-                            ])) : ye("", !0),
-                            x.putPositions.length > 0 ? (_(), H("div", Lo, [
-                              b[9] || (b[9] = y("div", { class: "put-header" }, "📉 Put Positions (display only, not in calculation)", -1)),
-                              (_(!0), H(Ve, null, Ne(x.putPositions, (O, re) => (_(), H("div", {
-                                key: `put-${U}-${re}`,
-                                class: "position-line put-position"
-                              }, [
-                                b[8] || (b[8] = y("span", { class: "position-icon" }, "📉", -1)),
-                                y("span", So, T(O.symbol), 1),
-                                y("span", Do, "@ $" + T(O.avgPrice.toFixed(2)) + " × " + T(O.quantity.toLocaleString()) + " = $" + T(O.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
-                              ]))), 128))
-                            ])) : ye("", !0),
-                            y("div", zo, [
-                              b[10] || (b[10] = y("div", { class: "calc-line" }, [
-                                Be("📊 "),
-                                y("strong", null, "Calculation:")
-                              ], -1)),
-                              y("div", Fo, "Net Cost = $" + T(x.mainPosition.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + T(Math.abs(x.callPositionsTotalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " = $" + T(x.netCostExcludingPuts.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
-                              y("div", Ho, [
-                                y("strong", null, "Adjusted Avg Price = $" + T(x.netCostExcludingPuts.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ÷ " + T(x.mainPosition.quantity.toLocaleString()) + " = $" + T(x.adjustedAvgPricePerShare.toFixed(2)) + " per share", 1)
-                              ])
-                            ])
-                          ]))), 128)),
-                          V(p) !== null ? (_(), H("div", _o, [
-                            y("div", Po, " 🎯 Overall Adjusted Average: $" + T(V(p).toFixed(2)) + " per share ", 1),
-                            y("div", Ao, [
-                              y("div", Oo, "Total Net Cost = " + T(V(E).map((x, U) => `$${x.netCostExcludingPuts.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")) + " = $" + T(F.value.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
-                              y("div", Bo, "Total Main Qty = " + T(V(E).map((x) => x.mainPosition.quantity.toLocaleString()).join(" + ")) + " = " + T(G.value.toLocaleString()), 1),
-                              y("div", Vo, [
-                                y("strong", null, "Overall Adjusted Average = $" + T(F.value.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ÷ " + T(G.value.toLocaleString()) + " = $" + T(V(p).toFixed(2)), 1)
-                              ])
-                            ])
-                          ])) : ye("", !0)
-                        ], 512), [
-                          [Mt, i.value]
-                        ])
-                      ]),
-                      _: 1
-                    })
+                    ])
                   ])
                 ])
               ]),
               Rt(xt, { name: "slide-fade" }, {
                 default: Tt(() => [
-                  kt(y("div", No, [
+                  kt(y("div", wo, [
                     y("div", {
                       ref_key: "tableDiv",
                       ref: q
                     }, null, 512)
                   ], 512), [
                     [Mt, t.value]
+                  ])
+                ]),
+                _: 1
+              }),
+              Rt(xt, { name: "slide-fade" }, {
+                default: Tt(() => [
+                  kt(y("div", Co, [
+                    b[11] || (b[11] = y("h2", null, "Average Price calculation details :", -1)),
+                    (_(!0), H(Ve, null, Ne(V(E), (x, U) => (_(), H("div", {
+                      key: `group-${U}`,
+                      class: "position-group"
+                    }, [
+                      y("div", yo, "Client " + T(U + 1) + ": " + T(x.mainPosition.account), 1),
+                      y("div", Eo, [
+                        b[5] || (b[5] = y("span", { class: "position-icon" }, "📍", -1)),
+                        y("span", Ro, T(x.mainPosition.symbol), 1),
+                        y("span", xo, "@ $" + T(x.mainPosition.avgPrice.toFixed(2)) + " × " + T(x.mainPosition.quantity.toLocaleString()) + " = $" + T(x.mainPosition.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                      ]),
+                      x.callPositions.length > 0 ? (_(), H("div", To, [
+                        b[7] || (b[7] = y("div", { class: "call-header" }, "📞 Call Positions (subtract from cost)", -1)),
+                        (_(!0), H(Ve, null, Ne(x.callPositions, (O, re) => (_(), H("div", {
+                          key: `call-${U}-${re}`,
+                          class: "position-line call-position"
+                        }, [
+                          b[6] || (b[6] = y("span", { class: "position-icon" }, null, -1)),
+                          y("span", ko, T(O.symbol), 1),
+                          y("span", Mo, "@ $" + T(O.avgPrice.toFixed(2)) + " × " + T(O.quantity.toLocaleString()) + " = $" + T(O.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                        ]))), 128)),
+                        y("div", Lo, " Subtotal Calls: $" + T(Math.abs(x.callPositionsTotalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                      ])) : ye("", !0),
+                      x.putPositions.length > 0 ? (_(), H("div", So, [
+                        b[9] || (b[9] = y("div", { class: "put-header" }, "📉 Put Positions (display only, not in calculation)", -1)),
+                        (_(!0), H(Ve, null, Ne(x.putPositions, (O, re) => (_(), H("div", {
+                          key: `put-${U}-${re}`,
+                          class: "position-line put-position"
+                        }, [
+                          b[8] || (b[8] = y("span", { class: "position-icon" }, "📉", -1)),
+                          y("span", Do, T(O.symbol), 1),
+                          y("span", zo, "@ $" + T(O.avgPrice.toFixed(2)) + " × " + T(O.quantity.toLocaleString()) + " = $" + T(O.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                        ]))), 128))
+                      ])) : ye("", !0),
+                      y("div", Fo, [
+                        b[10] || (b[10] = y("div", { class: "calc-line" }, [
+                          Be("📊 "),
+                          y("strong", null, "Calculation:")
+                        ], -1)),
+                        y("div", Ho, "Net Cost = $" + T(x.mainPosition.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + T(Math.abs(x.callPositionsTotalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " = $" + T(x.netCostExcludingPuts.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
+                        y("div", _o, [
+                          y("strong", null, "Adjusted Avg Price = $" + T(x.netCostExcludingPuts.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ÷ " + T(x.mainPosition.quantity.toLocaleString()) + " = $" + T(x.adjustedAvgPricePerShare.toFixed(2)) + " per share", 1)
+                        ])
+                      ])
+                    ]))), 128)),
+                    V(p) !== null ? (_(), H("div", Po, [
+                      y("div", Ao, " 🎯 Overall Adjusted Average: $" + T(V(p).toFixed(2)) + " per share ", 1),
+                      y("div", Oo, [
+                        y("div", Bo, "Total Net Cost = " + T(V(E).map((x, U) => `$${x.netCostExcludingPuts.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")) + " = $" + T(F.value.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
+                        y("div", Vo, "Total Main Qty = " + T(V(E).map((x) => x.mainPosition.quantity.toLocaleString()).join(" + ")) + " = " + T(G.value.toLocaleString()), 1),
+                        y("div", No, [
+                          y("strong", null, "Overall Adjusted Average = $" + T(F.value.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ÷ " + T(G.value.toLocaleString()) + " = $" + T(V(p).toFixed(2)), 1)
+                        ])
+                      ])
+                    ])) : ye("", !0)
+                  ], 512), [
+                    [Mt, i.value]
                   ])
                 ]),
                 _: 1
@@ -11700,7 +11701,7 @@ const Wn = { class: "current-positions-for-single-instrument-view" }, Gn = { cla
   for (const [i, s] of e)
     t[i] = s;
   return t;
-}, Ko = /* @__PURE__ */ Wo(Io, [["__scopeId", "data-v-ef446071"]]);
+}, Ko = /* @__PURE__ */ Wo(Io, [["__scopeId", "data-v-acc51850"]]);
 export {
   Ko as currentPositions,
   Ko as default
