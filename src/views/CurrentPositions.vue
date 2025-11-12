@@ -282,7 +282,7 @@ onBeforeUnmount(() => {
                 ${{ totalUnrealizedPL.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
               </div-->
               <div class="summary-value">
-                Comming Soon
+                Coming Soon
               </div>
             </div>
           </div>

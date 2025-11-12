@@ -11461,7 +11461,7 @@ const pn = { class: "current-positions-for-single-instrument-view" }, mn = { cla
                 ]),
                 L("div", Pn, [
                   L("div", An, "Average cost price of " + N(e.symbolRoot) + " per share", 1),
-                  w[4] || (w[4] = L("div", { class: "summary-value" }, " Comming Soon ", -1))
+                  w[4] || (w[4] = L("div", { class: "summary-value" }, " Coming Soon ", -1))
                 ])
               ]),
               zt(Ht, { name: "slide-fade" }, {
@@ -11488,7 +11488,7 @@ const pn = { class: "current-positions-for-single-instrument-view" }, mn = { cla
   for (const [i, s] of e)
     t[i] = s;
   return t;
-}, jn = /* @__PURE__ */ Bn(_n, [["__scopeId", "data-v-8de09b1b"]]);
+}, jn = /* @__PURE__ */ Bn(_n, [["__scopeId", "data-v-99a3dd7c"]]);
 export {
   jn as currentPositions,
   jn as default
