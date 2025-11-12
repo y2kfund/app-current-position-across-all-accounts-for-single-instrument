@@ -4,6 +4,7 @@ import type { ColumnDefinition } from 'tabulator-tables'
 import { useCurrentPositionQuery } from '@y2kfund/core/currentPositionsForSingleInstrument'
 import { useTabulator } from '../composables/useTabulator'
 import { useMarketPrice } from '../composables/useMarketPrice'
+import { useAverageCostPrice } from '../composables/useAverageCostPrice'
 
 interface currentPositionsProps {
   symbolRoot: string
@@ -17,6 +18,7 @@ const props = withDefaults(defineProps<currentPositionsProps>(), {
 
 // State for showing/hiding details
 const showDetails = ref(false)
+const showCalculationDetails = ref(false)
 
 // Fetch positions data
 const { data: positions, isLoading, isError, error, isSuccess, _cleanup } = useCurrentPositionQuery(
@@ -69,6 +71,23 @@ const formattedTimestamp = computed(() => {
   return result
 })
 
+// Fetch average cost price using the composable
+const { 
+  averageCostPrice,
+  overallAdjustedAvgPrice,
+  totalCost, 
+  totalQuantity, 
+  mainPositionsCount, 
+  attachedPositionsCount,
+  positionBreakdown,
+  positionGroups,
+  isLoading: isAvgPriceLoading, 
+  error: avgPriceError 
+} = useAverageCostPrice(
+  positions,
+  props.userId
+)
+
 // Calculate totals
 const totalContractQuantity = computed(() => {
   if (!positions.value || positions.value.length === 0) return 0
@@ -78,6 +97,15 @@ const totalContractQuantity = computed(() => {
 const totalUnrealizedPL = computed(() => {
   if (!positions.value || positions.value.length === 0) return 0
   return positions.value.reduce((sum, pos) => sum + (pos.unrealized_pnl || 0), 0)  // Changed from unrealized_pl
+})
+
+// Computed values for overall calculation breakdown
+const totalNetCostAllClients = computed(() => {
+  return positionGroups.value.reduce((sum, g) => sum + g.netCostExcludingPuts, 0)
+})
+
+const totalMainQuantityAllClients = computed(() => {
+  return positionGroups.value.reduce((sum, g) => sum + g.mainPosition.quantity, 0)
 })
 
 // Helper functions (same as put positions)
@@ -220,6 +248,10 @@ function toggleDetails() {
   showDetails.value = !showDetails.value
 }
 
+function toggleCalculationDetails() {
+  showCalculationDetails.value = !showCalculationDetails.value
+}
+
 onMounted(() => {
   console.log('📊 CurrentPositions component mounted')
 })
@@ -288,12 +320,79 @@ onBeforeUnmount(() => {
             </div>
 
             <div class="summary-card card-orange">
-              <div class="summary-label">Average cost price of {{ props.symbolRoot }} per share</div>
-              <!--div class="summary-value" :class="{ 'positive': totalUnrealizedPL > 0, 'negative': totalUnrealizedPL < 0 }">
-                ${{ totalUnrealizedPL.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
-              </div-->
-              <div class="summary-value">
-                Coming Soon
+              <div class="summary-label">Adjusted average cost price of {{ props.symbolRoot }} per share</div>
+              <div v-if="isAvgPriceLoading" class="summary-value">
+                <span class="loading-spinner">⏳</span> Loading...
+              </div>
+              <div v-else-if="avgPriceError" class="summary-value error">
+                ❌ Error
+              </div>
+              <div class="summary-value-container-vertical">
+                <div class="summary-value average-cost-price clickable-price" @click="toggleCalculationDetails">
+                  <span v-if="overallAdjustedAvgPrice !== null">
+                  ${{ overallAdjustedAvgPrice.toFixed(2) }}
+                  </span>
+                  <span v-else>N/A</span>
+                  <span class="toggle-icon">{{ showCalculationDetails ? '▼' : '▶' }}</span>
+                </div>
+                <transition name="slide-fade">
+                  <div v-show="showCalculationDetails" class="calculation-details">
+                    <!-- Group by main position + its attached positions -->
+                    <div v-for="(group, groupIndex) in positionGroups" :key="`group-${groupIndex}`" class="position-group">
+                      <div class="group-header">Client {{ groupIndex + 1 }}: {{ group.mainPosition.account }}</div>
+                      
+                      <!-- Main position -->
+                      <div class="position-line main-position">
+                        <span class="position-icon">📍</span>
+                        <span class="position-symbol">{{ group.mainPosition.symbol }}</span>
+                        <span class="position-calc">@ ${{ group.mainPosition.avgPrice.toFixed(2) }} × {{ group.mainPosition.quantity.toLocaleString() }} = ${{ group.mainPosition.totalCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</span>
+                      </div>
+                      
+                      <!-- Call positions (if any) -->
+                      <div v-if="group.callPositions.length > 0" class="call-positions-wrapper">
+                        <div class="call-header">📞 Call Positions (subtract from cost)</div>
+                        <div v-for="(pos, posIndex) in group.callPositions" :key="`call-${groupIndex}-${posIndex}`" class="position-line call-position">
+                          <span class="position-icon"></span>
+                          <span class="position-symbol">{{ pos.symbol }}</span>
+                          <span class="position-calc">@ ${{ pos.avgPrice.toFixed(2) }} × {{ pos.quantity.toLocaleString() }} = ${{ pos.totalCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</span>
+                        </div>
+                        <div class="call-subtotal">
+                          Subtotal Calls: ${{ Math.abs(group.callPositionsTotalCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+                        </div>
+                      </div>
+                      
+                      <!-- Put positions (for display only, not included in calculation) -->
+                      <div v-if="group.putPositions.length > 0" class="put-positions-wrapper">
+                        <div class="put-header">📉 Put Positions (display only, not in calculation)</div>
+                        <div v-for="(pos, posIndex) in group.putPositions" :key="`put-${groupIndex}-${posIndex}`" class="position-line put-position">
+                          <span class="position-icon">📉</span>
+                          <span class="position-symbol">{{ pos.symbol }}</span>
+                          <span class="position-calc">@ ${{ pos.avgPrice.toFixed(2) }} × {{ pos.quantity.toLocaleString() }} = ${{ pos.totalCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</span>
+                        </div>
+                      </div>
+                      
+                      <!-- Calculation summary for this client -->
+                      <div class="group-calculation">
+                        <div class="calc-line">📊 <strong>Calculation:</strong></div>
+                        <div class="calc-line indent">Net Cost = ${{ group.mainPosition.totalCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} - ${{ Math.abs(group.callPositionsTotalCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} = ${{ group.netCostExcludingPuts.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</div>
+                        <div class="calc-line indent"><strong>Adjusted Avg Price = ${{ group.netCostExcludingPuts.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} ÷ {{ group.mainPosition.quantity.toLocaleString() }} = ${{ group.adjustedAvgPricePerShare.toFixed(2) }} per share</strong></div>
+                      </div>
+                    </div>
+
+                    <!-- Overall adjusted average at the top -->
+                    <div v-if="overallAdjustedAvgPrice !== null" class="overall-adjusted-section">
+                      <div class="overall-adjusted-header">
+                        🎯 Overall Adjusted Average: ${{ overallAdjustedAvgPrice.toFixed(2) }} per share
+                      </div>
+                      <div class="overall-calculation-breakdown">
+                        <div class="breakdown-line">Total Net Cost = {{ positionGroups.map((g: any, i: any) => `$${g.netCostExcludingPuts.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(' + ') }} = ${{ totalNetCostAllClients.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</div>
+                        <div class="breakdown-line">Total Main Qty = {{ positionGroups.map((g: any) => g.mainPosition.quantity.toLocaleString()).join(' + ') }} = {{ totalMainQuantityAllClients.toLocaleString() }}</div>
+                        <div class="breakdown-line"><strong>Overall Adjusted Average = ${{ totalNetCostAllClients.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} ÷ {{ totalMainQuantityAllClients.toLocaleString() }} = ${{ overallAdjustedAvgPrice.toFixed(2) }}</strong></div>
+                      </div>
+                    </div>
+
+                  </div>
+                </transition>
               </div>
             </div>
           </div>
