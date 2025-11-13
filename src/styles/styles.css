@@ -56,3 +56,41 @@
   font-weight: 500;
 }
 
+/* Add to your scoped-styles.css or styles.css */
+.table-wrapper {
+  width: 100%;
+  overflow: visible; /* Changed from auto or hidden */
+}
+
+.tabulator {
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+}
+
+/* Ensure the tabulator container adjusts to content */
+.tabulator-tableHolder {
+  overflow: visible !important;
+}
+
+/* Ensure nested tables also size properly */
+.nested-tables-container {
+  padding: 1rem;
+  background: #f8f9fa;
+  border-top: 1px solid #dee2e6;
+}
+
+.nested-trades-table,
+.nested-positions-table {
+  overflow: visible;
+}
+
+.nested-trades-table .tabulator,
+.nested-positions-table .tabulator {
+  border: 1px solid #ced4da;
+  border-radius: 3px;
+}
+
+.tabulator .tabulator-tableholder {
+  height: auto !important;
+}

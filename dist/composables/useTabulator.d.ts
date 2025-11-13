@@ -7,6 +7,7 @@ export interface UseTabulatorOptions {
     layout?: 'fitData' | 'fitColumns' | 'fitDataFill' | 'fitDataStretch' | 'fitDataTable';
     height?: string | number;
     placeholder?: string;
+    rowFormatter?: (row: any) => void | Promise<void>;
 }
 export declare function useTabulator(options: UseTabulatorOptions): {
     tableDiv: Ref<HTMLDivElement | null, HTMLDivElement | null>;

@@ -449,3 +449,21 @@
   margin-left: 1rem;
   color: #6b7280;
 }
+.table-wrapper {
+  width: 100%;
+  overflow: visible;
+  min-height: 200px; /* Minimum height to show something */
+}
+
+/* Ensure transitions don't interfere */
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: all 0.3s ease;
+  overflow: visible;
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
