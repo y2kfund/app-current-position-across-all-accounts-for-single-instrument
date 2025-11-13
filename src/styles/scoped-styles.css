@@ -125,7 +125,7 @@
 .summary-value-container {
     display: flex;
     align-items: normal;
-    gap: 1rem;
+    gap: 0.5rem;
 }
 
 .current-positions-for-single-instrument-view h2 {
@@ -466,4 +466,8 @@
 .slide-fade-leave-to {
   opacity: 0;
   transform: translateY(-10px);
+}
+
+.accounts-count {
+    padding: 4px 0 0 0;
 }

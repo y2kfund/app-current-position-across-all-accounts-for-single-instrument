@@ -767,20 +767,28 @@ onBeforeUnmount(() => {
         <!-- Summary Cards (Always Visible) -->
         <div v-else class="summary-section">
           <div class="summary-cards">
-            <div class="summary-card clickable card-blue" @click="toggleDetails">
-              <div class="summary-label">Total Accounts</div>
+            <div class="summary-card card-blue">
+              <div class="summary-label">Profit and Loss</div>
               <div class="summary-value-container">
-                <div class="summary-value">{{ positions?.length || 0 }}</div>
-                <div class="toggle-hint">
-                  <span v-if="!showDetails">📊 Show Details</span>
-                  <span v-else>📊 Hide Details</span>
-                </div>
+                <div class="summary-value">Coming soon</div>
               </div>
             </div>
             
             <div class="summary-card highlight-1 card-green">
               <div class="summary-label">Total Contract Quantity</div>
-              <div class="summary-value">{{ totalContractQuantity.toLocaleString() }}</div>
+              <div class="summary-value-container">
+                <div class="summary-value">{{ totalContractQuantity.toLocaleString() }}</div>
+                <div class="accounts-count">
+                  <span
+                    class="clickable-accounts"
+                    title="Show positions table for all accounts"
+                    @click.stop="toggleDetails"
+                    style="cursor:pointer; color: #0d6efd;"
+                  >
+                    ({{ positions?.length || 0 }})
+                  </span>
+                </div>
+              </div>
             </div>
 
             <div class="summary-card card-purple">
