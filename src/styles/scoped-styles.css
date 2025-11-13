@@ -471,3 +471,79 @@
 .accounts-count {
     padding: 4px 0 0 0;
 }
+
+/* P&L specific styles */
+.pnl-value {
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pnl-value.profit {
+  color: #28a745 !important;
+}
+
+.pnl-value.loss {
+  color: #dc3545 !important;
+}
+
+.pnl-percentage {
+  font-size: 0.9em;
+  margin-left: 0.5rem;
+}
+
+.pnl-details {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-top: 1rem;
+  border: 1px solid #dee2e6;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.pnl-details h2 {
+  margin: 0 0 1.5rem 0;
+  color: #2c3e50;
+  font-size: 1.5rem;
+}
+
+.pnl-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.pnl-section {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 6px;
+  border-left: 4px solid #007bff;
+}
+
+.pnl-section.highlight-section {
+  border-left-color: #ffc107;
+  background: linear-gradient(135deg, #fff9e6 0%, #fff 100%);
+}
+
+.pnl-section-title {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+  color: #495057;
+}
+
+.calculation-result {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 2px solid #dee2e6;
+}
+
+.profit-text {
+  color: #28a745 !important;
+}
+
+.loss-text {
+  color: #dc3545 !important;
+}

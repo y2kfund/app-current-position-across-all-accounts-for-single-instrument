@@ -5,6 +5,7 @@ import { useCurrentPositionQuery } from '@y2kfund/core/currentPositionsForSingle
 import { useTabulator } from '../composables/useTabulator'
 import { useMarketPrice } from '../composables/useMarketPrice'
 import { useAverageCostPrice } from '../composables/useAverageCostPrice'
+import { useProfitAndLoss } from '../composables/useProfitAndLoss'
 import { useAttachedData } from '../composables/useAttachedData'
 import { usePositionExpansion } from '../composables/usePositionExpansion'
 import { TabulatorFull as Tabulator } from 'tabulator-tables'
@@ -16,12 +17,13 @@ interface currentPositionsProps {
 
 const props = withDefaults(defineProps<currentPositionsProps>(), {
   symbolRoot: 'META',
-  userId: '67e578fd-2cf7-48a4-b028-a11a3f89bb9b'
+  userId: '4fbec15d-2316-4805-b2a4-5cd2115a5ac8'
 })
 
 // State for showing/hiding details
 const showDetails = ref(false)
 const showCalculationDetails = ref(false)
+const showPnLDetails = ref(false)
 
 // Fetch positions data
 const { data: positions, isLoading, isError, error, isSuccess, _cleanup } = useCurrentPositionQuery(
@@ -127,6 +129,22 @@ const totalNetCostAllClients = computed(() => {
 const totalMainQuantityAllClients = computed(() => {
   return positionGroups.value.reduce((sum, g) => sum + g.mainPosition.quantity, 0)
 })
+
+// Fetch P&L data using the composable
+const {
+  totalCostBasis,
+  currentMarketValue,
+  unrealizedPnL,
+  pnlPercentage,
+  isProfitable,
+  calculationBreakdown,
+  isLoading: isPnLLoading,
+  error: pnlError
+} = useProfitAndLoss(
+  overallAdjustedAvgPrice,
+  totalMainQuantityAllClients,
+  currentMarketPrice
+)
 
 // Helper functions
 function extractTagsFromSymbol(symbolText: string): string[] {
@@ -718,6 +736,10 @@ function toggleCalculationDetails() {
   showCalculationDetails.value = !showCalculationDetails.value
 }
 
+function togglePnLDetails() {
+  showPnLDetails.value = !showPnLDetails.value
+}
+
 // Watch for when mappings become ready and redraw the table
 watch(isReady, async (ready) => {
   console.log('👀 Mappings ready state changed:', ready)
@@ -769,8 +791,25 @@ onBeforeUnmount(() => {
           <div class="summary-cards">
             <div class="summary-card card-blue">
               <div class="summary-label">Profit and Loss</div>
-              <div class="summary-value-container">
-                <div class="summary-value">Coming soon</div>
+              <div v-if="isPnLLoading" class="summary-value">
+                <span class="loading-spinner">⏳</span> Loading...
+              </div>
+              <div v-else-if="pnlError" class="summary-value error">
+                ❌ Error
+              </div>
+              <div v-else class="summary-value-container-vertical">
+                <div 
+                  class="summary-value clickable-price pnl-value" 
+                  :class="{ 'profit': isProfitable, 'loss': !isProfitable }"
+                  @click="togglePnLDetails"
+                >
+                  <span v-if="unrealizedPnL !== null">
+                    {{ unrealizedPnL >= 0 ? '+' : '' }}${{ unrealizedPnL.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+                    <span class="pnl-percentage">({{ pnlPercentage?.toFixed(2) }}%)</span>
+                  </span>
+                  <span v-else>N/A</span>
+                  <span class="toggle-icon">{{ showPnLDetails ? '▼' : '▶' }}</span>
+                </div>
               </div>
             </div>
             
@@ -897,6 +936,55 @@ onBeforeUnmount(() => {
                 </div>
               </div>
 
+            </div>
+          </transition>
+
+          <!-- P&L Details Section (Collapsible) -->
+          <transition name="slide-fade">
+            <div v-show="showPnLDetails" class="pnl-details">
+              <h2>Profit & Loss Calculation Details:</h2>
+              
+              <div v-if="calculationBreakdown" class="pnl-breakdown">
+                <!-- Step 1: Total Cost Basis -->
+                <div class="pnl-section">
+                  <div class="pnl-section-title">📊 Total Cost Basis</div>
+                  <div class="calc-line">
+                    Total Shares = {{ calculationBreakdown.totalShares.toLocaleString() }}
+                  </div>
+                  <div class="calc-line">
+                    Average Cost per Share = ${{ calculationBreakdown.avgCostPerShare.toFixed(2) }}
+                  </div>
+                  <div class="calc-line calculation-result">
+                    <strong>Total Cost Basis = {{ calculationBreakdown.totalShares.toLocaleString() }} × ${{ calculationBreakdown.avgCostPerShare.toFixed(2) }} = ${{ calculationBreakdown.totalCostBasis.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong>
+                  </div>
+                </div>
+
+                <!-- Step 2: Current Market Value -->
+                <div class="pnl-section">
+                  <div class="pnl-section-title">💰 Current Market Value</div>
+                  <div class="calc-line">
+                    Current Price per Share = ${{ calculationBreakdown.currentPricePerShare.toFixed(2) }}
+                  </div>
+                  <div class="calc-line calculation-result">
+                    <strong>Current Market Value = {{ calculationBreakdown.totalShares.toLocaleString() }} × ${{ calculationBreakdown.currentPricePerShare.toFixed(2) }} = ${{ calculationBreakdown.currentMarketValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong>
+                  </div>
+                </div>
+
+                <!-- Step 3: Unrealized P&L -->
+                <div class="pnl-section highlight-section">
+                  <div class="pnl-section-title">🎯 Unrealized Profit & Loss</div>
+                  <div class="calc-line">
+                    <strong :class="{ 'profit-text': isProfitable, 'loss-text': !isProfitable }">
+                      Unrealized P&L = ${{ calculationBreakdown.currentMarketValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} - ${{ calculationBreakdown.totalCostBasis.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} = {{ unrealizedPnL && unrealizedPnL >= 0 ? '+' : '' }}${{ calculationBreakdown.unrealizedPnL.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+                    </strong>
+                  </div>
+                  <div class="calc-line">
+                    <strong :class="{ 'profit-text': isProfitable, 'loss-text': !isProfitable }">
+                      P&L Percentage = ({{ unrealizedPnL && unrealizedPnL >= 0 ? '+' : '' }}${{ calculationBreakdown.unrealizedPnL.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} ÷ ${{ calculationBreakdown.totalCostBasis.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}) × 100 = {{ calculationBreakdown.pnlPercentage.toFixed(2) }}%
+                    </strong>
+                  </div>
+                </div>
+              </div>
             </div>
           </transition>
         </div>
