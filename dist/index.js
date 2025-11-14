@@ -12344,7 +12344,13 @@ const ko = { class: "current-positions-for-single-instrument-view" }, Mo = { cla
                       w("span", ar, C(i.value ? "▼" : "▶"), 1)
                     ])
                   ])
-                ])
+                ]),
+                v[6] || (v[6] = w("div", { class: "summary-card card-cyan" }, [
+                  w("div", { class: "summary-label" }, "Capital/margin used"),
+                  w("div", { class: "summary-value-container" }, [
+                    w("div", { class: "summary-value" }, " Coming soon... ")
+                  ])
+                ], -1))
               ]),
               st(nt, { name: "slide-fade" }, {
                 default: ot(() => [
@@ -12362,7 +12368,7 @@ const ko = { class: "current-positions-for-single-instrument-view" }, Mo = { cla
               st(nt, { name: "slide-fade" }, {
                 default: ot(() => [
                   rt(w("div", hr, [
-                    v[12] || (v[12] = w("h2", null, "Average Price calculation details :", -1)),
+                    v[13] || (v[13] = w("h2", null, "Average Price calculation details :", -1)),
                     (W(!0), I(lt, null, ht(R(Q), (x, V) => (W(), I("div", {
                       key: `group-${V}`,
                       class: "position-group"
@@ -12378,35 +12384,35 @@ const ko = { class: "current-positions-for-single-instrument-view" }, Mo = { cla
                         default: ot(() => [
                           rt(w("div", cr, [
                             w("div", fr, [
-                              v[6] || (v[6] = w("span", { class: "position-icon" }, "📍", -1)),
+                              v[7] || (v[7] = w("span", { class: "position-icon" }, "📍", -1)),
                               w("span", pr, C(x.mainPosition.symbol), 1),
                               w("span", mr, "@ $" + C(x.mainPosition.avgPrice.toFixed(2)) + " × " + C(x.mainPosition.quantity.toLocaleString()) + " = $" + C(x.mainPosition.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                             ]),
                             x.callPositions.length > 0 ? (W(), I("div", gr, [
-                              v[8] || (v[8] = w("div", { class: "call-header" }, "📞 Call Positions (subtract from cost)", -1)),
+                              v[9] || (v[9] = w("div", { class: "call-header" }, "📞 Call Positions (subtract from cost)", -1)),
                               (W(!0), I(lt, null, ht(x.callPositions, (G, q) => (W(), I("div", {
                                 key: `call-${V}-${q}`,
                                 class: "position-line call-position"
                               }, [
-                                v[7] || (v[7] = w("span", { class: "position-icon" }, null, -1)),
+                                v[8] || (v[8] = w("span", { class: "position-icon" }, null, -1)),
                                 w("span", br, C(G.symbol), 1),
                                 w("span", vr, "@ $" + C(G.avgPrice.toFixed(2)) + " × " + C(G.quantity.toLocaleString()) + " = $" + C(G.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                               ]))), 128)),
                               w("div", wr, " Subtotal Calls: $" + C(Math.abs(x.callPositionsTotalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                             ])) : ke("", !0),
                             x.putPositions.length > 0 ? (W(), I("div", Cr, [
-                              v[10] || (v[10] = w("div", { class: "put-header" }, "📉 Put Positions (display only, not in calculation)", -1)),
+                              v[11] || (v[11] = w("div", { class: "put-header" }, "📉 Put Positions (display only, not in calculation)", -1)),
                               (W(!0), I(lt, null, ht(x.putPositions, (G, q) => (W(), I("div", {
                                 key: `put-${V}-${q}`,
                                 class: "position-line put-position"
                               }, [
-                                v[9] || (v[9] = w("span", { class: "position-icon" }, "📉", -1)),
+                                v[10] || (v[10] = w("span", { class: "position-icon" }, "📉", -1)),
                                 w("span", yr, C(G.symbol), 1),
                                 w("span", Er, "@ $" + C(G.avgPrice.toFixed(2)) + " × " + C(G.quantity.toLocaleString()) + " = $" + C(G.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                               ]))), 128))
                             ])) : ke("", !0),
                             w("div", Rr, [
-                              v[11] || (v[11] = w("div", { class: "calc-line" }, [
+                              v[12] || (v[12] = w("div", { class: "calc-line" }, [
                                 _e("📊 "),
                                 w("strong", null, "Calculation:")
                               ], -1)),
@@ -12441,10 +12447,10 @@ const ko = { class: "current-positions-for-single-instrument-view" }, Mo = { cla
               st(nt, { name: "slide-fade" }, {
                 default: ot(() => [
                   rt(w("div", zr, [
-                    v[17] || (v[17] = w("h2", null, "Profit & Loss Calculation Details:", -1)),
+                    v[18] || (v[18] = w("h2", null, "Profit & Loss Calculation Details:", -1)),
                     R(H) && Z.value === "STK" ? (W(), I("div", _r, [
                       w("div", Pr, [
-                        v[13] || (v[13] = w("div", { class: "pnl-section-title" }, "📊 Total Cost Basis", -1)),
+                        v[14] || (v[14] = w("div", { class: "pnl-section-title" }, "📊 Total Cost Basis", -1)),
                         w("div", Hr, " Total Shares = " + C(R(H).totalShares.toLocaleString()), 1),
                         w("div", Ar, " Average Cost per Share = $" + C(R(H).avgCostPerShare.toFixed(2)), 1),
                         w("div", Or, [
@@ -12452,14 +12458,14 @@ const ko = { class: "current-positions-for-single-instrument-view" }, Mo = { cla
                         ])
                       ]),
                       w("div", Br, [
-                        v[14] || (v[14] = w("div", { class: "pnl-section-title" }, "💰 Current Market Value", -1)),
+                        v[15] || (v[15] = w("div", { class: "pnl-section-title" }, "💰 Current Market Value", -1)),
                         w("div", Vr, " Current Price per Share = $" + C(R(H).currentPricePerShare.toFixed(2)), 1),
                         w("div", Nr, [
                           w("strong", null, "Current Market Value = " + C(R(H).totalShares.toLocaleString()) + " × $" + C(R(H).currentPricePerShare.toFixed(2)) + " = $" + C(R(H).currentMarketValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ])
                       ]),
                       w("div", Ir, [
-                        v[15] || (v[15] = w("div", { class: "pnl-section-title" }, "🎯 Unrealized Profit & Loss", -1)),
+                        v[16] || (v[16] = w("div", { class: "pnl-section-title" }, "🎯 Unrealized Profit & Loss", -1)),
                         w("div", Wr, [
                           w("strong", {
                             class: Ve({ "profit-text": R(le), "loss-text": !R(le) })
@@ -12493,7 +12499,7 @@ const ko = { class: "current-positions-for-single-instrument-view" }, Mo = { cla
                         ])
                       ]))), 128)),
                       w("div", ea, [
-                        v[16] || (v[16] = w("div", { class: "pnl-section-title" }, "💰 TOTAL CALCULATION", -1)),
+                        v[17] || (v[17] = w("div", { class: "pnl-section-title" }, "💰 TOTAL CALCULATION", -1)),
                         w("div", ta, " Total Premium Received = " + C(R(H).positions.map((x) => `$${x.premiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")), 1),
                         w("div", ia, [
                           w("strong", null, "= $" + C(R(H).totalPremiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
@@ -12532,7 +12538,7 @@ const ko = { class: "current-positions-for-single-instrument-view" }, Mo = { cla
   for (const [i, s] of e)
     t[i] = s;
   return t;
-}, ma = /* @__PURE__ */ ha(la, [["__scopeId", "data-v-08b165db"]]);
+}, ma = /* @__PURE__ */ ha(la, [["__scopeId", "data-v-5c8ddb2a"]]);
 export {
   ma as currentPositions,
   ma as default

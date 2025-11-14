@@ -569,3 +569,8 @@
 .loss-text {
   color: #dc3545 !important;
 }
+
+.summary-card.card-cyan {
+  background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
+  border-left: 4px solid #00bcd4;
+}

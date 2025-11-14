@@ -929,6 +929,16 @@ onBeforeUnmount(() => {
                 </div>
               </div>
             </div>
+
+            <div class="summary-card card-cyan">
+              <div class="summary-label">Capital/margin used</div>
+              <div class="summary-value-container">
+                <div class="summary-value">
+                  Coming soon...
+                </div>
+                
+              </div>
+            </div>
           </div>
 
           <!-- Tabulator Table (Collapsible) -->
