@@ -8,6 +8,7 @@ import { useTabulator } from '../composables/useTabulator'
 import { useMarketPrice } from '../composables/useMarketPrice'
 import { useAverageCostPrice } from '../composables/useAverageCostPrice'
 import { useProfitAndLoss } from '../composables/useProfitAndLoss'
+import { useCapitalUsed } from '../composables/useCapitalUsed'
 import { useAttachedData } from '../composables/useAttachedData'
 import { usePositionExpansion } from '../composables/usePositionExpansion'
 import { TabulatorFull as Tabulator } from 'tabulator-tables'
@@ -18,7 +19,7 @@ interface currentPositionsProps {
 }
 
 const props = withDefaults(defineProps<currentPositionsProps>(), {
-  symbolRoot: 'COIN',
+  symbolRoot: 'MSFT',
   userId: '4fbec15d-2316-4805-b2a4-5cd2115a5ac8'
 })
 
@@ -26,6 +27,7 @@ const props = withDefaults(defineProps<currentPositionsProps>(), {
 const showDetails = ref(false)
 const showCalculationDetails = ref(false)
 const showPnLDetails = ref(false)
+const showCapitalDetails = ref(false)
 
 // State for collapsing/expanding individual position groups
 const expandedGroups = ref<Set<number>>(new Set())
@@ -201,6 +203,21 @@ const {
   overallAdjustedAvgPrice,
   totalMainQuantityAllClients,
   currentMarketPrice,
+  putPositions,
+  callPositions
+)
+
+// Use capital calculation composable
+const {
+  totalCapitalUsed,
+  calculationBreakdown: capitalBreakdown,
+  isLoading: isCapitalLoading,
+  error: capitalError
+} = useCapitalUsed(
+  assetType,
+  computed(() => totalContractQuantity.value),
+  currentMarketPrice,
+  positions,
   putPositions,
   callPositions
 )
@@ -799,6 +816,10 @@ function togglePnLDetails() {
   showPnLDetails.value = !showPnLDetails.value
 }
 
+function toggleCapitalDetails() {
+  showCapitalDetails.value = !showCapitalDetails.value
+}
+
 // Watch for when mappings become ready and redraw the table
 watch(isReady, async (ready) => {
   console.log('👀 Mappings ready state changed:', ready)
@@ -932,14 +953,28 @@ onBeforeUnmount(() => {
 
             <div class="summary-card card-cyan">
               <div class="summary-label">Capital/margin used</div>
-              <div class="summary-value-container">
-                <div class="summary-value">
-                  Coming soon...
-                </div>
-                
+              <div v-if="isCapitalLoading" class="summary-value">
+                <span class="loading-spinner">⏳</span> Loading...
               </div>
-            </div>
-          </div>
+              <div v-else-if="capitalError" class="summary-value error">
+                ❌ Error
+              </div>
+              <div v-else class="summary-value-container-vertical">
+                <div 
+                  class="summary-value clickable-price" 
+                  @click="toggleCapitalDetails"
+                >
+                  <span v-if="totalCapitalUsed !== null">
+                    ${{ totalCapitalUsed.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }}
+                  </span>
+                  <span v-else>N/A</span>
+                  <span class="toggle-icon">{{ showCapitalDetails ? '▼' : '▶' }}</span>
+                </div>
+                <div class="capital-subtitle" style="font-size: 0.85rem; color: #6c757d; margin-top: 0.25rem;">
+                  Margin: Coming soon...
+                </div>
+              </div>
+            </div>          </div>
 
           <!-- Tabulator Table (Collapsible) -->
           <transition name="slide-fade">
@@ -1025,7 +1060,7 @@ onBeforeUnmount(() => {
               <h2>Profit & Loss Calculation Details:</h2>
               
               <!-- Stock P&L Breakdown -->
-              <div v-if="calculationBreakdown && assetType === 'STK'" class="pnl-breakdown">
+              <div v-if="calculationBreakdown && 'totalShares' in calculationBreakdown && calculationBreakdown.totalShares != null" class="pnl-breakdown">
                 <!-- Step 1: Total Cost Basis -->
                 <div class="pnl-section">
                   <div class="pnl-section-title">📊 Total Cost Basis</div>
@@ -1068,7 +1103,7 @@ onBeforeUnmount(() => {
               </div>
 
               <!-- Options P&L Breakdown -->
-              <div v-if="calculationBreakdown && assetType === 'OPT'" class="pnl-breakdown">
+              <div v-if="calculationBreakdown && 'optionType' in calculationBreakdown && calculationBreakdown.optionType != null" class="pnl-breakdown">
                 <div class="pnl-section">
                   <div class="pnl-section-title">📊 SHORT {{ calculationBreakdown.optionType }} OPTIONS SUMMARY</div>
                   <div class="calc-line">
@@ -1129,6 +1164,82 @@ onBeforeUnmount(() => {
                   
                   <div v-if="calculationBreakdown.pnlPercentage < -50" class="calc-line" style="margin-top: 1rem; color: #dc3545; font-weight: bold;">
                     ⚠️ WARNING: Loss exceeds 50% of premium received!
+                  </div>
+                </div>
+              </div>
+            </div>
+          </transition>
+
+          <!-- Capital Details Section (Collapsible) -->
+          <transition name="slide-fade">
+            <div v-show="showCapitalDetails" class="capital-details">
+              <h2>Capital Used Calculation Details:</h2>
+              
+              <!-- No data message -->
+              <div v-if="!capitalBreakdown" class="no-data-message">
+                <p>No capital data available</p>
+              </div>
+              
+              <!-- Stock Capital Breakdown -->
+              <div v-else-if="capitalBreakdown.assetType === 'STK'" class="capital-breakdown">
+                <div class="capital-section">
+                  <div class="capital-section-title">📊 STOCK CAPITAL CALCULATION</div>
+                  <div class="calc-line">
+                    Total Shares = {{ capitalBreakdown.totalShares.toLocaleString() }}
+                  </div>
+                  <div class="calc-line">
+                    Current Price per Share = ${{ capitalBreakdown.pricePerShare.toFixed(2) }}
+                  </div>
+                  <div class="calc-line calculation-result">
+                    <strong>
+                      Total Capital Used = {{ capitalBreakdown.totalShares.toLocaleString() }} × ${{ capitalBreakdown.pricePerShare.toFixed(2) }} 
+                      = ${{ capitalBreakdown.totalCapital.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+                    </strong>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Options Capital Breakdown -->
+              <div v-else-if="capitalBreakdown.assetType === 'OPT'" class="capital-breakdown">
+                <div class="capital-section">
+                  <div class="capital-section-title">📊 OPTIONS CAPITAL CALCULATION</div>
+                  <div class="calc-line">
+                    Capital = Sum of |Market Value| for all option positions
+                  </div>
+                </div>
+
+                <!-- Per-Position Breakdown -->
+                <div v-for="(pos, idx) in capitalBreakdown.positions" :key="`cap-${idx}`" class="capital-section">
+                  <div class="capital-section-title">
+                    Position {{ idx + 1 }}: {{ pos.account }} - {{ pos.optionType }}
+                  </div>
+                  <div class="calc-line">
+                    Symbol: {{ pos.symbol }}
+                  </div>
+                  <div class="calc-line">
+                    Quantity: {{ Math.abs(pos.quantity).toLocaleString() }} contracts
+                  </div>
+                  <div class="calc-line">
+                    Market Price: ${{ pos.marketPrice.toFixed(2) }} per contract
+                  </div>
+                  <div class="calc-line calculation-result">
+                    <strong>
+                      Market Value = {{ Math.abs(pos.quantity).toLocaleString() }} × ${{ pos.marketPrice.toFixed(2) }} 
+                      = ${{ Math.abs(pos.marketValue).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+                    </strong>
+                  </div>
+                </div>
+
+                <!-- Total Calculation -->
+                <div class="capital-section highlight-section">
+                  <div class="capital-section-title">💰 TOTAL CAPITAL USED</div>
+                  <div class="calc-line">
+                    Total = {{ capitalBreakdown.positions.map((p: any) => `$${Math.abs(p.marketValue).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(' + ') }}
+                  </div>
+                  <div class="calc-line calculation-result">
+                    <strong>
+                      = ${{ capitalBreakdown.totalOptionsCapital.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+                    </strong>
                   </div>
                 </div>
               </div>
