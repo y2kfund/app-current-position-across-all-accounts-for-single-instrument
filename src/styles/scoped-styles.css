@@ -295,6 +295,28 @@
   margin-bottom: 0.5rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.group-header:hover {
+  background-color: rgba(102, 126, 234, 0.1);
+}
+
+.group-header .toggle-icon {
+  font-size: 0.7rem;
+  color: #667eea;
+  transition: transform 0.2s ease;
+}
+
+.group-content {
+  margin-top: 0.5rem;
 }
 
 .position-line.main-position {
@@ -402,7 +424,7 @@
   font-size: 0.7rem;
   font-weight: 600;
   color: #2e7d32;
-  text-align: right;
+  text-align: left;
 }
 
 /* Put positions styling */

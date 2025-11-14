@@ -18,7 +18,7 @@ interface currentPositionsProps {
 }
 
 const props = withDefaults(defineProps<currentPositionsProps>(), {
-  symbolRoot: 'IBIT',
+  symbolRoot: 'MSFT',
   userId: '4fbec15d-2316-4805-b2a4-5cd2115a5ac8'
 })
 
@@ -26,6 +26,20 @@ const props = withDefaults(defineProps<currentPositionsProps>(), {
 const showDetails = ref(false)
 const showCalculationDetails = ref(false)
 const showPnLDetails = ref(false)
+
+// State for collapsing/expanding individual position groups
+const expandedGroups = ref<Set<number>>(new Set())
+
+// Toggle individual group expansion
+function toggleGroupExpansion(groupIndex: number) {
+  if (expandedGroups.value.has(groupIndex)) {
+    expandedGroups.value.delete(groupIndex)
+  } else {
+    expandedGroups.value.add(groupIndex)
+  }
+  // Force reactivity
+  expandedGroups.value = new Set(expandedGroups.value)
+}
 
 // Fetch positions data
 const { data: positions, isLoading, isError, error, isSuccess, _cleanup } = useCurrentPositionQuery(
@@ -929,7 +943,14 @@ onBeforeUnmount(() => {
               <!-- Group by main position + its attached positions -->
                <h2>Average Price calculation details :</h2>
               <div v-for="(group, groupIndex) in positionGroups" :key="`group-${groupIndex}`" class="position-group">
-                <div class="group-header">Client {{ groupIndex + 1 }}: {{ group.mainPosition.account }}</div>
+                <div class="group-header clickable" @click="toggleGroupExpansion(groupIndex)">
+                  <span class="toggle-icon">{{ expandedGroups.has(groupIndex) ? '▼' : '▶' }}</span>
+                  Client {{ groupIndex + 1 }}: {{ group.mainPosition.account }}
+                </div>
+                
+                <!-- Collapsible Content -->
+                <transition name="slide-fade">
+                  <div v-show="expandedGroups.has(groupIndex)" class="group-content">
                 
                 <!-- Main position -->
                 <div class="position-line main-position">
@@ -967,6 +988,9 @@ onBeforeUnmount(() => {
                   <div class="calc-line indent">Net Cost = ${{ group.mainPosition.totalCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} - ${{ Math.abs(group.callPositionsTotalCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} = ${{ group.netCostExcludingPuts.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</div>
                   <div class="calc-line indent"><strong>Adjusted Avg Price = ${{ group.netCostExcludingPuts.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} ÷ {{ group.mainPosition.quantity.toLocaleString() }} = ${{ group.adjustedAvgPricePerShare.toFixed(2) }} per share</strong></div>
                 </div>
+                
+                  </div>
+                </transition>
               </div>
 
               <!-- Overall adjusted average at the top -->
