@@ -5,7 +5,7 @@ interface MarketPriceData {
     market_price: number;
     last_fetched_at: string;
 }
-export declare function useMarketPrice(conid: Ref<number | null>): {
+export declare function useMarketPrice(conid: Ref<number | null>, symbolRoot: string): {
     marketData: Ref<{
         symbol: string;
         conid: number;

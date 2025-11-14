@@ -11341,33 +11341,47 @@ function Co(l) {
     initializeTabulator: n
   };
 }
-function yo(l) {
-  const e = Jt(), t = B(null), i = B(!1), s = B(null), n = async (r) => {
-    i.value = !0, s.value = null;
+function yo(l, e) {
+  const t = Jt(), i = B(null), s = B(!1), n = B(null), o = async (a) => {
+    s.value = !0, n.value = null;
     try {
-      console.log(`🔍 Fetching market price for conid: ${r}`);
-      const { data: a, error: h } = await e.schema("hf").from("market_price").select("symbol, conid, market_price, last_fetched_at").eq("conid", r).order("id", { ascending: !1 }).limit(1).single();
-      if (h)
-        throw new Error(`Database error: ${h.message}`);
-      a ? (t.value = a, console.log(`✅ Market price fetched: $${a.market_price} for ${a.symbol}`)) : (t.value = null, console.log("⚠️ No market price found for conid:", r));
-    } catch (a) {
-      s.value = a instanceof Error ? a.message : "Failed to fetch market price", console.error("❌ Error fetching market price:", a), t.value = null;
+      let h = t.schema("hf").from("market_price").select("symbol, conid, market_price, last_fetched_at");
+      if (a && a > 0)
+        console.log(`🔍 Fetching market price for conid: ${a}`), h = h.eq("conid", a);
+      else if (e)
+        console.log(`🔍 Fetching market price for symbol: ${e}`), h = h.eq("symbol", e);
+      else {
+        console.log("⚠️ No conid or symbolRoot available"), i.value = null, n.value = "No conid or symbol provided";
+        return;
+      }
+      const { data: u, error: d } = await h.order("id", { ascending: !1 }).limit(1).single();
+      if (d)
+        throw new Error(`Database error: ${d.message}`);
+      if (u)
+        i.value = u, console.log(`✅ Market price fetched: $${u.market_price} for ${u.symbol}`);
+      else {
+        i.value = null;
+        const c = a ? `conid: ${a}` : `symbol: ${e}`;
+        console.log(`⚠️ No market price found for ${c}`);
+      }
+    } catch (h) {
+      n.value = h instanceof Error ? h.message : "Failed to fetch market price", console.error("❌ Error fetching market price:", h), i.value = null;
     } finally {
-      i.value = !1;
+      s.value = !1;
     }
   };
   return Be(
     l,
-    (r) => {
-      r && r > 0 ? (console.log(`🎯 Conid changed to: ${r}, fetching price...`), n(r)) : (console.log("⚠️ No valid conid available yet"), t.value = null, s.value = null);
+    (a) => {
+      a && a > 0 ? (console.log(`🎯 Conid changed to: ${a}, fetching price...`), o(a)) : e ? (console.log(`🎯 No conid available, using symbolRoot: ${e}`), o(null)) : (console.log("⚠️ No valid conid or symbolRoot available"), i.value = null, n.value = null);
     },
     { immediate: !0 }
   ), {
-    marketData: t,
-    isLoading: i,
-    error: s,
+    marketData: i,
+    isLoading: s,
+    error: n,
     refetch: () => {
-      l.value && l.value > 0 && n(l.value);
+      l.value && l.value > 0 ? o(l.value) : e && o(null);
     }
   };
 }
@@ -11760,7 +11774,7 @@ const ko = { class: "current-positions-for-single-instrument-view" }, Mo = { cla
 }, la = /* @__PURE__ */ Vi({
   __name: "CurrentPositions",
   props: {
-    symbolRoot: { default: "MSFT" },
+    symbolRoot: { default: "COIN" },
     userId: { default: "4fbec15d-2316-4805-b2a4-5cd2115a5ac8" }
   },
   setup(l) {
@@ -11775,7 +11789,7 @@ const ko = { class: "current-positions-for-single-instrument-view" }, Mo = { cla
       var v, L;
       const y = (L = (v = r.value) == null ? void 0 : v[0]) == null ? void 0 : L.conid;
       return y ? parseInt(y, 10) : null;
-    }), { marketData: m, isLoading: g, error: T } = yo(b), S = re(() => {
+    }), { marketData: m, isLoading: g, error: T } = yo(b, e.symbolRoot), S = re(() => {
       var y;
       return ((y = m.value) == null ? void 0 : y.market_price) ?? null;
     }), D = re(() => {
@@ -12538,7 +12552,7 @@ const ko = { class: "current-positions-for-single-instrument-view" }, Mo = { cla
   for (const [i, s] of e)
     t[i] = s;
   return t;
-}, ma = /* @__PURE__ */ ha(la, [["__scopeId", "data-v-5c8ddb2a"]]);
+}, ma = /* @__PURE__ */ ha(la, [["__scopeId", "data-v-18950fcd"]]);
 export {
   ma as currentPositions,
   ma as default

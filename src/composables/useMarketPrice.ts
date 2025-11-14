@@ -8,24 +8,39 @@ interface MarketPriceData {
   last_fetched_at: string
 }
 
-export function useMarketPrice(conid: Ref<number | null>) {
+export function useMarketPrice(conid: Ref<number | null> , symbolRoot: string) {
   const supabase = useSupabase()
   const marketData = ref<MarketPriceData | null>(null)
   const isLoading = ref(false)
   const error = ref<string | null>(null)
 
-  const fetchMarketPrice = async (conidValue: number): Promise<void> => {
+  const fetchMarketPrice = async (conidValue: number | null): Promise<void> => {
     isLoading.value = true
     error.value = null
 
     try {
-      console.log(`🔍 Fetching market price for conid: ${conidValue}`)
-      
-      const { data, error: dbError } = await supabase
+      let query = supabase
         .schema('hf')
         .from('market_price')
         .select('symbol, conid, market_price, last_fetched_at')
-        .eq('conid', conidValue)
+      
+      // If conid is available, search by conid
+      if (conidValue && conidValue > 0) {
+        console.log(`🔍 Fetching market price for conid: ${conidValue}`)
+        query = query.eq('conid', conidValue)
+      } 
+      // Otherwise, fallback to searching by symbolRoot
+      else if (symbolRoot) {
+        console.log(`🔍 Fetching market price for symbol: ${symbolRoot}`)
+        query = query.eq('symbol', symbolRoot)
+      } else {
+        console.log('⚠️ No conid or symbolRoot available')
+        marketData.value = null
+        error.value = 'No conid or symbol provided'
+        return
+      }
+      
+      const { data, error: dbError } = await query
         .order('id', { ascending: false })
         .limit(1)
         .single()
@@ -39,7 +54,8 @@ export function useMarketPrice(conid: Ref<number | null>) {
         console.log(`✅ Market price fetched: $${data.market_price} for ${data.symbol}`)
       } else {
         marketData.value = null
-        console.log('⚠️ No market price found for conid:', conidValue)
+        const searchCriteria = conidValue ? `conid: ${conidValue}` : `symbol: ${symbolRoot}`
+        console.log(`⚠️ No market price found for ${searchCriteria}`)
       }
     } catch (err) {
       error.value = err instanceof Error ? err.message : 'Failed to fetch market price'
@@ -50,15 +66,18 @@ export function useMarketPrice(conid: Ref<number | null>) {
     }
   }
 
-  // Watch for conid changes and fetch price only when conid is available
+  // Watch for conid changes and fetch price
   watch(
     conid,
     (newConid) => {
       if (newConid && newConid > 0) {
         console.log(`🎯 Conid changed to: ${newConid}, fetching price...`)
         fetchMarketPrice(newConid)
+      } else if (symbolRoot) {
+        console.log(`🎯 No conid available, using symbolRoot: ${symbolRoot}`)
+        fetchMarketPrice(null)
       } else {
-        console.log('⚠️ No valid conid available yet')
+        console.log('⚠️ No valid conid or symbolRoot available')
         marketData.value = null
         error.value = null
       }
@@ -69,6 +88,8 @@ export function useMarketPrice(conid: Ref<number | null>) {
   const refetch = () => {
     if (conid.value && conid.value > 0) {
       fetchMarketPrice(conid.value)
+    } else if (symbolRoot) {
+      fetchMarketPrice(null)
     }
   }
 

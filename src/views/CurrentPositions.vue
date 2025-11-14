@@ -18,7 +18,7 @@ interface currentPositionsProps {
 }
 
 const props = withDefaults(defineProps<currentPositionsProps>(), {
-  symbolRoot: 'MSFT',
+  symbolRoot: 'COIN',
   userId: '4fbec15d-2316-4805-b2a4-5cd2115a5ac8'
 })
 
@@ -60,7 +60,7 @@ const firstConid = computed(() => {
 })
 
 // Fetch market price using the composable
-const { marketData, isLoading: isPriceLoading, error: priceError } = useMarketPrice(firstConid)
+const { marketData, isLoading: isPriceLoading, error: priceError } = useMarketPrice(firstConid, props.symbolRoot)
 
 // Extract current market price from marketData
 const currentMarketPrice = computed(() => marketData.value?.market_price ?? null)
