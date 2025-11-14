@@ -863,7 +863,7 @@ onBeforeUnmount(() => {
                   @click="togglePnLDetails"
                 >
                   <span v-if="unrealizedPnL !== null">
-                    {{ unrealizedPnL >= 0 ? '+' : '' }}${{ unrealizedPnL.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+                    {{ unrealizedPnL >= 0 ? '+' : '' }}${{ unrealizedPnL.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }}
                     <span class="pnl-percentage">({{ pnlPercentage?.toFixed(2) }}%)</span>
                   </span>
                   <span v-else>N/A</span>
@@ -884,6 +884,7 @@ onBeforeUnmount(() => {
                     style="cursor:pointer; color: #0d6efd;"
                   >
                     ({{ positions?.length || 0 }})
+                    <span class="toggle-icon">{{ showDetails ? '▼' : '▶' }}</span>
                   </span>
                 </div>
               </div>

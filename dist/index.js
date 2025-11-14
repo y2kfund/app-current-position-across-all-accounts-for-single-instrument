@@ -1,7 +1,7 @@
 var Ai = Object.defineProperty;
 var Oi = (l, e, t) => e in l ? Ai(l, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : l[e] = t;
 var E = (l, e, t) => Oi(l, typeof e != "symbol" ? e + "" : e, t);
-import { inject as Bi, ref as B, watch as Oe, nextTick as ct, onBeforeUnmount as ni, computed as re, defineComponent as Vi, onMounted as Ni, createElementBlock as I, openBlock as W, createElementVNode as w, toDisplayString as C, unref as R, createVNode as st, createTextVNode as Be, normalizeClass as Ve, withModifiers as Ii, createCommentVNode as ke, Transition as nt, withCtx as ot, withDirectives as rt, vShow as at, Fragment as lt, renderList as ht } from "vue";
+import { inject as Bi, ref as B, watch as Be, nextTick as ct, onBeforeUnmount as ni, computed as re, defineComponent as Vi, onMounted as Ni, createElementBlock as I, openBlock as W, createElementVNode as w, toDisplayString as C, unref as R, createVNode as st, createTextVNode as _e, normalizeClass as Ve, withModifiers as Ii, createCommentVNode as ke, Transition as nt, withCtx as ot, withDirectives as rt, vShow as at, Fragment as lt, renderList as ht } from "vue";
 import { useQueryClient as Kt, useQuery as Xt } from "@tanstack/vue-query";
 import { useSupabase as Jt, generatePositionMappingKey as ut, usePositionTradeMappingsQuery as Wi, usePositionPositionMappingsQuery as Gi, fetchPositionsBySymbolRoot as ji } from "@y2kfund/core";
 const $i = Symbol.for("y2kfund.supabase");
@@ -1136,10 +1136,10 @@ var hi = {
   headerWordWrap: !1,
   editableTitle: void 0
 };
-const _e = class _e extends ee {
+const Pe = class Pe extends ee {
   constructor(e, t, i) {
     super(t.table), this.definition = e, this.parent = t, this.type = "column", this.columns = [], this.cells = [], this.isGroup = !1, this.isRowHeader = i, this.element = this.createElement(), this.contentElement = !1, this.titleHolderElement = !1, this.titleElement = !1, this.groupElement = this.createGroupElement(), this.hozAlign = "", this.vertAlign = "", this.field = "", this.fieldStructure = "", this.getFieldValue = "", this.setFieldValue = "", this.titleDownload = null, this.titleFormatterRendered = !1, this.mapDefinitions(), this.setField(this.definition.field), this.modules = {}, this.width = null, this.widthStyled = "", this.maxWidth = null, this.maxWidthStyled = "", this.maxInitialWidth = null, this.minWidth = null, this.minWidthStyled = "", this.widthFixed = !1, this.visible = !0, this.component = null, this.definition.columns ? (this.isGroup = !0, this.definition.columns.forEach((s, n) => {
-      var o = new _e(s, this);
+      var o = new Pe(s, this);
       this.attachColumn(o);
     }), this.checkColumnVisibility()) : t.registerColumnField(this), this._initialize();
   }
@@ -1164,11 +1164,11 @@ const _e = class _e extends ee {
     if (e)
       for (let t in e)
         typeof this.definition[t] > "u" && (this.definition[t] = e[t]);
-    this.definition = this.table.columnManager.optionsList.generate(_e.defaultOptionList, this.definition);
+    this.definition = this.table.columnManager.optionsList.generate(Pe.defaultOptionList, this.definition);
   }
   checkDefinition() {
     Object.keys(this.definition).forEach((e) => {
-      _e.defaultOptionList.indexOf(e) === -1 && console.warn("Invalid column definition option in '" + (this.field || this.definition.title) + "' column:", e);
+      Pe.defaultOptionList.indexOf(e) === -1 && console.warn("Invalid column definition option in '" + (this.field || this.definition.title) + "' column:", e);
     });
   }
   setField(e) {
@@ -1485,11 +1485,11 @@ const _e = class _e extends ee {
     return this.table.columnManager.getVisibleColumnsByIndex().indexOf(this) + 1;
   }
   getParentComponent() {
-    return this.parent instanceof _e ? this.parent.getComponent() : !1;
+    return this.parent instanceof Pe ? this.parent.getComponent() : !1;
   }
 };
-E(_e, "defaultOptionList", hi);
-let Ae = _e;
+E(Pe, "defaultOptionList", hi);
+let Oe = Pe;
 class ft {
   constructor(e) {
     return this._row = e, new Proxy(this, {
@@ -1801,7 +1801,7 @@ const Le = class Le extends _ {
     return e.classList.add("tabulator-calcs-holder"), e;
   }
   initialize() {
-    this.genColumn = new Ae({ field: "value" }, this), this.subscribe("cell-value-changed", this.cellValueChanged.bind(this)), this.subscribe("column-init", this.initializeColumnCheck.bind(this)), this.subscribe("row-deleted", this.rowsUpdated.bind(this)), this.subscribe("scroll-horizontal", this.scrollHorizontal.bind(this)), this.subscribe("row-added", this.rowsUpdated.bind(this)), this.subscribe("column-moved", this.recalcActiveRows.bind(this)), this.subscribe("column-add", this.recalcActiveRows.bind(this)), this.subscribe("data-refreshed", this.recalcActiveRowsRefresh.bind(this)), this.subscribe("table-redraw", this.tableRedraw.bind(this)), this.subscribe("rows-visible", this.visibleRows.bind(this)), this.subscribe("scrollbar-vertical", this.adjustForScrollbar.bind(this)), this.subscribe("redraw-blocked", this.blockRedraw.bind(this)), this.subscribe("redraw-restored", this.restoreRedraw.bind(this)), this.subscribe("table-redrawing", this.resizeHolderWidth.bind(this)), this.subscribe("column-resized", this.resizeHolderWidth.bind(this)), this.subscribe("column-show", this.resizeHolderWidth.bind(this)), this.subscribe("column-hide", this.resizeHolderWidth.bind(this)), this.registerTableFunction("getCalcResults", this.getResults.bind(this)), this.registerTableFunction("recalc", this.userRecalc.bind(this)), this.resizeHolderWidth();
+    this.genColumn = new Oe({ field: "value" }, this), this.subscribe("cell-value-changed", this.cellValueChanged.bind(this)), this.subscribe("column-init", this.initializeColumnCheck.bind(this)), this.subscribe("row-deleted", this.rowsUpdated.bind(this)), this.subscribe("scroll-horizontal", this.scrollHorizontal.bind(this)), this.subscribe("row-added", this.rowsUpdated.bind(this)), this.subscribe("column-moved", this.recalcActiveRows.bind(this)), this.subscribe("column-add", this.recalcActiveRows.bind(this)), this.subscribe("data-refreshed", this.recalcActiveRowsRefresh.bind(this)), this.subscribe("table-redraw", this.tableRedraw.bind(this)), this.subscribe("rows-visible", this.visibleRows.bind(this)), this.subscribe("scrollbar-vertical", this.adjustForScrollbar.bind(this)), this.subscribe("redraw-blocked", this.blockRedraw.bind(this)), this.subscribe("redraw-restored", this.restoreRedraw.bind(this)), this.subscribe("table-redrawing", this.resizeHolderWidth.bind(this)), this.subscribe("column-resized", this.resizeHolderWidth.bind(this)), this.subscribe("column-show", this.resizeHolderWidth.bind(this)), this.subscribe("column-hide", this.resizeHolderWidth.bind(this)), this.registerTableFunction("getCalcResults", this.getResults.bind(this)), this.registerTableFunction("recalc", this.userRecalc.bind(this)), this.resizeHolderWidth();
   }
   resizeHolderWidth() {
     this.topElement.style.minWidth = this.table.columnManager.headersElement.offsetWidth + "px";
@@ -5677,7 +5677,7 @@ class mi extends _ {
   }
   dispatchEvent(e, t, i) {
     var s = i.getComponent(), n;
-    this.columnSubscribers[e] && (i instanceof et ? n = i.column.definition[e] : i instanceof Ae && (n = i.definition[e]), n && n(t, s)), this.dispatchExternal(e, t, s);
+    this.columnSubscribers[e] && (i instanceof et ? n = i.column.definition[e] : i instanceof Oe && (n = i.definition[e]), n && n(t, s)), this.dispatchExternal(e, t, s);
   }
 }
 E(mi, "moduleName", "interaction");
@@ -5962,7 +5962,7 @@ var vn = {
     return e ? (this.table.addRow(l.getData(), void 0, e), e.delete(), !0) : !1;
   }
 };
-const Pe = class Pe extends _ {
+const He = class He extends _ {
   constructor(e) {
     super(e), this.placeholderElement = this.createPlaceholderElement(), this.hoverElement = !1, this.checkTimeout = !1, this.checkPeriod = 150, this.moving = !1, this.toRow = !1, this.toRowAfter = !1, this.hasHandle = !1, this.startY = 0, this.startX = 0, this.moveHover = this.moveHover.bind(this), this.endMove = this.endMove.bind(this), this.tableRowDropEvent = !1, this.touchMove = !1, this.connection = !1, this.connectionSelectorsTables = !1, this.connectionSelectorsElements = !1, this.connectionElements = [], this.connections = [], this.connectedTable = !1, this.connectedRow = !1, this.registerTableOption("movableRows", !1), this.registerTableOption("movableRowsConnectedTables", !1), this.registerTableOption("movableRowsConnectedElements", !1), this.registerTableOption("movableRowsSender", !1), this.registerTableOption("movableRowsReceiver", "insert"), this.registerColumnOption("rowHandle");
   }
@@ -6100,7 +6100,7 @@ const Pe = class Pe extends _ {
     if (i) {
       switch (typeof this.table.options.movableRowsSender) {
         case "string":
-          s = Pe.senders[this.table.options.movableRowsSender];
+          s = He.senders[this.table.options.movableRowsSender];
           break;
         case "function":
           s = this.table.options.movableRowsSender;
@@ -6115,7 +6115,7 @@ const Pe = class Pe extends _ {
     var i = !1, s = !1;
     switch (e.stopImmediatePropagation(), typeof this.table.options.movableRowsReceiver) {
       case "string":
-        i = Pe.receivers[this.table.options.movableRowsReceiver];
+        i = He.receivers[this.table.options.movableRowsReceiver];
         break;
       case "function":
         i = this.table.options.movableRowsReceiver;
@@ -6137,9 +6137,9 @@ const Pe = class Pe extends _ {
     }
   }
 };
-E(Pe, "moduleName", "moveRow"), //load defaults
-E(Pe, "senders", vn), E(Pe, "receivers", wn);
-let Pt = Pe;
+E(He, "moduleName", "moveRow"), //load defaults
+E(He, "senders", vn), E(He, "receivers", wn);
+let Pt = He;
 var Cn = {};
 const Ge = class Ge extends _ {
   constructor(e) {
@@ -8183,7 +8183,7 @@ var qn = {
   exists: $n,
   alphanum: Un
 };
-const He = class He extends _ {
+const Ae = class Ae extends _ {
   constructor(e) {
     super(e), this.sortList = [], this.changed = !1, this.registerTableOption("sortMode", "local"), this.registerTableOption("initialSort", !1), this.registerTableOption("columnHeaderSortMulti", !0), this.registerTableOption("sortOrderReverse", !1), this.registerTableOption("headerSortElement", "<div class='tabulator-arrow'></div>"), this.registerTableOption("headerSortClickElement", "header"), this.registerColumnOption("sorter"), this.registerColumnOption("sorterParams"), this.registerColumnOption("headerSort", !0), this.registerColumnOption("headerSortStartingDir"), this.registerColumnOption("headerSortTristate");
   }
@@ -8216,7 +8216,7 @@ const He = class He extends _ {
     var t = !1, i, s;
     switch (typeof e.definition.sorter) {
       case "string":
-        He.sorters[e.definition.sorter] ? t = He.sorters[e.definition.sorter] : console.warn("Sort Error - No such sorter found: ", e.definition.sorter);
+        Ae.sorters[e.definition.sorter] ? t = Ae.sorters[e.definition.sorter] : console.warn("Sort Error - No such sorter found: ", e.definition.sorter);
         break;
       case "function":
         t = e.definition.sorter;
@@ -8314,7 +8314,7 @@ const He = class He extends _ {
           !isNaN(n) && n !== "" ? i = "number" : n.match(/((^[0-9]+[a-z]+)|(^[a-z]+[0-9]+))+$/i) && (i = "alphanum");
           break;
       }
-    return He.sorters[i];
+    return Ae.sorters[i];
   }
   //work through sort list sorting data
   sort(e, t) {
@@ -8363,9 +8363,9 @@ const He = class He extends _ {
     return e = i.getFieldValue(a.getData()), t = i.getFieldValue(h.getData()), e = typeof e < "u" ? e : "", t = typeof t < "u" ? t : "", o = a.getComponent(), r = h.getComponent(), i.modules.sort.sorter.call(this, e, t, o, r, i.getComponent(), s, n);
   }
 };
-E(He, "moduleName", "sort"), //load defaults
-E(He, "sorters", qn);
-let Nt = He;
+E(Ae, "moduleName", "sort"), //load defaults
+E(Ae, "sorters", qn);
+let Nt = Ae;
 class Kn {
   constructor(e, t) {
     this.columnCount = e, this.rowCount = t, this.columnString = [], this.columns = [], this.rows = [];
@@ -9419,12 +9419,12 @@ class Zn extends ee {
   }
   setColumns(e, t) {
     for (; this.headersElement.firstChild; ) this.headersElement.removeChild(this.headersElement.firstChild);
-    this.columns = [], this.columnsByIndex = [], this.columnsByField = {}, this.dispatch("columns-loading"), this.dispatchExternal("columnsLoading"), this.table.options.rowHeader && (this.rowHeader = new Ae(this.table.options.rowHeader === !0 ? {} : this.table.options.rowHeader, this, !0), this.columns.push(this.rowHeader), this.headersElement.appendChild(this.rowHeader.getElement()), this.rowHeader.columnRendered()), e.forEach((i, s) => {
+    this.columns = [], this.columnsByIndex = [], this.columnsByField = {}, this.dispatch("columns-loading"), this.dispatchExternal("columnsLoading"), this.table.options.rowHeader && (this.rowHeader = new Oe(this.table.options.rowHeader === !0 ? {} : this.table.options.rowHeader, this, !0), this.columns.push(this.rowHeader), this.headersElement.appendChild(this.rowHeader.getElement()), this.rowHeader.columnRendered()), e.forEach((i, s) => {
       this._addColumn(i);
     }), this._reIndexColumns(), this.dispatch("columns-loaded"), this.subscribedExternal("columnsLoaded") && this.dispatchExternal("columnsLoaded", this.getComponents()), this.rerenderColumns(!1, !0), this.redraw(!0);
   }
   _addColumn(e, t, i) {
-    var s = new Ae(e, this), n = s.getElement(), o = i && this.findColumnIndex(i);
+    var s = new Oe(e, this), n = s.getElement(), o = i && this.findColumnIndex(i);
     if (t && this.rowHeader && (!i || i === this.rowHeader) && (t = !1, i = this.rowHeader, o = 0), i && o > -1) {
       var r = i.getTopColumn(), a = this.columns.indexOf(r), h = r.getElement();
       t ? (this.columns.splice(a, 0, s), h.parentNode.insertBefore(n, h)) : (this.columns.splice(a + 1, 0, s), h.parentNode.insertBefore(n, h.nextSibling));
@@ -9459,7 +9459,7 @@ class Zn extends ee {
   findColumn(e) {
     var t;
     if (typeof e == "object") {
-      if (e instanceof Ae)
+      if (e instanceof Oe)
         return e;
       if (e instanceof li)
         return e._getSelf() || !1;
@@ -11317,12 +11317,12 @@ function Co(l) {
       console.error("❌ Error creating Tabulator:", o);
     }
   }
-  return Oe([() => l.isSuccess.value, e], async ([o, r]) => {
+  return Be([() => l.isSuccess.value, e], async ([o, r]) => {
     var a;
     console.log("👀 Watch triggered - isSuccess:", o, "divRef:", !!r, "isTableInitialized:", s.value), o && r && !s.value && (await ct(), r.offsetParent !== null ? (console.log("🎯 Conditions met, initializing table with", (a = l.data.value) == null ? void 0 : a.length, "rows"), n()) : (console.log("⏸️ Element not visible yet, will retry"), setTimeout(() => {
       r.offsetParent !== null && !s.value && (console.log("🚀 Initializing after visibility check"), n());
     }, 100)));
-  }, { immediate: !0 }), Oe(() => l.data.value, async (o) => {
+  }, { immediate: !0 }), Be(() => l.data.value, async (o) => {
     if (!(!t.value || !o)) {
       console.log("🔄 Data changed, updating table with", o.length, "rows");
       try {
@@ -11356,7 +11356,7 @@ function yo(l) {
       i.value = !1;
     }
   };
-  return Oe(
+  return Be(
     l,
     (r) => {
       r && r > 0 ? (console.log(`🎯 Conid changed to: ${r}, fetching price...`), n(r)) : (console.log("⚠️ No valid conid available yet"), t.value = null, s.value = null);
@@ -11481,7 +11481,7 @@ function Eo(l, e) {
       u.value = !1;
     }
   };
-  return Oe(
+  return Be(
     () => l.value,
     () => {
       l.value && l.value.length > 0 && e ? f() : i.value = null;
@@ -11566,7 +11566,7 @@ function Ro(l, e, t, i = B(void 0), s = B(void 0)) {
     } else
       return console.log("📊 No stock positions, calculating OPTIONS P&L"), c();
   });
-  return Oe(
+  return Be(
     p,
     (f) => {
       f ? "totalShares" in f ? (n.value = f.totalCostBasis, o.value = f.currentMarketValue, r.value = f.unrealizedPnL, a.value = f.pnlPercentage, h.value = f.unrealizedPnL >= 0, console.log("💰 STOCK P&L Calculation:"), console.log(`   Total Shares: ${f.totalShares.toLocaleString()}`), console.log(`   Avg Cost per Share: $${f.avgCostPerShare.toFixed(2)}`), console.log(`   Total Cost Basis: $${f.totalCostBasis.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`), console.log(`   Current Price per Share: $${f.currentPricePerShare.toFixed(2)}`), console.log(`   Current Market Value: $${f.currentMarketValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`), console.log(`   Unrealized P&L: ${f.unrealizedPnL >= 0 ? "+" : ""}$${f.unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`), console.log(`   P&L Percentage: ${f.pnlPercentage.toFixed(2)}%`)) : (n.value = f.totalPremiumReceived, o.value = f.currentMarketLiability, r.value = f.unrealizedPnL, a.value = f.pnlPercentage, h.value = f.unrealizedPnL >= 0, console.log("💰 OPTIONS P&L Updated:"), console.log(`   Total Contracts: ${f.totalContracts}`), console.log(`   ${f.positionType} ${f.optionType}`), console.log(`   Premium Received: $${f.totalPremiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`), console.log(`   Current Liability: $${f.currentMarketLiability.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`), console.log(`   Unrealized P&L: ${f.unrealizedPnL >= 0 ? "+" : ""}$${f.unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`), console.log(`   P&L Percentage: ${f.pnlPercentage.toFixed(2)}%`)) : (n.value = null, o.value = null, r.value = null, a.value = null, h.value = !1, console.log("⚠️ P&L Calculation: Missing required data"));
@@ -11711,53 +11711,53 @@ const ko = { class: "current-positions-for-single-instrument-view" }, Mo = { cla
 }, Ao = {
   key: 2,
   class: "summary-value-container-vertical"
-}, Oo = { key: 0 }, Bo = { class: "pnl-percentage" }, Vo = { key: 1 }, No = { class: "toggle-icon" }, Io = { class: "summary-card highlight-1 card-green" }, Wo = { class: "summary-value-container" }, Go = { class: "summary-value" }, jo = { class: "accounts-count" }, $o = { class: "summary-card card-purple" }, Uo = { class: "summary-label" }, qo = {
+}, Oo = { key: 0 }, Bo = { class: "pnl-percentage" }, Vo = { key: 1 }, No = { class: "toggle-icon" }, Io = { class: "summary-card highlight-1 card-green" }, Wo = { class: "summary-value-container" }, Go = { class: "summary-value" }, jo = { class: "accounts-count" }, $o = { class: "toggle-icon" }, Uo = { class: "summary-card card-purple" }, qo = { class: "summary-label" }, Ko = {
   key: 0,
   class: "summary-value"
-}, Ko = {
+}, Xo = {
   key: 1,
   class: "summary-value error"
-}, Xo = {
+}, Jo = {
   key: 2,
   class: "summary-value-container-vertical"
-}, Jo = { class: "summary-value" }, Yo = {
+}, Yo = { class: "summary-value" }, Qo = {
   key: 0,
   class: "timestamp-info"
-}, Qo = {
+}, Zo = {
   key: 3,
   class: "summary-value"
-}, Zo = { class: "summary-card card-orange" }, er = { class: "summary-label" }, tr = {
+}, er = { class: "summary-card card-orange" }, tr = { class: "summary-label" }, ir = {
   key: 0,
   class: "summary-value"
-}, ir = {
+}, sr = {
   key: 1,
   class: "summary-value error"
-}, sr = { class: "summary-value-container-vertical" }, nr = { key: 0 }, or = { key: 1 }, rr = { class: "toggle-icon" }, ar = { class: "table-wrapper" }, lr = { class: "calculation-details" }, hr = ["onClick"], ur = { class: "toggle-icon" }, dr = { class: "group-content" }, cr = { class: "position-line main-position" }, fr = { class: "position-symbol" }, pr = { class: "position-calc" }, mr = {
+}, nr = { class: "summary-value-container-vertical" }, or = { key: 0 }, rr = { key: 1 }, ar = { class: "toggle-icon" }, lr = { class: "table-wrapper" }, hr = { class: "calculation-details" }, ur = ["onClick"], dr = { class: "toggle-icon" }, cr = { class: "group-content" }, fr = { class: "position-line main-position" }, pr = { class: "position-symbol" }, mr = { class: "position-calc" }, gr = {
   key: 0,
   class: "call-positions-wrapper"
-}, gr = { class: "position-symbol" }, br = { class: "position-calc" }, vr = { class: "call-subtotal" }, wr = {
+}, br = { class: "position-symbol" }, vr = { class: "position-calc" }, wr = { class: "call-subtotal" }, Cr = {
   key: 1,
   class: "put-positions-wrapper"
-}, Cr = { class: "position-symbol" }, yr = { class: "position-calc" }, Er = { class: "group-calculation" }, Rr = { class: "calc-line indent" }, xr = { class: "calc-line indent" }, Tr = {
+}, yr = { class: "position-symbol" }, Er = { class: "position-calc" }, Rr = { class: "group-calculation" }, xr = { class: "calc-line indent" }, Tr = { class: "calc-line indent" }, kr = {
   key: 0,
   class: "overall-adjusted-section"
-}, kr = { class: "overall-adjusted-header" }, Mr = { class: "overall-calculation-breakdown" }, Lr = { class: "breakdown-line" }, Sr = { class: "breakdown-line" }, Dr = { class: "breakdown-line" }, Fr = { class: "pnl-details" }, zr = {
+}, Mr = { class: "overall-adjusted-header" }, Lr = { class: "overall-calculation-breakdown" }, Sr = { class: "breakdown-line" }, Dr = { class: "breakdown-line" }, Fr = { class: "breakdown-line" }, zr = { class: "pnl-details" }, _r = {
   key: 0,
   class: "pnl-breakdown"
-}, _r = { class: "pnl-section" }, Pr = { class: "calc-line" }, Hr = { class: "calc-line" }, Ar = { class: "calc-line calculation-result" }, Or = { class: "pnl-section" }, Br = { class: "calc-line" }, Vr = { class: "calc-line calculation-result" }, Nr = { class: "pnl-section highlight-section" }, Ir = { class: "calc-line" }, Wr = { class: "calc-line" }, Gr = {
+}, Pr = { class: "pnl-section" }, Hr = { class: "calc-line" }, Ar = { class: "calc-line" }, Or = { class: "calc-line calculation-result" }, Br = { class: "pnl-section" }, Vr = { class: "calc-line" }, Nr = { class: "calc-line calculation-result" }, Ir = { class: "pnl-section highlight-section" }, Wr = { class: "calc-line" }, Gr = { class: "calc-line" }, jr = {
   key: 1,
   class: "pnl-breakdown"
-}, jr = { class: "pnl-section" }, $r = { class: "pnl-section-title" }, Ur = { class: "calc-line" }, qr = { class: "calc-line" }, Kr = { class: "pnl-section-title" }, Xr = { class: "calc-line" }, Jr = { class: "calc-line" }, Yr = { class: "calc-line" }, Qr = { class: "calc-line calculation-result" }, Zr = { class: "pnl-section highlight-section" }, ea = { class: "calc-line" }, ta = { class: "calc-line calculation-result" }, ia = {
+}, $r = { class: "pnl-section" }, Ur = { class: "pnl-section-title" }, qr = { class: "calc-line" }, Kr = { class: "calc-line" }, Xr = { class: "pnl-section-title" }, Jr = { class: "calc-line" }, Yr = { class: "calc-line" }, Qr = { class: "calc-line" }, Zr = { class: "calc-line calculation-result" }, ea = { class: "pnl-section highlight-section" }, ta = { class: "calc-line" }, ia = { class: "calc-line calculation-result" }, sa = {
   class: "calc-line",
   style: { "margin-top": "1rem" }
-}, sa = { class: "calc-line calculation-result" }, na = {
+}, na = { class: "calc-line calculation-result" }, oa = {
   class: "calc-line",
   style: { "margin-top": "1rem" }
-}, oa = { class: "calc-line" }, ra = {
+}, ra = { class: "calc-line" }, aa = {
   key: 0,
   class: "calc-line",
   style: { "margin-top": "1rem", color: "#dc3545", "font-weight": "bold" }
-}, aa = /* @__PURE__ */ Vi({
+}, la = /* @__PURE__ */ Vi({
   __name: "CurrentPositions",
   props: {
     symbolRoot: { default: "MSFT" },
@@ -12263,9 +12263,9 @@ const ko = { class: "current-positions-for-single-instrument-view" }, Mo = { cla
     function _i() {
       s.value = !s.value;
     }
-    return Oe(Y, async (y) => {
+    return Be(Y, async (y) => {
       console.log("👀 Mappings ready state changed:", y), y && qe.value && bt.value && (console.log("🔄 Redrawing table with mappings"), qe.value.redraw(!0));
-    }, { immediate: !0 }), Oe(t, async (y) => {
+    }, { immediate: !0 }), Be(t, async (y) => {
       y && !bt.value && r.value && r.value.length > 0 && (console.log("📊 Details shown via watch, initializing table..."), await ct(), ei());
     }), Ni(() => {
       console.log("📊 CurrentPositions component mounted");
@@ -12288,14 +12288,14 @@ const ko = { class: "current-positions-for-single-instrument-view" }, Mo = { cla
                   v[2] || (v[2] = w("div", { class: "summary-label" }, "Profit and Loss", -1)),
                   R($e) ? (W(), I("div", Po, [...v[1] || (v[1] = [
                     w("span", { class: "loading-spinner" }, "⏳", -1),
-                    Be(" Loading... ", -1)
+                    _e(" Loading... ", -1)
                   ])])) : R(it) ? (W(), I("div", Ho, " ❌ Error ")) : (W(), I("div", Ao, [
                     w("div", {
                       class: Ve(["summary-value clickable-price pnl-value", { profit: R(le), loss: !R(le) }]),
                       onClick: _i
                     }, [
                       R(ne) !== null ? (W(), I("span", Oo, [
-                        Be(C(R(ne) >= 0 ? "+" : "") + "$" + C(R(ne).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ", 1),
+                        _e(C(R(ne) >= 0 ? "+" : "") + "$" + C(R(ne).toLocaleString(void 0, { minimumFractionDigits: 0, maximumFractionDigits: 0 })) + " ", 1),
                         w("span", Bo, "(" + C((z = R(tt)) == null ? void 0 : z.toFixed(2)) + "%)", 1)
                       ])) : (W(), I("span", Vo, "N/A")),
                       w("span", No, C(s.value ? "▼" : "▶"), 1)
@@ -12312,40 +12312,43 @@ const ko = { class: "current-positions-for-single-instrument-view" }, Mo = { cla
                         title: "Show positions table for all accounts",
                         onClick: Ii(Fi, ["stop"]),
                         style: { cursor: "pointer", color: "#0d6efd" }
-                      }, " (" + C(((M = R(r)) == null ? void 0 : M.length) || 0) + ") ", 1)
+                      }, [
+                        _e(" (" + C(((M = R(r)) == null ? void 0 : M.length) || 0) + ") ", 1),
+                        w("span", $o, C(t.value ? "▼" : "▶"), 1)
+                      ])
                     ])
                   ])
                 ]),
-                w("div", $o, [
-                  w("div", Uo, "Current market price of " + C(e.symbolRoot), 1),
-                  R(g) ? (W(), I("div", qo, [...v[4] || (v[4] = [
+                w("div", Uo, [
+                  w("div", qo, "Current market price of " + C(e.symbolRoot), 1),
+                  R(g) ? (W(), I("div", Ko, [...v[4] || (v[4] = [
                     w("span", { class: "loading-spinner" }, "⏳", -1),
-                    Be(" Loading... ", -1)
-                  ])])) : R(T) ? (W(), I("div", Ko, " ❌ Error ")) : S.value !== null ? (W(), I("div", Xo, [
-                    w("div", Jo, " $" + C(S.value.toFixed(2)), 1),
-                    k.value ? (W(), I("div", Yo, " Updated: " + C(k.value), 1)) : ke("", !0)
-                  ])) : (W(), I("div", Qo, " N/A "))
+                    _e(" Loading... ", -1)
+                  ])])) : R(T) ? (W(), I("div", Xo, " ❌ Error ")) : S.value !== null ? (W(), I("div", Jo, [
+                    w("div", Yo, " $" + C(S.value.toFixed(2)), 1),
+                    k.value ? (W(), I("div", Qo, " Updated: " + C(k.value), 1)) : ke("", !0)
+                  ])) : (W(), I("div", Zo, " N/A "))
                 ]),
-                w("div", Zo, [
-                  w("div", er, "Adjusted average cost price of " + C(e.symbolRoot) + " per share", 1),
-                  R(K) ? (W(), I("div", tr, [...v[5] || (v[5] = [
+                w("div", er, [
+                  w("div", tr, "Adjusted average cost price of " + C(e.symbolRoot) + " per share", 1),
+                  R(K) ? (W(), I("div", ir, [...v[5] || (v[5] = [
                     w("span", { class: "loading-spinner" }, "⏳", -1),
-                    Be(" Loading... ", -1)
-                  ])])) : R(J) ? (W(), I("div", ir, " ❌ Error ")) : ke("", !0),
-                  w("div", sr, [
+                    _e(" Loading... ", -1)
+                  ])])) : R(J) ? (W(), I("div", sr, " ❌ Error ")) : ke("", !0),
+                  w("div", nr, [
                     w("div", {
                       class: "summary-value average-cost-price clickable-price",
                       onClick: zi
                     }, [
-                      R(O) !== null ? (W(), I("span", nr, " $" + C(R(O).toFixed(2)), 1)) : (W(), I("span", or, "N/A")),
-                      w("span", rr, C(i.value ? "▼" : "▶"), 1)
+                      R(O) !== null ? (W(), I("span", or, " $" + C(R(O).toFixed(2)), 1)) : (W(), I("span", rr, "N/A")),
+                      w("span", ar, C(i.value ? "▼" : "▶"), 1)
                     ])
                   ])
                 ])
               ]),
               st(nt, { name: "slide-fade" }, {
                 default: ot(() => [
-                  rt(w("div", ar, [
+                  rt(w("div", lr, [
                     w("div", {
                       ref_key: "tableDiv",
                       ref: Di
@@ -12358,7 +12361,7 @@ const ko = { class: "current-positions-for-single-instrument-view" }, Mo = { cla
               }),
               st(nt, { name: "slide-fade" }, {
                 default: ot(() => [
-                  rt(w("div", lr, [
+                  rt(w("div", hr, [
                     v[12] || (v[12] = w("h2", null, "Average Price calculation details :", -1)),
                     (W(!0), I(lt, null, ht(R(Q), (x, V) => (W(), I("div", {
                       key: `group-${V}`,
@@ -12368,47 +12371,47 @@ const ko = { class: "current-positions-for-single-instrument-view" }, Mo = { cla
                         class: "group-header clickable",
                         onClick: (G) => o(V)
                       }, [
-                        w("span", ur, C(n.value.has(V) ? "▼" : "▶"), 1),
-                        Be(" Client " + C(V + 1) + ": " + C(x.mainPosition.account), 1)
-                      ], 8, hr),
+                        w("span", dr, C(n.value.has(V) ? "▼" : "▶"), 1),
+                        _e(" Client " + C(V + 1) + ": " + C(x.mainPosition.account), 1)
+                      ], 8, ur),
                       st(nt, { name: "slide-fade" }, {
                         default: ot(() => [
-                          rt(w("div", dr, [
-                            w("div", cr, [
+                          rt(w("div", cr, [
+                            w("div", fr, [
                               v[6] || (v[6] = w("span", { class: "position-icon" }, "📍", -1)),
-                              w("span", fr, C(x.mainPosition.symbol), 1),
-                              w("span", pr, "@ $" + C(x.mainPosition.avgPrice.toFixed(2)) + " × " + C(x.mainPosition.quantity.toLocaleString()) + " = $" + C(x.mainPosition.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                              w("span", pr, C(x.mainPosition.symbol), 1),
+                              w("span", mr, "@ $" + C(x.mainPosition.avgPrice.toFixed(2)) + " × " + C(x.mainPosition.quantity.toLocaleString()) + " = $" + C(x.mainPosition.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                             ]),
-                            x.callPositions.length > 0 ? (W(), I("div", mr, [
+                            x.callPositions.length > 0 ? (W(), I("div", gr, [
                               v[8] || (v[8] = w("div", { class: "call-header" }, "📞 Call Positions (subtract from cost)", -1)),
                               (W(!0), I(lt, null, ht(x.callPositions, (G, q) => (W(), I("div", {
                                 key: `call-${V}-${q}`,
                                 class: "position-line call-position"
                               }, [
                                 v[7] || (v[7] = w("span", { class: "position-icon" }, null, -1)),
-                                w("span", gr, C(G.symbol), 1),
-                                w("span", br, "@ $" + C(G.avgPrice.toFixed(2)) + " × " + C(G.quantity.toLocaleString()) + " = $" + C(G.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                w("span", br, C(G.symbol), 1),
+                                w("span", vr, "@ $" + C(G.avgPrice.toFixed(2)) + " × " + C(G.quantity.toLocaleString()) + " = $" + C(G.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                               ]))), 128)),
-                              w("div", vr, " Subtotal Calls: $" + C(Math.abs(x.callPositionsTotalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                              w("div", wr, " Subtotal Calls: $" + C(Math.abs(x.callPositionsTotalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                             ])) : ke("", !0),
-                            x.putPositions.length > 0 ? (W(), I("div", wr, [
+                            x.putPositions.length > 0 ? (W(), I("div", Cr, [
                               v[10] || (v[10] = w("div", { class: "put-header" }, "📉 Put Positions (display only, not in calculation)", -1)),
                               (W(!0), I(lt, null, ht(x.putPositions, (G, q) => (W(), I("div", {
                                 key: `put-${V}-${q}`,
                                 class: "position-line put-position"
                               }, [
                                 v[9] || (v[9] = w("span", { class: "position-icon" }, "📉", -1)),
-                                w("span", Cr, C(G.symbol), 1),
-                                w("span", yr, "@ $" + C(G.avgPrice.toFixed(2)) + " × " + C(G.quantity.toLocaleString()) + " = $" + C(G.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                w("span", yr, C(G.symbol), 1),
+                                w("span", Er, "@ $" + C(G.avgPrice.toFixed(2)) + " × " + C(G.quantity.toLocaleString()) + " = $" + C(G.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                               ]))), 128))
                             ])) : ke("", !0),
-                            w("div", Er, [
+                            w("div", Rr, [
                               v[11] || (v[11] = w("div", { class: "calc-line" }, [
-                                Be("📊 "),
+                                _e("📊 "),
                                 w("strong", null, "Calculation:")
                               ], -1)),
-                              w("div", Rr, "Net Cost = $" + C(x.mainPosition.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + C(Math.abs(x.callPositionsTotalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " = $" + C(x.netCostExcludingPuts.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
-                              w("div", xr, [
+                              w("div", xr, "Net Cost = $" + C(x.mainPosition.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + C(Math.abs(x.callPositionsTotalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " = $" + C(x.netCostExcludingPuts.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
+                              w("div", Tr, [
                                 w("strong", null, "Adjusted Avg Price = $" + C(x.netCostExcludingPuts.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ÷ " + C(x.mainPosition.quantity.toLocaleString()) + " = $" + C(x.adjustedAvgPricePerShare.toFixed(2)) + " per share", 1)
                               ])
                             ])
@@ -12419,12 +12422,12 @@ const ko = { class: "current-positions-for-single-instrument-view" }, Mo = { cla
                         _: 2
                       }, 1024)
                     ]))), 128)),
-                    R(O) !== null ? (W(), I("div", Tr, [
-                      w("div", kr, " 🎯 Overall Adjusted Average: $" + C(R(O).toFixed(2)) + " per share ", 1),
-                      w("div", Mr, [
-                        w("div", Lr, "Total Net Cost = " + C(R(Q).map((x, V) => `$${x.netCostExcludingPuts.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")) + " = $" + C(ve.value.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
-                        w("div", Sr, "Total Main Qty = " + C(R(Q).map((x) => x.mainPosition.quantity.toLocaleString()).join(" + ")) + " = " + C(Ee.value.toLocaleString()), 1),
-                        w("div", Dr, [
+                    R(O) !== null ? (W(), I("div", kr, [
+                      w("div", Mr, " 🎯 Overall Adjusted Average: $" + C(R(O).toFixed(2)) + " per share ", 1),
+                      w("div", Lr, [
+                        w("div", Sr, "Total Net Cost = " + C(R(Q).map((x, V) => `$${x.netCostExcludingPuts.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")) + " = $" + C(ve.value.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
+                        w("div", Dr, "Total Main Qty = " + C(R(Q).map((x) => x.mainPosition.quantity.toLocaleString()).join(" + ")) + " = " + C(Ee.value.toLocaleString()), 1),
+                        w("div", Fr, [
                           w("strong", null, "Overall Adjusted Average = $" + C(ve.value.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ÷ " + C(Ee.value.toLocaleString()) + " = $" + C(R(O).toFixed(2)), 1)
                         ])
                       ])
@@ -12437,79 +12440,79 @@ const ko = { class: "current-positions-for-single-instrument-view" }, Mo = { cla
               }),
               st(nt, { name: "slide-fade" }, {
                 default: ot(() => [
-                  rt(w("div", Fr, [
+                  rt(w("div", zr, [
                     v[17] || (v[17] = w("h2", null, "Profit & Loss Calculation Details:", -1)),
-                    R(H) && Z.value === "STK" ? (W(), I("div", zr, [
-                      w("div", _r, [
+                    R(H) && Z.value === "STK" ? (W(), I("div", _r, [
+                      w("div", Pr, [
                         v[13] || (v[13] = w("div", { class: "pnl-section-title" }, "📊 Total Cost Basis", -1)),
-                        w("div", Pr, " Total Shares = " + C(R(H).totalShares.toLocaleString()), 1),
-                        w("div", Hr, " Average Cost per Share = $" + C(R(H).avgCostPerShare.toFixed(2)), 1),
-                        w("div", Ar, [
+                        w("div", Hr, " Total Shares = " + C(R(H).totalShares.toLocaleString()), 1),
+                        w("div", Ar, " Average Cost per Share = $" + C(R(H).avgCostPerShare.toFixed(2)), 1),
+                        w("div", Or, [
                           w("strong", null, "Total Cost Basis = " + C(R(H).totalShares.toLocaleString()) + " × $" + C(R(H).avgCostPerShare.toFixed(2)) + " = $" + C(R(H).totalCostBasis.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ])
                       ]),
-                      w("div", Or, [
+                      w("div", Br, [
                         v[14] || (v[14] = w("div", { class: "pnl-section-title" }, "💰 Current Market Value", -1)),
-                        w("div", Br, " Current Price per Share = $" + C(R(H).currentPricePerShare.toFixed(2)), 1),
-                        w("div", Vr, [
+                        w("div", Vr, " Current Price per Share = $" + C(R(H).currentPricePerShare.toFixed(2)), 1),
+                        w("div", Nr, [
                           w("strong", null, "Current Market Value = " + C(R(H).totalShares.toLocaleString()) + " × $" + C(R(H).currentPricePerShare.toFixed(2)) + " = $" + C(R(H).currentMarketValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ])
                       ]),
-                      w("div", Nr, [
+                      w("div", Ir, [
                         v[15] || (v[15] = w("div", { class: "pnl-section-title" }, "🎯 Unrealized Profit & Loss", -1)),
-                        w("div", Ir, [
+                        w("div", Wr, [
                           w("strong", {
                             class: Ve({ "profit-text": R(le), "loss-text": !R(le) })
                           }, " Unrealized P&L = $" + C(R(H).currentMarketValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + C(R(H).totalCostBasis.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " = " + C(R(ne) && R(ne) >= 0 ? "+" : "") + "$" + C(R(H).unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 3)
                         ]),
-                        w("div", Wr, [
+                        w("div", Gr, [
                           w("strong", {
                             class: Ve({ "profit-text": R(le), "loss-text": !R(le) })
                           }, " P&L Percentage = (" + C(R(ne) && R(ne) >= 0 ? "+" : "") + "$" + C(R(H).unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ÷ $" + C(R(H).totalCostBasis.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + ") × 100 = " + C(R(H).pnlPercentage.toFixed(2)) + "% ", 3)
                         ])
                       ])
                     ])) : ke("", !0),
-                    R(H) && Z.value === "OPT" ? (W(), I("div", Gr, [
-                      w("div", jr, [
-                        w("div", $r, "📊 SHORT " + C(R(H).optionType) + " OPTIONS SUMMARY", 1),
-                        w("div", Ur, " Total Contracts: " + C(R(H).totalContracts.toLocaleString()), 1),
-                        w("div", qr, " Position Type: " + C(R(H).positionType), 1)
+                    R(H) && Z.value === "OPT" ? (W(), I("div", jr, [
+                      w("div", $r, [
+                        w("div", Ur, "📊 SHORT " + C(R(H).optionType) + " OPTIONS SUMMARY", 1),
+                        w("div", qr, " Total Contracts: " + C(R(H).totalContracts.toLocaleString()), 1),
+                        w("div", Kr, " Position Type: " + C(R(H).positionType), 1)
                       ]),
                       (W(!0), I(lt, null, ht(R(H).positions, (x, V) => (W(), I("div", {
                         key: `pos-${V}`,
                         class: "pnl-section"
                       }, [
-                        w("div", Kr, "Position " + C(V + 1) + ": " + C(x.account) + " - $" + C(x.strike) + " Strike (" + C(x.expiry) + ")", 1),
-                        w("div", Xr, " Contracts Sold: " + C(Math.abs(x.quantity).toLocaleString()), 1),
-                        w("div", Jr, " Premium Received: $" + C(x.premiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
-                        w("div", Yr, " Current Market Value: $" + C(x.currentValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
-                        w("div", Qr, [
+                        w("div", Xr, "Position " + C(V + 1) + ": " + C(x.account) + " - $" + C(x.strike) + " Strike (" + C(x.expiry) + ")", 1),
+                        w("div", Jr, " Contracts Sold: " + C(Math.abs(x.quantity).toLocaleString()), 1),
+                        w("div", Yr, " Premium Received: $" + C(x.premiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
+                        w("div", Qr, " Current Market Value: $" + C(x.currentValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
+                        w("div", Zr, [
                           w("strong", {
                             class: Ve({ "profit-text": x.positionPnL >= 0, "loss-text": x.positionPnL < 0 })
                           }, " P&L: " + C(x.positionPnL >= 0 ? "+" : "") + "$" + C(x.positionPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 3)
                         ])
                       ]))), 128)),
-                      w("div", Zr, [
+                      w("div", ea, [
                         v[16] || (v[16] = w("div", { class: "pnl-section-title" }, "💰 TOTAL CALCULATION", -1)),
-                        w("div", ea, " Total Premium Received = " + C(R(H).positions.map((x) => `$${x.premiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")), 1),
-                        w("div", ta, [
+                        w("div", ta, " Total Premium Received = " + C(R(H).positions.map((x) => `$${x.premiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")), 1),
+                        w("div", ia, [
                           w("strong", null, "= $" + C(R(H).totalPremiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ]),
-                        w("div", ia, " Current Market Liability = " + C(R(H).positions.map((x) => `$${x.currentValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")), 1),
-                        w("div", sa, [
-                          w("strong", null, "= $" + C(R(H).currentMarketLiability.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
-                        ]),
+                        w("div", sa, " Current Market Liability = " + C(R(H).positions.map((x) => `$${x.currentValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")), 1),
                         w("div", na, [
-                          w("strong", {
-                            class: Ve({ "profit-text": R(le), "loss-text": !R(le) })
-                          }, " Unrealized P&L = $" + C(R(H).totalPremiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + C(R(H).currentMarketLiability.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " = " + C(R(ne) && R(ne) >= 0 ? "+" : "") + "$" + C(R(H).unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 3)
+                          w("strong", null, "= $" + C(R(H).currentMarketLiability.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ]),
                         w("div", oa, [
                           w("strong", {
                             class: Ve({ "profit-text": R(le), "loss-text": !R(le) })
+                          }, " Unrealized P&L = $" + C(R(H).totalPremiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + C(R(H).currentMarketLiability.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " = " + C(R(ne) && R(ne) >= 0 ? "+" : "") + "$" + C(R(H).unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 3)
+                        ]),
+                        w("div", ra, [
+                          w("strong", {
+                            class: Ve({ "profit-text": R(le), "loss-text": !R(le) })
                           }, " P&L % = (" + C(R(ne) && R(ne) >= 0 ? "+" : "") + "$" + C(R(H).unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ÷ $" + C(R(H).totalPremiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + ") × 100 = " + C(R(H).pnlPercentage.toFixed(2)) + "% ", 3)
                         ]),
-                        R(H).pnlPercentage < -50 ? (W(), I("div", ra, " ⚠️ WARNING: Loss exceeds 50% of premium received! ")) : ke("", !0)
+                        R(H).pnlPercentage < -50 ? (W(), I("div", aa, " ⚠️ WARNING: Loss exceeds 50% of premium received! ")) : ke("", !0)
                       ])
                     ])) : ke("", !0)
                   ], 512), [
@@ -12524,13 +12527,13 @@ const ko = { class: "current-positions-for-single-instrument-view" }, Mo = { cla
       ]);
     };
   }
-}), la = (l, e) => {
+}), ha = (l, e) => {
   const t = l.__vccOpts || l;
   for (const [i, s] of e)
     t[i] = s;
   return t;
-}, pa = /* @__PURE__ */ la(aa, [["__scopeId", "data-v-8ddd4d9a"]]);
+}, ma = /* @__PURE__ */ ha(la, [["__scopeId", "data-v-08b165db"]]);
 export {
-  pa as currentPositions,
-  pa as default
+  ma as currentPositions,
+  ma as default
 };
