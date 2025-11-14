@@ -2,6 +2,8 @@
 import { computed, onMounted, onBeforeUnmount, ref, watch, nextTick } from 'vue'
 import type { ColumnDefinition } from 'tabulator-tables'
 import { useCurrentPositionQuery } from '@y2kfund/core/currentPositionsForSingleInstrument'
+import { usePutPositionsQuery } from '@y2kfund/core/putPositionsForSingleInstrument'
+import { useCallPositionsQuery } from '@y2kfund/core/callPositionsForSingleInstrument'
 import { useTabulator } from '../composables/useTabulator'
 import { useMarketPrice } from '../composables/useMarketPrice'
 import { useAverageCostPrice } from '../composables/useAverageCostPrice'
@@ -16,7 +18,7 @@ interface currentPositionsProps {
 }
 
 const props = withDefaults(defineProps<currentPositionsProps>(), {
-  symbolRoot: 'META',
+  symbolRoot: 'IBIT',
   userId: '4fbec15d-2316-4805-b2a4-5cd2115a5ac8'
 })
 
@@ -30,6 +32,12 @@ const { data: positions, isLoading, isError, error, isSuccess, _cleanup } = useC
   props.userId,
   props.symbolRoot
 )
+
+// Fetch PUT positions
+const { data: putPositions } = usePutPositionsQuery(props.symbolRoot, props.userId)
+
+// Fetch CALL positions
+const { data: callPositions } = useCallPositionsQuery(props.symbolRoot, props.userId)
 
 // Get conid from first position (convert string to number)
 const firstConid = computed(() => {
@@ -110,6 +118,30 @@ const {
   togglePositionExpansion: toggleExpansion
 } = usePositionExpansion()
 
+// Detect asset type (STK or OPT)
+const assetType = computed(() => {
+  // First check main positions (stocks)
+  if (positions.value && positions.value.length > 0) {
+    const firstAsset = positions.value[0]?.asset_class
+    console.log('👀 Asset type from positions:', firstAsset)
+    return firstAsset || null
+  }
+  
+  // If no stock positions, check if we have options positions
+  const hasPutPositions = putPositions.value && putPositions.value.length > 0
+  const hasCallPositions = callPositions.value && callPositions.value.length > 0
+  
+  if (hasPutPositions || hasCallPositions) {
+    const optionAsset = putPositions.value?.[0]?.asset_class || callPositions.value?.[0]?.asset_class
+    console.log('👀 Asset type from options:', optionAsset)
+    return optionAsset || 'OPT'
+  }
+  
+  console.log('👀 Asset type: null (no positions)')
+  return null
+})
+console.log('👀 Asset type detected:', assetType.value)
+
 // Calculate totals
 const totalContractQuantity = computed(() => {
   if (!positions.value || positions.value.length === 0) return 0
@@ -117,8 +149,19 @@ const totalContractQuantity = computed(() => {
 })
 
 const totalUnrealizedPL = computed(() => {
+  // For options, calculate from PUT and CALL positions
+  if (assetType.value === 'OPT') {
+    const putPnL = putPositions.value?.reduce((sum, pos) => sum + (pos.unrealized_pnl || 0), 0) || 0
+    const callPnL = callPositions.value?.reduce((sum, pos) => sum + (pos.unrealized_pnl || 0), 0) || 0
+    console.log('📊 Options Unrealized P&L - PUT:', putPnL, 'CALL:', callPnL, 'Total:', putPnL + callPnL)
+    return putPnL + callPnL
+  }
+  
+  // For stocks, calculate from positions
   if (!positions.value || positions.value.length === 0) return 0
-  return positions.value.reduce((sum, pos) => sum + (pos.unrealized_pnl || 0), 0)
+  const stockPnL = positions.value.reduce((sum, pos) => sum + (pos.unrealized_pnl || 0), 0)
+  console.log('📊 Stock Unrealized P&L:', stockPnL)
+  return stockPnL
 })
 
 // Computed values for overall calculation breakdown
@@ -130,7 +173,7 @@ const totalMainQuantityAllClients = computed(() => {
   return positionGroups.value.reduce((sum, g) => sum + g.mainPosition.quantity, 0)
 })
 
-// Fetch P&L data using the composable
+// Use single P&L composable that handles both stocks and options
 const {
   totalCostBasis,
   currentMarketValue,
@@ -143,7 +186,9 @@ const {
 } = useProfitAndLoss(
   overallAdjustedAvgPrice,
   totalMainQuantityAllClients,
-  currentMarketPrice
+  currentMarketPrice,
+  putPositions,
+  callPositions
 )
 
 // Helper functions
@@ -944,7 +989,8 @@ onBeforeUnmount(() => {
             <div v-show="showPnLDetails" class="pnl-details">
               <h2>Profit & Loss Calculation Details:</h2>
               
-              <div v-if="calculationBreakdown" class="pnl-breakdown">
+              <!-- Stock P&L Breakdown -->
+              <div v-if="calculationBreakdown && assetType === 'STK'" class="pnl-breakdown">
                 <!-- Step 1: Total Cost Basis -->
                 <div class="pnl-section">
                   <div class="pnl-section-title">📊 Total Cost Basis</div>
@@ -982,6 +1028,72 @@ onBeforeUnmount(() => {
                     <strong :class="{ 'profit-text': isProfitable, 'loss-text': !isProfitable }">
                       P&L Percentage = ({{ unrealizedPnL && unrealizedPnL >= 0 ? '+' : '' }}${{ calculationBreakdown.unrealizedPnL.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} ÷ ${{ calculationBreakdown.totalCostBasis.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}) × 100 = {{ calculationBreakdown.pnlPercentage.toFixed(2) }}%
                     </strong>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Options P&L Breakdown -->
+              <div v-if="calculationBreakdown && assetType === 'OPT'" class="pnl-breakdown">
+                <div class="pnl-section">
+                  <div class="pnl-section-title">📊 SHORT {{ calculationBreakdown.optionType }} OPTIONS SUMMARY</div>
+                  <div class="calc-line">
+                    Total Contracts: {{ calculationBreakdown.totalContracts.toLocaleString() }}
+                  </div>
+                  <div class="calc-line">
+                    Position Type: {{ calculationBreakdown.positionType }}
+                  </div>
+                </div>
+
+                <!-- Per-Position Breakdown -->
+                <div v-for="(pos, idx) in calculationBreakdown.positions" :key="`pos-${idx}`" class="pnl-section">
+                  <div class="pnl-section-title">Position {{ idx + 1 }}: {{ pos.account }} - ${{ pos.strike }} Strike ({{ pos.expiry }})</div>
+                  <div class="calc-line">
+                    Contracts Sold: {{ Math.abs(pos.quantity).toLocaleString() }}
+                  </div>
+                  <div class="calc-line">
+                    Premium Received: ${{ pos.premiumReceived.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+                  </div>
+                  <div class="calc-line">
+                    Current Market Value: ${{ pos.currentValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+                  </div>
+                  <div class="calc-line calculation-result">
+                    <strong :class="{ 'profit-text': pos.positionPnL >= 0, 'loss-text': pos.positionPnL < 0 }">
+                      P&L: {{ pos.positionPnL >= 0 ? '+' : '' }}${{ pos.positionPnL.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+                    </strong>
+                  </div>
+                </div>
+
+                <!-- Total Calculation -->
+                <div class="pnl-section highlight-section">
+                  <div class="pnl-section-title">💰 TOTAL CALCULATION</div>
+                  <div class="calc-line">
+                    Total Premium Received = {{ calculationBreakdown.positions.map((p: any) => `$${p.premiumReceived.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(' + ') }}
+                  </div>
+                  <div class="calc-line calculation-result">
+                    <strong>= ${{ calculationBreakdown.totalPremiumReceived.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong>
+                  </div>
+                  
+                  <div class="calc-line" style="margin-top: 1rem;">
+                    Current Market Liability = {{ calculationBreakdown.positions.map((p: any) => `$${p.currentValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(' + ') }}
+                  </div>
+                  <div class="calc-line calculation-result">
+                    <strong>= ${{ calculationBreakdown.currentMarketLiability.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong>
+                  </div>
+
+                  <div class="calc-line" style="margin-top: 1rem;">
+                    <strong :class="{ 'profit-text': isProfitable, 'loss-text': !isProfitable }">
+                      Unrealized P&L = ${{ calculationBreakdown.totalPremiumReceived.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} - ${{ calculationBreakdown.currentMarketLiability.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} = {{ unrealizedPnL && unrealizedPnL >= 0 ? '+' : '' }}${{ calculationBreakdown.unrealizedPnL.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+                    </strong>
+                  </div>
+                  
+                  <div class="calc-line">
+                    <strong :class="{ 'profit-text': isProfitable, 'loss-text': !isProfitable }">
+                      P&L % = ({{ unrealizedPnL && unrealizedPnL >= 0 ? '+' : '' }}${{ calculationBreakdown.unrealizedPnL.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} ÷ ${{ calculationBreakdown.totalPremiumReceived.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}) × 100 = {{ calculationBreakdown.pnlPercentage.toFixed(2) }}%
+                    </strong>
+                  </div>
+                  
+                  <div v-if="calculationBreakdown.pnlPercentage < -50" class="calc-line" style="margin-top: 1rem; color: #dc3545; font-weight: bold;">
+                    ⚠️ WARNING: Loss exceeds 50% of premium received!
                   </div>
                 </div>
               </div>
