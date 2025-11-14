@@ -19,7 +19,7 @@ interface currentPositionsProps {
 }
 
 const props = withDefaults(defineProps<currentPositionsProps>(), {
-  symbolRoot: 'MSFT',
+  symbolRoot: 'META',
   userId: '4fbec15d-2316-4805-b2a4-5cd2115a5ac8'
 })
 
@@ -869,6 +869,31 @@ onBeforeUnmount(() => {
         <!-- Summary Cards (Always Visible) -->
         <div v-else class="summary-section">
           <div class="summary-cards">
+            <div class="summary-card card-cyan">
+              <div class="summary-label">Capital/margin used</div>
+              <div v-if="isCapitalLoading" class="summary-value">
+                <span class="loading-spinner">⏳</span> Loading...
+              </div>
+              <div v-else-if="capitalError" class="summary-value error">
+                ❌ Error
+              </div>
+              <div v-else class="summary-value-container-vertical">
+                <div 
+                  class="summary-value clickable-price" 
+                  @click="toggleCapitalDetails"
+                >
+                  <span v-if="totalCapitalUsed !== null">
+                    ${{ totalCapitalUsed.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }}
+                  </span>
+                  <span v-else>N/A</span>
+                  <span class="toggle-icon">{{ showCapitalDetails ? '▼' : '▶' }}</span>
+                </div>
+                <div class="capital-subtitle" style="font-size: 0.85rem; color: #6c757d; margin-top: 0.25rem;">
+                  Margin: Coming soon...
+                </div>
+              </div>
+            </div> 
+
             <div class="summary-card card-blue">
               <div class="summary-label">Profit and Loss</div>
               <div v-if="isPnLLoading" class="summary-value">
@@ -950,31 +975,8 @@ onBeforeUnmount(() => {
                 </div>
               </div>
             </div>
-
-            <div class="summary-card card-cyan">
-              <div class="summary-label">Capital/margin used</div>
-              <div v-if="isCapitalLoading" class="summary-value">
-                <span class="loading-spinner">⏳</span> Loading...
-              </div>
-              <div v-else-if="capitalError" class="summary-value error">
-                ❌ Error
-              </div>
-              <div v-else class="summary-value-container-vertical">
-                <div 
-                  class="summary-value clickable-price" 
-                  @click="toggleCapitalDetails"
-                >
-                  <span v-if="totalCapitalUsed !== null">
-                    ${{ totalCapitalUsed.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }}
-                  </span>
-                  <span v-else>N/A</span>
-                  <span class="toggle-icon">{{ showCapitalDetails ? '▼' : '▶' }}</span>
-                </div>
-                <div class="capital-subtitle" style="font-size: 0.85rem; color: #6c757d; margin-top: 0.25rem;">
-                  Margin: Coming soon...
-                </div>
-              </div>
-            </div>          </div>
+   
+          </div>
 
           <!-- Tabulator Table (Collapsible) -->
           <transition name="slide-fade">

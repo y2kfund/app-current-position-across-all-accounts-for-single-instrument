@@ -11748,7 +11748,7 @@ const _o = { class: "current-positions-for-single-instrument-view" }, Po = { cla
 }, Bo = {
   key: 2,
   class: "summary-section"
-}, Vo = { class: "summary-cards" }, No = { class: "summary-card card-blue" }, Io = {
+}, Vo = { class: "summary-cards" }, No = { class: "summary-card card-cyan" }, Io = {
   key: 0,
   class: "summary-value"
 }, Wo = {
@@ -11757,37 +11757,37 @@ const _o = { class: "current-positions-for-single-instrument-view" }, Po = { cla
 }, Go = {
   key: 2,
   class: "summary-value-container-vertical"
-}, jo = { key: 0 }, $o = { class: "pnl-percentage" }, Uo = { key: 1 }, qo = { class: "toggle-icon" }, Ko = { class: "summary-card highlight-1 card-green" }, Xo = { class: "summary-value-container" }, Jo = { class: "summary-value" }, Yo = { class: "accounts-count" }, Qo = { class: "toggle-icon" }, Zo = { class: "summary-card card-purple" }, er = { class: "summary-label" }, tr = {
+}, jo = { key: 0 }, $o = { key: 1 }, Uo = { class: "toggle-icon" }, qo = { class: "summary-card card-blue" }, Ko = {
   key: 0,
   class: "summary-value"
-}, ir = {
+}, Xo = {
   key: 1,
   class: "summary-value error"
-}, sr = {
+}, Jo = {
   key: 2,
   class: "summary-value-container-vertical"
-}, nr = { class: "summary-value" }, or = {
-  key: 0,
-  class: "timestamp-info"
-}, rr = {
-  key: 3,
-  class: "summary-value"
-}, ar = { class: "summary-card card-orange" }, lr = { class: "summary-label" }, hr = {
+}, Yo = { key: 0 }, Qo = { class: "pnl-percentage" }, Zo = { key: 1 }, er = { class: "toggle-icon" }, tr = { class: "summary-card highlight-1 card-green" }, ir = { class: "summary-value-container" }, sr = { class: "summary-value" }, nr = { class: "accounts-count" }, or = { class: "toggle-icon" }, rr = { class: "summary-card card-purple" }, ar = { class: "summary-label" }, lr = {
   key: 0,
   class: "summary-value"
-}, ur = {
+}, hr = {
   key: 1,
   class: "summary-value error"
-}, dr = { class: "summary-value-container-vertical" }, cr = { key: 0 }, fr = { key: 1 }, pr = { class: "toggle-icon" }, mr = { class: "summary-card card-cyan" }, gr = {
+}, ur = {
+  key: 2,
+  class: "summary-value-container-vertical"
+}, dr = { class: "summary-value" }, cr = {
+  key: 0,
+  class: "timestamp-info"
+}, fr = {
+  key: 3,
+  class: "summary-value"
+}, pr = { class: "summary-card card-orange" }, mr = { class: "summary-label" }, gr = {
   key: 0,
   class: "summary-value"
 }, br = {
   key: 1,
   class: "summary-value error"
-}, vr = {
-  key: 2,
-  class: "summary-value-container-vertical"
-}, wr = { key: 0 }, Cr = { key: 1 }, yr = { class: "toggle-icon" }, Er = { class: "table-wrapper" }, Rr = { class: "calculation-details" }, xr = ["onClick"], Tr = { class: "toggle-icon" }, kr = { class: "group-content" }, Mr = { class: "position-line main-position" }, Lr = { class: "position-symbol" }, Sr = { class: "position-calc" }, Dr = {
+}, vr = { class: "summary-value-container-vertical" }, wr = { key: 0 }, Cr = { key: 1 }, yr = { class: "toggle-icon" }, Er = { class: "table-wrapper" }, Rr = { class: "calculation-details" }, xr = ["onClick"], Tr = { class: "toggle-icon" }, kr = { class: "group-content" }, Mr = { class: "position-line main-position" }, Lr = { class: "position-symbol" }, Sr = { class: "position-calc" }, Dr = {
   key: 0,
   class: "call-positions-wrapper"
 }, Fr = { class: "position-symbol" }, zr = { class: "position-calc" }, _r = { class: "call-subtotal" }, Pr = {
@@ -11824,7 +11824,7 @@ const _o = { class: "current-positions-for-single-instrument-view" }, Po = { cla
 }, Da = { class: "capital-section-title" }, Fa = { class: "calc-line" }, za = { class: "calc-line" }, _a = { class: "calc-line" }, Pa = { class: "calc-line calculation-result" }, Ha = { class: "capital-section highlight-section" }, Aa = { class: "calc-line" }, Oa = { class: "calc-line calculation-result" }, Ba = /* @__PURE__ */ $i({
   __name: "CurrentPositions",
   props: {
-    symbolRoot: { default: "MSFT" },
+    symbolRoot: { default: "META" },
     userId: { default: "4fbec15d-2316-4805-b2a4-5cd2115a5ac8" }
   },
   setup(l) {
@@ -12361,28 +12361,47 @@ const _o = { class: "current-positions-for-single-instrument-view" }, Po = { cla
             ])) : (P(), _("div", Bo, [
               b("div", Vo, [
                 b("div", No, [
-                  w[2] || (w[2] = b("div", { class: "summary-label" }, "Profit and Loss", -1)),
-                  y(ht) ? (P(), _("div", Io, [...w[1] || (w[1] = [
+                  w[3] || (w[3] = b("div", { class: "summary-label" }, "Capital/margin used", -1)),
+                  y(we) ? (P(), _("div", Io, [...w[1] || (w[1] = [
                     b("span", { class: "loading-spinner" }, "⏳", -1),
                     Te(" Loading... ", -1)
-                  ])])) : y(ce) ? (P(), _("div", Wo, " ❌ Error ")) : (P(), _("div", Go, [
+                  ])])) : y(Ve) ? (P(), _("div", Wo, " ❌ Error ")) : (P(), _("div", Go, [
+                    b("div", {
+                      class: "summary-value clickable-price",
+                      onClick: Vi
+                    }, [
+                      y(ge) !== null ? (P(), _("span", jo, " $" + C(y(ge).toLocaleString(void 0, { minimumFractionDigits: 0, maximumFractionDigits: 0 })), 1)) : (P(), _("span", $o, "N/A")),
+                      b("span", Uo, C(n.value ? "▼" : "▶"), 1)
+                    ]),
+                    w[2] || (w[2] = b("div", {
+                      class: "capital-subtitle",
+                      style: { "font-size": "0.85rem", color: "#6c757d", "margin-top": "0.25rem" }
+                    }, " Margin: Coming soon... ", -1))
+                  ]))
+                ]),
+                b("div", qo, [
+                  w[5] || (w[5] = b("div", { class: "summary-label" }, "Profit and Loss", -1)),
+                  y(ht) ? (P(), _("div", Ko, [...w[4] || (w[4] = [
+                    b("span", { class: "loading-spinner" }, "⏳", -1),
+                    Te(" Loading... ", -1)
+                  ])])) : y(ce) ? (P(), _("div", Xo, " ❌ Error ")) : (P(), _("div", Jo, [
                     b("div", {
                       class: Ne(["summary-value clickable-price pnl-value", { profit: y(ne), loss: !y(ne) }]),
                       onClick: Bi
                     }, [
-                      y(ae) !== null ? (P(), _("span", jo, [
+                      y(ae) !== null ? (P(), _("span", Yo, [
                         Te(C(y(ae) >= 0 ? "+" : "") + "$" + C(y(ae).toLocaleString(void 0, { minimumFractionDigits: 0, maximumFractionDigits: 0 })) + " ", 1),
-                        b("span", $o, "(" + C((z = y(lt)) == null ? void 0 : z.toFixed(2)) + "%)", 1)
-                      ])) : (P(), _("span", Uo, "N/A")),
-                      b("span", qo, C(s.value ? "▼" : "▶"), 1)
+                        b("span", Qo, "(" + C((z = y(lt)) == null ? void 0 : z.toFixed(2)) + "%)", 1)
+                      ])) : (P(), _("span", Zo, "N/A")),
+                      b("span", er, C(s.value ? "▼" : "▶"), 1)
                     ], 2)
                   ]))
                 ]),
-                b("div", Ko, [
-                  w[3] || (w[3] = b("div", { class: "summary-label" }, "Total Contract Quantity", -1)),
-                  b("div", Xo, [
-                    b("div", Jo, C(ve.value.toLocaleString()), 1),
-                    b("div", Yo, [
+                b("div", tr, [
+                  w[6] || (w[6] = b("div", { class: "summary-label" }, "Total Contract Quantity", -1)),
+                  b("div", ir, [
+                    b("div", sr, C(ve.value.toLocaleString()), 1),
+                    b("div", nr, [
                       b("span", {
                         class: "clickable-accounts",
                         title: "Show positions table for all accounts",
@@ -12390,55 +12409,36 @@ const _o = { class: "current-positions-for-single-instrument-view" }, Po = { cla
                         style: { cursor: "pointer", color: "#0d6efd" }
                       }, [
                         Te(" (" + C(((M = y(a)) == null ? void 0 : M.length) || 0) + ") ", 1),
-                        b("span", Qo, C(t.value ? "▼" : "▶"), 1)
+                        b("span", or, C(t.value ? "▼" : "▶"), 1)
                       ])
                     ])
                   ])
                 ]),
-                b("div", Zo, [
-                  b("div", er, "Current market price of " + C(e.symbolRoot), 1),
-                  y(T) ? (P(), _("div", tr, [...w[4] || (w[4] = [
+                b("div", rr, [
+                  b("div", ar, "Current market price of " + C(e.symbolRoot), 1),
+                  y(T) ? (P(), _("div", lr, [...w[7] || (w[7] = [
                     b("span", { class: "loading-spinner" }, "⏳", -1),
                     Te(" Loading... ", -1)
-                  ])])) : y(D) ? (P(), _("div", ir, " ❌ Error ")) : S.value !== null ? (P(), _("div", sr, [
-                    b("div", nr, " $" + C(S.value.toFixed(2)), 1),
-                    W.value ? (P(), _("div", or, " Updated: " + C(W.value), 1)) : Ce("", !0)
-                  ])) : (P(), _("div", rr, " N/A "))
+                  ])])) : y(D) ? (P(), _("div", hr, " ❌ Error ")) : S.value !== null ? (P(), _("div", ur, [
+                    b("div", dr, " $" + C(S.value.toFixed(2)), 1),
+                    W.value ? (P(), _("div", cr, " Updated: " + C(W.value), 1)) : Ce("", !0)
+                  ])) : (P(), _("div", fr, " N/A "))
                 ]),
-                b("div", ar, [
-                  b("div", lr, "Adjusted average cost price of " + C(e.symbolRoot) + " per share", 1),
-                  y(J) ? (P(), _("div", hr, [...w[5] || (w[5] = [
+                b("div", pr, [
+                  b("div", mr, "Adjusted average cost price of " + C(e.symbolRoot) + " per share", 1),
+                  y(J) ? (P(), _("div", gr, [...w[8] || (w[8] = [
                     b("span", { class: "loading-spinner" }, "⏳", -1),
                     Te(" Loading... ", -1)
-                  ])])) : y(ue) ? (P(), _("div", ur, " ❌ Error ")) : Ce("", !0),
-                  b("div", dr, [
+                  ])])) : y(ue) ? (P(), _("div", br, " ❌ Error ")) : Ce("", !0),
+                  b("div", vr, [
                     b("div", {
                       class: "summary-value average-cost-price clickable-price",
                       onClick: Oi
                     }, [
-                      y(Y) !== null ? (P(), _("span", cr, " $" + C(y(Y).toFixed(2)), 1)) : (P(), _("span", fr, "N/A")),
-                      b("span", pr, C(i.value ? "▼" : "▶"), 1)
+                      y(Y) !== null ? (P(), _("span", wr, " $" + C(y(Y).toFixed(2)), 1)) : (P(), _("span", Cr, "N/A")),
+                      b("span", yr, C(i.value ? "▼" : "▶"), 1)
                     ])
                   ])
-                ]),
-                b("div", mr, [
-                  w[8] || (w[8] = b("div", { class: "summary-label" }, "Capital/margin used", -1)),
-                  y(we) ? (P(), _("div", gr, [...w[6] || (w[6] = [
-                    b("span", { class: "loading-spinner" }, "⏳", -1),
-                    Te(" Loading... ", -1)
-                  ])])) : y(Ve) ? (P(), _("div", br, " ❌ Error ")) : (P(), _("div", vr, [
-                    b("div", {
-                      class: "summary-value clickable-price",
-                      onClick: Vi
-                    }, [
-                      y(ge) !== null ? (P(), _("span", wr, " $" + C(y(ge).toLocaleString(void 0, { minimumFractionDigits: 0, maximumFractionDigits: 0 })), 1)) : (P(), _("span", Cr, "N/A")),
-                      b("span", yr, C(n.value ? "▼" : "▶"), 1)
-                    ]),
-                    w[7] || (w[7] = b("div", {
-                      class: "capital-subtitle",
-                      style: { "font-size": "0.85rem", color: "#6c757d", "margin-top": "0.25rem" }
-                    }, " Margin: Coming soon... ", -1))
-                  ]))
                 ])
               ]),
               Ke(Xe, { name: "slide-fade" }, {
@@ -12673,7 +12673,7 @@ const _o = { class: "current-positions-for-single-instrument-view" }, Po = { cla
   for (const [i, s] of e)
     t[i] = s;
   return t;
-}, $a = /* @__PURE__ */ Va(Ba, [["__scopeId", "data-v-366d46c3"]]);
+}, $a = /* @__PURE__ */ Va(Ba, [["__scopeId", "data-v-d30380d9"]]);
 export {
   $a as currentPositions,
   $a as default
