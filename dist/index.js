@@ -11766,62 +11766,62 @@ const _o = { class: "current-positions-for-single-instrument-view" }, Po = { cla
 }, Jo = {
   key: 2,
   class: "summary-value-container-vertical"
-}, Yo = { key: 0 }, Qo = { class: "pnl-percentage" }, Zo = { key: 1 }, er = { class: "toggle-icon" }, tr = { class: "summary-card highlight-1 card-green" }, ir = { class: "summary-value-container" }, sr = { class: "summary-value" }, nr = { class: "accounts-count" }, or = { class: "toggle-icon" }, rr = { class: "summary-card card-purple" }, ar = { class: "summary-label" }, lr = {
+}, Yo = { key: 0 }, Qo = { class: "pnl-percentage" }, Zo = { key: 1 }, er = { class: "toggle-icon" }, tr = { class: "summary-card highlight-1 card-green" }, ir = { class: "summary-value-container" }, sr = { class: "summary-value" }, nr = { class: "accounts-count" }, or = { class: "toggle-icon" }, rr = { class: "summary-card card-purple" }, ar = {
   key: 0,
   class: "summary-value"
-}, hr = {
+}, lr = {
   key: 1,
   class: "summary-value error"
-}, ur = {
+}, hr = {
   key: 2,
   class: "summary-value-container-vertical"
-}, dr = { class: "summary-value" }, cr = {
+}, ur = { class: "summary-value" }, dr = {
   key: 0,
   class: "timestamp-info"
-}, fr = {
+}, cr = {
   key: 3,
   class: "summary-value"
-}, pr = { class: "summary-card card-orange" }, mr = { class: "summary-label" }, gr = {
+}, fr = { class: "summary-card card-orange" }, pr = {
   key: 0,
   class: "summary-value"
-}, br = {
+}, mr = {
   key: 1,
   class: "summary-value error"
-}, vr = { class: "summary-value-container-vertical" }, wr = { key: 0 }, Cr = { key: 1 }, yr = { class: "toggle-icon" }, Er = { class: "table-wrapper" }, Rr = { class: "calculation-details" }, xr = ["onClick"], Tr = { class: "toggle-icon" }, kr = { class: "group-content" }, Mr = { class: "position-line main-position" }, Lr = { class: "position-symbol" }, Sr = { class: "position-calc" }, Dr = {
+}, gr = { class: "summary-value-container-vertical" }, br = { key: 0 }, vr = { key: 1 }, wr = { class: "toggle-icon" }, Cr = { class: "table-wrapper" }, yr = { class: "calculation-details" }, Er = ["onClick"], Rr = { class: "toggle-icon" }, xr = { class: "group-content" }, Tr = { class: "position-line main-position" }, kr = { class: "position-symbol" }, Mr = { class: "position-calc" }, Lr = {
   key: 0,
   class: "call-positions-wrapper"
-}, Fr = { class: "position-symbol" }, zr = { class: "position-calc" }, _r = { class: "call-subtotal" }, Pr = {
+}, Sr = { class: "position-symbol" }, Dr = { class: "position-calc" }, Fr = { class: "call-subtotal" }, zr = {
   key: 1,
   class: "put-positions-wrapper"
-}, Hr = { class: "position-symbol" }, Ar = { class: "position-calc" }, Or = { class: "group-calculation" }, Br = { class: "calc-line indent" }, Vr = { class: "calc-line indent" }, Nr = {
+}, _r = { class: "position-symbol" }, Pr = { class: "position-calc" }, Hr = { class: "group-calculation" }, Ar = { class: "calc-line indent" }, Or = { class: "calc-line indent" }, Br = {
   key: 0,
   class: "overall-adjusted-section"
-}, Ir = { class: "overall-adjusted-header" }, Wr = { class: "overall-calculation-breakdown" }, Gr = { class: "breakdown-line" }, jr = { class: "breakdown-line" }, $r = { class: "breakdown-line" }, Ur = { class: "pnl-details" }, qr = {
+}, Vr = { class: "overall-adjusted-header" }, Nr = { class: "overall-calculation-breakdown" }, Ir = { class: "breakdown-line" }, Wr = { class: "breakdown-line" }, Gr = { class: "breakdown-line" }, jr = { class: "pnl-details" }, $r = {
   key: 0,
   class: "pnl-breakdown"
-}, Kr = { class: "pnl-section" }, Xr = { class: "calc-line" }, Jr = { class: "calc-line" }, Yr = { class: "calc-line calculation-result" }, Qr = { class: "pnl-section" }, Zr = { class: "calc-line" }, ea = { class: "calc-line calculation-result" }, ta = { class: "pnl-section highlight-section" }, ia = { class: "calc-line" }, sa = { class: "calc-line" }, na = {
+}, Ur = { class: "pnl-section" }, qr = { class: "calc-line" }, Kr = { class: "calc-line" }, Xr = { class: "calc-line calculation-result" }, Jr = { class: "pnl-section" }, Yr = { class: "calc-line" }, Qr = { class: "calc-line calculation-result" }, Zr = { class: "pnl-section highlight-section" }, ea = { class: "calc-line" }, ta = { class: "calc-line" }, ia = {
   key: 1,
   class: "pnl-breakdown"
-}, oa = { class: "pnl-section" }, ra = { class: "pnl-section-title" }, aa = { class: "calc-line" }, la = { class: "calc-line" }, ha = { class: "pnl-section-title" }, ua = { class: "calc-line" }, da = { class: "calc-line" }, ca = { class: "calc-line" }, fa = { class: "calc-line calculation-result" }, pa = { class: "pnl-section highlight-section" }, ma = { class: "calc-line" }, ga = { class: "calc-line calculation-result" }, ba = {
+}, sa = { class: "pnl-section" }, na = { class: "pnl-section-title" }, oa = { class: "calc-line" }, ra = { class: "calc-line" }, aa = { class: "pnl-section-title" }, la = { class: "calc-line" }, ha = { class: "calc-line" }, ua = { class: "calc-line" }, da = { class: "calc-line calculation-result" }, ca = { class: "pnl-section highlight-section" }, fa = { class: "calc-line" }, pa = { class: "calc-line calculation-result" }, ma = {
   class: "calc-line",
   style: { "margin-top": "1rem" }
-}, va = { class: "calc-line calculation-result" }, wa = {
+}, ga = { class: "calc-line calculation-result" }, ba = {
   class: "calc-line",
   style: { "margin-top": "1rem" }
-}, Ca = { class: "calc-line" }, ya = {
+}, va = { class: "calc-line" }, wa = {
   key: 0,
   class: "calc-line",
   style: { "margin-top": "1rem", color: "#dc3545", "font-weight": "bold" }
-}, Ea = { class: "capital-details" }, Ra = {
+}, Ca = { class: "capital-details" }, ya = {
   key: 0,
   class: "no-data-message"
-}, xa = {
+}, Ea = {
   key: 1,
   class: "capital-breakdown"
-}, Ta = { class: "capital-section" }, ka = { class: "calc-line" }, Ma = { class: "calc-line" }, La = { class: "calc-line calculation-result" }, Sa = {
+}, Ra = { class: "capital-section" }, xa = { class: "calc-line" }, Ta = { class: "calc-line" }, ka = { class: "calc-line calculation-result" }, Ma = {
   key: 2,
   class: "capital-breakdown"
-}, Da = { class: "capital-section-title" }, Fa = { class: "calc-line" }, za = { class: "calc-line" }, _a = { class: "calc-line" }, Pa = { class: "calc-line calculation-result" }, Ha = { class: "capital-section highlight-section" }, Aa = { class: "calc-line" }, Oa = { class: "calc-line calculation-result" }, Ba = /* @__PURE__ */ $i({
+}, La = { class: "capital-section-title" }, Sa = { class: "calc-line" }, Da = { class: "calc-line" }, Fa = { class: "calc-line" }, za = { class: "calc-line calculation-result" }, _a = { class: "capital-section highlight-section" }, Pa = { class: "calc-line" }, Ha = { class: "calc-line calculation-result" }, Aa = /* @__PURE__ */ $i({
   __name: "CurrentPositions",
   props: {
     symbolRoot: { default: "META" },
@@ -12415,35 +12415,35 @@ const _o = { class: "current-positions-for-single-instrument-view" }, Po = { cla
                   ])
                 ]),
                 b("div", rr, [
-                  b("div", ar, "Current market price of " + C(e.symbolRoot), 1),
-                  y(T) ? (P(), _("div", lr, [...w[7] || (w[7] = [
+                  w[8] || (w[8] = b("div", { class: "summary-label" }, "Current market price", -1)),
+                  y(T) ? (P(), _("div", ar, [...w[7] || (w[7] = [
                     b("span", { class: "loading-spinner" }, "⏳", -1),
                     Te(" Loading... ", -1)
-                  ])])) : y(D) ? (P(), _("div", hr, " ❌ Error ")) : S.value !== null ? (P(), _("div", ur, [
-                    b("div", dr, " $" + C(S.value.toFixed(2)), 1),
-                    W.value ? (P(), _("div", cr, " Updated: " + C(W.value), 1)) : Ce("", !0)
-                  ])) : (P(), _("div", fr, " N/A "))
+                  ])])) : y(D) ? (P(), _("div", lr, " ❌ Error ")) : S.value !== null ? (P(), _("div", hr, [
+                    b("div", ur, " $" + C(S.value.toFixed(2)), 1),
+                    W.value ? (P(), _("div", dr, " Updated: " + C(W.value), 1)) : Ce("", !0)
+                  ])) : (P(), _("div", cr, " N/A "))
                 ]),
-                b("div", pr, [
-                  b("div", mr, "Adjusted average cost price of " + C(e.symbolRoot) + " per share", 1),
-                  y(J) ? (P(), _("div", gr, [...w[8] || (w[8] = [
+                b("div", fr, [
+                  w[10] || (w[10] = b("div", { class: "summary-label" }, "Average cost per share", -1)),
+                  y(J) ? (P(), _("div", pr, [...w[9] || (w[9] = [
                     b("span", { class: "loading-spinner" }, "⏳", -1),
                     Te(" Loading... ", -1)
-                  ])])) : y(ue) ? (P(), _("div", br, " ❌ Error ")) : Ce("", !0),
-                  b("div", vr, [
+                  ])])) : y(ue) ? (P(), _("div", mr, " ❌ Error ")) : Ce("", !0),
+                  b("div", gr, [
                     b("div", {
                       class: "summary-value average-cost-price clickable-price",
                       onClick: Oi
                     }, [
-                      y(Y) !== null ? (P(), _("span", wr, " $" + C(y(Y).toFixed(2)), 1)) : (P(), _("span", Cr, "N/A")),
-                      b("span", yr, C(i.value ? "▼" : "▶"), 1)
+                      y(Y) !== null ? (P(), _("span", br, " $" + C(y(Y).toFixed(2)), 1)) : (P(), _("span", vr, "N/A")),
+                      b("span", wr, C(i.value ? "▼" : "▶"), 1)
                     ])
                   ])
                 ])
               ]),
               Ke(Xe, { name: "slide-fade" }, {
                 default: Je(() => [
-                  Ye(b("div", Er, [
+                  Ye(b("div", Cr, [
                     b("div", {
                       ref_key: "tableDiv",
                       ref: Hi
@@ -12456,8 +12456,8 @@ const _o = { class: "current-positions-for-single-instrument-view" }, Po = { cla
               }),
               Ke(Xe, { name: "slide-fade" }, {
                 default: Je(() => [
-                  Ye(b("div", Rr, [
-                    w[15] || (w[15] = b("h2", null, "Average Price calculation details :", -1)),
+                  Ye(b("div", yr, [
+                    w[17] || (w[17] = b("h2", null, "Average Price calculation details :", -1)),
                     (P(!0), _(Ze, null, et(y(j), (x, B) => (P(), _("div", {
                       key: `group-${B}`,
                       class: "position-group"
@@ -12466,47 +12466,47 @@ const _o = { class: "current-positions-for-single-instrument-view" }, Po = { cla
                         class: "group-header clickable",
                         onClick: (G) => r(B)
                       }, [
-                        b("span", Tr, C(o.value.has(B) ? "▼" : "▶"), 1),
+                        b("span", Rr, C(o.value.has(B) ? "▼" : "▶"), 1),
                         Te(" Client " + C(B + 1) + ": " + C(x.mainPosition.account), 1)
-                      ], 8, xr),
+                      ], 8, Er),
                       Ke(Xe, { name: "slide-fade" }, {
                         default: Je(() => [
-                          Ye(b("div", kr, [
-                            b("div", Mr, [
-                              w[9] || (w[9] = b("span", { class: "position-icon" }, "📍", -1)),
-                              b("span", Lr, C(x.mainPosition.symbol), 1),
-                              b("span", Sr, "@ $" + C(x.mainPosition.avgPrice.toFixed(2)) + " × " + C(x.mainPosition.quantity.toLocaleString()) + " = $" + C(x.mainPosition.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                          Ye(b("div", xr, [
+                            b("div", Tr, [
+                              w[11] || (w[11] = b("span", { class: "position-icon" }, "📍", -1)),
+                              b("span", kr, C(x.mainPosition.symbol), 1),
+                              b("span", Mr, "@ $" + C(x.mainPosition.avgPrice.toFixed(2)) + " × " + C(x.mainPosition.quantity.toLocaleString()) + " = $" + C(x.mainPosition.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                             ]),
-                            x.callPositions.length > 0 ? (P(), _("div", Dr, [
-                              w[11] || (w[11] = b("div", { class: "call-header" }, "📞 Call Positions (subtract from cost)", -1)),
+                            x.callPositions.length > 0 ? (P(), _("div", Lr, [
+                              w[13] || (w[13] = b("div", { class: "call-header" }, "📞 Call Positions (subtract from cost)", -1)),
                               (P(!0), _(Ze, null, et(x.callPositions, (G, q) => (P(), _("div", {
                                 key: `call-${B}-${q}`,
                                 class: "position-line call-position"
                               }, [
-                                w[10] || (w[10] = b("span", { class: "position-icon" }, null, -1)),
-                                b("span", Fr, C(G.symbol), 1),
-                                b("span", zr, "@ $" + C(G.avgPrice.toFixed(2)) + " × " + C(G.quantity.toLocaleString()) + " = $" + C(G.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                w[12] || (w[12] = b("span", { class: "position-icon" }, null, -1)),
+                                b("span", Sr, C(G.symbol), 1),
+                                b("span", Dr, "@ $" + C(G.avgPrice.toFixed(2)) + " × " + C(G.quantity.toLocaleString()) + " = $" + C(G.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                               ]))), 128)),
-                              b("div", _r, " Subtotal Calls: $" + C(Math.abs(x.callPositionsTotalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                              b("div", Fr, " Subtotal Calls: $" + C(Math.abs(x.callPositionsTotalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                             ])) : Ce("", !0),
-                            x.putPositions.length > 0 ? (P(), _("div", Pr, [
-                              w[13] || (w[13] = b("div", { class: "put-header" }, "📉 Put Positions (display only, not in calculation)", -1)),
+                            x.putPositions.length > 0 ? (P(), _("div", zr, [
+                              w[15] || (w[15] = b("div", { class: "put-header" }, "📉 Put Positions (display only, not in calculation)", -1)),
                               (P(!0), _(Ze, null, et(x.putPositions, (G, q) => (P(), _("div", {
                                 key: `put-${B}-${q}`,
                                 class: "position-line put-position"
                               }, [
-                                w[12] || (w[12] = b("span", { class: "position-icon" }, "📉", -1)),
-                                b("span", Hr, C(G.symbol), 1),
-                                b("span", Ar, "@ $" + C(G.avgPrice.toFixed(2)) + " × " + C(G.quantity.toLocaleString()) + " = $" + C(G.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                w[14] || (w[14] = b("span", { class: "position-icon" }, "📉", -1)),
+                                b("span", _r, C(G.symbol), 1),
+                                b("span", Pr, "@ $" + C(G.avgPrice.toFixed(2)) + " × " + C(G.quantity.toLocaleString()) + " = $" + C(G.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                               ]))), 128))
                             ])) : Ce("", !0),
-                            b("div", Or, [
-                              w[14] || (w[14] = b("div", { class: "calc-line" }, [
+                            b("div", Hr, [
+                              w[16] || (w[16] = b("div", { class: "calc-line" }, [
                                 Te("📊 "),
                                 b("strong", null, "Calculation:")
                               ], -1)),
-                              b("div", Br, "Net Cost = $" + C(x.mainPosition.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + C(Math.abs(x.callPositionsTotalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " = $" + C(x.netCostExcludingPuts.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
-                              b("div", Vr, [
+                              b("div", Ar, "Net Cost = $" + C(x.mainPosition.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + C(Math.abs(x.callPositionsTotalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " = $" + C(x.netCostExcludingPuts.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
+                              b("div", Or, [
                                 b("strong", null, "Adjusted Avg Price = $" + C(x.netCostExcludingPuts.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ÷ " + C(x.mainPosition.quantity.toLocaleString()) + " = $" + C(x.adjustedAvgPricePerShare.toFixed(2)) + " per share", 1)
                               ])
                             ])
@@ -12517,12 +12517,12 @@ const _o = { class: "current-positions-for-single-instrument-view" }, Po = { cla
                         _: 2
                       }, 1024)
                     ]))), 128)),
-                    y(Y) !== null ? (P(), _("div", Nr, [
-                      b("div", Ir, " 🎯 Overall Adjusted Average: $" + C(y(Y).toFixed(2)) + " per share ", 1),
-                      b("div", Wr, [
-                        b("div", Gr, "Total Net Cost = " + C(y(j).map((x, B) => `$${x.netCostExcludingPuts.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")) + " = $" + C(ze.value.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
-                        b("div", jr, "Total Main Qty = " + C(y(j).map((x) => x.mainPosition.quantity.toLocaleString()).join(" + ")) + " = " + C(Be.value.toLocaleString()), 1),
-                        b("div", $r, [
+                    y(Y) !== null ? (P(), _("div", Br, [
+                      b("div", Vr, " 🎯 Overall Adjusted Average: $" + C(y(Y).toFixed(2)) + " per share ", 1),
+                      b("div", Nr, [
+                        b("div", Ir, "Total Net Cost = " + C(y(j).map((x, B) => `$${x.netCostExcludingPuts.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")) + " = $" + C(ze.value.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
+                        b("div", Wr, "Total Main Qty = " + C(y(j).map((x) => x.mainPosition.quantity.toLocaleString()).join(" + ")) + " = " + C(Be.value.toLocaleString()), 1),
+                        b("div", Gr, [
                           b("strong", null, "Overall Adjusted Average = $" + C(ze.value.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ÷ " + C(Be.value.toLocaleString()) + " = $" + C(y(Y).toFixed(2)), 1)
                         ])
                       ])
@@ -12535,79 +12535,79 @@ const _o = { class: "current-positions-for-single-instrument-view" }, Po = { cla
               }),
               Ke(Xe, { name: "slide-fade" }, {
                 default: Je(() => [
-                  Ye(b("div", Ur, [
-                    w[20] || (w[20] = b("h2", null, "Profit & Loss Calculation Details:", -1)),
-                    y(H) && "totalShares" in y(H) && y(H).totalShares != null ? (P(), _("div", qr, [
-                      b("div", Kr, [
-                        w[16] || (w[16] = b("div", { class: "pnl-section-title" }, "📊 Total Cost Basis", -1)),
-                        b("div", Xr, " Total Shares = " + C(y(H).totalShares.toLocaleString()), 1),
-                        b("div", Jr, " Average Cost per Share = $" + C(y(H).avgCostPerShare.toFixed(2)), 1),
-                        b("div", Yr, [
+                  Ye(b("div", jr, [
+                    w[22] || (w[22] = b("h2", null, "Profit & Loss Calculation Details:", -1)),
+                    y(H) && "totalShares" in y(H) && y(H).totalShares != null ? (P(), _("div", $r, [
+                      b("div", Ur, [
+                        w[18] || (w[18] = b("div", { class: "pnl-section-title" }, "📊 Total Cost Basis", -1)),
+                        b("div", qr, " Total Shares = " + C(y(H).totalShares.toLocaleString()), 1),
+                        b("div", Kr, " Average Cost per Share = $" + C(y(H).avgCostPerShare.toFixed(2)), 1),
+                        b("div", Xr, [
                           b("strong", null, "Total Cost Basis = " + C(y(H).totalShares.toLocaleString()) + " × $" + C(y(H).avgCostPerShare.toFixed(2)) + " = $" + C(y(H).totalCostBasis.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ])
                       ]),
-                      b("div", Qr, [
-                        w[17] || (w[17] = b("div", { class: "pnl-section-title" }, "💰 Current Market Value", -1)),
-                        b("div", Zr, " Current Price per Share = $" + C(y(H).currentPricePerShare.toFixed(2)), 1),
-                        b("div", ea, [
+                      b("div", Jr, [
+                        w[19] || (w[19] = b("div", { class: "pnl-section-title" }, "💰 Current Market Value", -1)),
+                        b("div", Yr, " Current Price per Share = $" + C(y(H).currentPricePerShare.toFixed(2)), 1),
+                        b("div", Qr, [
                           b("strong", null, "Current Market Value = " + C(y(H).totalShares.toLocaleString()) + " × $" + C(y(H).currentPricePerShare.toFixed(2)) + " = $" + C(y(H).currentMarketValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ])
                       ]),
-                      b("div", ta, [
-                        w[18] || (w[18] = b("div", { class: "pnl-section-title" }, "🎯 Unrealized Profit & Loss", -1)),
-                        b("div", ia, [
+                      b("div", Zr, [
+                        w[20] || (w[20] = b("div", { class: "pnl-section-title" }, "🎯 Unrealized Profit & Loss", -1)),
+                        b("div", ea, [
                           b("strong", {
                             class: Ne({ "profit-text": y(ne), "loss-text": !y(ne) })
                           }, " Unrealized P&L = $" + C(y(H).currentMarketValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + C(y(H).totalCostBasis.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " = " + C(y(ae) && y(ae) >= 0 ? "+" : "") + "$" + C(y(H).unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 3)
                         ]),
-                        b("div", sa, [
+                        b("div", ta, [
                           b("strong", {
                             class: Ne({ "profit-text": y(ne), "loss-text": !y(ne) })
                           }, " P&L Percentage = (" + C(y(ae) && y(ae) >= 0 ? "+" : "") + "$" + C(y(H).unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ÷ $" + C(y(H).totalCostBasis.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + ") × 100 = " + C(y(H).pnlPercentage.toFixed(2)) + "% ", 3)
                         ])
                       ])
                     ])) : Ce("", !0),
-                    y(H) && "optionType" in y(H) && y(H).optionType != null ? (P(), _("div", na, [
-                      b("div", oa, [
-                        b("div", ra, "📊 SHORT " + C(y(H).optionType) + " OPTIONS SUMMARY", 1),
-                        b("div", aa, " Total Contracts: " + C(y(H).totalContracts.toLocaleString()), 1),
-                        b("div", la, " Position Type: " + C(y(H).positionType), 1)
+                    y(H) && "optionType" in y(H) && y(H).optionType != null ? (P(), _("div", ia, [
+                      b("div", sa, [
+                        b("div", na, "📊 SHORT " + C(y(H).optionType) + " OPTIONS SUMMARY", 1),
+                        b("div", oa, " Total Contracts: " + C(y(H).totalContracts.toLocaleString()), 1),
+                        b("div", ra, " Position Type: " + C(y(H).positionType), 1)
                       ]),
                       (P(!0), _(Ze, null, et(y(H).positions, (x, B) => (P(), _("div", {
                         key: `pos-${B}`,
                         class: "pnl-section"
                       }, [
-                        b("div", ha, "Position " + C(B + 1) + ": " + C(x.account) + " - $" + C(x.strike) + " Strike (" + C(x.expiry) + ")", 1),
-                        b("div", ua, " Contracts Sold: " + C(Math.abs(x.quantity).toLocaleString()), 1),
-                        b("div", da, " Premium Received: $" + C(x.premiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
-                        b("div", ca, " Current Market Value: $" + C(x.currentValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
-                        b("div", fa, [
+                        b("div", aa, "Position " + C(B + 1) + ": " + C(x.account) + " - $" + C(x.strike) + " Strike (" + C(x.expiry) + ")", 1),
+                        b("div", la, " Contracts Sold: " + C(Math.abs(x.quantity).toLocaleString()), 1),
+                        b("div", ha, " Premium Received: $" + C(x.premiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
+                        b("div", ua, " Current Market Value: $" + C(x.currentValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
+                        b("div", da, [
                           b("strong", {
                             class: Ne({ "profit-text": x.positionPnL >= 0, "loss-text": x.positionPnL < 0 })
                           }, " P&L: " + C(x.positionPnL >= 0 ? "+" : "") + "$" + C(x.positionPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 3)
                         ])
                       ]))), 128)),
-                      b("div", pa, [
-                        w[19] || (w[19] = b("div", { class: "pnl-section-title" }, "💰 TOTAL CALCULATION", -1)),
-                        b("div", ma, " Total Premium Received = " + C(y(H).positions.map((x) => `$${x.premiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")), 1),
-                        b("div", ga, [
+                      b("div", ca, [
+                        w[21] || (w[21] = b("div", { class: "pnl-section-title" }, "💰 TOTAL CALCULATION", -1)),
+                        b("div", fa, " Total Premium Received = " + C(y(H).positions.map((x) => `$${x.premiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")), 1),
+                        b("div", pa, [
                           b("strong", null, "= $" + C(y(H).totalPremiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ]),
-                        b("div", ba, " Current Market Liability = " + C(y(H).positions.map((x) => `$${x.currentValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")), 1),
-                        b("div", va, [
+                        b("div", ma, " Current Market Liability = " + C(y(H).positions.map((x) => `$${x.currentValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")), 1),
+                        b("div", ga, [
                           b("strong", null, "= $" + C(y(H).currentMarketLiability.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ]),
-                        b("div", wa, [
+                        b("div", ba, [
                           b("strong", {
                             class: Ne({ "profit-text": y(ne), "loss-text": !y(ne) })
                           }, " Unrealized P&L = $" + C(y(H).totalPremiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + C(y(H).currentMarketLiability.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " = " + C(y(ae) && y(ae) >= 0 ? "+" : "") + "$" + C(y(H).unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 3)
                         ]),
-                        b("div", Ca, [
+                        b("div", va, [
                           b("strong", {
                             class: Ne({ "profit-text": y(ne), "loss-text": !y(ne) })
                           }, " P&L % = (" + C(y(ae) && y(ae) >= 0 ? "+" : "") + "$" + C(y(H).unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ÷ $" + C(y(H).totalPremiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + ") × 100 = " + C(y(H).pnlPercentage.toFixed(2)) + "% ", 3)
                         ]),
-                        y(H).pnlPercentage < -50 ? (P(), _("div", ya, " ⚠️ WARNING: Loss exceeds 50% of premium received! ")) : Ce("", !0)
+                        y(H).pnlPercentage < -50 ? (P(), _("div", wa, " ⚠️ WARNING: Loss exceeds 50% of premium received! ")) : Ce("", !0)
                       ])
                     ])) : Ce("", !0)
                   ], 512), [
@@ -12618,19 +12618,19 @@ const _o = { class: "current-positions-for-single-instrument-view" }, Po = { cla
               }),
               Ke(Xe, { name: "slide-fade" }, {
                 default: Je(() => [
-                  Ye(b("div", Ea, [
-                    w[25] || (w[25] = b("h2", null, "Capital Used Calculation Details:", -1)),
-                    y(ie) ? y(ie).assetType === "STK" ? (P(), _("div", xa, [
-                      b("div", Ta, [
-                        w[22] || (w[22] = b("div", { class: "capital-section-title" }, "📊 STOCK CAPITAL CALCULATION", -1)),
-                        b("div", ka, " Total Shares = " + C(y(ie).totalShares.toLocaleString()), 1),
-                        b("div", Ma, " Current Price per Share = $" + C(y(ie).pricePerShare.toFixed(2)), 1),
-                        b("div", La, [
+                  Ye(b("div", Ca, [
+                    w[27] || (w[27] = b("h2", null, "Capital Used Calculation Details:", -1)),
+                    y(ie) ? y(ie).assetType === "STK" ? (P(), _("div", Ea, [
+                      b("div", Ra, [
+                        w[24] || (w[24] = b("div", { class: "capital-section-title" }, "📊 STOCK CAPITAL CALCULATION", -1)),
+                        b("div", xa, " Total Shares = " + C(y(ie).totalShares.toLocaleString()), 1),
+                        b("div", Ta, " Current Price per Share = $" + C(y(ie).pricePerShare.toFixed(2)), 1),
+                        b("div", ka, [
                           b("strong", null, " Total Capital Used = " + C(y(ie).totalShares.toLocaleString()) + " × $" + C(y(ie).pricePerShare.toFixed(2)) + " = $" + C(y(ie).totalCapital.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ])
                       ])
-                    ])) : y(ie).assetType === "OPT" ? (P(), _("div", Sa, [
-                      w[24] || (w[24] = b("div", { class: "capital-section" }, [
+                    ])) : y(ie).assetType === "OPT" ? (P(), _("div", Ma, [
+                      w[26] || (w[26] = b("div", { class: "capital-section" }, [
                         b("div", { class: "capital-section-title" }, "📊 OPTIONS CAPITAL CALCULATION"),
                         b("div", { class: "calc-line" }, " Capital = Sum of |Market Value| for all option positions ")
                       ], -1)),
@@ -12638,22 +12638,22 @@ const _o = { class: "current-positions-for-single-instrument-view" }, Po = { cla
                         key: `cap-${B}`,
                         class: "capital-section"
                       }, [
-                        b("div", Da, " Position " + C(B + 1) + ": " + C(x.account) + " - " + C(x.optionType), 1),
-                        b("div", Fa, " Symbol: " + C(x.symbol), 1),
-                        b("div", za, " Quantity: " + C(Math.abs(x.quantity).toLocaleString()) + " contracts ", 1),
-                        b("div", _a, " Market Price: $" + C(x.marketPrice.toFixed(2)) + " per contract ", 1),
-                        b("div", Pa, [
+                        b("div", La, " Position " + C(B + 1) + ": " + C(x.account) + " - " + C(x.optionType), 1),
+                        b("div", Sa, " Symbol: " + C(x.symbol), 1),
+                        b("div", Da, " Quantity: " + C(Math.abs(x.quantity).toLocaleString()) + " contracts ", 1),
+                        b("div", Fa, " Market Price: $" + C(x.marketPrice.toFixed(2)) + " per contract ", 1),
+                        b("div", za, [
                           b("strong", null, " Market Value = " + C(Math.abs(x.quantity).toLocaleString()) + " × $" + C(x.marketPrice.toFixed(2)) + " = $" + C(Math.abs(x.marketValue).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ])
                       ]))), 128)),
-                      b("div", Ha, [
-                        w[23] || (w[23] = b("div", { class: "capital-section-title" }, "💰 TOTAL CAPITAL USED", -1)),
-                        b("div", Aa, " Total = " + C(y(ie).positions.map((x) => `$${Math.abs(x.marketValue).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")), 1),
-                        b("div", Oa, [
+                      b("div", _a, [
+                        w[25] || (w[25] = b("div", { class: "capital-section-title" }, "💰 TOTAL CAPITAL USED", -1)),
+                        b("div", Pa, " Total = " + C(y(ie).positions.map((x) => `$${Math.abs(x.marketValue).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")), 1),
+                        b("div", Ha, [
                           b("strong", null, " = $" + C(y(ie).totalOptionsCapital.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ])
                       ])
-                    ])) : Ce("", !0) : (P(), _("div", Ra, [...w[21] || (w[21] = [
+                    ])) : Ce("", !0) : (P(), _("div", ya, [...w[23] || (w[23] = [
                       b("p", null, "No capital data available", -1)
                     ])]))
                   ], 512), [
@@ -12668,13 +12668,13 @@ const _o = { class: "current-positions-for-single-instrument-view" }, Po = { cla
       ]);
     };
   }
-}), Va = (l, e) => {
+}), Oa = (l, e) => {
   const t = l.__vccOpts || l;
   for (const [i, s] of e)
     t[i] = s;
   return t;
-}, $a = /* @__PURE__ */ Va(Ba, [["__scopeId", "data-v-d30380d9"]]);
+}, Ga = /* @__PURE__ */ Oa(Aa, [["__scopeId", "data-v-e584ad20"]]);
 export {
-  $a as currentPositions,
-  $a as default
+  Ga as currentPositions,
+  Ga as default
 };

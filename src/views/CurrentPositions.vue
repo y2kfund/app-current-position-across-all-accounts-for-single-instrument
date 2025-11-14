@@ -937,7 +937,7 @@ onBeforeUnmount(() => {
             </div>
 
             <div class="summary-card card-purple">
-              <div class="summary-label">Current market price of {{ props.symbolRoot }}</div>
+              <div class="summary-label">Current market price</div> <!--Current market price of {{ props.symbolRoot }}-->
               <div v-if="isPriceLoading" class="summary-value">
                 <span class="loading-spinner">⏳</span> Loading...
               </div>
@@ -958,7 +958,7 @@ onBeforeUnmount(() => {
             </div>
 
             <div class="summary-card card-orange">
-              <div class="summary-label">Adjusted average cost price of {{ props.symbolRoot }} per share</div>
+              <div class="summary-label">Average cost per share</div><!--Adjusted average cost price of {{ props.symbolRoot }} per share-->
               <div v-if="isAvgPriceLoading" class="summary-value">
                 <span class="loading-spinner">⏳</span> Loading...
               </div>
