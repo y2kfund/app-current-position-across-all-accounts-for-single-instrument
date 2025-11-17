@@ -21,5 +21,6 @@ export declare function useAttachedData(userId: string | undefined | null): {
     positionPositionMappingsQuery: import('@tanstack/vue-query').UseQueryReturnType<Map<string, Set<string>>, Error>;
     isReady: import('vue').ComputedRef<boolean>;
     refetchMappings: () => Promise<void>;
+    fetchTradesForSymbol: (symbolRoot: string, accountId: string) => Promise<Trade[]>;
 };
 export {};

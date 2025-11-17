@@ -198,6 +198,7 @@ export function useAttachedData(userId: string | undefined | null) {
     refetchMappings: async () => {
       await positionTradeMappingsQuery.refetch()
       await positionPositionMappingsQuery.refetch()
-    }
+    },
+    fetchTradesForSymbol
   }
 }

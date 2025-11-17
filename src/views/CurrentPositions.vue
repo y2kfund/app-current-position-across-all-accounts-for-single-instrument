@@ -12,6 +12,7 @@ import { useCapitalUsed } from '../composables/useCapitalUsed'
 import { useAttachedData } from '../composables/useAttachedData'
 import { usePositionExpansion } from '../composables/usePositionExpansion'
 import { TabulatorFull as Tabulator } from 'tabulator-tables'
+import { useSupabase, fetchPositionsBySymbolRoot, savePositionTradeMappings, savePositionPositionMappings } from '@y2kfund/core'
 
 interface currentPositionsProps {
   symbolRoot: string
@@ -20,7 +21,7 @@ interface currentPositionsProps {
 
 const props = withDefaults(defineProps<currentPositionsProps>(), {
   symbolRoot: 'META',
-  userId: '4fbec15d-2316-4805-b2a4-5cd2115a5ac8'
+  userId: '67e578fd-2cf7-48a4-b028-a11a3f89bb9b'
 })
 
 // State for showing/hiding details
@@ -28,6 +29,8 @@ const showDetails = ref(false)
 const showCalculationDetails = ref(false)
 const showPnLDetails = ref(false)
 const showCapitalDetails = ref(false)
+
+const supabase = useSupabase()
 
 // State for collapsing/expanding individual position groups
 const expandedGroups = ref<Set<number>>(new Set())
@@ -124,7 +127,9 @@ const {
   getPositionKey,
   getAttachedTrades,
   fetchAttachedPositionsForDisplay,
-  isReady
+  fetchTradesForSymbol,
+  isReady,
+  refetchMappings
 } = useAttachedData(props.userId)
 
 // Use expansion composable
@@ -405,10 +410,18 @@ const columns: ColumnDefinition[] = [
       const attachmentLabel = totalAttachments > 0 
         ? `<span class="trade-count">(${totalAttachments})</span>`
         : ''
+
+      const attachButton = `<button class="attach-trades-btn" title="Attach trades or positions" style="border:none;background:transparent;cursor:pointer;padding:0;margin-right:4px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+      </button>`
       
       return `
         <div style="display: flex; align-items: center; gap: 6px;">
-          ${expandArrow}
+          ${expandArrow} 
+          ${attachButton} 
           <span>${accountName}</span>
           ${attachmentLabel}
         </div>
@@ -423,6 +436,16 @@ const columns: ColumnDefinition[] = [
         const posKey = expandArrow.getAttribute('data-position-key')
         if (posKey) {
           togglePositionExpansion(posKey)
+        }
+        return
+      }
+
+      const attachBtn = target.closest('.attach-trades-btn')
+      if (attachBtn) {
+        e.stopPropagation()
+        const data = cell.getRow().getData()
+        if (data) {
+          openAttachModal(data, 'trades')
         }
         return
       }
@@ -793,6 +816,143 @@ const { tableDiv, initializeTabulator, isTableInitialized, tabulator } = useTabu
     } catch (error) {
       console.error('❌ Row formatter error:', error)
     }
+  }
+})
+
+// -------------------------
+// Attach trades / positions
+// -------------------------
+const showAttachModal = ref(false)
+const attachmentTab = ref<'trades' | 'positions'>('trades')
+const selectedPositionForTrades = ref<any | null>(null)
+const selectedPositionForPositions = ref<any | null>(null)
+const tradeSearchQuery = ref('')
+const positionSearchQuery = ref('')
+const selectedTradeIds = ref<Set<string>>(new Set())
+const selectedPositionKeys = ref<Set<string>>(new Set())
+const loadingAttachable = ref(false)
+const attachableTrades = ref<any[]>([])
+const attachablePositions = ref<any[]>([])
+
+function toggleTradeSelection(id: string) {
+  if (selectedTradeIds.value.has(id)) selectedTradeIds.value.delete(id)
+  else selectedTradeIds.value.add(id)
+}
+
+function togglePositionSelection(key: string) {
+  if (selectedPositionKeys.value.has(key)) selectedPositionKeys.value.delete(key)
+  else selectedPositionKeys.value.add(key)
+}
+
+async function loadAttachableTradesForPosition(position: any) {
+  loadingAttachable.value = true
+  attachableTrades.value = []
+  try {
+    const symbolRoot = extractTagsFromSymbol(position.symbol)[0] || ''
+    if (!symbolRoot) return
+    const allTrades = await fetchTradesForSymbol(symbolRoot, position.internal_account_id)
+    // basic search filter
+    const q = tradeSearchQuery.value.trim().toLowerCase()
+    attachableTrades.value = q
+      ? allTrades.filter((t: any) => (t.symbol || '').toLowerCase().includes(q) || String(t.tradeID || '').toLowerCase().includes(q))
+      : allTrades
+  } catch (err) {
+    console.error('❌ loadAttachableTradesForPosition error:', err)
+    attachableTrades.value = []
+  } finally {
+    loadingAttachable.value = false
+  }
+}
+
+async function loadAttachablePositionsForPosition(position: any) {
+  loadingAttachable.value = true
+  attachablePositions.value = []
+  try {
+    const symbolRoot = extractTagsFromSymbol(position.symbol)[0] || ''
+    if (!symbolRoot) return
+    const accountId = position.internal_account_id || position.legal_entity
+    const allPositions = await fetchPositionsBySymbolRoot(supabase, symbolRoot, props.userId, accountId)
+    const q = positionSearchQuery.value.trim().toLowerCase()
+    attachablePositions.value = q
+      ? allPositions.filter((p: any) => (p.symbol || '').toLowerCase().includes(q))
+      : allPositions
+  } catch (err) {
+    console.error('❌ loadAttachablePositionsForPosition error:', err)
+    attachablePositions.value = []
+  } finally {
+    loadingAttachable.value = false
+  }
+}
+
+async function openAttachModal(position: any, tab: 'trades' | 'positions' = 'trades') {
+  selectedPositionForTrades.value = position
+  selectedPositionForPositions.value = position
+  attachmentTab.value = tab
+  tradeSearchQuery.value = ''
+  positionSearchQuery.value = ''
+
+  const posKey = getPositionKey(position)
+  selectedTradeIds.value = new Set(positionTradesMap.value.get(posKey) || [])
+  selectedPositionKeys.value = new Set(positionPositionsMap.value.get(posKey) || [])
+
+  showAttachModal.value = true
+  if (tab === 'trades') {
+    await loadAttachableTradesForPosition(position)
+  } else {
+    await loadAttachablePositionsForPosition(position)
+  }
+}
+
+async function saveAttachedTrades() {
+  if (!selectedPositionForTrades.value || !props.userId) return
+  const posKey = getPositionKey(selectedPositionForTrades.value)
+  try {
+    await savePositionTradeMappings(supabase, props.userId, posKey, selectedTradeIds.value)
+    // refresh mappings so UI reflects new attachments
+    if (refetchMappings) await refetchMappings()
+    showAttachModal.value = false
+    if (tabulator.value) tabulator.value.redraw(true)
+    console.log('✅ Trades attached')
+  } catch (err: any) {
+    console.error('❌ Error saving attached trades:', err)
+  }
+}
+
+async function saveAttachedPositions() {
+  if (!selectedPositionForPositions.value || !props.userId) return
+  const posKey = getPositionKey(selectedPositionForPositions.value)
+  try {
+    await savePositionPositionMappings(supabase, props.userId, posKey, selectedPositionKeys.value)
+    if (refetchMappings) await refetchMappings()
+    showAttachModal.value = false
+    if (tabulator.value) tabulator.value.redraw(true)
+    console.log('✅ Positions attached')
+  } catch (err: any) {
+    console.error('❌ Error saving attached positions:', err)
+  }
+}
+
+function isPositionExpired(position: Position): boolean {
+  if (position.asset_class !== 'OPT') return false
+  
+  const tags = extractTagsFromSymbol(position.symbol)
+  const expiryStr = tags[1] // Date is second tag
+  if (!expiryStr) return false
+  
+  const expiryDate = new Date(expiryStr)
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  
+  return expiryDate < today
+}
+
+// close/open body scroll lock for modal
+watch(showAttachModal, (val) => {
+  try {
+    if (val) document.body.classList.add('modal-open')
+    else document.body.classList.remove('modal-open')
+  } catch (e) {
+    // ignore for SSR or restricted environments
   }
 })
 
@@ -1247,6 +1407,154 @@ onBeforeUnmount(() => {
               </div>
             </div>
           </transition>
+        </div>
+      </div>
+    </div>
+    <!-- Attach modal -->
+    <div v-if="showAttachModal" class="modal-overlay" @click="showAttachModal = false">
+      <div class="modal-content trade-attach-modal" @click.stop>
+        <div class="modal-header">
+          <h3>Attach to Position</h3>
+          <button class="modal-close" @click="showAttachModal = false">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <div v-if="selectedPositionForPositions" class="position-info">
+            <strong>Position:</strong>
+            <span v-for="tag in extractTagsFromSymbol(selectedPositionForPositions.symbol)" :key="tag" class="fi-tag position-tag">
+              {{ tag }}
+            </span>
+            • (Contract Qty: {{ selectedPositionForPositions.contract_quantity }} · Avg price: ${{ selectedPositionForPositions.avgPrice }})
+          </div>
+
+          <div class="attachment-tabs">
+            <button
+              class="tab-button"
+              :class="{ active: attachmentTab === 'trades' }"
+              @click="attachmentTab = 'trades'; loadAttachableTradesForPosition(selectedPositionForTrades)"
+            >Trades</button>
+            <button
+              class="tab-button"
+              :class="{ active: attachmentTab === 'positions' }"
+              @click="attachmentTab = 'positions'; loadAttachablePositionsForPosition(selectedPositionForPositions)"
+            >Positions</button>
+          </div>
+
+          <!-- Trades tab -->
+          <div v-if="attachmentTab === 'trades'">
+            <div class="trade-search">
+              <input
+                v-model="tradeSearchQuery"
+                type="text"
+                class="search-input"
+                placeholder="Search trades (e.g., 'Put' or 'Call, 250')..."
+                @input="loadAttachableTradesForPosition(selectedPositionForTrades)"
+              />
+              <div class="search-hint">💡 <em>Use commas to search multiple terms (AND logic)</em></div>
+            </div>
+
+            <div v-if="loadingAttachable" style="padding:1rem;text-align:center;color:#6c757d;">Loading trades...</div>
+
+            <div class="trades-list" v-else>
+              <div
+                v-for="t in attachableTrades"
+                :key="t.tradeID"
+                class="trade-item"
+                :class="{ selected: selectedTradeIds.has(String(t.tradeID)) }"
+                @click="toggleTradeSelection(String(t.tradeID))"
+              >
+                <input
+                  type="checkbox"
+                  :checked="selectedTradeIds.has(String(t.tradeID))"
+                  @click.stop="toggleTradeSelection(String(t.tradeID))"
+                />
+                <div class="trade-details">
+                  <div class="trade-primary">
+                    <span class="trade-side" :class="(t.buySell || '').toLowerCase()">{{ t.buySell }}</span>
+                    <strong>
+                      <span v-for="tag in extractTagsFromTradesSymbol(t.symbol)" :key="tag" class="fi-tag position-tag">{{ tag }}</span>
+                    </strong>
+                    <span style="color:#6c757d;">Qty: {{ t.quantity }}</span>
+                    <span style="color:#6c757d;">· Price: {{ t.tradePrice }}</span>
+                  </div>
+                  <div class="trade-secondary">
+                    <span>Trade date: {{ formatTradeDate(t.tradeDate) }}</span>
+                    <span v-if="t.assetCategory">• {{ t.assetCategory }}</span>
+                    <span v-if="t.description">• {{ t.description }}</span>
+                    <span style="color:#6c757d;margin-left:6px;">• ID: {{ t.tradeID }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div v-if="attachableTrades.length === 0" style="padding:1.5rem;text-align:center;color:#6c757d;">
+                No trades found
+              </div>
+            </div>
+          </div>
+
+          <!-- Positions tab -->
+          <div v-else>
+            <div class="trade-search">
+              <input
+                v-model="positionSearchQuery"
+                type="text"
+                class="search-input"
+                placeholder="Search positions (e.g., 'Put' or 'Call, 250')..."
+                @input="loadAttachablePositionsForPosition(selectedPositionForPositions)"
+              />
+              <div class="search-hint">💡 <em>Showing positions with same underlying symbol. Use commas to search multiple terms.</em></div>
+            </div>
+
+            <div v-if="loadingAttachable" style="padding:1rem;text-align:center;color:#6c757d;">Loading positions...</div>
+
+            <div class="trades-list" v-else>
+              <div
+                v-for="p in attachablePositions"
+                :key="getPositionKey(p)"
+                class="trade-item"
+                :class="{ selected: selectedPositionKeys.has(getPositionKey(p)), expired: p.asset_class === 'OPT' && isPositionExpired(p) }"
+                @click="togglePositionSelection(getPositionKey(p))"
+              >
+                <input
+                  type="checkbox"
+                  :checked="selectedPositionKeys.has(getPositionKey(p))"
+                  @click.stop="togglePositionSelection(getPositionKey(p))"
+                />
+                <div class="trade-details">
+                  <div class="trade-primary">
+                    <strong>
+                      <span v-for="tag in extractTagsFromSymbol(p.symbol)" :key="tag" class="fi-tag position-tag">{{ tag }}</span>
+                    </strong>
+                    <span style="color:#6c757d;">Qty: {{ p.contract_quantity }}</span>
+                    <span style="color:#6c757d;">· Avg price: {{ formatCurrency(p.avgPrice) }}</span>
+                    <span v-if="isPositionExpired(p)" class="expired-badge">EXPIRED</span>
+                  </div>
+                  <div class="trade-secondary">
+                    <span>{{ p.asset_class }}</span>
+                    <span>•</span>
+                    <span>{{ p.internal_account_id || p.legal_entity }}</span>
+                    <span v-if="p.market_value">• MV: ${{ formatCurrency(p.market_value) }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div v-if="attachablePositions.length === 0" style="padding:1.5rem;text-align:center;color:#6c757d;">
+                No positions found
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary" @click="showAttachModal = false">Cancel</button>
+          <button
+            class="btn btn-primary"
+            :disabled="attachmentTab === 'trades' ? selectedTradeIds.size === 0 : selectedPositionKeys.size === 0"
+            @click="attachmentTab === 'trades' ? saveAttachedTrades() : saveAttachedPositions()"
+          >
+            Attach {{ attachmentTab === 'trades' ? selectedTradeIds.size : selectedPositionKeys.size }} 
+            {{ attachmentTab === 'trades' ? 'Trade(s)' : 'Position(s)' }}
+          </button>
         </div>
       </div>
     </div>
