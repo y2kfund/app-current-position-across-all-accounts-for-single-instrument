@@ -5,6 +5,12 @@ interface MarketPriceData {
   symbol: string
   conid: number
   market_price: number
+  week_52_high?: number | null
+  week_52_low?: number | null
+  pe_ratio?: number | null
+  eps?: number | null
+  market_cap?: number | null
+  computed_peg_ratio?: number | null
   last_fetched_at: string
 }
 
@@ -22,7 +28,7 @@ export function useMarketPrice(conid: Ref<number | null> , symbolRoot: string) {
       let query = supabase
         .schema('hf')
         .from('market_price')
-        .select('symbol, conid, market_price, last_fetched_at')
+        .select('symbol, conid, market_price, week_52_high, week_52_low, pe_ratio, eps, market_cap, computed_peg_ratio, last_fetched_at')
       
       // If conid is available, search by conid
       if (conidValue && conidValue > 0) {

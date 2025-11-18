@@ -69,6 +69,12 @@ const { marketData, isLoading: isPriceLoading, error: priceError } = useMarketPr
 
 // Extract current market price from marketData
 const currentMarketPrice = computed(() => marketData.value?.market_price ?? null)
+const week52High = computed(() => marketData.value?.week_52_high ?? null)
+const week52Low = computed(() => marketData.value?.week_52_low ?? null)
+const peRatio = computed(() => marketData.value?.pe_ratio ?? null)
+//const eps = computed(() => marketData.value?.eps ?? null)
+const marketCap = computed(() => marketData.value?.market_cap ?? null)
+const computedPegRatio = computed(() => marketData.value?.computed_peg_ratio ?? null)
 const last_fetched_at_market_price = computed(() => marketData.value?.last_fetched_at ?? null)
 
 // Format the timestamp for display with timezone
@@ -1108,6 +1114,9 @@ onBeforeUnmount(() => {
                 <div class="summary-value">
                   ${{ currentMarketPrice.toFixed(2) }}
                 </div>
+                <div class="52-week-range">
+                  52W Range: <span class="blue_color">${{ week52Low.toFixed(2) }}</span> - <span class="blue_color">${{ week52High.toFixed(2) }}</span>
+                </div>
                 <div v-if="formattedTimestamp" class="timestamp-info">
                   Updated: {{ formattedTimestamp }}
                 </div>
@@ -1132,6 +1141,40 @@ onBeforeUnmount(() => {
                   </span>
                   <span v-else>N/A</span>
                   <span class="toggle-icon">{{ showCalculationDetails ? '▼' : '▶' }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="summary-card card-teal">
+              <!--div class="summary-label">Market Info</div-->
+              <div v-if="isPriceLoading" class="summary-value">
+                <span class="loading-spinner">⏳</span> Loading...
+              </div>
+              <div v-else-if="priceError" class="summary-value error">
+                ❌ Error
+              </div>
+              <div v-else class="summary-value-container-vertical">
+                <!--div class="summary-value">
+                  <span v-if="marketCap !== null">
+                    ${{ (marketCap / 1e9).toFixed(2) }}B
+                  </span>
+                  <span v-else>N/A</span>
+                </div-->
+                
+                <div v-if="peRatio !== null" class="subtitle-info" style="font-size: 0.85rem; color: #6c757d; margin-top: 0.25rem;">
+                  P/E Ratio: <span class="blue_color">{{ peRatio.toFixed(2) }}</span>
+                </div>
+                <div v-if="computedPegRatio !== null" class="subtitle-info" style="font-size: 0.85rem; color: #6c757d; margin-top: 0.25rem;">
+                  PEG Ratio: <span class="blue_color">{{ computedPegRatio.toFixed(2) }}</span>
+                </div>
+                <div class="subtitle-info" style="font-size: 0.85rem; color: #6c757d; margin-top: 0.25rem;">
+                  Debt to equity ratio: <span class="">Coming soon...</span>
+                </div>
+                <div v-if="marketCap !== null" class="subtitle-info" style="font-size: 0.85rem; color: #6c757d; margin-top: 0.25rem;">
+                  Market Cap: <span class="blue_color">${{ (marketCap / 1e9).toFixed(2) }}B</span>
+                </div>
+                <div class="subtitle-info" style="font-size: 0.85rem; color: #6c757d; margin-top: 0.25rem;">
+                  Price to FCF: <span class="">Coming soon...</span>
                 </div>
               </div>
             </div>

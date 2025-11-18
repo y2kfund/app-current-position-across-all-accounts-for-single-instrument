@@ -169,8 +169,8 @@
 }
 
 .summary-card.card-teal {
-  background: linear-gradient(135deg, #e0f2f1 0%, #b2dfdb 100%);
-  border-left: 4px solid #009688;
+  background: linear-gradient(135deg, #e1f5fe 0%, #b3e5fc 100%);
+  border-left: 4px solid #0288d1;
 }
 
 .summary-card.card-pink {
@@ -899,4 +899,13 @@ body.modal-open {
 
 .tab-content {
   animation: fadeIn 0.3s ease;
+}
+
+.\35 2-week-range {
+    font-size: 0.8rem;
+}
+
+.blue_color {
+    color: #1e40af;
+    font-weight: 600;
 }
