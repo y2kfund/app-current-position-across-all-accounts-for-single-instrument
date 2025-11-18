@@ -1114,8 +1114,11 @@ onBeforeUnmount(() => {
                 <div class="summary-value">
                   ${{ currentMarketPrice.toFixed(2) }}
                 </div>
-                <div class="52-week-range">
+                <div class="52-week-range" v-if="week52Low !== null && week52High !== null">
                   52W Range: <span class="blue_color">${{ week52Low.toFixed(2) }}</span> - <span class="blue_color">${{ week52High.toFixed(2) }}</span>
+                </div>
+                <div class="52-week-range" v-else>
+                  52W Range: N/A
                 </div>
                 <div v-if="formattedTimestamp" class="timestamp-info">
                   Updated: {{ formattedTimestamp }}
