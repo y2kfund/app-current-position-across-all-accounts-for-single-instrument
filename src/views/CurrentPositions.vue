@@ -994,6 +994,24 @@ function toggleCapitalDetails() {
   showCapitalDetails.value = !showCapitalDetails.value
 }
 
+function formatDateWithTimePST(dateStr: string): string {
+  if (!dateStr) return ''
+  
+  const date = new Date(dateStr)
+  
+  // Format with PST timezone
+  return new Intl.DateTimeFormat('en-US', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    timeZone: 'America/Los_Angeles',
+    timeZoneName: 'short'
+  }).format(date)
+}
+
 // Watch for when mappings become ready and redraw the table
 watch(isReady, async (ready) => {
   console.log('👀 Mappings ready state changed:', ready)
@@ -1588,6 +1606,8 @@ onBeforeUnmount(() => {
                     <span>•</span>
                     <span>{{ p.internal_account_id || p.legal_entity }}</span>
                     <span v-if="p.market_value">• MV: ${{ formatCurrency(p.market_value) }}</span>
+                    <span> • </span>
+                    <span>{{ formatDateWithTimePST(p.fetched_at) }}</span>
                   </div>
                 </div>
               </div>
