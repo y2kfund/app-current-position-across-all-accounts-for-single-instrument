@@ -6,6 +6,7 @@ import { usePutPositionsQuery } from '@y2kfund/core/putPositionsForSingleInstrum
 import { useCallPositionsQuery } from '@y2kfund/core/callPositionsForSingleInstrument'
 import { useTabulator } from '../composables/useTabulator'
 import { useMarketPrice } from '../composables/useMarketPrice'
+import { useFinancialData } from '../composables/useFinancialData'
 import { useAverageCostPrice } from '../composables/useAverageCostPrice'
 import { useProfitAndLoss } from '../composables/useProfitAndLoss'
 import { useCapitalUsed } from '../composables/useCapitalUsed'
@@ -66,15 +67,16 @@ const firstConid = computed(() => {
 
 // Fetch market price using the composable
 const { marketData, isLoading: isPriceLoading, error: priceError } = useMarketPrice(firstConid, props.symbolRoot)
+const { financialData, isLoading: isFinancialDataLoading, error: financialDataError } = useFinancialData(firstConid, props.symbolRoot)
 
 // Extract current market price from marketData
 const currentMarketPrice = computed(() => marketData.value?.market_price ?? null)
-const week52High = computed(() => marketData.value?.week_52_high ?? null)
-const week52Low = computed(() => marketData.value?.week_52_low ?? null)
-const peRatio = computed(() => marketData.value?.pe_ratio ?? null)
-//const eps = computed(() => marketData.value?.eps ?? null)
-const marketCap = computed(() => marketData.value?.market_cap ?? null)
-const computedPegRatio = computed(() => marketData.value?.computed_peg_ratio ?? null)
+const week52High = computed(() => financialData.value?.week_52_high ?? null)
+const week52Low = computed(() => financialData.value?.week_52_low ?? null)
+const peRatio = computed(() => financialData.value?.pe_ratio ?? null)
+//const eps = computed(() => financialData.value?.eps ?? null)
+const marketCap = computed(() => financialData.value?.market_cap ?? null)
+const computedPegRatio = computed(() => financialData.value?.computed_peg_ratio ?? null)
 const last_fetched_at_market_price = computed(() => marketData.value?.last_fetched_at ?? null)
 
 // Format the timestamp for display with timezone
@@ -1150,10 +1152,10 @@ onBeforeUnmount(() => {
 
             <div class="summary-card card-teal">
               <!--div class="summary-label">Market Info</div-->
-              <div v-if="isPriceLoading" class="summary-value">
+              <div v-if="isFinancialDataLoading" class="summary-value">
                 <span class="loading-spinner">⏳</span> Loading...
               </div>
-              <div v-else-if="priceError" class="summary-value error">
+              <div v-else-if="financialDataError" class="summary-value error">
                 ❌ Error
               </div>
               <div v-else class="summary-value-container-vertical">
