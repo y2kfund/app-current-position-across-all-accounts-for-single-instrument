@@ -87,16 +87,33 @@ export function useAttachedData(userId: string | undefined | null) {
         .select('*')
         //.eq('internal_account_id', accountId)
         .ilike('symbol', `${symbolRoot}%`)
-        .order('tradeDate', { ascending: false })
+        //.order('tradeDate', { ascending: false })
       
       if (error) {
         console.error('❌ Error fetching trades:', error)
         throw error
       }
+
+      const sortedTrades = (trades || []).sort((a, b) => {
+        // Parse DD/MM/YYYY format correctly
+        const parseDate = (dateStr: string): number => {
+          if (!dateStr) return 0
+          const parts = dateStr.split('/')
+          if (parts.length !== 3) return 0
+          // parts[0] = day, parts[1] = month, parts[2] = year
+          const date = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]))
+          return date.getTime()
+        }
+        
+        const dateA = parseDate(a.tradeDate)
+        const dateB = parseDate(b.tradeDate)
+
+        return dateB - dateA // descending order
+      })
       
-      console.log(`✅ Fetched ${trades?.length || 0} trades for ${symbolRoot}`)
+      console.log(`✅ Fetched ${sortedTrades?.length || 0} trades for ${symbolRoot}`)
       
-      const tradesList = trades || []
+      const tradesList = sortedTrades || []
       tradesCache.value.set(symbolRoot, tradesList)
       return tradesList
     } catch (error) {

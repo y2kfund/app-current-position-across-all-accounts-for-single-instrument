@@ -1605,9 +1605,9 @@ onBeforeUnmount(() => {
                     <span>{{ p.asset_class }}</span>
                     <span>•</span>
                     <span>{{ p.internal_account_id || p.legal_entity }}</span>
-                    <span v-if="p.market_value">• MV: ${{ formatCurrency(p.market_value) }}</span>
+                    <span v-if="p.market_value">• MV: {{ formatCurrency(p.market_value) }}</span>
                     <span> • </span>
-                    <span>{{ formatDateWithTimePST(p.fetched_at) }}</span>
+                    <span>Fetched at: {{ formatDateWithTimePST(p.fetched_at) }}</span>
                   </div>
                 </div>
               </div>
