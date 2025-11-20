@@ -21,8 +21,8 @@ interface currentPositionsProps {
 }
 
 const props = withDefaults(defineProps<currentPositionsProps>(), {
-  symbolRoot: 'META',
-  userId: '67e578fd-2cf7-48a4-b028-a11a3f89bb9b'
+  symbolRoot: 'SBET',
+  userId: '4fbec15d-2316-4805-b2a4-5cd2115a5ac8'
 })
 
 // State for showing/hiding details
@@ -662,13 +662,23 @@ const { tableDiv, initializeTabulator, isTableInitialized, tabulator } = useTabu
                   title: 'Trade Date', 
                   field: 'tradeDate', 
                   widthGrow: 1,
-                  formatter: (cell: any) => formatTradeDate(cell.getValue())
+                  formatter: (cell: any) => formatTradeDate(cell.getValue()),
+                  sorter: (a: any, b: any) => {
+                    const dateA = new Date(formatTradeDate(a))
+                    const dateB = new Date(formatTradeDate(b))
+                    return dateA.getTime() - dateB.getTime()
+                  }
                 },
                 { 
                   title: 'Settlement Date', 
                   field: 'settleDateTarget', 
                   widthGrow: 1,
-                  formatter: (cell: any) => formatTradeDate(cell.getValue())
+                  formatter: (cell: any) => formatTradeDate(cell.getValue()),
+                  sorter: (a: any, b: any) => {
+                    const dateA = new Date(formatTradeDate(a))
+                    const dateB = new Date(formatTradeDate(b))
+                    return dateA.getTime() - dateB.getTime()
+                  }
                 },
                 { 
                   title: 'Quantity', 
