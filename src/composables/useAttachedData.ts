@@ -156,6 +156,24 @@ export function useAttachedData(userId: string | undefined | null) {
         .ilike('symbol', `${symbolRoot}%`)
         .eq('internal_account_id', accountId)
       if (error) throw error
+
+      const sortedOrders = (orders || []).sort((a, b) => {
+        // Parse DD/MM/YYYY format correctly
+        const parseDate = (dateStr: string): number => {
+          if (!dateStr) return 0
+          const parts = dateStr.split('/')
+          if (parts.length !== 3) return 0
+          // parts[0] = day, parts[1] = month, parts[2] = year
+          const date = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]))
+          return date.getTime()
+        }
+        
+        const dateA = parseDate(a.settleDateTarget)
+        const dateB = parseDate(b.settleDateTarget)
+
+        return dateB - dateA // descending order
+      })
+
       const ordersList = orders || []
       ordersCache.value.set(symbolRoot, ordersList)
       return ordersList

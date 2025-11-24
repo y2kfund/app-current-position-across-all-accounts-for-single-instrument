@@ -919,8 +919,8 @@ const { tableDiv, initializeTabulator, isTableInitialized, tabulator } = useTabu
                   formatter: (cell: any) => formatCurrency(parseFloat(cell.getValue()) || 0)
                 },
                 { 
-                  title: 'Fetched At', 
-                  field: 'fetched_at', 
+                  title: 'Settlement Date', 
+                  field: 'settleDateTarget', 
                   widthGrow: 1,
                   formatter: (cell: any) => formatDateWithTimePST(cell.getValue())
                 }
@@ -1169,6 +1169,24 @@ function formatDateWithTimePST(dateStr: string): string {
     timeZone: 'America/Los_Angeles',
     timeZoneName: 'short'
   }).format(date)
+}
+
+function formatSettleDateTarget(dateStr: string): string {
+  const val = dateStr
+  if (!val) return ''
+  const m = /^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/.exec(String(val).trim())
+  let dt: Date
+  if (m) {
+    const day = Number(m[1])
+    const month = Number(m[2]) - 1
+    let year = Number(m[3])
+    if (year < 100) year += 2000
+    dt = new Date(year, month, day)
+  } else {
+    dt = new Date(val)
+    if (isNaN(dt.getTime())) return String(val)
+  }
+  return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 }
 
 // Watch for when mappings become ready and redraw the table
@@ -1849,7 +1867,7 @@ onBeforeUnmount(() => {
                     <span>{{ o.assetCategory }}</span>
                     <span v-if="o.tradeMoney">• Trade money: {{ formatCurrency(o.tradeMoney) }}</span>
                     <span> • </span>
-                    <span>Fetched at: {{ formatDateWithTimePST(o.fetched_at) }}</span>
+                    <span>Settlement Date: {{ formatSettleDateTarget(o.settleDateTarget) }}</span>
                   </div>
                 </div>
               </div>
