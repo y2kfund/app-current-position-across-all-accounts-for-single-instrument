@@ -922,7 +922,7 @@ const { tableDiv, initializeTabulator, isTableInitialized, tabulator } = useTabu
                   title: 'Settlement Date', 
                   field: 'settleDateTarget', 
                   widthGrow: 1,
-                  formatter: (cell: any) => formatDateWithTimePST(cell.getValue())
+                  formatter: (cell: any) => formatSettleDateTarget(cell.getValue())
                 }
               ]
             })
