@@ -33,6 +33,7 @@ const showCapitalDetails = ref(false)
 
 // State for average price calculation tabs
 const avgPriceCalculationTab = ref<'positions' | 'orders'>('positions')
+const emit = defineEmits(['capitalUsedChanged'])
 
 const supabase = useSupabase()
 
@@ -1208,6 +1209,10 @@ watch(showDetails, async (show) => {
   }
 })
 
+watch(() => totalCapitalUsed.value, (newVal) => {
+  emit('capitalUsedChanged', newVal)
+})
+
 onMounted(() => {
   console.log('📊 CurrentPositions component mounted')
 })
@@ -1373,15 +1378,15 @@ onBeforeUnmount(() => {
                 <div v-if="computedPegRatio !== null" class="subtitle-info" style="font-size: 0.85rem; color: #6c757d; margin-top: 0.25rem;">
                   PEG Ratio: <span class="blue_color">{{ computedPegRatio.toFixed(2) }}</span>
                 </div>
-                <div class="subtitle-info" style="font-size: 0.85rem; color: #6c757d; margin-top: 0.25rem;">
+                <!--div class="subtitle-info" style="font-size: 0.85rem; color: #6c757d; margin-top: 0.25rem;">
                   Debt to equity ratio: <span class="">Coming soon...</span>
-                </div>
+                </div-->
                 <div v-if="marketCap !== null" class="subtitle-info" style="font-size: 0.85rem; color: #6c757d; margin-top: 0.25rem;">
                   Market Cap: <span class="blue_color">${{ (marketCap / 1e9).toFixed(2) }}B</span>
                 </div>
-                <div class="subtitle-info" style="font-size: 0.85rem; color: #6c757d; margin-top: 0.25rem;">
+                <!--div class="subtitle-info" style="font-size: 0.85rem; color: #6c757d; margin-top: 0.25rem;">
                   Price to FCF: <span class="">Coming soon...</span>
-                </div>
+                </div-->
               </div>
             </div>
    
