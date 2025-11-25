@@ -1393,7 +1393,10 @@ onBeforeUnmount(() => {
               </div>
               <div class="summary-value-container-vertical">
                 <div class="summary-value average-cost-price clickable-price" @click="toggleCalculationDetails">
-                  <span v-if="overallAdjustedAvgPrice !== null">
+                  <span v-if="overallAdjustedAvgPriceFromOrders !== null">
+                  ${{ overallAdjustedAvgPriceFromOrders.toFixed(2) }}
+                  </span>
+                  <span v-else-if="overallAdjustedAvgPrice !== null">
                   ${{ overallAdjustedAvgPrice.toFixed(2) }}
                   </span>
                   <span v-else>N/A</span>
