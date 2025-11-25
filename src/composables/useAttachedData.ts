@@ -145,9 +145,9 @@ export function useAttachedData(userId: string | undefined | null) {
   // Fetch orders for a symbol root
   async function fetchOrdersForSymbol(symbolRoot: string, accountId: string): Promise<Order[]> {
     if (!userId) return []
-    if (ordersCache.value.has(symbolRoot)) {
+    /*if (ordersCache.value.has(symbolRoot)) {
       return ordersCache.value.get(symbolRoot) || []
-    }
+    }*/
     try {
       const { data: orders, error } = await supabase
         .schema('hf')
@@ -175,7 +175,7 @@ export function useAttachedData(userId: string | undefined | null) {
       })
 
       const ordersList = orders || []
-      ordersCache.value.set(symbolRoot, ordersList)
+      /*ordersCache.value.set(symbolRoot, ordersList)*/
       return ordersList
     } catch (error) {
       console.error('❌ Error fetching orders:', error)

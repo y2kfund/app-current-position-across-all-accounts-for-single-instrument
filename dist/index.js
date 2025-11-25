@@ -1,7 +1,7 @@
 var Os = Object.defineProperty;
 var Bs = (l, e, t) => e in l ? Os(l, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : l[e] = t;
 var M = (l, e, t) => Bs(l, typeof e != "symbol" ? e + "" : e, t);
-import { inject as Ns, ref as P, watch as _e, nextTick as It, onBeforeUnmount as qi, computed as ee, defineComponent as Vs, onMounted as Is, createElementBlock as T, openBlock as k, createElementVNode as p, createCommentVNode as te, toDisplayString as w, unref as R, createVNode as vt, createTextVNode as ne, normalizeClass as ue, withModifiers as wt, Transition as Ct, withCtx as yt, withDirectives as Ue, vShow as Et, Fragment as we, renderList as Ce, vModelText as Zt } from "vue";
+import { inject as Ns, ref as H, watch as _e, nextTick as It, onBeforeUnmount as qi, computed as Q, defineComponent as Vs, onMounted as Is, createElementBlock as T, openBlock as k, createElementVNode as p, createCommentVNode as ee, toDisplayString as w, unref as R, createVNode as vt, createTextVNode as ne, normalizeClass as ue, withModifiers as wt, Transition as Ct, withCtx as yt, withDirectives as Ue, vShow as Et, Fragment as we, renderList as Ce, vModelText as Zt } from "vue";
 import { useQueryClient as Si, useQuery as Di } from "@tanstack/vue-query";
 import { useSupabase as St, generatePositionMappingKey as Bt, usePositionTradeMappingsQuery as Ws, usePositionPositionMappingsQuery as Gs, usePositionOrderMappingsQuery as $s, savePositionOrderMappings as js, fetchPositionsBySymbolRoot as Ki, savePositionTradeMappings as Us, savePositionPositionMappings as qs } from "@y2kfund/core";
 const Ks = Symbol.for("y2kfund.supabase");
@@ -58,24 +58,24 @@ function Js(l, e) {
         return console.log("📊 No positions found matching criteria"), [];
       console.log(`✅ Found ${m.length} position(s) matching symbol "${r}"`);
       const y = Array.from(
-        new Set(m.map((L) => L.internal_account_id))
+        new Set(m.map((S) => S.internal_account_id))
       ), [E, C] = await Promise.all([
         t.schema("hf").from("user_accounts_master").select("internal_account_id, legal_entity").in("internal_account_id", y),
         l ? t.schema("hf").from("user_account_alias").select("internal_account_id, alias").eq("user_id", l).in("internal_account_id", y) : { data: [], error: null }
       ]);
       E.error && console.warn("⚠️ Error fetching account names:", E.error), C.error && console.warn("⚠️ Error fetching account aliases:", C.error);
-      const z = new Map(
-        (E.data || []).map((L) => [L.internal_account_id, L.legal_entity])
-      ), x = new Map(
-        (C.data || []).map((L) => [L.internal_account_id, L.alias])
-      ), A = m.map((L) => {
-        let N = z.get(L.internal_account_id);
-        return x.has(L.internal_account_id) && (N = x.get(L.internal_account_id)), {
-          ...L,
+      const x = new Map(
+        (E.data || []).map((S) => [S.internal_account_id, S.legal_entity])
+      ), P = new Map(
+        (C.data || []).map((S) => [S.internal_account_id, S.alias])
+      ), z = m.map((S) => {
+        let N = x.get(S.internal_account_id);
+        return P.has(S.internal_account_id) && (N = P.get(S.internal_account_id)), {
+          ...S,
           legal_entity: N
         };
       });
-      return console.log("✅ Successfully enriched positions with account info"), A;
+      return console.log("✅ Successfully enriched positions with account info"), z;
     },
     enabled: !!e && e.trim().length > 0,
     // Only run if symbol provided
@@ -333,7 +333,7 @@ class ae {
     return this.table.module(e);
   }
 }
-class Y {
+class X {
   static elVisible(e) {
     return !(e.offsetWidth <= 0 && e.offsetHeight <= 0);
   }
@@ -380,14 +380,14 @@ let tn = class Xi extends ae {
   containerEventCoords(e) {
     var t = !(e instanceof MouseEvent), i = t ? e.touches[0].pageX : e.pageX, s = t ? e.touches[0].pageY : e.pageY;
     if (this.container !== document.body) {
-      let n = Y.elOffset(this.container);
+      let n = X.elOffset(this.container);
       i -= n.left, s -= n.top;
     }
     return { x: i, y: s };
   }
   elementPositionCoords(e, t = "right") {
-    var i = Y.elOffset(e), s, n, o;
-    switch (this.container !== document.body && (s = Y.elOffset(this.container), i.left -= s.left, i.top -= s.top), t) {
+    var i = X.elOffset(e), s, n, o;
+    switch (this.container !== document.body && (s = X.elOffset(this.container), i.left -= s.left, i.top -= s.top), t) {
       case "right":
         n = i.left + e.offsetWidth, o = i.top - 1;
         break;
@@ -561,7 +561,7 @@ const ut = class ut extends W {
   }
   //apply accessor to row
   transformRow(e, t) {
-    var i = "accessor" + (t.charAt(0).toUpperCase() + t.slice(1)), s = e.getComponent(), n = Y.deepClone(e.data || {});
+    var i = "accessor" + (t.charAt(0).toUpperCase() + t.slice(1)), s = e.getComponent(), n = X.deepClone(e.data || {});
     return this.table.columnManager.traverse(function(o) {
       var r, a, h, d;
       o.modules.accessor && (a = o.modules.accessor[i] || o.modules.accessor.accessor || !1, a && (r = o.getFieldValue(n), r != "undefined" && (d = o.getComponent(), h = typeof a.params == "function" ? a.params(r, n, t, d, s) : a.params, o.setFieldValue(n, a.accessor(r, n, t, h, d, s)))));
@@ -1657,7 +1657,7 @@ class le extends ae {
   }
   //update the rows data
   updateData(e) {
-    var t = this.element && Y.elVisible(this.element), i = {}, s;
+    var t = this.element && X.elVisible(this.element), i = {}, s;
     return new Promise((n, o) => {
       typeof e == "string" && (e = JSON.parse(e)), this.dispatch("row-data-save-before", this), this.subscribed("row-data-changing") && (i = Object.assign(i, this.data), i = Object.assign(i, e)), s = this.chain("row-data-changing", [this, i, e], null, e);
       for (let r in s)
@@ -2289,12 +2289,12 @@ function vn(l, e, t) {
   var i = this, s = e.sheetName || "Sheet1", n = this.dependencyRegistry.lookup("XLSX"), o = n.utils.book_new(), r = new ae(this), a = "compress" in e ? e.compress : !0, h = e.writeOptions || { bookType: "xlsx", bookSST: !0, compression: a }, d;
   h.type = "binary", o.SheetNames = [], o.Sheets = {};
   function c() {
-    var b = [], y = [], E = {}, C = { s: { c: 0, r: 0 }, e: { c: l[0] ? l[0].columns.reduce((z, x) => z + (x && x.width ? x.width : 1), 0) : 0, r: l.length } };
-    return l.forEach((z, x) => {
-      var A = [];
-      z.columns.forEach(function(L, N) {
-        L ? (A.push(!(L.value instanceof Date) && typeof L.value == "object" ? JSON.stringify(L.value) : L.value), (L.width > 1 || L.height > -1) && (L.height > 1 || L.width > 1) && y.push({ s: { r: x, c: N }, e: { r: x + L.height - 1, c: N + L.width - 1 } })) : A.push("");
-      }), b.push(A);
+    var b = [], y = [], E = {}, C = { s: { c: 0, r: 0 }, e: { c: l[0] ? l[0].columns.reduce((x, P) => x + (P && P.width ? P.width : 1), 0) : 0, r: l.length } };
+    return l.forEach((x, P) => {
+      var z = [];
+      x.columns.forEach(function(S, N) {
+        S ? (z.push(!(S.value instanceof Date) && typeof S.value == "object" ? JSON.stringify(S.value) : S.value), (S.width > 1 || S.height > -1) && (S.height > 1 || S.width > 1) && y.push({ s: { r: P, c: N }, e: { r: P + S.height - 1, c: N + S.width - 1 } })) : z.push("");
+      }), b.push(z);
     }), n.utils.sheet_add_aoa(E, b), E["!ref"] = n.utils.encode_range(C), y.length && (E["!merges"] = y), E;
   }
   if (e.sheetOnly) {
@@ -3075,19 +3075,19 @@ function Dn(l, e, t, i, s) {
 function _n(l, e, t, i, s) {
   var n = this, o = l.getElement(), r = l.getValue(), a = o.getElementsByTagName("svg").length || 5, h = o.getElementsByTagName("svg")[0] ? o.getElementsByTagName("svg")[0].getAttribute("width") : 14, d = [], c = document.createElement("div"), u = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   function m(C) {
-    d.forEach(function(z, x) {
-      x < C ? (n.table.browser == "ie" ? z.setAttribute("class", "tabulator-star-active") : z.classList.replace("tabulator-star-inactive", "tabulator-star-active"), z.innerHTML = '<polygon fill="#488CE9" stroke="#014AAE" stroke-width="37.6152" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="259.216,29.942 330.27,173.919 489.16,197.007 374.185,309.08 401.33,467.31 259.216,392.612 117.104,467.31 144.25,309.08 29.274,197.007 188.165,173.919 "/>') : (n.table.browser == "ie" ? z.setAttribute("class", "tabulator-star-inactive") : z.classList.replace("tabulator-star-active", "tabulator-star-inactive"), z.innerHTML = '<polygon fill="#010155" stroke="#686868" stroke-width="37.6152" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="259.216,29.942 330.27,173.919 489.16,197.007 374.185,309.08 401.33,467.31 259.216,392.612 117.104,467.31 144.25,309.08 29.274,197.007 188.165,173.919 "/>');
+    d.forEach(function(x, P) {
+      P < C ? (n.table.browser == "ie" ? x.setAttribute("class", "tabulator-star-active") : x.classList.replace("tabulator-star-inactive", "tabulator-star-active"), x.innerHTML = '<polygon fill="#488CE9" stroke="#014AAE" stroke-width="37.6152" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="259.216,29.942 330.27,173.919 489.16,197.007 374.185,309.08 401.33,467.31 259.216,392.612 117.104,467.31 144.25,309.08 29.274,197.007 188.165,173.919 "/>') : (n.table.browser == "ie" ? x.setAttribute("class", "tabulator-star-inactive") : x.classList.replace("tabulator-star-active", "tabulator-star-inactive"), x.innerHTML = '<polygon fill="#010155" stroke="#686868" stroke-width="37.6152" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="259.216,29.942 330.27,173.919 489.16,197.007 374.185,309.08 401.33,467.31 259.216,392.612 117.104,467.31 144.25,309.08 29.274,197.007 188.165,173.919 "/>');
     });
   }
   function b(C) {
-    var z = document.createElement("span"), x = u.cloneNode(!0);
-    d.push(x), z.addEventListener("mouseenter", function(A) {
-      A.stopPropagation(), A.stopImmediatePropagation(), m(C);
-    }), z.addEventListener("mousemove", function(A) {
-      A.stopPropagation(), A.stopImmediatePropagation();
-    }), z.addEventListener("click", function(A) {
-      A.stopPropagation(), A.stopImmediatePropagation(), t(C), o.blur();
-    }), z.appendChild(x), c.appendChild(z);
+    var x = document.createElement("span"), P = u.cloneNode(!0);
+    d.push(P), x.addEventListener("mouseenter", function(z) {
+      z.stopPropagation(), z.stopImmediatePropagation(), m(C);
+    }), x.addEventListener("mousemove", function(z) {
+      z.stopPropagation(), z.stopImmediatePropagation();
+    }), x.addEventListener("click", function(z) {
+      z.stopPropagation(), z.stopImmediatePropagation(), t(C), o.blur();
+    }), x.appendChild(P), c.appendChild(x);
   }
   function y(C) {
     r = C, m(C);
@@ -3297,7 +3297,7 @@ const xt = class xt extends W {
     if (t < e.cells.length - 1)
       for (var s = t + 1; s < e.cells.length; s++) {
         let n = e.cells[s];
-        if (n.column.modules.edit && Y.elVisible(n.getElement()) && this.allowEdit(n)) {
+        if (n.column.modules.edit && X.elVisible(n.getElement()) && this.allowEdit(n)) {
           i = n;
           break;
         }
@@ -3309,7 +3309,7 @@ const xt = class xt extends W {
     if (t > 0)
       for (var s = t - 1; s >= 0; s--) {
         let n = e.cells[s];
-        if (n.column.modules.edit && Y.elVisible(n.getElement()) && this.allowEdit(n)) {
+        if (n.column.modules.edit && X.elVisible(n.getElement()) && this.allowEdit(n)) {
           i = n;
           break;
         }
@@ -3431,8 +3431,8 @@ const xt = class xt extends W {
     }
     function u(C) {
       if (s.currentCell === e && !a) {
-        var z = s.chain("edit-success", [e, C], !0, !0);
-        return z === !0 || s.table.options.validationMode === "highlight" ? (a = !0, s.clearEditor(), e.modules.edit || (e.modules.edit = {}), e.modules.edit.edited = !0, s.editedCells.indexOf(e) == -1 && s.editedCells.push(e), C = s.transformEmptyValues(C, e), e.setValue(C, !0), z === !0) : (a = !0, s.invalidEdit = !0, s.focusCellNoEvent(e, !0), o(), setTimeout(() => {
+        var x = s.chain("edit-success", [e, C], !0, !0);
+        return x === !0 || s.table.options.validationMode === "highlight" ? (a = !0, s.clearEditor(), e.modules.edit || (e.modules.edit = {}), e.modules.edit.edited = !0, s.editedCells.indexOf(e) == -1 && s.editedCells.push(e), C = s.transformEmptyValues(C, e), e.setValue(C, !0), x === !0) : (a = !0, s.invalidEdit = !0, s.focusCellNoEvent(e, !0), o(), setTimeout(() => {
           a = !1;
         }, 10), !1);
       }
@@ -4008,8 +4008,8 @@ const Ge = class Ge extends W {
         }), h.addEventListener("click", function(C) {
           C.stopPropagation(), h.focus();
         }), h.addEventListener("focus", (C) => {
-          var z = this.table.columnManager.contentsElement.scrollLeft, x = this.table.rowManager.element.scrollLeft;
-          z !== x && (this.table.rowManager.scrollHorizontal(z), this.table.columnManager.scrollHorizontal(z));
+          var x = this.table.columnManager.contentsElement.scrollLeft, P = this.table.rowManager.element.scrollLeft;
+          x !== P && (this.table.rowManager.scrollHorizontal(x), this.table.columnManager.scrollHorizontal(x));
         }), c = !1, u = function(C) {
           c && clearTimeout(c), c = setTimeout(function() {
             n(h.value);
@@ -4208,7 +4208,7 @@ function Gn(l, e, t) {
         break;
     }
   if (o) {
-    if (e.urlField && (a = l.getData(), i = Y.retrieveNestedData(this.table.options.nestedFieldSeparator, e.urlField, a)), e.url)
+    if (e.urlField && (a = l.getData(), i = X.retrieveNestedData(this.table.options.nestedFieldSeparator, e.urlField, a)), e.url)
       switch (typeof e.url) {
         case "string":
           i = e.url;
@@ -4403,7 +4403,7 @@ function no(l, e, t) {
 function oo(l, e, t) {
   var i = e.delimiter || ",", s = l.getValue(), n = this.table, o;
   return e.valueMap && (typeof e.valueMap == "string" ? o = function(r) {
-    return r.map((a) => Y.retrieveNestedData(n.options.nestedFieldSeparator, e.valueMap, a));
+    return r.map((a) => X.retrieveNestedData(n.options.nestedFieldSeparator, e.valueMap, a));
   } : o = e.valueMap), Array.isArray(s) ? (o && (s = o(s)), s.join(i)) : s;
 }
 function ro(l, e, t) {
@@ -4919,7 +4919,7 @@ class dt {
     (!this.initialized || e) && (this.normalizeHeight(), this.initialized = !0);
   }
   reinitialize() {
-    this.initialized = !1, this.height = 0, Y.elVisible(this.element) && this.initialize(!0);
+    this.initialized = !1, this.height = 0, X.elVisible(this.element) && this.initialize(!0);
   }
   setHeight(e) {
     this.height != e && (this.height = e, this.outerHeight = this.element.offsetHeight);
@@ -5885,7 +5885,7 @@ class as extends W {
   initializeColumn(e) {
     var t = this, i = {}, s;
     !e.modules.frozen && !e.isGroup && !e.isRowHeader && (s = e.getElement(), i.mousemove = (function(n) {
-      e.parent === t.moving.parent && ((t.touchMove ? n.touches[0].pageX : n.pageX) - Y.elOffset(s).left + t.table.columnManager.contentsElement.scrollLeft > e.getWidth() / 2 ? (t.toCol !== e || !t.toColAfter) && (s.parentNode.insertBefore(t.placeholderElement, s.nextSibling), t.moveColumn(e, !0)) : (t.toCol !== e || t.toColAfter) && (s.parentNode.insertBefore(t.placeholderElement, s), t.moveColumn(e, !1)));
+      e.parent === t.moving.parent && ((t.touchMove ? n.touches[0].pageX : n.pageX) - X.elOffset(s).left + t.table.columnManager.contentsElement.scrollLeft > e.getWidth() / 2 ? (t.toCol !== e || !t.toColAfter) && (s.parentNode.insertBefore(t.placeholderElement, s.nextSibling), t.moveColumn(e, !0)) : (t.toCol !== e || t.toColAfter) && (s.parentNode.insertBefore(t.placeholderElement, s), t.moveColumn(e, !1)));
     }).bind(t), s.addEventListener("mousedown", function(n) {
       t.touchMove = !1, n.which === 1 && (t.checkTimeout = setTimeout(function() {
         t.startMove(n, e);
@@ -5909,7 +5909,7 @@ class as extends W {
   }
   startMove(e, t) {
     var i = t.getElement(), s = this.table.columnManager.getContentsElement(), n = this.table.columnManager.getHeadersElement();
-    this.table.modules.selectRange && this.table.modules.selectRange.columnSelection && this.table.modules.selectRange.mousedown && this.table.modules.selectRange.selecting === "column" || (this.moving = t, this.startX = (this.touchMove ? e.touches[0].pageX : e.pageX) - Y.elOffset(i).left, this.table.element.classList.add("tabulator-block-select"), this.placeholderElement.style.width = t.getWidth() + "px", this.placeholderElement.style.height = t.getHeight() + "px", i.parentNode.insertBefore(this.placeholderElement, i), i.parentNode.removeChild(i), this.hoverElement = i.cloneNode(!0), this.hoverElement.classList.add("tabulator-moving"), s.appendChild(this.hoverElement), this.hoverElement.style.left = "0", this.hoverElement.style.bottom = s.clientHeight - n.offsetHeight + "px", this.touchMove || (this._bindMouseMove(), document.body.addEventListener("mousemove", this.moveHover), document.body.addEventListener("mouseup", this.endMove)), this.moveHover(e), this.dispatch("column-moving", e, this.moving));
+    this.table.modules.selectRange && this.table.modules.selectRange.columnSelection && this.table.modules.selectRange.mousedown && this.table.modules.selectRange.selecting === "column" || (this.moving = t, this.startX = (this.touchMove ? e.touches[0].pageX : e.pageX) - X.elOffset(i).left, this.table.element.classList.add("tabulator-block-select"), this.placeholderElement.style.width = t.getWidth() + "px", this.placeholderElement.style.height = t.getHeight() + "px", i.parentNode.insertBefore(this.placeholderElement, i), i.parentNode.removeChild(i), this.hoverElement = i.cloneNode(!0), this.hoverElement.classList.add("tabulator-moving"), s.appendChild(this.hoverElement), this.hoverElement.style.left = "0", this.hoverElement.style.bottom = s.clientHeight - n.offsetHeight + "px", this.touchMove || (this._bindMouseMove(), document.body.addEventListener("mousemove", this.moveHover), document.body.addEventListener("mouseup", this.endMove)), this.moveHover(e), this.dispatch("column-moving", e, this.moving));
   }
   _bindMouseMove() {
     this.table.columnManager.columnsByIndex.forEach(function(e) {
@@ -5935,7 +5935,7 @@ class as extends W {
     (e.which === 1 || this.touchMove) && (this._unbindMouseMove(), this.placeholderElement.parentNode.insertBefore(this.moving.getElement(), this.placeholderElement.nextSibling), this.placeholderElement.parentNode.removeChild(this.placeholderElement), this.hoverElement.parentNode.removeChild(this.hoverElement), this.table.element.classList.remove("tabulator-block-select"), this.toCol && this.table.columnManager.moveColumnActual(this.moving, this.toCol, this.toColAfter), this.moving = !1, this.toCol = !1, this.toColAfter = !1, this.touchMove || (document.body.removeEventListener("mousemove", this.moveHover), document.body.removeEventListener("mouseup", this.endMove)));
   }
   moveHover(e) {
-    var t = this.table.columnManager.getContentsElement(), i = t.scrollLeft, s = (this.touchMove ? e.touches[0].pageX : e.pageX) - Y.elOffset(t).left + i, n;
+    var t = this.table.columnManager.getContentsElement(), i = t.scrollLeft, s = (this.touchMove ? e.touches[0].pageX : e.pageX) - X.elOffset(t).left + i, n;
     this.hoverElement.style.left = s - this.startX + "px", s - i < this.autoScrollMargin && (this.autoScrollTimeout || (this.autoScrollTimeout = setTimeout(() => {
       n = Math.max(0, i - 5), this.table.rowManager.getElement().scrollLeft = n, this.autoScrollTimeout = !1;
     }, 1))), i + t.clientWidth - s < this.autoScrollMargin && (this.autoScrollTimeout || (this.autoScrollTimeout = setTimeout(() => {
@@ -5979,7 +5979,7 @@ const st = class st extends W {
       t.tableRowDrop(s, e);
     }).bind(t), i.mousemove = (function(s) {
       var n;
-      s.pageY - Y.elOffset(e.element).top + t.table.rowManager.element.scrollTop > e.getHeight() / 2 ? (t.toRow !== e || !t.toRowAfter) && (n = e.getElement(), n.parentNode.insertBefore(t.placeholderElement, n.nextSibling), t.moveRow(e, !0)) : (t.toRow !== e || t.toRowAfter) && (n = e.getElement(), n.previousSibling && (n.parentNode.insertBefore(t.placeholderElement, n), t.moveRow(e, !1)));
+      s.pageY - X.elOffset(e.element).top + t.table.rowManager.element.scrollTop > e.getHeight() / 2 ? (t.toRow !== e || !t.toRowAfter) && (n = e.getElement(), n.parentNode.insertBefore(t.placeholderElement, n.nextSibling), t.moveRow(e, !0)) : (t.toRow !== e || t.toRowAfter) && (n = e.getElement(), n.previousSibling && (n.parentNode.insertBefore(t.placeholderElement, n), t.moveRow(e, !1)));
     }).bind(t), e.modules.moveRow = i;
   }
   initializeRow(e) {
@@ -5988,7 +5988,7 @@ const st = class st extends W {
       t.tableRowDrop(n, e);
     }).bind(t), i.mousemove = (function(n) {
       var o = e.getElement();
-      n.pageY - Y.elOffset(o).top + t.table.rowManager.element.scrollTop > e.getHeight() / 2 ? (t.toRow !== e || !t.toRowAfter) && (o.parentNode.insertBefore(t.placeholderElement, o.nextSibling), t.moveRow(e, !0)) : (t.toRow !== e || t.toRowAfter) && (o.parentNode.insertBefore(t.placeholderElement, o), t.moveRow(e, !1));
+      n.pageY - X.elOffset(o).top + t.table.rowManager.element.scrollTop > e.getHeight() / 2 ? (t.toRow !== e || !t.toRowAfter) && (o.parentNode.insertBefore(t.placeholderElement, o.nextSibling), t.moveRow(e, !0)) : (t.toRow !== e || t.toRowAfter) && (o.parentNode.insertBefore(t.placeholderElement, o), t.moveRow(e, !1));
     }).bind(t), this.hasHandle || (s = e.getElement(), s.addEventListener("mousedown", function(n) {
       n.which === 1 && (t.checkTimeout = setTimeout(function() {
         t.startMove(n, e);
@@ -8113,7 +8113,7 @@ function qo(l, e, t, i, s, n, o) {
 function Ko(l, e, t, i, s, n, o) {
   var r = o.type || "length", a = o.alignEmptyValues, h = 0, d = this.table, c;
   o.valueMap && (typeof o.valueMap == "string" ? c = function(m) {
-    return m.map((b) => Y.retrieveNestedData(d.options.nestedFieldSeparator, o.valueMap, b));
+    return m.map((b) => X.retrieveNestedData(d.options.nestedFieldSeparator, o.valueMap, b));
   } : c = o.valueMap);
   function u(m) {
     var b;
@@ -9050,7 +9050,7 @@ class $t extends ae {
     var s = this.rows().indexOf(e), n = e.getElement(), o = 0;
     return new Promise((r, a) => {
       if (s > -1) {
-        if (typeof i > "u" && (i = this.table.options.scrollToRowIfVisible), !i && Y.elVisible(n) && (o = Y.elOffset(n).top - Y.elOffset(this.elementVertical).top, o > 0 && o < this.elementVertical.clientHeight - n.offsetHeight))
+        if (typeof i > "u" && (i = this.table.options.scrollToRowIfVisible), !i && X.elVisible(n) && (o = X.elOffset(n).top - X.elOffset(this.elementVertical).top, o > 0 && o < this.elementVertical.clientHeight - n.offsetHeight))
           return r(), !1;
         switch (typeof t > "u" && (t = this.table.options.scrollToRowPosition), t === "nearest" && (t = this.scrollToRowNearestTop(e) ? "top" : "bottom"), this.scrollToRow(e), t) {
           case "middle":
@@ -9605,7 +9605,7 @@ class sr extends ae {
   }
   //redraw columns
   redraw(e) {
-    Y.elVisible(this.element) && this.verticalAlignHeaders(), e && (this.table.rowManager.resetScroll(), this.table.rowManager.reinitialize()), this.confirm("table-redrawing", e) || this.layoutRefresh(e), this.dispatch("table-redraw", e), this.table.footerManager.redraw();
+    X.elVisible(this.element) && this.verticalAlignHeaders(), e && (this.table.rowManager.resetScroll(), this.table.rowManager.reinitialize()), this.confirm("table-redrawing", e) || this.layoutRefresh(e), this.dispatch("table-redraw", e), this.table.footerManager.redraw();
   }
 }
 class nr extends $t {
@@ -9630,12 +9630,12 @@ class nr extends $t {
     this.clearRows(), e && e(), this.renderRows(), this.rows().length || this.table.rowManager.tableEmpty();
   }
   scrollToRowNearestTop(e) {
-    var t = Y.elOffset(e.getElement()).top;
+    var t = X.elOffset(e.getElement()).top;
     return !(Math.abs(this.elementVertical.scrollTop - t) > Math.abs(this.elementVertical.scrollTop + this.elementVertical.clientHeight - t));
   }
   scrollToRow(e) {
     var t = e.getElement();
-    this.elementVertical.scrollTop = Y.elOffset(t).top - Y.elOffset(this.elementVertical).top + this.elementVertical.scrollTop;
+    this.elementVertical.scrollTop = X.elOffset(t).top - X.elOffset(this.elementVertical).top + this.elementVertical.scrollTop;
   }
   visibleRows(e) {
     return this.rows();
@@ -9715,28 +9715,28 @@ class or extends $t {
   //////////////////////////////////////
   //full virtual render
   _virtualRenderFill(e, t, i) {
-    var s = this.tableElement, n = this.elementVertical, o = 0, r = 0, a = 0, h = 0, d = 0, c = 0, u = this.rows(), m = u.length, b = 0, y, E, C = [], z = 0, x = 0, A = this.table.rowManager.fixedHeight, L = this.elementVertical.clientHeight, N = this.table.options.rowHeight, K = !0;
+    var s = this.tableElement, n = this.elementVertical, o = 0, r = 0, a = 0, h = 0, d = 0, c = 0, u = this.rows(), m = u.length, b = 0, y, E, C = [], x = 0, P = 0, z = this.table.rowManager.fixedHeight, S = this.elementVertical.clientHeight, N = this.table.options.rowHeight, J = !0;
     if (e = e || 0, i = i || 0, !e)
       this.clear();
     else {
       for (; s.firstChild; ) s.removeChild(s.firstChild);
-      h = (m - e + 1) * this.vDomRowHeight, h < L && (e -= Math.ceil((L - h) / this.vDomRowHeight), e < 0 && (e = 0)), o = Math.min(Math.max(Math.floor(this.vDomWindowBuffer / this.vDomRowHeight), this.vDomWindowMinMarginRows), e), e -= o;
+      h = (m - e + 1) * this.vDomRowHeight, h < S && (e -= Math.ceil((S - h) / this.vDomRowHeight), e < 0 && (e = 0)), o = Math.min(Math.max(Math.floor(this.vDomWindowBuffer / this.vDomRowHeight), this.vDomWindowMinMarginRows), e), e -= o;
     }
-    if (m && Y.elVisible(this.elementVertical)) {
-      for (this.vDomTop = e, this.vDomBottom = e - 1, A || this.table.options.maxHeight ? (N && (x = L / N + this.vDomWindowBuffer / N), x = Math.max(this.vDomWindowMinTotalRows, Math.ceil(x))) : x = m; (x == m || r <= L + this.vDomWindowBuffer || z < this.vDomWindowMinTotalRows) && this.vDomBottom < m - 1; ) {
-        for (C = [], E = document.createDocumentFragment(), c = 0; c < x && this.vDomBottom < m - 1; )
+    if (m && X.elVisible(this.elementVertical)) {
+      for (this.vDomTop = e, this.vDomBottom = e - 1, z || this.table.options.maxHeight ? (N && (P = S / N + this.vDomWindowBuffer / N), P = Math.max(this.vDomWindowMinTotalRows, Math.ceil(P))) : P = m; (P == m || r <= S + this.vDomWindowBuffer || x < this.vDomWindowMinTotalRows) && this.vDomBottom < m - 1; ) {
+        for (C = [], E = document.createDocumentFragment(), c = 0; c < P && this.vDomBottom < m - 1; )
           b = this.vDomBottom + 1, y = u[b], this.styleRow(y, b), y.initialize(!1, !0), !y.heightInitialized && !this.table.options.rowHeight && y.clearCellHeight(), E.appendChild(y.getElement()), C.push(y), this.vDomBottom++, c++;
         if (!C.length)
           break;
-        s.appendChild(E), C.forEach((I) => {
-          I.rendered(), I.heightInitialized || I.calcHeight(!0);
-        }), C.forEach((I) => {
-          I.heightInitialized || I.setCellHeight();
-        }), C.forEach((I) => {
-          a = I.getHeight(), z < o ? d += a : r += a, a > this.vDomWindowBuffer && (this.vDomWindowBuffer = a * 2), z++;
-        }), K = this.table.rowManager.adjustTableSize(), L = this.elementVertical.clientHeight, K && (A || this.table.options.maxHeight) && (N = r / z, x = Math.max(this.vDomWindowMinTotalRows, Math.ceil(L / N + this.vDomWindowBuffer / N)));
+        s.appendChild(E), C.forEach((V) => {
+          V.rendered(), V.heightInitialized || V.calcHeight(!0);
+        }), C.forEach((V) => {
+          V.heightInitialized || V.setCellHeight();
+        }), C.forEach((V) => {
+          a = V.getHeight(), x < o ? d += a : r += a, a > this.vDomWindowBuffer && (this.vDomWindowBuffer = a * 2), x++;
+        }), J = this.table.rowManager.adjustTableSize(), S = this.elementVertical.clientHeight, J && (z || this.table.options.maxHeight) && (N = r / x, P = Math.max(this.vDomWindowMinTotalRows, Math.ceil(S / N + this.vDomWindowBuffer / N)));
       }
-      e ? (this.vDomTopPad = t ? this.vDomRowHeight * this.vDomTop + i : this.scrollTop - d, this.vDomBottomPad = this.vDomBottom == m - 1 ? 0 : Math.max(this.vDomScrollHeight - this.vDomTopPad - r - d, 0)) : (this.vDomTopPad = 0, this.vDomRowHeight = Math.floor((r + d) / z), this.vDomBottomPad = this.vDomRowHeight * (m - this.vDomBottom - 1), this.vDomScrollHeight = d + r + this.vDomBottomPad - L), s.style.paddingTop = this.vDomTopPad + "px", s.style.paddingBottom = this.vDomBottomPad + "px", t && (this.scrollTop = this.vDomTopPad + d + i - (this.elementVertical.scrollWidth > this.elementVertical.clientWidth ? this.elementVertical.offsetHeight - L : 0)), this.scrollTop = Math.min(this.scrollTop, this.elementVertical.scrollHeight - L), this.elementVertical.scrollWidth > this.elementVertical.clientWidth && t && (this.scrollTop += this.elementVertical.offsetHeight - L), this.vDomScrollPosTop = this.scrollTop, this.vDomScrollPosBottom = this.scrollTop, n.scrollTop = this.scrollTop, this.dispatch("render-virtual-fill");
+      e ? (this.vDomTopPad = t ? this.vDomRowHeight * this.vDomTop + i : this.scrollTop - d, this.vDomBottomPad = this.vDomBottom == m - 1 ? 0 : Math.max(this.vDomScrollHeight - this.vDomTopPad - r - d, 0)) : (this.vDomTopPad = 0, this.vDomRowHeight = Math.floor((r + d) / x), this.vDomBottomPad = this.vDomRowHeight * (m - this.vDomBottom - 1), this.vDomScrollHeight = d + r + this.vDomBottomPad - S), s.style.paddingTop = this.vDomTopPad + "px", s.style.paddingBottom = this.vDomBottomPad + "px", t && (this.scrollTop = this.vDomTopPad + d + i - (this.elementVertical.scrollWidth > this.elementVertical.clientWidth ? this.elementVertical.offsetHeight - S : 0)), this.scrollTop = Math.min(this.scrollTop, this.elementVertical.scrollHeight - S), this.elementVertical.scrollWidth > this.elementVertical.clientWidth && t && (this.scrollTop += this.elementVertical.offsetHeight - S), this.vDomScrollPosTop = this.scrollTop, this.vDomScrollPosBottom = this.scrollTop, n.scrollTop = this.scrollTop, this.dispatch("render-virtual-fill");
     }
   }
   _addTopRow(e, t) {
@@ -10001,7 +10001,7 @@ Data:     `, e);
         });
         return;
       } else
-        Y.elVisible(this.element) ? i ? this.reRenderInPosition(this.refreshPipelines.bind(this, e, n, o, i)) : (this.refreshPipelines(e, n, o, i), e || this.table.columnManager.renderer.renderColumns(), this.renderTable(), s.options.layoutColumnsOnNewData && this.table.columnManager.redraw(!0)) : this.refreshPipelines(e, n, o, i), this.dispatch("data-refreshed");
+        X.elVisible(this.element) ? i ? this.reRenderInPosition(this.refreshPipelines.bind(this, e, n, o, i)) : (this.refreshPipelines(e, n, o, i), e || this.table.columnManager.renderer.renderColumns(), this.renderTable(), s.options.layoutColumnsOnNewData && this.table.columnManager.redraw(!0)) : this.refreshPipelines(e, n, o, i), this.dispatch("data-refreshed");
     }
   }
   refreshPipelines(e, t, i, s) {
@@ -10623,21 +10623,21 @@ function br(l, e) {
     return typeof b == "string" ? b.indexOf("%") > -1 ? y = t / 100 * parseInt(b) : y = parseInt(b) : y = b, y;
   }
   function m(b, y, E, C) {
-    var z = [], x = 0, A = 0, L = 0, N = n, K = 0, I = 0, $ = [];
-    function se(V) {
-      return E * (V.column.definition.widthGrow || 1);
+    var x = [], P = 0, z = 0, S = 0, N = n, J = 0, V = 0, j = [];
+    function ie(I) {
+      return E * (I.column.definition.widthGrow || 1);
     }
-    function ie(V) {
-      return u(V.width) - E * (V.column.definition.widthShrink || 0);
+    function se(I) {
+      return u(I.width) - E * (I.column.definition.widthShrink || 0);
     }
-    return b.forEach(function(V, B) {
-      var j = C ? ie(V) : se(V);
-      V.column.minWidth >= j ? z.push(V) : V.column.maxWidth && V.column.maxWidth < j ? (V.width = V.column.maxWidth, y -= V.column.maxWidth, N -= C ? V.column.definition.widthShrink || 1 : V.column.definition.widthGrow || 1, N && (E = Math.floor(y / N))) : ($.push(V), I += C ? V.column.definition.widthShrink || 1 : V.column.definition.widthGrow || 1);
-    }), z.length ? (z.forEach(function(V) {
-      x += C ? V.width - V.column.minWidth : V.column.minWidth, V.width = V.column.minWidth;
-    }), A = y - x, L = I ? Math.floor(A / I) : A, K = m($, A, L, C)) : (K = I ? y - Math.floor(y / I) * I : y, $.forEach(function(V) {
-      V.width = C ? ie(V) : se(V);
-    })), K;
+    return b.forEach(function(I, O) {
+      var G = C ? se(I) : ie(I);
+      I.column.minWidth >= G ? x.push(I) : I.column.maxWidth && I.column.maxWidth < G ? (I.width = I.column.maxWidth, y -= I.column.maxWidth, N -= C ? I.column.definition.widthShrink || 1 : I.column.definition.widthGrow || 1, N && (E = Math.floor(y / N))) : (j.push(I), V += C ? I.column.definition.widthShrink || 1 : I.column.definition.widthGrow || 1);
+    }), x.length ? (x.forEach(function(I) {
+      P += C ? I.width - I.column.minWidth : I.column.minWidth, I.width = I.column.minWidth;
+    }), z = y - P, S = V ? Math.floor(z / V) : z, J = m(j, z, S, C)) : (J = V ? y - Math.floor(y / V) * V : y, j.forEach(function(I) {
+      I.width = C ? se(I) : ie(I);
+    })), J;
   }
   this.table.options.responsiveLayout && this.table.modExists("responsiveLayout", !0) && this.table.modules.responsiveLayout.update(), this.table.rowManager.element.scrollHeight > this.table.rowManager.element.clientHeight && (t -= this.table.rowManager.element.offsetWidth - this.table.rowManager.element.clientWidth), l.forEach(function(b) {
     var y, E, C;
@@ -10729,7 +10729,7 @@ const Lt = class Lt extends W {
     super(e), this.locale = "default", this.lang = !1, this.bindings = {}, this.langList = {}, this.registerTableOption("locale", !1), this.registerTableOption("langs", {});
   }
   initialize() {
-    this.langList = Y.deepClone(Lt.langs), this.table.options.columnDefaults.headerFilterPlaceholder !== !1 && this.setHeaderFilterPlaceholder(this.table.options.columnDefaults.headerFilterPlaceholder);
+    this.langList = X.deepClone(Lt.langs), this.table.options.columnDefaults.headerFilterPlaceholder !== !1 && this.setHeaderFilterPlaceholder(this.table.options.columnDefaults.headerFilterPlaceholder);
     for (let e in this.table.options.langs)
       this.installLang(e, this.table.options.langs[e]);
     this.setLocale(this.table.options.locale), this.registerTableFunction("setLocale", this.setLocale.bind(this)), this.registerTableFunction("getLocale", this.getLocale.bind(this)), this.registerTableFunction("getLang", this.getLang.bind(this));
@@ -10757,7 +10757,7 @@ const Lt = class Lt extends W {
       let i = e.split("-")[0];
       this.langList[i] ? (console.warn("Localization Error - Exact matching locale not found, using closest match: ", e, i), e = i) : (console.warn("Localization Error - Matching locale not found, using default: ", e), e = "default");
     }
-    this.locale = e, this.lang = Y.deepClone(this.langList.default || {}), e != "default" && t(this.langList[e], this.lang), this.dispatchExternal("localized", this.locale, this.lang), this._executeBindings();
+    this.locale = e, this.lang = X.deepClone(this.langList.default || {}), e != "default" && t(this.langList[e], this.lang), this.dispatchExternal("localized", this.locale, this.lang), this._executeBindings();
   }
   //get current locale
   getLocale(e) {
@@ -10860,16 +10860,16 @@ M(ge, "registry", {
   }
 });
 let ki = ge;
-const J = class J extends ki {
+const K = class K extends ki {
   constructor() {
     super();
   }
   static initializeModuleBinder(e) {
-    J.modulesRegistered || (J.modulesRegistered = !0, J._registerModules(Cr, !0), e && J._registerModules(e));
+    K.modulesRegistered || (K.modulesRegistered = !0, K._registerModules(Cr, !0), e && K._registerModules(e));
   }
   static _extendModule(e, t, i) {
-    if (J.moduleBindings[e]) {
-      var s = J.moduleBindings[e][t];
+    if (K.moduleBindings[e]) {
+      var s = K.moduleBindings[e][t];
       if (s)
         if (typeof i == "object")
           for (let n in i)
@@ -10885,51 +10885,51 @@ const J = class J extends ki {
     var i = Object.values(e);
     t && i.forEach((s) => {
       s.prototype.moduleCore = !0;
-    }), J._registerModule(i);
+    }), K._registerModule(i);
   }
   static _registerModule(e) {
     Array.isArray(e) || (e = [e]), e.forEach((t) => {
-      J._registerModuleBinding(t), J._registerModuleExtensions(t);
+      K._registerModuleBinding(t), K._registerModuleExtensions(t);
     });
   }
   static _registerModuleBinding(e) {
-    e.moduleName ? J.moduleBindings[e.moduleName] = e : console.error("Unable to bind module, no moduleName defined", e.moduleName);
+    e.moduleName ? K.moduleBindings[e.moduleName] = e : console.error("Unable to bind module, no moduleName defined", e.moduleName);
   }
   static _registerModuleExtensions(e) {
     var t = e.moduleExtensions;
     if (e.moduleExtensions)
       for (let i in t) {
         let s = t[i];
-        if (J.moduleBindings[i])
+        if (K.moduleBindings[i])
           for (let n in s)
-            J._extendModule(i, n, s[n]);
+            K._extendModule(i, n, s[n]);
         else {
-          J.moduleExtensions[i] || (J.moduleExtensions[i] = {});
+          K.moduleExtensions[i] || (K.moduleExtensions[i] = {});
           for (let n in s)
-            J.moduleExtensions[i][n] || (J.moduleExtensions[i][n] = {}), Object.assign(J.moduleExtensions[i][n], s[n]);
+            K.moduleExtensions[i][n] || (K.moduleExtensions[i][n] = {}), Object.assign(K.moduleExtensions[i][n], s[n]);
         }
       }
-    J._extendModuleFromQueue(e);
+    K._extendModuleFromQueue(e);
   }
   static _extendModuleFromQueue(e) {
-    var t = J.moduleExtensions[e.moduleName];
+    var t = K.moduleExtensions[e.moduleName];
     if (t)
       for (let i in t)
-        J._extendModule(e.moduleName, i, t[i]);
+        K._extendModule(e.moduleName, i, t[i]);
   }
   //ensure that module are bound to instantiated function
   _bindModules() {
     var e = [], t = [], i = [];
     this.modules = {};
-    for (var s in J.moduleBindings) {
-      let n = J.moduleBindings[s], o = new n(this);
+    for (var s in K.moduleBindings) {
+      let n = K.moduleBindings[s], o = new n(this);
       this.modules[s] = o, n.prototype.moduleCore ? this.modulesCore.push(o) : n.moduleInitOrder ? n.moduleInitOrder < 0 ? e.push(o) : t.push(o) : i.push(o);
     }
     e.sort((n, o) => n.moduleInitOrder > o.moduleInitOrder ? 1 : -1), t.sort((n, o) => n.moduleInitOrder > o.moduleInitOrder ? 1 : -1), this.modulesRegular = e.concat(i.concat(t));
   }
 };
-M(J, "moduleBindings", {}), M(J, "moduleExtensions", {}), M(J, "modulesRegistered", !1), M(J, "defaultModules", !1);
-let Mi = J;
+M(K, "moduleBindings", {}), M(K, "moduleExtensions", {}), M(K, "modulesRegistered", !1), M(K, "defaultModules", !1);
+let Mi = K;
 class yr extends ae {
   constructor(e) {
     super(e), this.element = this._createAlertElement(), this.msgElement = this._createMsgElement(), this.type = null, this.element.appendChild(this.msgElement);
@@ -11279,7 +11279,7 @@ class Er extends Rt {
 }
 var Vt = Er;
 function Rr(l) {
-  const e = P(null), t = P(null), i = P(!1), s = P(!1);
+  const e = H(null), t = H(null), i = H(!1), s = H(!1);
   function n() {
     if (!e.value || !l.data.value) {
       console.log("⚠️ Cannot initialize: tableDiv or data missing");
@@ -11342,7 +11342,7 @@ function Rr(l) {
   };
 }
 function xr(l, e) {
-  const t = St(), i = P(null), s = P(!1), n = P(null), o = async (a) => {
+  const t = St(), i = H(null), s = H(!1), n = H(null), o = async (a) => {
     s.value = !0, n.value = null;
     try {
       let h = t.schema("hf").from("market_price").select("symbol, conid, market_price, week_52_high, week_52_low, pe_ratio, eps, market_cap, computed_peg_ratio, last_fetched_at");
@@ -11386,7 +11386,7 @@ function xr(l, e) {
   };
 }
 function Tr(l, e) {
-  const t = St(), i = P(null), s = P(!1), n = P(null), o = async (a) => {
+  const t = St(), i = H(null), s = H(!1), n = H(null), o = async (a) => {
     s.value = !0, n.value = null;
     try {
       let h = t.schema("hf").from("financial_data").select("symbol, conid, week_52_high, week_52_low, pe_ratio, eps, market_cap, computed_peg_ratio, last_updated_at");
@@ -11430,9 +11430,9 @@ function Tr(l, e) {
   };
 }
 function kr(l, e) {
-  const t = St(), i = P(null), s = P(0), n = P(0), o = P(0), r = P(0), a = P([]), h = P([]), d = P(!1), c = P(null), u = P([]), m = ee(() => {
+  const t = St(), i = H(null), s = H(0), n = H(0), o = H(0), r = H(0), a = H([]), h = H([]), d = H(!1), c = H(null), u = H([]), m = Q(() => {
     if (h.value.length === 0) return null;
-    const y = h.value.reduce((C, z) => C + z.netCostExcludingPuts, 0), E = h.value.reduce((C, z) => C + z.mainPosition.quantity, 0);
+    const y = h.value.reduce((C, x) => C + x.netCostExcludingPuts, 0), E = h.value.reduce((C, x) => C + x.mainPosition.quantity, 0);
     return console.log(`🔢 Calculating overall adjusted average: Total Net Cost = $${y}, Total Main Qty = ${E}`), E > 0 ? y / E : null;
   }), b = async () => {
     if (!l.value || l.value.length === 0 || !e) {
@@ -11443,12 +11443,12 @@ function kr(l, e) {
     try {
       console.log("📊 Calculating average cost price for positions:", l.value.length);
       const y = l.value.map(
-        (B) => Bt({
-          internal_account_id: B.internal_account_id,
-          symbol: B.symbol,
-          contract_quantity: B.contract_quantity ?? B.qty,
-          asset_class: B.asset_class,
-          conid: B.conid
+        (O) => Bt({
+          internal_account_id: O.internal_account_id,
+          symbol: O.symbol,
+          contract_quantity: O.contract_quantity ?? O.qty,
+          asset_class: O.asset_class,
+          conid: O.conid
         })
       );
       console.log("🔑 Generated mapping keys:", y);
@@ -11456,56 +11456,56 @@ function kr(l, e) {
       if (C)
         throw new Error(`Failed to fetch position mappings: ${C.message}`);
       u.value = E || [], console.log("🔗 Found mappings:", u.value.length);
-      const z = u.value.map((B) => B.attached_position_key), x = /* @__PURE__ */ new Map();
-      u.value.forEach((B) => {
-        x.has(B.mapping_key) || x.set(B.mapping_key, []), x.get(B.mapping_key).push(B.attached_position_key);
+      const x = u.value.map((O) => O.attached_position_key), P = /* @__PURE__ */ new Map();
+      u.value.forEach((O) => {
+        P.has(O.mapping_key) || P.set(O.mapping_key, []), P.get(O.mapping_key).push(O.attached_position_key);
       });
-      let A = [];
-      if (z.length > 0) {
-        const j = z.map((Q) => {
-          const [me, he, ce, be, rt] = Q.split("|");
+      let z = [];
+      if (x.length > 0) {
+        const G = x.map((Z) => {
+          const [me, he, ce, be, rt] = Z.split("|");
           return { internal_account_id: me, symbol: he, contract_quantity: parseFloat(ce), asset_class: be, conid: rt };
-        }).map(async (Q) => {
-          const { data: me, error: he } = await t.schema("hf").from("positions").select("*").eq("internal_account_id", Q.internal_account_id).eq("symbol", Q.symbol).eq("asset_class", Q.asset_class).eq("conid", Q.conid).order("fetched_at", { ascending: !1 }).limit(1).single();
-          return he ? (console.warn(`⚠️ Failed to fetch attached position for ${Q.symbol}:`, he.message), null) : me;
+        }).map(async (Z) => {
+          const { data: me, error: he } = await t.schema("hf").from("positions").select("*").eq("internal_account_id", Z.internal_account_id).eq("symbol", Z.symbol).eq("asset_class", Z.asset_class).eq("conid", Z.conid).order("fetched_at", { ascending: !1 }).limit(1).single();
+          return he ? (console.warn(`⚠️ Failed to fetch attached position for ${Z.symbol}:`, he.message), null) : me;
         });
-        A = (await Promise.all(j)).filter((Q) => Q !== null), console.log("📦 Fetched attached positions:", A.length);
+        z = (await Promise.all(G)).filter((Z) => Z !== null), console.log("📦 Fetched attached positions:", z.length);
       }
-      let L = 0, N = 0;
-      const K = [], I = [], $ = /* @__PURE__ */ new Map();
-      u.value.forEach((B) => {
-        const j = A.find((q) => Bt({
-          internal_account_id: q.internal_account_id,
-          symbol: q.symbol,
-          contract_quantity: q.contract_quantity ?? q.qty,
-          asset_class: q.asset_class,
-          conid: q.conid
-        }) === B.attached_position_key);
-        j && ($.has(B.mapping_key) || $.set(B.mapping_key, []), $.get(B.mapping_key).push(j));
-      }), o.value = l.value.length, l.value.forEach((B) => {
-        const j = B.accounting_quantity ?? B.qty, q = B.avgPrice ?? 0, Q = q * j, me = Bt({
-          internal_account_id: B.internal_account_id,
-          symbol: B.symbol,
-          contract_quantity: B.contract_quantity ?? B.qty,
-          asset_class: B.asset_class,
-          conid: B.conid
+      let S = 0, N = 0;
+      const J = [], V = [], j = /* @__PURE__ */ new Map();
+      u.value.forEach((O) => {
+        const G = z.find((te) => Bt({
+          internal_account_id: te.internal_account_id,
+          symbol: te.symbol,
+          contract_quantity: te.contract_quantity ?? te.qty,
+          asset_class: te.asset_class,
+          conid: te.conid
+        }) === O.attached_position_key);
+        G && (j.has(O.mapping_key) || j.set(O.mapping_key, []), j.get(O.mapping_key).push(G));
+      }), o.value = l.value.length, l.value.forEach((O) => {
+        const G = O.accounting_quantity ?? O.qty, te = O.avgPrice ?? 0, Z = te * G, me = Bt({
+          internal_account_id: O.internal_account_id,
+          symbol: O.symbol,
+          contract_quantity: O.contract_quantity ?? O.qty,
+          asset_class: O.asset_class,
+          conid: O.conid
         });
-        L += Q, N += j;
+        S += Z, N += G;
         const he = {
-          symbol: B.symbol,
-          avgPrice: q,
-          quantity: j,
-          totalCost: Q,
+          symbol: O.symbol,
+          avgPrice: te,
+          quantity: G,
+          totalCost: Z,
           isAttached: !1,
           mappingKey: me,
-          account: B.legal_entity || B.internal_account_id
+          account: O.legal_entity || O.internal_account_id
         };
-        K.push(he), console.log(`📍 Main position: ${B.symbol} @ ${q} × ${j} = ${Q}`);
-        const ce = $.get(me) || [], be = [], rt = [], _t = [];
-        let at = Q, lt = j, Fe = 0;
+        J.push(he), console.log(`📍 Main position: ${O.symbol} @ ${te} × ${G} = ${Z}`);
+        const ce = j.get(me) || [], be = [], rt = [], _t = [];
+        let at = Z, lt = G, Fe = 0;
         ce.forEach((ve) => {
           const ze = ve.accounting_quantity ?? ve.qty, Ze = ve.avgPrice ?? 0, Pe = Ze * ze;
-          L += Pe, N += ze, at += Pe, lt += ze;
+          S += Pe, N += ze, at += Pe, lt += ze;
           const ht = {
             symbol: ve.symbol,
             avgPrice: Ze,
@@ -11514,12 +11514,12 @@ function kr(l, e) {
             isAttached: !0,
             account: ve.legal_entity || ve.internal_account_id
           };
-          be.push(ht), K.push(ht);
+          be.push(ht), J.push(ht);
           const Me = ve.symbol.toUpperCase(), je = Me.includes(" C ") || Me.includes("C00") || /\sC\b/.test(Me), He = Me.includes(" P ") || Me.includes("P00") || /\sP\b/.test(Me);
           je ? (rt.push(ht), Fe += Pe, console.log(`📞 Call position: ${ve.symbol} @ ${Ze} × ${ze} = ${Pe}`)) : He ? (_t.push(ht), console.log(`� Put position: ${ve.symbol} @ ${Ze} × ${ze} = ${Pe}`)) : console.log(`�🔗 Attached position: ${ve.symbol} @ ${Ze} × ${ze} = ${Pe}`);
         });
-        const fe = Q - Math.abs(Fe), Ft = j > 0 ? fe / j : 0;
-        console.log(`📊 Client: ${he.account}`), console.log(`   Main Cost: $${Q.toFixed(2)}`), console.log(`   Call Costs: $${Fe.toFixed(2)} (absolute: $${Math.abs(Fe).toFixed(2)})`), console.log(`   Net Cost (excl. puts): $${fe.toFixed(2)}`), console.log(`   Adjusted Avg Price: $${Ft.toFixed(2)} per share`), I.push({
+        const fe = Z - Math.abs(Fe), Ft = G > 0 ? fe / G : 0;
+        console.log(`📊 Client: ${he.account}`), console.log(`   Main Cost: $${Z.toFixed(2)}`), console.log(`   Call Costs: $${Fe.toFixed(2)} (absolute: $${Math.abs(Fe).toFixed(2)})`), console.log(`   Net Cost (excl. puts): $${fe.toFixed(2)}`), console.log(`   Adjusted Avg Price: $${Ft.toFixed(2)} per share`), V.push({
           mainPosition: he,
           attachedPositions: be,
           callPositions: rt,
@@ -11530,9 +11530,9 @@ function kr(l, e) {
           netCostExcludingPuts: fe,
           adjustedAvgPricePerShare: Ft
         });
-      }), a.value = K, h.value = I, r.value = A.length, s.value = L, n.value = N, N > 0 ? (i.value = L / N, console.log(`✅ Standard Average Cost Price: $${i.value.toFixed(2)} (Total: $${L} / Qty: ${N})`)) : (i.value = null, console.log("⚠️ Total quantity is 0, cannot calculate average"));
-      const se = I.reduce((B, j) => B + j.netCostExcludingPuts, 0), ie = I.reduce((B, j) => B + j.mainPosition.quantity, 0), V = ie > 0 ? se / ie : null;
-      V !== null && console.log(`🎯 Overall Adjusted Average: $${V.toFixed(2)} per share (Net: $${se.toFixed(2)} / Main Qty: ${ie})`);
+      }), a.value = J, h.value = V, r.value = z.length, s.value = S, n.value = N, N > 0 ? (i.value = S / N, console.log(`✅ Standard Average Cost Price: $${i.value.toFixed(2)} (Total: $${S} / Qty: ${N})`)) : (i.value = null, console.log("⚠️ Total quantity is 0, cannot calculate average"));
+      const ie = V.reduce((O, G) => O + G.netCostExcludingPuts, 0), se = V.reduce((O, G) => O + G.mainPosition.quantity, 0), I = se > 0 ? ie / se : null;
+      I !== null && console.log(`🎯 Overall Adjusted Average: $${I.toFixed(2)} per share (Net: $${ie.toFixed(2)} / Main Qty: ${se})`);
     } catch (y) {
       c.value = y instanceof Error ? y.message : "Failed to calculate average cost price", console.error("❌ Error calculating average cost price:", y), i.value = null;
     } finally {
@@ -11559,8 +11559,8 @@ function kr(l, e) {
     refetch: b
   };
 }
-function Mr(l, e, t, i = P(void 0), s = P(void 0)) {
-  const n = P(null), o = P(null), r = P(null), a = P(null), h = P(!1), d = P(!1), c = P(null), u = () => {
+function Mr(l, e, t, i = H(void 0), s = H(void 0)) {
+  const n = H(null), o = H(null), r = H(null), a = H(null), h = H(!1), d = H(!1), c = H(null), u = () => {
     const b = [
       ...i.value || [],
       ...s.value || []
@@ -11568,58 +11568,58 @@ function Mr(l, e, t, i = P(void 0), s = P(void 0)) {
     if (b.length === 0)
       return console.log("⚠️ No options positions available for P&L calculation"), null;
     console.log("📊 Calculating options P&L for positions:", b.length);
-    let y = 0, E = 0, C = 0, z = 0;
-    const x = [], A = /* @__PURE__ */ new Set(), L = /* @__PURE__ */ new Set();
-    b.forEach(($) => {
-      const se = $.accounting_quantity ?? $.qty, ie = $.legal_entity || $.internal_account_id;
-      let V = null, B = null, j = "UNKNOWN";
-      const q = $.symbol.match(/(\d{4}-\d{2}-\d{2})\s+(\d+(?:\.\d+)?)\s+([CP])/);
-      if (q)
-        B = q[1], V = parseFloat(q[2]), j = q[3] === "C" ? "CALL" : "PUT";
+    let y = 0, E = 0, C = 0, x = 0;
+    const P = [], z = /* @__PURE__ */ new Set(), S = /* @__PURE__ */ new Set();
+    b.forEach((j) => {
+      const ie = j.accounting_quantity ?? j.qty, se = j.legal_entity || j.internal_account_id;
+      let I = null, O = null, G = "UNKNOWN";
+      const te = j.symbol.match(/(\d{4}-\d{2}-\d{2})\s+(\d+(?:\.\d+)?)\s+([CP])/);
+      if (te)
+        O = te[1], I = parseFloat(te[2]), G = te[3] === "C" ? "CALL" : "PUT";
       else {
-        const ce = $.symbol.match(/([CP])(\d{8})/);
+        const ce = j.symbol.match(/([CP])(\d{8})/);
         if (ce) {
-          j = ce[1] === "C" ? "CALL" : "PUT";
+          G = ce[1] === "C" ? "CALL" : "PUT";
           const be = ce[2];
-          V = parseFloat(be) / 1e3;
+          I = parseFloat(be) / 1e3;
         }
       }
-      A.add(j), L.add(se < 0 ? "SHORT" : "LONG");
-      const Q = Math.abs($.computed_cash_flow_on_entry || 0), me = Math.abs($.market_value || 0), he = $.unrealized_pnl || 0;
-      y += Math.abs(se), E += Q, C += me, z += he, x.push({
-        account: ie,
-        strike: V,
-        expiry: B,
-        quantity: se,
-        premiumReceived: Q,
+      z.add(G), S.add(ie < 0 ? "SHORT" : "LONG");
+      const Z = Math.abs(j.computed_cash_flow_on_entry || 0), me = Math.abs(j.market_value || 0), he = j.unrealized_pnl || 0;
+      y += Math.abs(ie), E += Z, C += me, x += he, P.push({
+        account: se,
+        strike: I,
+        expiry: O,
+        quantity: ie,
+        premiumReceived: Z,
         currentValue: me,
         positionPnL: he,
-        symbol: $.symbol
-      }), console.log(`📍 Position: ${$.symbol} (${ie})`), console.log(`   Quantity: ${se}`), console.log(`   Premium Received: $${Q.toFixed(2)}`), console.log(`   Current Value: $${me.toFixed(2)}`), console.log(`   P&L: $${he.toFixed(2)}`);
+        symbol: j.symbol
+      }), console.log(`📍 Position: ${j.symbol} (${se})`), console.log(`   Quantity: ${ie}`), console.log(`   Premium Received: $${Z.toFixed(2)}`), console.log(`   Current Value: $${me.toFixed(2)}`), console.log(`   P&L: $${he.toFixed(2)}`);
     });
-    const N = A.size === 1 ? Array.from(A)[0] : "MIXED", K = L.size === 1 ? Array.from(L)[0] : "MIXED", I = E > 0 ? z / E * 100 : 0;
-    return console.log("💰 Options P&L Summary:"), console.log(`   Total Contracts: ${y}`), console.log(`   Total Premium Received: $${E.toFixed(2)}`), console.log(`   Current Market Liability: $${C.toFixed(2)}`), console.log(`   Unrealized P&L: $${z.toFixed(2)}`), console.log(`   P&L Percentage: ${I.toFixed(2)}%`), {
+    const N = z.size === 1 ? Array.from(z)[0] : "MIXED", J = S.size === 1 ? Array.from(S)[0] : "MIXED", V = E > 0 ? x / E * 100 : 0;
+    return console.log("💰 Options P&L Summary:"), console.log(`   Total Contracts: ${y}`), console.log(`   Total Premium Received: $${E.toFixed(2)}`), console.log(`   Current Market Liability: $${C.toFixed(2)}`), console.log(`   Unrealized P&L: $${x.toFixed(2)}`), console.log(`   P&L Percentage: ${V.toFixed(2)}%`), {
       totalContracts: y,
       optionType: N,
-      positionType: K,
+      positionType: J,
       totalPremiumReceived: E,
       currentMarketLiability: C,
-      unrealizedPnL: z,
-      pnlPercentage: I,
-      positions: x
+      unrealizedPnL: x,
+      pnlPercentage: V,
+      positions: P
     };
-  }, m = ee(() => {
+  }, m = Q(() => {
     if (e.value > 0 && l.value !== null && t.value !== null) {
       console.log("📈 Calculating STOCK P&L");
-      const b = e.value, y = l.value, E = t.value, C = b * y, z = b * E, x = z - C, A = C !== 0 ? x / C * 100 : 0;
+      const b = e.value, y = l.value, E = t.value, C = b * y, x = b * E, P = x - C, z = C !== 0 ? P / C * 100 : 0;
       return {
         totalShares: b,
         avgCostPerShare: y,
         totalCostBasis: C,
         currentPricePerShare: E,
-        currentMarketValue: z,
-        unrealizedPnL: x,
-        pnlPercentage: A
+        currentMarketValue: x,
+        unrealizedPnL: P,
+        pnlPercentage: z
       };
     } else
       return console.log("📊 No stock positions, calculating OPTIONS P&L"), u();
@@ -11643,7 +11643,7 @@ function Mr(l, e, t, i = P(void 0), s = P(void 0)) {
 }
 function Lr(l, e, t, i, s, n) {
   console.log("🏦 useCapitalUsed initialized");
-  const o = ee(() => !1), r = ee(() => null), a = ee(() => {
+  const o = Q(() => !1), r = Q(() => null), a = Q(() => {
     const d = l.value;
     if (console.log("🏦 Calculating capital breakdown for asset type:", d), d === "STK") {
       const c = e.value, u = t.value;
@@ -11662,7 +11662,7 @@ function Lr(l, e, t, i, s, n) {
       };
     }
     return d === "OPT" ? (console.log("⚠️ Options capital calculation not implemented yet"), null) : (console.log("⚠️ Unknown or null asset type, cannot calculate capital"), null);
-  }), h = ee(() => {
+  }), h = Q(() => {
     const d = a.value;
     return d && d.assetType === "STK" ? d.totalCapital : null;
   });
@@ -11674,17 +11674,18 @@ function Lr(l, e, t, i, s, n) {
   };
 }
 function Sr(l) {
-  const e = St(), t = Ws(l), i = Gs(l), s = $s(l), n = ee(() => {
+  const e = St(), t = Ws(l), i = Gs(l), s = $s(l), n = Q(() => {
     const x = t.data.value;
     return x || /* @__PURE__ */ new Map();
-  }), o = ee(() => {
+  }), o = Q(() => {
     const x = i.data.value;
     return x || /* @__PURE__ */ new Map();
-  }), r = ee(() => {
+  }), r = Q(() => {
     const x = s.data.value;
     return x || /* @__PURE__ */ new Map();
-  }), a = P(/* @__PURE__ */ new Map()), h = P(/* @__PURE__ */ new Map()), d = P(/* @__PURE__ */ new Map());
-  function c(x) {
+  }), a = H(/* @__PURE__ */ new Map()), h = H(/* @__PURE__ */ new Map());
+  H(/* @__PURE__ */ new Map());
+  function d(x) {
     return Bt({
       internal_account_id: x.internal_account_id,
       symbol: x.symbol,
@@ -11693,119 +11694,117 @@ function Sr(l) {
       conid: x.conid || ""
     });
   }
-  function u(x) {
+  function c(x) {
     if (!x) return null;
-    const A = x.match(/^([A-Z]+)\b/);
-    return (A == null ? void 0 : A[1]) || null;
+    const P = x.match(/^([A-Z]+)\b/);
+    return (P == null ? void 0 : P[1]) || null;
   }
-  async function m(x, A) {
+  async function u(x, P) {
     if (!l) return [];
     if (h.value.has(x))
       return h.value.get(x) || [];
     try {
       console.log("🔍 Fetching trades for symbol root:", x);
-      const { data: L, error: N } = await e.schema("hf").from("trades").select("*").ilike("symbol", `${x}%`);
-      if (N)
-        throw console.error("❌ Error fetching trades:", N), N;
-      const K = (L || []).sort(($, se) => {
-        const ie = (j) => {
-          if (!j) return 0;
-          const q = j.split("/");
-          return q.length !== 3 ? 0 : new Date(parseInt(q[2]), parseInt(q[1]) - 1, parseInt(q[0])).getTime();
-        }, V = ie($.tradeDate);
-        return ie(se.tradeDate) - V;
+      const { data: z, error: S } = await e.schema("hf").from("trades").select("*").ilike("symbol", `${x}%`);
+      if (S)
+        throw console.error("❌ Error fetching trades:", S), S;
+      const N = (z || []).sort((V, j) => {
+        const ie = (O) => {
+          if (!O) return 0;
+          const G = O.split("/");
+          return G.length !== 3 ? 0 : new Date(parseInt(G[2]), parseInt(G[1]) - 1, parseInt(G[0])).getTime();
+        }, se = ie(V.tradeDate);
+        return ie(j.tradeDate) - se;
       });
-      console.log(`✅ Fetched ${(K == null ? void 0 : K.length) || 0} trades for ${x}`);
-      const I = K || [];
-      return h.value.set(x, I), I;
-    } catch (L) {
-      return console.error("❌ Error fetching trades:", L), [];
+      console.log(`✅ Fetched ${(N == null ? void 0 : N.length) || 0} trades for ${x}`);
+      const J = N || [];
+      return h.value.set(x, J), J;
+    } catch (z) {
+      return console.error("❌ Error fetching trades:", z), [];
     }
   }
-  async function b(x, A) {
+  async function m(x, P) {
     if (!l) return [];
-    if (d.value.has(x))
-      return d.value.get(x) || [];
     try {
-      const { data: L, error: N } = await e.schema("hf").from("orders").select("*").ilike("symbol", `${x}%`).eq("internal_account_id", A);
-      if (N) throw N;
-      const K = (L || []).sort(($, se) => {
-        const ie = (j) => {
-          if (!j) return 0;
-          const q = j.split("/");
-          return q.length !== 3 ? 0 : new Date(parseInt(q[2]), parseInt(q[1]) - 1, parseInt(q[0])).getTime();
-        }, V = ie($.settleDateTarget);
-        return ie(se.settleDateTarget) - V;
-      }), I = L || [];
-      return d.value.set(x, I), I;
-    } catch (L) {
-      return console.error("❌ Error fetching orders:", L), [];
+      const { data: z, error: S } = await e.schema("hf").from("orders").select("*").ilike("symbol", `${x}%`).eq("internal_account_id", P);
+      if (S) throw S;
+      const N = (z || []).sort((V, j) => {
+        const ie = (O) => {
+          if (!O) return 0;
+          const G = O.split("/");
+          return G.length !== 3 ? 0 : new Date(parseInt(G[2]), parseInt(G[1]) - 1, parseInt(G[0])).getTime();
+        }, se = ie(V.settleDateTarget);
+        return ie(j.settleDateTarget) - se;
+      });
+      return z || [];
+    } catch (z) {
+      return console.error("❌ Error fetching orders:", z), [];
     }
+  }
+  async function b(x) {
+    const P = d(x), z = n.value.get(P);
+    if (console.log("🔍 Getting attached trades for key:", P), console.log("🔍 Trade IDs from map:", z ? Array.from(z) : "none"), !z || z.size === 0)
+      return [];
+    const S = c(x.symbol);
+    if (!S) return [];
+    const N = await u(S, x.internal_account_id);
+    console.log(`📊 Total trades fetched: ${N.length}`), console.log("📊 Sample trade IDs:", N.slice(0, 3).map((V) => V.tradeID));
+    const J = N.filter((V) => {
+      const j = V.tradeID;
+      return j && z.has(String(j));
+    });
+    return console.log(`✅ Found ${J.length} attached trades`), J;
   }
   async function y(x) {
-    const A = c(x), L = n.value.get(A);
-    if (console.log("🔍 Getting attached trades for key:", A), console.log("🔍 Trade IDs from map:", L ? Array.from(L) : "none"), !L || L.size === 0)
-      return [];
-    const N = u(x.symbol);
-    if (!N) return [];
-    const K = await m(N, x.internal_account_id);
-    console.log(`📊 Total trades fetched: ${K.length}`), console.log("📊 Sample trade IDs:", K.slice(0, 3).map(($) => $.tradeID));
-    const I = K.filter(($) => {
-      const se = $.tradeID;
-      return se && L.has(String(se));
-    });
-    return console.log(`✅ Found ${I.length} attached trades`), I;
+    const P = d(x), z = r.value.get(P);
+    if (!z || z.size === 0) return [];
+    const S = c(x.symbol);
+    return S ? (await m(S, x.internal_account_id)).filter((J) => J.id && z.has(String(J.id))) : [];
   }
-  async function E(x) {
-    const A = c(x), L = r.value.get(A);
-    if (!L || L.size === 0) return [];
-    const N = u(x.symbol);
-    return N ? (await b(N, x.internal_account_id)).filter((I) => I.id && L.has(String(I.id))) : [];
-  }
-  async function C(x, A) {
+  async function E(x, P) {
     try {
-      const L = c(x);
-      if (a.value.has(L))
-        return a.value.get(L) || [];
-      const N = u(x.symbol), K = x.internal_account_id || x.legal_entity;
-      if (!N || !K || !l) return [];
-      const $ = (await Ki(
+      const z = d(x);
+      if (a.value.has(z))
+        return a.value.get(z) || [];
+      const S = c(x.symbol), N = x.internal_account_id || x.legal_entity;
+      if (!S || !N || !l) return [];
+      const V = (await Ki(
         e,
-        N,
+        S,
         l,
-        K
-      )).filter((se) => {
-        const ie = c(se);
-        return A.has(ie);
+        N
+      )).filter((j) => {
+        const ie = d(j);
+        return P.has(ie);
       });
-      return $.length > 0 && a.value.set(L, $), $;
-    } catch (L) {
-      return console.error("❌ Error fetching attached positions:", L), [];
+      return V.length > 0 && a.value.set(z, V), V;
+    } catch (z) {
+      return console.error("❌ Error fetching attached positions:", z), [];
     }
   }
-  const z = ee(() => t.isSuccess.value && i.isSuccess.value);
+  const C = Q(() => t.isSuccess.value && i.isSuccess.value);
   return {
     positionTradesMap: n,
     positionPositionsMap: o,
     positionOrdersMap: r,
-    getPositionKey: c,
-    getAttachedTrades: y,
-    getAttachedOrders: E,
-    fetchAttachedPositionsForDisplay: C,
+    getPositionKey: d,
+    getAttachedTrades: b,
+    getAttachedOrders: y,
+    fetchAttachedPositionsForDisplay: E,
     positionTradeMappingsQuery: t,
     positionPositionMappingsQuery: i,
     positionOrderMappingsQuery: s,
-    isReady: z,
+    isReady: C,
     refetchMappings: async () => {
       await t.refetch(), await i.refetch();
     },
-    fetchTradesForSymbol: m,
-    fetchOrdersForSymbol: b,
+    fetchTradesForSymbol: u,
+    fetchOrdersForSymbol: m,
     savePositionOrderMappings: js
   };
 }
 function Dr() {
-  const l = P(/* @__PURE__ */ new Set()), e = P(/* @__PURE__ */ new Set());
+  const l = H(/* @__PURE__ */ new Set()), e = H(/* @__PURE__ */ new Set());
   function t(i, s) {
     e.value.delete(i), l.value.has(i) ? l.value.delete(i) : l.value.add(i);
     const n = (s == null ? void 0 : s.value) || s;
@@ -11974,46 +11973,46 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
 }, Gh = { class: "modal-footer" }, $h = ["disabled"], jh = /* @__PURE__ */ Vs({
   __name: "CurrentPositions",
   props: {
-    symbolRoot: { default: "META" },
+    symbolRoot: { default: "MSFT" },
     userId: { default: "4fbec15d-2316-4805-b2a4-5cd2115a5ac8" }
   },
   emits: ["capitalUsedChanged"],
   setup(l, { emit: e }) {
-    const t = l, i = P(!1), s = P(!1), n = P(!1), o = P(!1), r = P("positions"), a = e, h = St(), d = P(/* @__PURE__ */ new Set());
+    const t = l, i = H(!1), s = H(!1), n = H(!1), o = H(!1), r = H("positions"), a = e, h = St(), d = H(/* @__PURE__ */ new Set());
     function c(v) {
       d.value.has(v) ? d.value.delete(v) : d.value.add(v), d.value = new Set(d.value);
     }
     const { data: u, isLoading: m, isError: b, error: y, isSuccess: E, _cleanup: C } = Js(
       t.userId,
       t.symbolRoot
-    ), { data: z } = Qs(t.symbolRoot, t.userId), { data: x } = en(t.symbolRoot, t.userId), A = ee(() => {
-      var f, S;
-      const v = (S = (f = u.value) == null ? void 0 : f[0]) == null ? void 0 : S.conid;
+    ), { data: x } = Qs(t.symbolRoot, t.userId), { data: P } = en(t.symbolRoot, t.userId), z = Q(() => {
+      var f, L;
+      const v = (L = (f = u.value) == null ? void 0 : f[0]) == null ? void 0 : L.conid;
       return v ? parseInt(v, 10) : null;
-    }), { marketData: L, isLoading: N, error: K } = xr(A, t.symbolRoot), { financialData: I, isLoading: $, error: se } = Tr(A, t.symbolRoot), ie = ee(() => {
+    }), { marketData: S, isLoading: N, error: J } = xr(z, t.symbolRoot), { financialData: V, isLoading: j, error: ie } = Tr(z, t.symbolRoot), se = Q(() => {
       var v;
-      return ((v = L.value) == null ? void 0 : v.market_price) ?? null;
-    }), V = ee(() => {
+      return ((v = S.value) == null ? void 0 : v.market_price) ?? null;
+    }), I = Q(() => {
       var v;
-      return ((v = I.value) == null ? void 0 : v.week_52_high) ?? null;
-    }), B = ee(() => {
+      return ((v = V.value) == null ? void 0 : v.week_52_high) ?? null;
+    }), O = Q(() => {
       var v;
-      return ((v = I.value) == null ? void 0 : v.week_52_low) ?? null;
-    }), j = ee(() => {
+      return ((v = V.value) == null ? void 0 : v.week_52_low) ?? null;
+    }), G = Q(() => {
       var v;
-      return ((v = I.value) == null ? void 0 : v.pe_ratio) ?? null;
-    }), q = ee(() => {
+      return ((v = V.value) == null ? void 0 : v.pe_ratio) ?? null;
+    }), te = Q(() => {
       var v;
-      return ((v = I.value) == null ? void 0 : v.market_cap) ?? null;
-    }), Q = ee(() => {
+      return ((v = V.value) == null ? void 0 : v.market_cap) ?? null;
+    }), Z = Q(() => {
       var v;
-      return ((v = I.value) == null ? void 0 : v.computed_peg_ratio) ?? null;
-    }), me = ee(() => {
+      return ((v = V.value) == null ? void 0 : v.computed_peg_ratio) ?? null;
+    }), me = Q(() => {
       var v;
-      return ((v = L.value) == null ? void 0 : v.last_fetched_at) ?? null;
-    }), he = ee(() => {
+      return ((v = S.value) == null ? void 0 : v.last_fetched_at) ?? null;
+    }), he = Q(() => {
       if (!me.value) return null;
-      const v = new Date(me.value), S = {
+      const v = new Date(me.value), L = {
         year: "numeric",
         month: "short",
         day: "numeric",
@@ -12024,7 +12023,7 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         timeZoneName: "short"
       };
-      let _ = v.toLocaleString("en-US", S).replace(/,(\s+\d)/, " $1");
+      let _ = v.toLocaleString("en-US", L).replace(/,(\s+\d)/, " $1");
       return _ = _.replace("GMT+5:30", "IST"), _ = _.replace("GMT+530", "IST"), _;
     }), {
       overallAdjustedAvgPrice: ce,
@@ -12050,44 +12049,44 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
     } = Sr(t.userId), {
       expandedPositions: He,
       processingPositions: zt
-    } = Dr(), jt = ee(() => {
-      var S, D, _, g, F;
+    } = Dr(), jt = Q(() => {
+      var L, D, _, g, F;
       if (u.value && u.value.length > 0) {
-        const X = (S = u.value[0]) == null ? void 0 : S.asset_class;
-        return console.log("👀 Asset type from positions:", X), X || null;
+        const q = (L = u.value[0]) == null ? void 0 : L.asset_class;
+        return console.log("👀 Asset type from positions:", q), q || null;
       }
-      const v = z.value && z.value.length > 0, f = x.value && x.value.length > 0;
+      const v = x.value && x.value.length > 0, f = P.value && P.value.length > 0;
       if (v || f) {
-        const X = ((_ = (D = z.value) == null ? void 0 : D[0]) == null ? void 0 : _.asset_class) || ((F = (g = x.value) == null ? void 0 : g[0]) == null ? void 0 : F.asset_class);
-        return console.log("👀 Asset type from options:", X), X || "OPT";
+        const q = ((_ = (D = x.value) == null ? void 0 : D[0]) == null ? void 0 : _.asset_class) || ((F = (g = P.value) == null ? void 0 : g[0]) == null ? void 0 : F.asset_class);
+        return console.log("👀 Asset type from options:", q), q || "OPT";
       }
       return console.log("👀 Asset type: null (no positions)"), null;
     });
     console.log("👀 Asset type detected:", jt.value);
-    const Pi = ee(() => !u.value || u.value.length === 0 ? 0 : u.value.reduce((v, f) => v + (f.contract_quantity || 0), 0));
-    ee(() => {
-      var f, S;
+    const Pi = Q(() => !u.value || u.value.length === 0 ? 0 : u.value.reduce((v, f) => v + (f.contract_quantity || 0), 0));
+    Q(() => {
+      var f, L;
       if (jt.value === "OPT") {
-        const D = ((f = z.value) == null ? void 0 : f.reduce((g, F) => g + (F.unrealized_pnl || 0), 0)) || 0, _ = ((S = x.value) == null ? void 0 : S.reduce((g, F) => g + (F.unrealized_pnl || 0), 0)) || 0;
+        const D = ((f = x.value) == null ? void 0 : f.reduce((g, F) => g + (F.unrealized_pnl || 0), 0)) || 0, _ = ((L = P.value) == null ? void 0 : L.reduce((g, F) => g + (F.unrealized_pnl || 0), 0)) || 0;
         return console.log("📊 Options Unrealized P&L - PUT:", D, "CALL:", _, "Total:", D + _), D + _;
       }
       if (!u.value || u.value.length === 0) return 0;
       const v = u.value.reduce((D, _) => D + (_.unrealized_pnl || 0), 0);
       return console.log("📊 Stock Unrealized P&L:", v), v;
     });
-    const Hi = ee(() => be.value.reduce((v, f) => v + f.netCostExcludingPuts, 0)), Ut = ee(() => be.value.reduce((v, f) => v + f.mainPosition.quantity, 0)), {
+    const Hi = Q(() => be.value.reduce((v, f) => v + f.netCostExcludingPuts, 0)), Ut = Q(() => be.value.reduce((v, f) => v + f.mainPosition.quantity, 0)), {
       unrealizedPnL: ye,
       pnlPercentage: ws,
       isProfitable: Le,
-      calculationBreakdown: G,
+      calculationBreakdown: $,
       isLoading: Cs,
       error: ys
     } = Mr(
       ce,
       Ut,
-      ie,
-      z,
-      x
+      se,
+      x,
+      P
     ), {
       totalCapitalUsed: qt,
       calculationBreakdown: Ee,
@@ -12095,41 +12094,41 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
       error: Rs
     } = Lr(
       jt,
-      ee(() => Pi.value),
-      ie
+      Q(() => Pi.value),
+      se
     );
     function et(v) {
       if (!v) return [];
-      const f = String(v), S = f.match(/^([A-Z]+)\b/), D = (S == null ? void 0 : S[1]) ?? "", _ = f.match(/\s([CP])\b/), g = (_ == null ? void 0 : _[1]) ?? "", F = f.match(/\s(\d+(?:\.\d+)?)\s+[CP]\b/), X = (F == null ? void 0 : F[1]) ?? "", U = f.match(/\b(\d{6})[CP]/), Te = U ? Ai(U[1]) : "";
-      return [D, Te, X, g].filter(Boolean);
+      const f = String(v), L = f.match(/^([A-Z]+)\b/), D = (L == null ? void 0 : L[1]) ?? "", _ = f.match(/\s([CP])\b/), g = (_ == null ? void 0 : _[1]) ?? "", F = f.match(/\s(\d+(?:\.\d+)?)\s+[CP]\b/), q = (F == null ? void 0 : F[1]) ?? "", U = f.match(/\b(\d{6})[CP]/), Te = U ? Ai(U[1]) : "";
+      return [D, Te, q, g].filter(Boolean);
     }
     function Pt(v) {
       var Te;
       if (!v) return [];
-      const f = String(v).trim(), S = f.match(/^([A-Z]+)\s*/), D = (S == null ? void 0 : S[1]) ?? "", _ = f.slice(((Te = S == null ? void 0 : S[0]) == null ? void 0 : Te.length) || 0), g = _.match(/(\d{6})([CP])/);
-      let F = "", X = "", U = "";
+      const f = String(v).trim(), L = f.match(/^([A-Z]+)\s*/), D = (L == null ? void 0 : L[1]) ?? "", _ = f.slice(((Te = L == null ? void 0 : L[0]) == null ? void 0 : Te.length) || 0), g = _.match(/(\d{6})([CP])/);
+      let F = "", q = "", U = "";
       if (g) {
-        F = Ai(g[1]), X = g[2] === "C" ? "Call" : "Put";
+        F = Ai(g[1]), q = g[2] === "C" ? "Call" : "Put";
         const re = _.slice(g[0].length).match(/(\d+)/);
         re && (U = (parseInt(re[1], 10) / 1e3).toString());
       }
-      return [D, F, U, X].filter(Boolean);
+      return [D, F, U, q].filter(Boolean);
     }
     function Ai(v) {
       if (!v || v.length !== 6) return "";
-      const f = v.substring(0, 2), S = v.substring(2, 4), D = v.substring(4, 6);
-      return `20${f}-${S}-${D}`;
+      const f = v.substring(0, 2), L = v.substring(2, 4), D = v.substring(4, 6);
+      return `20${f}-${L}-${D}`;
     }
     function Se(v) {
       if (!v) return "";
       const f = /^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/.exec(String(v).trim());
-      let S;
+      let L;
       if (f) {
-        const F = parseInt(f[1]), X = parseInt(f[2]) - 1;
+        const F = parseInt(f[1]), q = parseInt(f[2]) - 1;
         let U = parseInt(f[3]);
-        U < 100 && (U = 2e3 + U), S = new Date(U, X, F);
-      } else if (S = new Date(v), isNaN(S.getTime())) return String(v);
-      const D = S.getFullYear(), _ = (S.getMonth() + 1).toString().padStart(2, "0"), g = S.getDate().toString().padStart(2, "0");
+        U < 100 && (U = 2e3 + U), L = new Date(U, q, F);
+      } else if (L = new Date(v), isNaN(L.getTime())) return String(v);
+      const D = L.getFullYear(), _ = (L.getMonth() + 1).toString().padStart(2, "0"), g = L.getDate().toString().padStart(2, "0");
       return `${D}-${_}-${g}`;
     }
     function Re(v) {
@@ -12150,12 +12149,12 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
       if (console.log("🔄 Toggle expansion for key:", v), console.log("📊 Before toggle - expanded positions:", Array.from(He.value)), He.value.has(v) ? (He.value.delete(v), console.log("➖ Removed from expanded")) : (He.value.add(v), console.log("➕ Added to expanded")), console.log("📊 After toggle - expanded positions:", Array.from(He.value)), console.log("🎯 Tabulator exists?", !!xe.value), xe.value) {
         const f = xe.value.getRows();
         console.log("📋 Total rows:", f.length);
-        for (const S of f) {
-          const D = S.getData();
+        for (const L of f) {
+          const D = L.getData();
           if (D) {
             const _ = Kt(D);
             if (console.log("🔍 Checking row key:", _, "matches?", _ === v), _ === v) {
-              console.log("✅ Found matching row, reformatting..."), S.reformat();
+              console.log("✅ Found matching row, reformatting..."), L.reformat();
               break;
             }
           }
@@ -12172,11 +12171,11 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
         minWidth: 150,
         headerHozAlign: "left",
         formatter: (v) => {
-          const f = v.getRow().getData(), S = v.getValue() || f.internal_account_id;
+          const f = v.getRow().getData(), L = v.getValue() || f.internal_account_id;
           if (!Me.value)
             return console.log("⏳ Formatter called but mappings not ready yet"), `<div style="display: flex; align-items: center; gap: 6px;">
           <span class="expand-arrow">&nbsp;</span>
-          <span>${S}</span>
+          <span>${L}</span>
         </div>`;
           const D = Kt(f), _ = at.value.get(D), g = lt.value.get(D), F = Fe.value.get(D);
           console.log("🎨 Formatter for", D, {
@@ -12185,7 +12184,7 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
             attachedOrderIds: (F == null ? void 0 : F.size) || 0,
             isReady: Me.value
           });
-          const X = _ && _.size > 0 || g && g.size > 0 || F && F.size > 0, U = He.value.has(D), Te = X ? `<span class="expand-arrow ${U ? "expanded" : ""}" data-position-key="${D}" title="${U ? "Collapse" : "Expand"} attachments">
+          const q = _ && _.size > 0 || g && g.size > 0 || F && F.size > 0, U = He.value.has(D), Te = q ? `<span class="expand-arrow ${U ? "expanded" : ""}" data-position-key="${D}" title="${U ? "Collapse" : "Expand"} attachments">
             ${U ? "▼" : "▶"}
           </span>` : '<span class="expand-arrow">&nbsp;</span>', de = ((_ == null ? void 0 : _.size) || 0) + ((g == null ? void 0 : g.size) || 0) + ((F == null ? void 0 : F.size) || 0), re = de > 0 ? `<span class="trade-count">(${de})</span>` : "";
           return `
@@ -12197,20 +12196,20 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
           <line x1="5" y1="12" x2="19" y2="12"></line>
         </svg>
       </button> 
-          <span>${S}</span>
+          <span>${L}</span>
           ${re}
         </div>
       `;
         },
         cellClick: (v, f) => {
-          const S = v.target, D = S.closest(".expand-arrow");
+          const L = v.target, D = L.closest(".expand-arrow");
           if (D) {
             v.stopPropagation();
             const g = D.getAttribute("data-position-key");
             g && xs(g);
             return;
           }
-          if (S.closest(".attach-trades-btn")) {
+          if (L.closest(".attach-trades-btn")) {
             v.stopPropagation();
             const g = f.getRow().getData();
             g && Ms(g, "trades");
@@ -12315,7 +12314,7 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
       placeholder: "No positions found for this symbol",
       rowFormatter: async (v) => {
         try {
-          const f = v.getData(), S = v.getElement();
+          const f = v.getData(), L = v.getElement();
           if (!f) return;
           const D = Kt(f), _ = at.value.get(D), g = lt.value.get(D), F = He.value.has(D);
           console.log("🎨 Row formatter running for:", D, {
@@ -12324,8 +12323,8 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
             attachedPositionKeys: (g == null ? void 0 : g.size) || 0,
             processing: zt.value.has(D)
           });
-          const X = S.querySelector(".nested-tables-container");
-          if (X && (console.log("🗑️ Removing existing nested container"), X.remove()), zt.value.has(D)) {
+          const q = L.querySelector(".nested-tables-container");
+          if (q && (console.log("🗑️ Removing existing nested container"), q.remove()), zt.value.has(D)) {
             console.log("⏸️ Position is being processed, skipping");
             return;
           }
@@ -12348,44 +12347,44 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
                       title: "Financial instruments",
                       field: "symbol",
                       widthGrow: 1.8,
-                      formatter: (H) => Pt(H.getValue()).map((Z) => `<span class="fi-tag">${Z}</span>`).join(" ")
+                      formatter: (A) => Pt(A.getValue()).map((Y) => `<span class="fi-tag">${Y}</span>`).join(" ")
                     },
                     {
                       title: "Side",
                       field: "buySell",
                       widthGrow: 1,
-                      formatter: (H) => {
-                        const O = H.getValue();
-                        return `<span class="trade-side-badge ${O === "BUY" ? "trade-buy" : "trade-sell"}">${O}</span>`;
+                      formatter: (A) => {
+                        const B = A.getValue();
+                        return `<span class="trade-side-badge ${B === "BUY" ? "trade-buy" : "trade-sell"}">${B}</span>`;
                       }
                     },
                     {
                       title: "Open/Close",
                       field: "openCloseIndicator",
                       widthGrow: 1,
-                      formatter: (H) => {
-                        const O = H.getValue();
-                        return O === "O" ? '<span style="color: #17a2b8; font-weight: bold;">OPEN</span>' : O === "C" ? '<span style="color: #6f42c1; font-weight: bold;">CLOSE</span>' : O;
+                      formatter: (A) => {
+                        const B = A.getValue();
+                        return B === "O" ? '<span style="color: #17a2b8; font-weight: bold;">OPEN</span>' : B === "C" ? '<span style="color: #6f42c1; font-weight: bold;">CLOSE</span>' : B;
                       }
                     },
                     {
                       title: "Trade Date",
                       field: "tradeDate",
                       widthGrow: 1,
-                      formatter: (H) => Se(H.getValue()),
-                      sorter: (H, O) => {
-                        const Z = new Date(Se(H)), tt = new Date(Se(O));
-                        return Z.getTime() - tt.getTime();
+                      formatter: (A) => Se(A.getValue()),
+                      sorter: (A, B) => {
+                        const Y = new Date(Se(A)), tt = new Date(Se(B));
+                        return Y.getTime() - tt.getTime();
                       }
                     },
                     {
                       title: "Settlement Date",
                       field: "settleDateTarget",
                       widthGrow: 1,
-                      formatter: (H) => Se(H.getValue()),
-                      sorter: (H, O) => {
-                        const Z = new Date(Se(H)), tt = new Date(Se(O));
-                        return Z.getTime() - tt.getTime();
+                      formatter: (A) => Se(A.getValue()),
+                      sorter: (A, B) => {
+                        const Y = new Date(Se(A)), tt = new Date(Se(B));
+                        return Y.getTime() - tt.getTime();
                       }
                     },
                     {
@@ -12393,8 +12392,8 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
                       field: "quantity",
                       widthGrow: 1,
                       hozAlign: "right",
-                      formatter: (H) => {
-                        const O = H.getRow().getData(), Z = parseFloat((O == null ? void 0 : O.quantity) || 0) || 0, tt = parseFloat((O == null ? void 0 : O.multiplier) || 1) || 1, As = Z * tt;
+                      formatter: (A) => {
+                        const B = A.getRow().getData(), Y = parseFloat((B == null ? void 0 : B.quantity) || 0) || 0, tt = parseFloat((B == null ? void 0 : B.multiplier) || 1) || 1, As = Y * tt;
                         return Oi(As);
                       }
                     },
@@ -12403,35 +12402,35 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
                       field: "tradePrice",
                       widthGrow: 1,
                       hozAlign: "right",
-                      formatter: (H) => Re(parseFloat(H.getValue()) || 0)
+                      formatter: (A) => Re(parseFloat(A.getValue()) || 0)
                     },
                     {
                       title: "Total Premium",
                       field: "tradeMoney",
                       widthGrow: 1,
                       hozAlign: "right",
-                      formatter: (H) => Re(parseFloat(H.getValue()) || 0)
+                      formatter: (A) => Re(parseFloat(A.getValue()) || 0)
                     },
                     {
                       title: "Net Cash",
                       field: "netCash",
                       widthGrow: 1,
                       hozAlign: "right",
-                      formatter: (H) => Re(parseFloat(H.getValue()) || 0)
+                      formatter: (A) => Re(parseFloat(A.getValue()) || 0)
                     },
                     {
                       title: "MTM PnL",
                       field: "mtmPnl",
                       widthGrow: 1,
                       hozAlign: "right",
-                      formatter: (H) => Re(parseFloat(H.getValue()) || 0)
+                      formatter: (A) => Re(parseFloat(A.getValue()) || 0)
                     },
                     {
                       title: "Close Price",
                       field: "closePrice",
                       widthGrow: 1,
                       hozAlign: "right",
-                      formatter: (H) => Re(parseFloat(H.getValue()) || 0)
+                      formatter: (A) => Re(parseFloat(A.getValue()) || 0)
                     }
                   ]
                 });
@@ -12451,7 +12450,7 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
                       title: "Financial instruments",
                       field: "symbol",
                       widthGrow: 1.8,
-                      formatter: (H) => et(H.getValue()).map((Z) => `<span class="fi-tag">${Z}</span>`).join(" ")
+                      formatter: (A) => et(A.getValue()).map((Y) => `<span class="fi-tag">${Y}</span>`).join(" ")
                     },
                     {
                       title: "Accounting Qty",
@@ -12470,9 +12469,9 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
                       field: "avgPrice",
                       widthGrow: 1,
                       hozAlign: "right",
-                      formatter: (H) => {
-                        const O = H.getValue();
-                        return O == null ? "" : `<span style="color:${O < 0 ? "#dc3545" : O > 0 ? "#28a745" : "#000"}">$${Number(O).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
+                      formatter: (A) => {
+                        const B = A.getValue();
+                        return B == null ? "" : `<span style="color:${B < 0 ? "#dc3545" : B > 0 ? "#28a745" : "#000"}">$${Number(B).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
                       }
                     },
                     {
@@ -12480,9 +12479,9 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
                       field: "market_value",
                       widthGrow: 1.5,
                       hozAlign: "right",
-                      formatter: (H) => {
-                        const O = H.getValue();
-                        return O == null ? "" : `<span style="color:${O < 0 ? "#dc3545" : O > 0 ? "#28a745" : "#000"}">$${Number(O).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
+                      formatter: (A) => {
+                        const B = A.getValue();
+                        return B == null ? "" : `<span style="color:${B < 0 ? "#dc3545" : B > 0 ? "#28a745" : "#000"}">$${Number(B).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
                       }
                     },
                     {
@@ -12490,9 +12489,9 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
                       field: "unrealized_pnl",
                       widthGrow: 1.5,
                       hozAlign: "right",
-                      formatter: (H) => {
-                        const O = H.getValue();
-                        return O == null ? "" : `<span style="color:${O < 0 ? "#dc3545" : O > 0 ? "#28a745" : "#000"}">$${Number(O).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
+                      formatter: (A) => {
+                        const B = A.getValue();
+                        return B == null ? "" : `<span style="color:${B < 0 ? "#dc3545" : B > 0 ? "#28a745" : "#000"}">$${Number(B).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
                       }
                     },
                     {
@@ -12500,9 +12499,9 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
                       field: "computed_cash_flow_on_entry",
                       widthGrow: 1,
                       hozAlign: "right",
-                      formatter: (H) => {
-                        const O = H.getValue();
-                        return O == null ? "" : `<span style="color:${O < 0 ? "#dc3545" : O > 0 ? "#28a745" : "#000"}">$${Number(O).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
+                      formatter: (A) => {
+                        const B = A.getValue();
+                        return B == null ? "" : `<span style="color:${B < 0 ? "#dc3545" : B > 0 ? "#28a745" : "#000"}">$${Number(B).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
                       }
                     }
                   ]
@@ -12524,25 +12523,25 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
                       title: "Financial instruments",
                       field: "symbol",
                       widthGrow: 1.8,
-                      formatter: (H) => Pt(H.getValue()).map((Z) => `<span class="fi-tag">${Z}</span>`).join(" ")
+                      formatter: (A) => Pt(A.getValue()).map((Y) => `<span class="fi-tag">${Y}</span>`).join(" ")
                     },
                     {
                       title: "Side",
                       field: "buySell",
                       widthGrow: 1,
-                      formatter: (H) => {
-                        const O = H.getValue();
-                        return `<span class="trade-side-badge ${O === "BUY" ? "trade-buy" : "trade-sell"}">${O}</span>`;
+                      formatter: (A) => {
+                        const B = A.getValue();
+                        return `<span class="trade-side-badge ${B === "BUY" ? "trade-buy" : "trade-sell"}">${B}</span>`;
                       }
                     },
                     {
                       title: "Order Date",
                       field: "dateTime",
                       widthGrow: 1,
-                      formatter: (H) => Se(H.getValue()),
-                      sorter: (H, O) => {
-                        const Z = new Date(Se(H)), tt = new Date(Se(O));
-                        return Z.getTime() - tt.getTime();
+                      formatter: (A) => Se(A.getValue()),
+                      sorter: (A, B) => {
+                        const Y = new Date(Se(A)), tt = new Date(Se(B));
+                        return Y.getTime() - tt.getTime();
                       }
                     },
                     {
@@ -12551,11 +12550,11 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
                       widthGrow: 1,
                       hozAlign: "right",
                       //formatter: (cell: any) => formatNumber(parseFloat(cell.getValue()) || 0)
-                      formatter: (H) => {
-                        const O = H.getValue();
-                        if (O == null) return "-";
-                        const Z = H.getData();
-                        return Z.assetCategory === "OPT" ? Z.quantity * 100 : Z.assetCategory === "STK" ? Z.quantity * 1 : Oi(Z.quantity);
+                      formatter: (A) => {
+                        const B = A.getValue();
+                        if (B == null) return "-";
+                        const Y = A.getData();
+                        return Y.assetCategory === "OPT" ? Y.quantity * 100 : Y.assetCategory === "STK" ? Y.quantity * 1 : Oi(Y.quantity);
                       }
                     },
                     {
@@ -12563,25 +12562,25 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
                       field: "tradePrice",
                       widthGrow: 1,
                       hozAlign: "right",
-                      formatter: (H) => Re(parseFloat(H.getValue()) || 0)
+                      formatter: (A) => Re(parseFloat(A.getValue()) || 0)
                     },
                     {
                       title: "Trade Money",
                       field: "tradeMoney",
                       widthGrow: 1,
                       hozAlign: "right",
-                      formatter: (H) => Re(parseFloat(H.getValue()) || 0)
+                      formatter: (A) => Re(parseFloat(A.getValue()) || 0)
                     },
                     {
                       title: "Settlement Date",
                       field: "settleDateTarget",
                       widthGrow: 1,
-                      formatter: (H) => Gi(H.getValue())
+                      formatter: (A) => Gi(A.getValue())
                     }
                   ]
                 });
               }
-              console.log("✅ Appending nested container to row"), S.appendChild(U);
+              console.log("✅ Appending nested container to row"), L.appendChild(U);
             } catch (U) {
               console.error("❌ Error creating nested tables:", U);
             } finally {
@@ -12595,7 +12594,7 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
           console.error("❌ Row formatter error:", f);
         }
       }
-    }), Ae = P(!1), oe = P("trades"), Oe = P(null), Be = P(null), Ne = P(/* @__PURE__ */ new Set()), Ht = P(""), At = P(""), Ot = P(""), Ve = P(/* @__PURE__ */ new Set()), Ie = P(/* @__PURE__ */ new Set()), We = P(!1), mt = P([]), gt = P([]), bt = P([]);
+    }), Ae = H(!1), oe = H("trades"), Oe = H(null), Be = H(null), Ne = H(/* @__PURE__ */ new Set()), Ht = H(""), At = H(""), Ot = H(""), Ve = H(/* @__PURE__ */ new Set()), Ie = H(/* @__PURE__ */ new Set()), We = H(!1), mt = H([]), gt = H([]), bt = H([]);
     function Ni(v) {
       Ve.value.has(v) ? Ve.value.delete(v) : Ve.value.add(v);
     }
@@ -12610,8 +12609,8 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
       try {
         const f = et(v.symbol)[0] || "";
         if (!f) return;
-        const S = await ze(f, v.internal_account_id), D = Ht.value.trim().toLowerCase();
-        mt.value = D ? S.filter((_) => (_.symbol || "").toLowerCase().includes(D) || String(_.tradeID || "").toLowerCase().includes(D)) : S;
+        const L = await ze(f, v.internal_account_id), D = Ht.value.trim().toLowerCase();
+        mt.value = D ? L.filter((_) => (_.symbol || "").toLowerCase().includes(D) || String(_.tradeID || "").toLowerCase().includes(D)) : L;
       } catch (f) {
         console.error("❌ loadAttachableTradesForPosition error:", f), mt.value = [];
       } finally {
@@ -12623,7 +12622,7 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
       try {
         const f = et(v.symbol)[0] || "";
         if (!f) return;
-        const S = v.internal_account_id || v.legal_entity, D = await Ki(h, f, t.userId, S), _ = At.value.trim().toLowerCase();
+        const L = v.internal_account_id || v.legal_entity, D = await Ki(h, f, t.userId, L), _ = At.value.trim().toLowerCase();
         gt.value = _ ? D.filter((g) => (g.symbol || "").toLowerCase().includes(_)) : D;
       } catch (f) {
         console.error("❌ loadAttachablePositionsForPosition error:", f), gt.value = [];
@@ -12636,8 +12635,8 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
       try {
         const f = et(v.symbol)[0] || "";
         if (!f) return;
-        const S = await Ze(f, v.internal_account_id), D = Ot.value.trim().toLowerCase();
-        bt.value = D ? S.filter((_) => (_.symbol || "").toLowerCase().includes(D) || String(_.orderID || "").toLowerCase().includes(D)) : S;
+        const L = await Ze(f, v.internal_account_id), D = Ot.value.trim().toLowerCase();
+        bt.value = D ? L.filter((_) => (_.symbol || "").toLowerCase().includes(D) || String(_.orderID || "").toLowerCase().includes(D)) : L;
       } catch (f) {
         console.error("❌ loadAttachableOrdersForPosition error:", f), bt.value = [];
       } finally {
@@ -12646,8 +12645,8 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
     }
     async function Ms(v, f = "trades") {
       Oe.value = v, Be.value = v, oe.value = f, Ht.value = "", At.value = "", Ot.value = "";
-      const S = fe(v);
-      Ve.value = new Set(at.value.get(S) || []), Ie.value = new Set(lt.value.get(S) || []), Ne.value = new Set(Fe.value.get(S) || []), Ae.value = !0, f === "trades" ? await Jt(v) : f === "positions" ? await Yt(v) : await Qt(v);
+      const L = fe(v);
+      Ve.value = new Set(at.value.get(L) || []), Ie.value = new Set(lt.value.get(L) || []), Ne.value = new Set(Fe.value.get(L) || []), Ae.value = !0, f === "trades" ? await Jt(v) : f === "positions" ? await Yt(v) : await Qt(v);
     }
     async function Ls() {
       if (!Oe.value || !t.userId) return;
@@ -12678,9 +12677,9 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
     }
     function Wi(v) {
       if (v.asset_class !== "OPT") return !1;
-      const S = et(v.symbol)[1];
-      if (!S) return !1;
-      const D = new Date(S), _ = /* @__PURE__ */ new Date();
+      const L = et(v.symbol)[1];
+      if (!L) return !1;
+      const D = new Date(L), _ = /* @__PURE__ */ new Date();
       return _.setHours(0, 0, 0, 0), D < _;
     }
     _e(Ae, (v) => {
@@ -12720,11 +12719,11 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
     function Gi(v) {
       const f = v;
       if (!f) return "";
-      const S = /^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/.exec(String(f).trim());
+      const L = /^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/.exec(String(f).trim());
       let D;
-      if (S) {
-        const _ = Number(S[1]), g = Number(S[2]) - 1;
-        let F = Number(S[3]);
+      if (L) {
+        const _ = Number(L[1]), g = Number(L[2]) - 1;
+        let F = Number(L[3]);
         F < 100 && (F += 2e3), D = new Date(F, g, _);
       } else if (D = new Date(f), isNaN(D.getTime())) return String(f);
       return D.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
@@ -12740,7 +12739,7 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
     }), qi(() => {
       console.log("🧹 Cleaning up CurrentPositions component"), C();
     }), (v, f) => {
-      var S, D, _;
+      var L, D, _;
       return k(), T("div", _r, [
         p("div", Fr, [
           p("div", zr, [
@@ -12749,7 +12748,7 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
               f[16] || (f[16] = p("div", { class: "spinner" }, null, -1)),
               p("p", null, "Loading positions for " + w(t.symbolRoot) + "...", 1)
             ])) : R(b) ? (k(), T("div", Hr, [
-              p("p", null, "❌ Error loading positions: " + w((S = R(y)) == null ? void 0 : S.message), 1)
+              p("p", null, "❌ Error loading positions: " + w((L = R(y)) == null ? void 0 : L.message), 1)
             ])) : (k(), T("div", Ar, [
               p("div", Or, [
                 p("div", Br, [
@@ -12811,15 +12810,15 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
                   R(N) ? (k(), T("div", oa, [...f[23] || (f[23] = [
                     p("span", { class: "loading-spinner" }, "⏳", -1),
                     ne(" Loading... ", -1)
-                  ])])) : R(K) ? (k(), T("div", ra, " ❌ Error ")) : ie.value !== null ? (k(), T("div", aa, [
-                    p("div", la, " $" + w(ie.value.toFixed(2)), 1),
-                    B.value !== null && V.value !== null ? (k(), T("div", ha, [
+                  ])])) : R(J) ? (k(), T("div", ra, " ❌ Error ")) : se.value !== null ? (k(), T("div", aa, [
+                    p("div", la, " $" + w(se.value.toFixed(2)), 1),
+                    O.value !== null && I.value !== null ? (k(), T("div", ha, [
                       f[24] || (f[24] = ne(" 52W Range: ", -1)),
-                      p("span", da, "$" + w(B.value.toFixed(2)), 1),
+                      p("span", da, "$" + w(O.value.toFixed(2)), 1),
                       f[25] || (f[25] = ne(" - ", -1)),
-                      p("span", ua, "$" + w(V.value.toFixed(2)), 1)
+                      p("span", ua, "$" + w(I.value.toFixed(2)), 1)
                     ])) : (k(), T("div", ca, " 52W Range: N/A ")),
-                    he.value ? (k(), T("div", fa, " Updated: " + w(he.value), 1)) : te("", !0)
+                    he.value ? (k(), T("div", fa, " Updated: " + w(he.value), 1)) : ee("", !0)
                   ])) : (k(), T("div", pa, " N/A "))
                 ]),
                 p("div", ma, [
@@ -12827,7 +12826,7 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
                   R(rt) ? (k(), T("div", ga, [...f[27] || (f[27] = [
                     p("span", { class: "loading-spinner" }, "⏳", -1),
                     ne(" Loading... ", -1)
-                  ])])) : R(_t) ? (k(), T("div", ba, " ❌ Error ")) : te("", !0),
+                  ])])) : R(_t) ? (k(), T("div", ba, " ❌ Error ")) : ee("", !0),
                   p("div", va, [
                     p("div", {
                       class: "summary-value average-cost-price clickable-price",
@@ -12839,22 +12838,22 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
                   ])
                 ]),
                 p("div", Ea, [
-                  R($) ? (k(), T("div", Ra, [...f[29] || (f[29] = [
+                  R(j) ? (k(), T("div", Ra, [...f[29] || (f[29] = [
                     p("span", { class: "loading-spinner" }, "⏳", -1),
                     ne(" Loading... ", -1)
-                  ])])) : R(se) ? (k(), T("div", xa, " ❌ Error ")) : (k(), T("div", Ta, [
-                    j.value !== null ? (k(), T("div", ka, [
+                  ])])) : R(ie) ? (k(), T("div", xa, " ❌ Error ")) : (k(), T("div", Ta, [
+                    G.value !== null ? (k(), T("div", ka, [
                       f[30] || (f[30] = ne(" P/E Ratio: ", -1)),
-                      p("span", Ma, w(j.value.toFixed(2)), 1)
-                    ])) : te("", !0),
-                    Q.value !== null ? (k(), T("div", La, [
+                      p("span", Ma, w(G.value.toFixed(2)), 1)
+                    ])) : ee("", !0),
+                    Z.value !== null ? (k(), T("div", La, [
                       f[31] || (f[31] = ne(" PEG Ratio: ", -1)),
-                      p("span", Sa, w(Q.value.toFixed(2)), 1)
-                    ])) : te("", !0),
-                    q.value !== null ? (k(), T("div", Da, [
+                      p("span", Sa, w(Z.value.toFixed(2)), 1)
+                    ])) : ee("", !0),
+                    te.value !== null ? (k(), T("div", Da, [
                       f[32] || (f[32] = ne(" Market Cap: ", -1)),
-                      p("span", _a, "$" + w((q.value / 1e9).toFixed(2)) + "B", 1)
-                    ])) : te("", !0)
+                      p("span", _a, "$" + w((te.value / 1e9).toFixed(2)) + "B", 1)
+                    ])) : ee("", !0)
                   ]))
                 ])
               ]),
@@ -12892,7 +12891,7 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
                       }, [
                         p("div", {
                           class: "group-header clickable",
-                          onClick: (X) => c(F)
+                          onClick: (q) => c(F)
                         }, [
                           p("span", Oa, w(d.value.has(F) ? "▼" : "▶"), 1),
                           ne(" Client " + w(F + 1) + ": " + w(g.mainPosition.account), 1)
@@ -12907,27 +12906,27 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
                               ]),
                               g.callPositions.length > 0 ? (k(), T("div", Wa, [
                                 f[35] || (f[35] = p("div", { class: "call-header" }, "📞 Call Positions (subtract from cost)", -1)),
-                                (k(!0), T(we, null, Ce(g.callPositions, (X, U) => (k(), T("div", {
+                                (k(!0), T(we, null, Ce(g.callPositions, (q, U) => (k(), T("div", {
                                   key: `call-${F}-${U}`,
                                   class: "position-line call-position"
                                 }, [
                                   f[34] || (f[34] = p("span", { class: "position-icon" }, null, -1)),
-                                  p("span", Ga, w(X.symbol), 1),
-                                  p("span", $a, "@ $" + w(X.avgPrice.toFixed(2)) + " × " + w(X.quantity.toLocaleString()) + " = $" + w(X.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                  p("span", Ga, w(q.symbol), 1),
+                                  p("span", $a, "@ $" + w(q.avgPrice.toFixed(2)) + " × " + w(q.quantity.toLocaleString()) + " = $" + w(q.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                 ]))), 128)),
                                 p("div", ja, " Subtotal Calls: $" + w(Math.abs(g.callPositionsTotalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
-                              ])) : te("", !0),
+                              ])) : ee("", !0),
                               g.putPositions.length > 0 ? (k(), T("div", Ua, [
                                 f[37] || (f[37] = p("div", { class: "put-header" }, "📉 Put Positions (display only, not in calculation)", -1)),
-                                (k(!0), T(we, null, Ce(g.putPositions, (X, U) => (k(), T("div", {
+                                (k(!0), T(we, null, Ce(g.putPositions, (q, U) => (k(), T("div", {
                                   key: `put-${F}-${U}`,
                                   class: "position-line put-position"
                                 }, [
                                   f[36] || (f[36] = p("span", { class: "position-icon" }, "📉", -1)),
-                                  p("span", qa, w(X.symbol), 1),
-                                  p("span", Ka, "@ $" + w(X.avgPrice.toFixed(2)) + " × " + w(X.quantity.toLocaleString()) + " = $" + w(X.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                  p("span", qa, w(q.symbol), 1),
+                                  p("span", Ka, "@ $" + w(q.avgPrice.toFixed(2)) + " × " + w(q.quantity.toLocaleString()) + " = $" + w(q.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                 ]))), 128))
-                              ])) : te("", !0),
+                              ])) : ee("", !0),
                               p("div", Xa, [
                                 f[38] || (f[38] = p("div", { class: "calc-line" }, [
                                   ne("📊 "),
@@ -12954,8 +12953,8 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
                             p("strong", null, "Overall Adjusted Average = $" + w(Hi.value.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ÷ " + w(Ut.value.toLocaleString()) + " = $" + w(R(ce).toFixed(2)), 1)
                           ])
                         ])
-                      ])) : te("", !0)
-                    ])) : r.value === "orders" ? (k(), T("div", nl, " coming soon... ")) : te("", !0)
+                      ])) : ee("", !0)
+                    ])) : r.value === "orders" ? (k(), T("div", nl, " coming soon... ")) : ee("", !0)
                   ], 512), [
                     [Et, s.value]
                   ])
@@ -12966,20 +12965,20 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
                 default: yt(() => [
                   Ue(p("div", ol, [
                     f[44] || (f[44] = p("h2", null, "Profit & Loss Calculation Details:", -1)),
-                    R(G) && "totalShares" in R(G) && R(G).totalShares != null ? (k(), T("div", rl, [
+                    R($) && "totalShares" in R($) && R($).totalShares != null ? (k(), T("div", rl, [
                       p("div", al, [
                         f[40] || (f[40] = p("div", { class: "pnl-section-title" }, "📊 Total Cost Basis", -1)),
-                        p("div", ll, " Total Shares = " + w(R(G).totalShares.toLocaleString()), 1),
-                        p("div", hl, " Average Cost per Share = $" + w(R(G).avgCostPerShare.toFixed(2)), 1),
+                        p("div", ll, " Total Shares = " + w(R($).totalShares.toLocaleString()), 1),
+                        p("div", hl, " Average Cost per Share = $" + w(R($).avgCostPerShare.toFixed(2)), 1),
                         p("div", dl, [
-                          p("strong", null, "Total Cost Basis = " + w(R(G).totalShares.toLocaleString()) + " × $" + w(R(G).avgCostPerShare.toFixed(2)) + " = $" + w(R(G).totalCostBasis.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                          p("strong", null, "Total Cost Basis = " + w(R($).totalShares.toLocaleString()) + " × $" + w(R($).avgCostPerShare.toFixed(2)) + " = $" + w(R($).totalCostBasis.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ])
                       ]),
                       p("div", ul, [
                         f[41] || (f[41] = p("div", { class: "pnl-section-title" }, "💰 Current Market Value", -1)),
-                        p("div", cl, " Current Price per Share = $" + w(R(G).currentPricePerShare.toFixed(2)), 1),
+                        p("div", cl, " Current Price per Share = $" + w(R($).currentPricePerShare.toFixed(2)), 1),
                         p("div", fl, [
-                          p("strong", null, "Current Market Value = " + w(R(G).totalShares.toLocaleString()) + " × $" + w(R(G).currentPricePerShare.toFixed(2)) + " = $" + w(R(G).currentMarketValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                          p("strong", null, "Current Market Value = " + w(R($).totalShares.toLocaleString()) + " × $" + w(R($).currentPricePerShare.toFixed(2)) + " = $" + w(R($).currentMarketValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ])
                       ]),
                       p("div", pl, [
@@ -12987,22 +12986,22 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
                         p("div", ml, [
                           p("strong", {
                             class: ue({ "profit-text": R(Le), "loss-text": !R(Le) })
-                          }, " Unrealized P&L = $" + w(R(G).currentMarketValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + w(R(G).totalCostBasis.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " = " + w(R(ye) && R(ye) >= 0 ? "+" : "") + "$" + w(R(G).unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 3)
+                          }, " Unrealized P&L = $" + w(R($).currentMarketValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + w(R($).totalCostBasis.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " = " + w(R(ye) && R(ye) >= 0 ? "+" : "") + "$" + w(R($).unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 3)
                         ]),
                         p("div", gl, [
                           p("strong", {
                             class: ue({ "profit-text": R(Le), "loss-text": !R(Le) })
-                          }, " P&L Percentage = (" + w(R(ye) && R(ye) >= 0 ? "+" : "") + "$" + w(R(G).unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ÷ $" + w(R(G).totalCostBasis.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + ") × 100 = " + w(R(G).pnlPercentage.toFixed(2)) + "% ", 3)
+                          }, " P&L Percentage = (" + w(R(ye) && R(ye) >= 0 ? "+" : "") + "$" + w(R($).unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ÷ $" + w(R($).totalCostBasis.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + ") × 100 = " + w(R($).pnlPercentage.toFixed(2)) + "% ", 3)
                         ])
                       ])
-                    ])) : te("", !0),
-                    R(G) && "optionType" in R(G) && R(G).optionType != null ? (k(), T("div", bl, [
+                    ])) : ee("", !0),
+                    R($) && "optionType" in R($) && R($).optionType != null ? (k(), T("div", bl, [
                       p("div", vl, [
-                        p("div", wl, "📊 SHORT " + w(R(G).optionType) + " OPTIONS SUMMARY", 1),
-                        p("div", Cl, " Total Contracts: " + w(R(G).totalContracts.toLocaleString()), 1),
-                        p("div", yl, " Position Type: " + w(R(G).positionType), 1)
+                        p("div", wl, "📊 SHORT " + w(R($).optionType) + " OPTIONS SUMMARY", 1),
+                        p("div", Cl, " Total Contracts: " + w(R($).totalContracts.toLocaleString()), 1),
+                        p("div", yl, " Position Type: " + w(R($).positionType), 1)
                       ]),
-                      (k(!0), T(we, null, Ce(R(G).positions, (g, F) => (k(), T("div", {
+                      (k(!0), T(we, null, Ce(R($).positions, (g, F) => (k(), T("div", {
                         key: `pos-${F}`,
                         class: "pnl-section"
                       }, [
@@ -13018,27 +13017,27 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
                       ]))), 128)),
                       p("div", Ml, [
                         f[43] || (f[43] = p("div", { class: "pnl-section-title" }, "💰 TOTAL CALCULATION", -1)),
-                        p("div", Ll, " Total Premium Received = " + w(R(G).positions.map((g) => `$${g.premiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")), 1),
+                        p("div", Ll, " Total Premium Received = " + w(R($).positions.map((g) => `$${g.premiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")), 1),
                         p("div", Sl, [
-                          p("strong", null, "= $" + w(R(G).totalPremiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                          p("strong", null, "= $" + w(R($).totalPremiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ]),
-                        p("div", Dl, " Current Market Liability = " + w(R(G).positions.map((g) => `$${g.currentValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")), 1),
+                        p("div", Dl, " Current Market Liability = " + w(R($).positions.map((g) => `$${g.currentValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")), 1),
                         p("div", _l, [
-                          p("strong", null, "= $" + w(R(G).currentMarketLiability.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                          p("strong", null, "= $" + w(R($).currentMarketLiability.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ]),
                         p("div", Fl, [
                           p("strong", {
                             class: ue({ "profit-text": R(Le), "loss-text": !R(Le) })
-                          }, " Unrealized P&L = $" + w(R(G).totalPremiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + w(R(G).currentMarketLiability.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " = " + w(R(ye) && R(ye) >= 0 ? "+" : "") + "$" + w(R(G).unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 3)
+                          }, " Unrealized P&L = $" + w(R($).totalPremiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + w(R($).currentMarketLiability.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " = " + w(R(ye) && R(ye) >= 0 ? "+" : "") + "$" + w(R($).unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 3)
                         ]),
                         p("div", zl, [
                           p("strong", {
                             class: ue({ "profit-text": R(Le), "loss-text": !R(Le) })
-                          }, " P&L % = (" + w(R(ye) && R(ye) >= 0 ? "+" : "") + "$" + w(R(G).unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ÷ $" + w(R(G).totalPremiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + ") × 100 = " + w(R(G).pnlPercentage.toFixed(2)) + "% ", 3)
+                          }, " P&L % = (" + w(R(ye) && R(ye) >= 0 ? "+" : "") + "$" + w(R($).unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ÷ $" + w(R($).totalPremiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + ") × 100 = " + w(R($).pnlPercentage.toFixed(2)) + "% ", 3)
                         ]),
-                        R(G).pnlPercentage < -50 ? (k(), T("div", Pl, " ⚠️ WARNING: Loss exceeds 50% of premium received! ")) : te("", !0)
+                        R($).pnlPercentage < -50 ? (k(), T("div", Pl, " ⚠️ WARNING: Loss exceeds 50% of premium received! ")) : ee("", !0)
                       ])
-                    ])) : te("", !0)
+                    ])) : ee("", !0)
                   ], 512), [
                     [Et, n.value]
                   ])
@@ -13082,7 +13081,7 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
                           p("strong", null, " = $" + w(R(Ee).totalOptionsCapital.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ])
                       ])
-                    ])) : te("", !0) : (k(), T("div", Al, [...f[45] || (f[45] = [
+                    ])) : ee("", !0) : (k(), T("div", Al, [...f[45] || (f[45] = [
                       p("p", null, "No capital data available", -1)
                     ])]))
                   ], 512), [
@@ -13119,7 +13118,7 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
                   class: "fi-tag position-tag"
                 }, w(g), 1))), 128)),
                 ne(" • (Contract Qty: " + w(Be.value.contract_quantity) + " · Avg price: $" + w(Be.value.avgPrice) + ") ", 1)
-              ])) : te("", !0),
+              ])) : ee("", !0),
               p("div", eh, [
                 p("button", {
                   class: ue(["tab-button", { active: oe.value === "trades" }]),
@@ -13183,13 +13182,13 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
                       ]),
                       p("div", uh, [
                         p("span", null, "Trade date: " + w(Se(g.tradeDate)), 1),
-                        g.assetCategory ? (k(), T("span", ch, "• " + w(g.assetCategory), 1)) : te("", !0),
-                        g.description ? (k(), T("span", fh, "• " + w(g.description), 1)) : te("", !0),
+                        g.assetCategory ? (k(), T("span", ch, "• " + w(g.assetCategory), 1)) : ee("", !0),
+                        g.description ? (k(), T("span", fh, "• " + w(g.description), 1)) : ee("", !0),
                         p("span", ph, "• ID: " + w(g.tradeID), 1)
                       ])
                     ])
                   ], 10, oh))), 128)),
-                  mt.value.length === 0 ? (k(), T("div", mh, " No trades found ")) : te("", !0)
+                  mt.value.length === 0 ? (k(), T("div", mh, " No trades found ")) : ee("", !0)
                 ]))
               ])) : oe.value === "positions" ? (k(), T("div", gh, [
                 p("div", bh, [
@@ -13228,19 +13227,19 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
                         ]),
                         p("span", xh, "Qty: " + w(g.contract_quantity), 1),
                         p("span", Th, "· Avg price: " + w(Re(g.avgPrice)), 1),
-                        Wi(g) ? (k(), T("span", kh, "EXPIRED")) : te("", !0)
+                        Wi(g) ? (k(), T("span", kh, "EXPIRED")) : ee("", !0)
                       ]),
                       p("div", Mh, [
                         p("span", null, w(g.asset_class), 1),
                         f[54] || (f[54] = p("span", null, "•", -1)),
                         p("span", null, w(g.internal_account_id || g.legal_entity), 1),
-                        g.market_value ? (k(), T("span", Lh, "• MV: " + w(Re(g.market_value)), 1)) : te("", !0),
+                        g.market_value ? (k(), T("span", Lh, "• MV: " + w(Re(g.market_value)), 1)) : ee("", !0),
                         f[55] || (f[55] = p("span", null, " • ", -1)),
                         p("span", null, "Fetched at: " + w(Hs(g.fetched_at)), 1)
                       ])
                     ])
                   ], 10, Ch))), 128)),
-                  gt.value.length === 0 ? (k(), T("div", Sh, " No positions found ")) : te("", !0)
+                  gt.value.length === 0 ? (k(), T("div", Sh, " No positions found ")) : ee("", !0)
                 ]))
               ])) : (k(), T("div", Dh, [
                 p("div", _h, [
@@ -13282,13 +13281,13 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
                       ]),
                       p("div", Vh, [
                         p("span", null, w(g.assetCategory), 1),
-                        g.tradeMoney ? (k(), T("span", Ih, "• Trade money: " + w(Re(g.tradeMoney)), 1)) : te("", !0),
+                        g.tradeMoney ? (k(), T("span", Ih, "• Trade money: " + w(Re(g.tradeMoney)), 1)) : ee("", !0),
                         f[57] || (f[57] = p("span", null, " • ", -1)),
                         p("span", null, "Settlement Date: " + w(Gi(g.settleDateTarget)), 1)
                       ])
                     ])
                   ], 10, Ph))), 128)),
-                  bt.value.length === 0 ? (k(), T("div", Wh, " No orders found ")) : te("", !0)
+                  bt.value.length === 0 ? (k(), T("div", Wh, " No orders found ")) : ee("", !0)
                 ]))
               ]))
             ]),
@@ -13304,7 +13303,7 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
               }, " Attach " + w(oe.value === "trades" ? Ve.value.size : oe.value === "positions" ? Ie.value.size : Ne.value.size) + " " + w(oe.value === "trades" ? "Trade(s)" : oe.value === "positions" ? "Position(s)" : "Order(s)"), 9, $h)
             ])
           ])
-        ])) : te("", !0)
+        ])) : ee("", !0)
       ]);
     };
   }
@@ -13313,7 +13312,7 @@ const _r = { class: "current-positions-for-single-instrument-view" }, Fr = { cla
   for (const [i, s] of e)
     t[i] = s;
   return t;
-}, Qh = /* @__PURE__ */ Uh(jh, [["__scopeId", "data-v-9c4769c3"]]);
+}, Qh = /* @__PURE__ */ Uh(jh, [["__scopeId", "data-v-9f2b219e"]]);
 export {
   Qh as currentPositions,
   Qh as default
