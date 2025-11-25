@@ -8,12 +8,14 @@ import { useTabulator } from '../composables/useTabulator'
 import { useMarketPrice } from '../composables/useMarketPrice'
 import { useFinancialData } from '../composables/useFinancialData'
 import { useAverageCostPrice } from '../composables/useAverageCostPrice'
+import { useAverageCostPriceFromOrders } from '../composables/useAverageCostPriceFromOrders'
 import { useProfitAndLoss } from '../composables/useProfitAndLoss'
 import { useCapitalUsed } from '../composables/useCapitalUsed'
 import { useAttachedData } from '../composables/useAttachedData'
 import { usePositionExpansion } from '../composables/usePositionExpansion'
+import CalculationDetails from '../components/CalculationDetails.vue'
 import { TabulatorFull as Tabulator } from 'tabulator-tables'
-import { useSupabase, fetchPositionsBySymbolRoot, savePositionTradeMappings, savePositionPositionMappings } from '@y2kfund/core'
+import { useSupabase, fetchPositionsBySymbolRoot, savePositionTradeMappings, savePositionPositionMappings, type Position } from '@y2kfund/core'
 
 interface currentPositionsProps {
   symbolRoot: string
@@ -128,6 +130,20 @@ const {
   isLoading: isAvgPriceLoading, 
   error: avgPriceError 
 } = useAverageCostPrice(
+  positions,
+  props.userId
+)
+
+// Fetch average cost price from orders
+const {
+  averageCostPriceFromOrders,
+  overallAdjustedAvgPriceFromOrders,
+  totalNetCost,
+  totalShares,
+  orderGroups,
+  isLoading: isAvgPriceFromOrdersLoading,
+  error: avgPriceFromOrdersError
+} = useAverageCostPriceFromOrders(
   positions,
   props.userId
 )
@@ -293,6 +309,36 @@ function formatExpiryFromYyMmDd(code: string): string {
   const mm = code.substring(2, 4)
   const dd = code.substring(4, 6)
   return `20${yy}-${mm}-${dd}`
+}
+
+function parseOrderSymbol(symbolText: string): string {
+  if (!symbolText) return ''
+  const text = String(symbolText).trim()
+  
+  // Check if it's an option symbol (format: MSFT 251031P00530000)
+  const optionMatch = text.match(/^([A-Z]+)\s+(\d{6})([CP])(\d{8})$/)
+  
+  if (optionMatch) {
+    const ticker = optionMatch[1]
+    const yymmdd = optionMatch[2]
+    const right = optionMatch[3]
+    const strikeRaw = optionMatch[4]
+    
+    // Parse expiry date
+    const yy = yymmdd.substring(0, 2)
+    const mm = yymmdd.substring(2, 4)
+    const dd = yymmdd.substring(4, 6)
+    const expiry = `20${yy}-${mm}-${dd}`
+    
+    // Parse strike price (divide by 1000)
+    const strike = (parseInt(strikeRaw, 10) / 1000).toString()
+    
+    // Return formatted string: MSFT 2025-10-31 530 P
+    return `${ticker} ${expiry} ${strike} ${right}`
+  }
+  
+  // If not an option symbol, return as is
+  return text
 }
 
 function formatTradeDate(dateStr: string): string {
@@ -1399,103 +1445,21 @@ onBeforeUnmount(() => {
             </div>
           </transition>
 
-          <!-- Calculation Details Section (Collapsible) -->
-          <transition name="slide-fade">
-            <div v-show="showCalculationDetails" class="calculation-details">
-              <h2>Average Price calculation details :</h2>
-
-              <!-- Tabs for Calculation Methods -->
-              <div class="calculation-tabs">
-                <button
-                  class="tab-button"
-                  :class="{ active: avgPriceCalculationTab === 'positions' }"
-                  @click="avgPriceCalculationTab = 'positions'"
-                >
-                  Calculation from Positions
-                </button>
-                <button
-                  class="tab-button"
-                  :class="{ active: avgPriceCalculationTab === 'orders' }"
-                  @click="avgPriceCalculationTab = 'orders'"
-                >
-                  Calculation from Orders
-                </button>
-              </div>
-
-              <!-- Positions Tab Content -->
-              <div v-if="avgPriceCalculationTab === 'positions'">
-                <!-- Group by main position + its attached positions -->
-                <div v-for="(group, groupIndex) in positionGroups" :key="`group-${groupIndex}`" class="position-group">
-                  <div class="group-header clickable" @click="toggleGroupExpansion(groupIndex)">
-                    <span class="toggle-icon">{{ expandedGroups.has(groupIndex) ? '▼' : '▶' }}</span>
-                    Client {{ groupIndex + 1 }}: {{ group.mainPosition.account }}
-                  </div>
-                  
-                  <!-- Collapsible Content -->
-                  <transition name="slide-fade">
-                    <div v-show="expandedGroups.has(groupIndex)" class="group-content">
-                  
-                  <!-- Main position -->
-                  <div class="position-line main-position">
-                    <span class="position-icon">📍</span>
-                    <span class="position-symbol">{{ group.mainPosition.symbol }}</span>
-                    <span class="position-calc">@ ${{ group.mainPosition.avgPrice.toFixed(2) }} × {{ group.mainPosition.quantity.toLocaleString() }} = ${{ group.mainPosition.totalCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</span>
-                  </div>
-                  
-                  <!-- Call positions (if any) -->
-                  <div v-if="group.callPositions.length > 0" class="call-positions-wrapper">
-                    <div class="call-header">📞 Call Positions (subtract from cost)</div>
-                    <div v-for="(pos, posIndex) in group.callPositions" :key="`call-${groupIndex}-${posIndex}`" class="position-line call-position">
-                      <span class="position-icon"></span>
-                      <span class="position-symbol">{{ pos.symbol }}</span>
-                      <span class="position-calc">@ ${{ pos.avgPrice.toFixed(2) }} × {{ pos.quantity.toLocaleString() }} = ${{ pos.totalCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</span>
-                    </div>
-                    <div class="call-subtotal">
-                      Subtotal Calls: ${{ Math.abs(group.callPositionsTotalCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
-                    </div>
-                  </div>
-                  
-                  <!-- Put positions (for display only, not included in calculation) -->
-                  <div v-if="group.putPositions.length > 0" class="put-positions-wrapper">
-                    <div class="put-header">📉 Put Positions (display only, not in calculation)</div>
-                    <div v-for="(pos, posIndex) in group.putPositions" :key="`put-${groupIndex}-${posIndex}`" class="position-line put-position">
-                      <span class="position-icon">📉</span>
-                      <span class="position-symbol">{{ pos.symbol }}</span>
-                      <span class="position-calc">@ ${{ pos.avgPrice.toFixed(2) }} × {{ pos.quantity.toLocaleString() }} = ${{ pos.totalCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</span>
-                    </div>
-                  </div>
-                  
-                  <!-- Calculation summary for this client -->
-                  <div class="group-calculation">
-                    <div class="calc-line">📊 <strong>Calculation:</strong></div>
-                    <div class="calc-line indent">Net Cost = ${{ group.mainPosition.totalCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} - ${{ Math.abs(group.callPositionsTotalCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} = ${{ group.netCostExcludingPuts.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</div>
-                    <div class="calc-line indent"><strong>Adjusted Avg Price = ${{ group.netCostExcludingPuts.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} ÷ {{ group.mainPosition.quantity.toLocaleString() }} = ${{ group.adjustedAvgPricePerShare.toFixed(2) }} per share</strong></div>
-                  </div>
-                  
-                    </div>
-                  </transition>
-                </div>
-
-                <!-- Overall adjusted average at the top -->
-                <div v-if="overallAdjustedAvgPrice !== null" class="overall-adjusted-section">
-                  <div class="overall-adjusted-header">
-                    🎯 Overall Adjusted Average: ${{ overallAdjustedAvgPrice.toFixed(2) }} per share
-                  </div>
-                  <div class="overall-calculation-breakdown">
-                    <div class="breakdown-line">Total Net Cost = {{ positionGroups.map((g: any, i: any) => `$${g.netCostExcludingPuts.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(' + ') }} = ${{ totalNetCostAllClients.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</div>
-                    <div class="breakdown-line">Total Main Qty = {{ positionGroups.map((g: any) => g.mainPosition.quantity.toLocaleString()).join(' + ') }} = {{ totalMainQuantityAllClients.toLocaleString() }}</div>
-                    <div class="breakdown-line"><strong>Overall Adjusted Average = ${{ totalNetCostAllClients.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} ÷ {{ totalMainQuantityAllClients.toLocaleString() }} = ${{ overallAdjustedAvgPrice.toFixed(2) }}</strong></div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Orders Tab Content -->
-              <div v-else-if="avgPriceCalculationTab === 'orders'" class="coming-soon-content">
-                coming soon...
-              </div>
-
-            </div>
-          </transition>
+          <!-- Calculation Details Component -->
+          <CalculationDetails
+            :show-calculation-details="showCalculationDetails"
+            v-model:avg-price-calculation-tab="avgPriceCalculationTab"
+            :position-groups="positionGroups"
+            :order-groups="orderGroups"
+            :overall-adjusted-avg-price="overallAdjustedAvgPrice"
+            :overall-adjusted-avg-price-from-orders="overallAdjustedAvgPriceFromOrders"
+            :total-net-cost-all-clients="totalNetCostAllClients"
+            :total-main-quantity-all-clients="totalMainQuantityAllClients"
+            :total-net-cost="totalNetCost"
+            :total-shares="totalShares"
+            :is-avg-price-from-orders-loading="isAvgPriceFromOrdersLoading"
+            :avg-price-from-orders-error="avgPriceFromOrdersError"
+          />
 
           <!-- P&L Details Section (Collapsible) -->
           <transition name="slide-fade">
