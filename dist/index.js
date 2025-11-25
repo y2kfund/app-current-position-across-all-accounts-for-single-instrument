@@ -1,9 +1,9 @@
 var Ws = Object.defineProperty;
 var Gs = (l, e, t) => e in l ? Ws(l, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : l[e] = t;
-var M = (l, e, t) => Gs(l, typeof e != "symbol" ? e + "" : e, t);
-import { inject as js, ref as z, watch as Fe, nextTick as It, onBeforeUnmount as Xi, computed as ie, defineComponent as Ji, createBlock as Us, openBlock as R, Transition as bt, withCtx as vt, withDirectives as je, createElementVNode as f, createElementBlock as x, createCommentVNode as Q, normalizeClass as ge, Fragment as ce, renderList as fe, createVNode as ut, createTextVNode as ne, toDisplayString as g, vShow as wt, onMounted as qs, unref as k, withModifiers as Tt, vModelText as ti } from "vue";
+var S = (l, e, t) => Gs(l, typeof e != "symbol" ? e + "" : e, t);
+import { inject as js, ref as A, watch as Ae, nextTick as It, onBeforeUnmount as Xi, computed as ee, defineComponent as Ji, createBlock as Us, openBlock as R, Transition as wt, withCtx as Ct, withDirectives as Xe, createElementVNode as f, createElementBlock as x, createCommentVNode as U, normalizeClass as Ce, Fragment as de, renderList as ue, createVNode as ft, createTextVNode as ae, toDisplayString as m, vShow as yt, onMounted as qs, unref as k, withModifiers as St, vModelText as ti } from "vue";
 import { useQueryClient as Fi, useQuery as _i } from "@tanstack/vue-query";
-import { useSupabase as yt, generatePositionMappingKey as Ct, usePositionTradeMappingsQuery as Ks, usePositionPositionMappingsQuery as Xs, usePositionOrderMappingsQuery as Js, savePositionOrderMappings as Qs, fetchPositionsBySymbolRoot as Qi, savePositionTradeMappings as Ys, savePositionPositionMappings as Zs } from "@y2kfund/core";
+import { useSupabase as Rt, generatePositionMappingKey as Et, usePositionTradeMappingsQuery as Ks, usePositionPositionMappingsQuery as Xs, usePositionOrderMappingsQuery as Js, savePositionOrderMappings as Qs, fetchPositionsBySymbolRoot as Qi, savePositionTradeMappings as Ys, savePositionPositionMappings as Zs } from "@y2kfund/core";
 const eo = Symbol.for("y2kfund.supabase");
 function Pi() {
   const l = js(eo, null);
@@ -33,15 +33,15 @@ function io(l, e) {
   const t = Pi(), i = Fi(), s = to.details(l, e), o = _i({
     queryKey: s,
     queryFn: async () => {
-      const r = e == null ? void 0 : e.trim();
-      if (!r)
+      const a = e == null ? void 0 : e.trim();
+      if (!a)
         return console.log("⚠️ No symbol provided, returning empty array"), [];
       console.log("🔍 [CurrentPosition] Querying with:", {
         userId: l || "none (all accounts)",
-        symbolName: r
+        symbolName: a
       });
-      const a = await zi(t, l);
-      l && a.length === 0 ? console.log("⚠️ User has no account access restrictions - showing all accounts") : a.length > 0 && console.log("🔒 User has access to accounts:", a);
+      const r = await zi(t, l);
+      l && r.length === 0 ? console.log("⚠️ User has no account access restrictions - showing all accounts") : r.length > 0 && console.log("🔒 User has access to accounts:", r);
       const { data: h, error: d } = await t.schema("hf").from("positions").select("fetched_at").order("fetched_at", { ascending: !1 }).limit(1).single();
       if (d)
         throw console.error("❌ Error fetching latest fetched_at:", d), d;
@@ -49,33 +49,33 @@ function io(l, e) {
         return console.log("⚠️ No positions found in database"), [];
       const u = h.fetched_at;
       console.log("📅 Latest fetched_at:", u);
-      let c = t.schema("hf").from("positions").select("*").eq("fetched_at", u).eq("asset_class", "STK").eq("symbol", `${r}`).order("symbol", { ascending: !0 });
-      a.length > 0 && (c = c.in("internal_account_id", a));
-      const { data: m, error: b } = await c;
+      let c = t.schema("hf").from("positions").select("*").eq("fetched_at", u).eq("asset_class", "STK").eq("symbol", `${a}`).order("symbol", { ascending: !0 });
+      r.length > 0 && (c = c.in("internal_account_id", r));
+      const { data: g, error: b } = await c;
       if (b)
         throw console.error("❌ Error fetching positions:", b), b;
-      if (!m || m.length === 0)
+      if (!g || g.length === 0)
         return console.log("📊 No positions found matching criteria"), [];
-      console.log(`✅ Found ${m.length} position(s) matching symbol "${r}"`);
+      console.log(`✅ Found ${g.length} position(s) matching symbol "${a}"`);
       const E = Array.from(
-        new Set(m.map((D) => D.internal_account_id))
+        new Set(g.map((F) => F.internal_account_id))
       ), [y, C] = await Promise.all([
         t.schema("hf").from("user_accounts_master").select("internal_account_id, legal_entity").in("internal_account_id", E),
         l ? t.schema("hf").from("user_account_alias").select("internal_account_id, alias").eq("user_id", l).in("internal_account_id", E) : { data: [], error: null }
       ]);
       y.error && console.warn("⚠️ Error fetching account names:", y.error), C.error && console.warn("⚠️ Error fetching account aliases:", C.error);
       const T = new Map(
-        (y.data || []).map((D) => [D.internal_account_id, D.legal_entity])
-      ), A = new Map(
-        (C.data || []).map((D) => [D.internal_account_id, D.alias])
-      ), F = m.map((D) => {
-        let L = T.get(D.internal_account_id);
-        return A.has(D.internal_account_id) && (L = A.get(D.internal_account_id)), {
-          ...D,
+        (y.data || []).map((F) => [F.internal_account_id, F.legal_entity])
+      ), H = new Map(
+        (C.data || []).map((F) => [F.internal_account_id, F.alias])
+      ), _ = g.map((F) => {
+        let L = T.get(F.internal_account_id);
+        return H.has(F.internal_account_id) && (L = H.get(F.internal_account_id)), {
+          ...F,
           legal_entity: L
         };
       });
-      return console.log("✅ Successfully enriched positions with account info"), F;
+      return console.log("✅ Successfully enriched positions with account info"), _;
     },
     enabled: !!e && e.trim().length > 0,
     // Only run if symbol provided
@@ -97,8 +97,8 @@ function io(l, e) {
   return {
     ...o,
     _cleanup: () => {
-      var r;
-      console.log("🧹 Cleaning up instrument details subscription"), (r = n == null ? void 0 : n.unsubscribe) == null || r.call(n);
+      var a;
+      console.log("🧹 Cleaning up instrument details subscription"), (a = n == null ? void 0 : n.unsubscribe) == null || a.call(n);
     }
   };
 }
@@ -113,11 +113,11 @@ async function so(l, e, t) {
   const { data: o, error: n } = await l.schema("hf").from("positions").select("fetched_at").order("fetched_at", { ascending: !1 }).limit(1).single();
   if (n)
     throw console.error("❌ Error fetching latest fetched_at:", n), n;
-  const r = o.fetched_at;
-  console.log("📅 Latest fetched_at:", r);
-  let a = l.schema("hf").from("positions").select("*").eq("fetched_at", r).ilike("symbol", `%${e}% P %`);
-  s.length > 0 && (a = a.in("internal_account_id", s));
-  const { data: h, error: d } = await a;
+  const a = o.fetched_at;
+  console.log("📅 Latest fetched_at:", a);
+  let r = l.schema("hf").from("positions").select("*").eq("fetched_at", a).ilike("symbol", `%${e}% P %`);
+  s.length > 0 && (r = r.in("internal_account_id", s));
+  const { data: h, error: d } = await r;
   if (d)
     throw console.error("❌ Error fetching put positions:", d), d;
   const [u, c] = await Promise.all([
@@ -131,13 +131,13 @@ async function so(l, e, t) {
     accountsCount: (i = u.data) == null ? void 0 : i.length,
     filtered: s.length > 0
   });
-  const m = new Map(
+  const g = new Map(
     (c.data || []).map((y) => [y.internal_account_id, y.alias])
   ), b = new Map(
     (u.data || []).map((y) => [y.internal_account_id, y.legal_entity])
   ), E = (h || []).map((y) => {
     let C = b.get(y.internal_account_id) || void 0;
-    return m.has(y.internal_account_id) && (C = m.get(y.internal_account_id)), {
+    return g.has(y.internal_account_id) && (C = g.get(y.internal_account_id)), {
       ...y,
       legal_entity: C
     };
@@ -178,11 +178,11 @@ async function no(l, e, t) {
   const { data: o, error: n } = await l.schema("hf").from("positions").select("fetched_at").order("fetched_at", { ascending: !1 }).limit(1).single();
   if (n)
     throw console.error("❌ Error fetching latest fetched_at:", n), n;
-  const r = o.fetched_at;
-  console.log("📅 Latest fetched_at:", r);
-  let a = l.schema("hf").from("positions").select("*").eq("fetched_at", r).ilike("symbol", `%${e}% C %`);
-  s.length > 0 && (a = a.in("internal_account_id", s));
-  const { data: h, error: d } = await a;
+  const a = o.fetched_at;
+  console.log("📅 Latest fetched_at:", a);
+  let r = l.schema("hf").from("positions").select("*").eq("fetched_at", a).ilike("symbol", `%${e}% C %`);
+  s.length > 0 && (r = r.in("internal_account_id", s));
+  const { data: h, error: d } = await r;
   if (d)
     throw console.error("❌ Error fetching call positions:", d), d;
   const [u, c] = await Promise.all([
@@ -196,20 +196,20 @@ async function no(l, e, t) {
     accountsCount: (i = u.data) == null ? void 0 : i.length,
     filtered: s.length > 0
   });
-  const m = new Map(
+  const g = new Map(
     (c.data || []).map((y) => [y.internal_account_id, y.alias])
   ), b = new Map(
     (u.data || []).map((y) => [y.internal_account_id, y.legal_entity])
   ), E = (h || []).map((y) => {
     let C = b.get(y.internal_account_id) || void 0;
-    return m.has(y.internal_account_id) && (C = m.get(y.internal_account_id)), {
+    return g.has(y.internal_account_id) && (C = g.get(y.internal_account_id)), {
       ...y,
       legal_entity: C
     };
   });
   return console.log("✅ Enriched call positions with accounts", E.length), E;
 }
-function ro(l, e) {
+function ao(l, e) {
   const t = Pi(), i = Fi(), s = ["callPositions", l, e], o = _i({
     queryKey: s,
     queryFn: async () => l ? await no(t, l, e) : [],
@@ -232,7 +232,7 @@ function ro(l, e) {
     n.unsubscribe();
   } };
 }
-class de {
+class be {
   constructor(e) {
     this.table = e;
   }
@@ -346,7 +346,7 @@ class Y {
   }
   static retrieveNestedData(e, t, i) {
     var s = e ? t.split(e) : [t], o = s.length, n;
-    for (let r = 0; r < o && (i = i[s[r]], n = i, !!i); r++)
+    for (let a = 0; a < o && (i = i[s[a]], n = i, !!i); a++)
       ;
     return n;
   }
@@ -354,13 +354,13 @@ class Y {
     var s = {}.__proto__, o = [].__proto__;
     t || (t = Object.assign(Array.isArray(e) ? [] : {}, e));
     for (var n in e) {
-      let r = e[n], a, h;
-      r != null && typeof r == "object" && (r.__proto__ === s || r.__proto__ === o) && (a = i.findIndex((d) => d.subject === r), a > -1 ? t[n] = i[a].copy : (h = Object.assign(Array.isArray(r) ? [] : {}, r), i.unshift({ subject: r, copy: h }), t[n] = this.deepClone(r, h, i)));
+      let a = e[n], r, h;
+      a != null && typeof a == "object" && (a.__proto__ === s || a.__proto__ === o) && (r = i.findIndex((d) => d.subject === a), r > -1 ? t[n] = i[r].copy : (h = Object.assign(Array.isArray(a) ? [] : {}, a), i.unshift({ subject: a, copy: h }), t[n] = this.deepClone(a, h, i)));
     }
     return t;
   }
 }
-let ao = class Yi extends de {
+let ro = class Yi extends be {
   constructor(e, t, i) {
     super(e), this.element = t, this.container = this._lookupContainer(), this.parent = i, this.reversedX = !1, this.childPopup = null, this.blurable = !1, this.blurCallback = null, this.blurEventsBound = !1, this.renderedCallback = null, this.visible = !1, this.hideable = !0, this.element.classList.add("tabulator-popup-container"), this.blurEvent = this.hide.bind(this, !1), this.escEvent = this._escapeCheck.bind(this), this.destroyBinding = this.tableDestroyed.bind(this), this.destroyed = !1;
   }
@@ -407,16 +407,16 @@ let ao = class Yi extends de {
     return { x: o, y: n, offset: i };
   }
   show(e, t) {
-    var i, s, o, n, r;
-    return this.destroyed || this.table.destroyed ? this : (e instanceof HTMLElement ? (o = e, r = this.elementPositionCoords(e, t), n = r.offset, i = r.x, s = r.y) : typeof e == "number" ? (n = { top: 0, left: 0 }, i = e, s = t) : (r = this.containerEventCoords(e), i = r.x, s = r.y, this.reversedX = !1), this.element.style.top = s + "px", this.element.style.left = i + "px", this.container.appendChild(this.element), typeof this.renderedCallback == "function" && this.renderedCallback(), this._fitToScreen(i, s, o, n, t), this.visible = !0, this.subscribe("table-destroy", this.destroyBinding), this.element.addEventListener("mousedown", (a) => {
-      a.stopPropagation();
+    var i, s, o, n, a;
+    return this.destroyed || this.table.destroyed ? this : (e instanceof HTMLElement ? (o = e, a = this.elementPositionCoords(e, t), n = a.offset, i = a.x, s = a.y) : typeof e == "number" ? (n = { top: 0, left: 0 }, i = e, s = t) : (a = this.containerEventCoords(e), i = a.x, s = a.y, this.reversedX = !1), this.element.style.top = s + "px", this.element.style.left = i + "px", this.container.appendChild(this.element), typeof this.renderedCallback == "function" && this.renderedCallback(), this._fitToScreen(i, s, o, n, t), this.visible = !0, this.subscribe("table-destroy", this.destroyBinding), this.element.addEventListener("mousedown", (r) => {
+      r.stopPropagation();
     }), this);
   }
   _fitToScreen(e, t, i, s, o) {
     var n = this.container === document.body ? document.documentElement.scrollTop : this.container.scrollTop;
     (e + this.element.offsetWidth >= this.container.offsetWidth || this.reversedX) && (this.element.style.left = "", i ? this.element.style.right = this.container.offsetWidth - s.left + "px" : this.element.style.right = this.container.offsetWidth - e + "px", this.reversedX = !0);
-    let r = Math.max(this.container.offsetHeight, n ? this.container.scrollHeight : 0);
-    if (t + this.element.offsetHeight > r)
+    let a = Math.max(this.container.offsetHeight, n ? this.container.scrollHeight : 0);
+    if (t + this.element.offsetHeight > a)
       if (i)
         switch (o) {
           case "bottom":
@@ -426,7 +426,7 @@ let ao = class Yi extends de {
             this.element.style.top = parseInt(this.element.style.top) - this.element.offsetHeight + i.offsetHeight + 1 + "px";
         }
       else
-        this.element.style.height = r + "px";
+        this.element.style.height = a + "px";
   }
   isVisible() {
     return this.visible;
@@ -452,7 +452,7 @@ let ao = class Yi extends de {
     return this.childPopup && this.childPopup.hide(), this.childPopup = new Yi(this.table, e, this), this.childPopup;
   }
 };
-class j extends de {
+class G extends be {
   constructor(e, t) {
     super(e), this._handler = null;
   }
@@ -512,7 +512,7 @@ class j extends de {
   //////// Popups Management ////////
   ///////////////////////////////////
   popup(e, t) {
-    return new ao(this.table, e, t);
+    return new ro(this.table, e, t);
   }
   ///////////////////////////////////
   //////// Alert Management ////////
@@ -529,7 +529,7 @@ var lo = {
     return o.getPosition();
   }
 };
-const ft = class ft extends j {
+const mt = class mt extends G {
   constructor(e) {
     super(e), this.allowedTypes = ["", "data", "download", "clipboard", "print", "htmlOutput"], this.registerColumnOption("accessor"), this.registerColumnOption("accessorParams"), this.registerColumnOption("accessorData"), this.registerColumnOption("accessorDataParams"), this.registerColumnOption("accessorDownload"), this.registerColumnOption("accessorDownloadParams"), this.registerColumnOption("accessorClipboard"), this.registerColumnOption("accessorClipboardParams"), this.registerColumnOption("accessorPrint"), this.registerColumnOption("accessorPrintParams"), this.registerColumnOption("accessorHtmlOutput"), this.registerColumnOption("accessorHtmlOutputParams");
   }
@@ -551,7 +551,7 @@ const ft = class ft extends j {
     var t = !1;
     switch (typeof e) {
       case "string":
-        ft.accessors[e] ? t = ft.accessors[e] : console.warn("Accessor Error - No such accessor found, ignoring: ", e);
+        mt.accessors[e] ? t = mt.accessors[e] : console.warn("Accessor Error - No such accessor found, ignoring: ", e);
         break;
       case "function":
         t = e;
@@ -563,14 +563,14 @@ const ft = class ft extends j {
   transformRow(e, t) {
     var i = "accessor" + (t.charAt(0).toUpperCase() + t.slice(1)), s = e.getComponent(), o = Y.deepClone(e.data || {});
     return this.table.columnManager.traverse(function(n) {
-      var r, a, h, d;
-      n.modules.accessor && (a = n.modules.accessor[i] || n.modules.accessor.accessor || !1, a && (r = n.getFieldValue(o), r != "undefined" && (d = n.getComponent(), h = typeof a.params == "function" ? a.params(r, o, t, d, s) : a.params, n.setFieldValue(o, a.accessor(r, o, t, h, d, s)))));
+      var a, r, h, d;
+      n.modules.accessor && (r = n.modules.accessor[i] || n.modules.accessor.accessor || !1, r && (a = n.getFieldValue(o), a != "undefined" && (d = n.getComponent(), h = typeof r.params == "function" ? r.params(a, o, t, d, s) : r.params, n.setFieldValue(o, r.accessor(a, o, t, h, d, s)))));
     }), o;
   }
 };
-M(ft, "moduleName", "accessor"), //load defaults
-M(ft, "accessors", lo);
-let oi = ft;
+S(mt, "moduleName", "accessor"), //load defaults
+S(mt, "accessors", lo);
+let oi = mt;
 var ho = {
   method: "GET"
 };
@@ -606,26 +606,26 @@ function co(l, e, t) {
         e.body = i.body.call(this, l, e, t);
       } else
         console.warn("Ajax Error - Invalid ajaxContentType value:", this.table.options.ajaxContentType);
-    l ? (typeof e.headers > "u" && (e.headers = {}), typeof e.headers.Accept > "u" && (e.headers.Accept = "application/json"), typeof e.headers["X-Requested-With"] > "u" && (e.headers["X-Requested-With"] = "XMLHttpRequest"), typeof e.mode > "u" && (e.mode = "cors"), e.mode == "cors" ? (typeof e.headers.Origin > "u" && (e.headers.Origin = window.location.origin), typeof e.credentials > "u" && (e.credentials = "same-origin")) : typeof e.credentials > "u" && (e.credentials = "include"), fetch(l, e).then((r) => {
-      r.ok ? r.json().then((a) => {
-        s(a);
-      }).catch((a) => {
-        o(a), console.warn("Ajax Load Error - Invalid JSON returned", a);
-      }) : (console.error("Ajax Load Error - Connection Error: " + r.status, r.statusText), o(r));
-    }).catch((r) => {
-      console.error("Ajax Load Error - Connection Error: ", r), o(r);
+    l ? (typeof e.headers > "u" && (e.headers = {}), typeof e.headers.Accept > "u" && (e.headers.Accept = "application/json"), typeof e.headers["X-Requested-With"] > "u" && (e.headers["X-Requested-With"] = "XMLHttpRequest"), typeof e.mode > "u" && (e.mode = "cors"), e.mode == "cors" ? (typeof e.headers.Origin > "u" && (e.headers.Origin = window.location.origin), typeof e.credentials > "u" && (e.credentials = "same-origin")) : typeof e.credentials > "u" && (e.credentials = "include"), fetch(l, e).then((a) => {
+      a.ok ? a.json().then((r) => {
+        s(r);
+      }).catch((r) => {
+        o(r), console.warn("Ajax Load Error - Invalid JSON returned", r);
+      }) : (console.error("Ajax Load Error - Connection Error: " + a.status, a.statusText), o(a));
+    }).catch((a) => {
+      console.error("Ajax Load Error - Connection Error: ", a), o(a);
     })) : (console.warn("Ajax Load Error - No URL Set"), s([]));
   });
 }
-function ri(l, e) {
+function ai(l, e) {
   var t = [];
   if (e = e || "", Array.isArray(l))
     l.forEach((s, o) => {
-      t = t.concat(ri(s, e ? e + "[" + o + "]" : o));
+      t = t.concat(ai(s, e ? e + "[" + o + "]" : o));
     });
   else if (typeof l == "object")
     for (var i in l)
-      t = t.concat(ri(l[i], e ? e + "[" + i + "]" : i));
+      t = t.concat(ai(l[i], e ? e + "[" + i + "]" : i));
   else
     t.push({ key: e, value: l });
   return t;
@@ -642,21 +642,21 @@ var fo = {
   form: {
     headers: {},
     body: function(l, e, t) {
-      var i = ri(t), s = new FormData();
+      var i = ai(t), s = new FormData();
       return i.forEach(function(o) {
         s.append(o.key, o.value);
       }), s;
     }
   }
 };
-const De = class De extends j {
+const ze = class ze extends G {
   constructor(e) {
     super(e), this.config = {}, this.url = "", this.urlGenerator = !1, this.params = !1, this.loaderPromise = !1, this.registerTableOption("ajaxURL", !1), this.registerTableOption("ajaxURLGenerator", !1), this.registerTableOption("ajaxParams", {}), this.registerTableOption("ajaxConfig", "get"), this.registerTableOption("ajaxContentType", "form"), this.registerTableOption("ajaxRequestFunc", !1), this.registerTableOption("ajaxRequesting", function() {
-    }), this.registerTableOption("ajaxResponse", !1), this.contentTypeFormatters = De.contentTypeFormatters;
+    }), this.registerTableOption("ajaxResponse", !1), this.contentTypeFormatters = ze.contentTypeFormatters;
   }
   //initialize setup options
   initialize() {
-    this.loaderPromise = this.table.options.ajaxRequestFunc || De.defaultLoaderPromise, this.urlGenerator = this.table.options.ajaxURLGenerator || De.defaultURLGenerator, this.table.options.ajaxURL && this.setUrl(this.table.options.ajaxURL), this.setDefaultConfig(this.table.options.ajaxConfig), this.registerTableFunction("getAjaxUrl", this.getUrl.bind(this)), this.subscribe("data-loading", this.requestDataCheck.bind(this)), this.subscribe("data-params", this.requestParams.bind(this)), this.subscribe("data-load", this.requestData.bind(this));
+    this.loaderPromise = this.table.options.ajaxRequestFunc || ze.defaultLoaderPromise, this.urlGenerator = this.table.options.ajaxURLGenerator || ze.defaultURLGenerator, this.table.options.ajaxURL && this.setUrl(this.table.options.ajaxURL), this.setDefaultConfig(this.table.options.ajaxConfig), this.registerTableFunction("getAjaxUrl", this.getUrl.bind(this)), this.subscribe("data-loading", this.requestDataCheck.bind(this)), this.subscribe("data-params", this.requestParams.bind(this)), this.subscribe("data-load", this.requestData.bind(this));
   }
   requestParams(e, t, i, s) {
     var o = this.table.options.ajaxParams;
@@ -670,7 +670,7 @@ const De = class De extends j {
     return !o && this.requestDataCheck(e) ? (e && this.setUrl(e), n = this.generateConfig(i), this.sendRequest(this.url, t, n)) : o;
   }
   setDefaultConfig(e = {}) {
-    this.config = Object.assign({}, De.defaultConfig), typeof e == "string" ? this.config.method = e : Object.assign(this.config, e);
+    this.config = Object.assign({}, ze.defaultConfig), typeof e == "string" ? this.config.method = e : Object.assign(this.config, e);
   }
   //load config object
   generateConfig(e = {}) {
@@ -690,9 +690,9 @@ const De = class De extends j {
     return this.table.options.ajaxRequesting.call(this.table, e, t) !== !1 ? this.loaderPromise(e, i, t).then((s) => (this.table.options.ajaxResponse && (s = this.table.options.ajaxResponse.call(this.table, e, t, s)), s)) : Promise.reject();
   }
 };
-M(De, "moduleName", "ajax"), //load defaults
-M(De, "defaultConfig", ho), M(De, "defaultURLGenerator", Zi), M(De, "defaultLoaderPromise", co), M(De, "contentTypeFormatters", fo);
-let ai = De;
+S(ze, "moduleName", "ajax"), //load defaults
+S(ze, "defaultConfig", ho), S(ze, "defaultURLGenerator", Zi), S(ze, "defaultLoaderPromise", co), S(ze, "contentTypeFormatters", fo);
+let ri = ze;
 var po = {
   replace: function(l) {
     return this.table.setData(l);
@@ -710,20 +710,20 @@ var po = {
 `), l.forEach(function(n) {
       e.push(n.split("	"));
     }), e.length && !(e.length === 1 && e[0].length < 2) ? (e[0].forEach(function(n) {
-      var r = i.find(function(a) {
-        return n && a.definition.title && n.trim() && a.definition.title.trim() === n.trim();
+      var a = i.find(function(r) {
+        return n && r.definition.title && n.trim() && r.definition.title.trim() === n.trim();
       });
-      r ? s.push(r) : t = !1;
+      a ? s.push(a) : t = !1;
     }), t || (t = !0, s = [], e[0].forEach(function(n) {
-      var r = i.find(function(a) {
-        return n && a.field && n.trim() && a.field.trim() === n.trim();
+      var a = i.find(function(r) {
+        return n && r.field && n.trim() && r.field.trim() === n.trim();
       });
-      r ? s.push(r) : t = !1;
+      a ? s.push(a) : t = !1;
     }), t || (s = this.table.columnManager.columnsByIndex)), t && e.shift(), e.forEach(function(n) {
-      var r = {};
-      n.forEach(function(a, h) {
-        s[h] && (r[s[h].field] = a);
-      }), o.push(r);
+      var a = {};
+      n.forEach(function(r, h) {
+        s[h] && (a[s[h].field] = r);
+      }), o.push(a);
     }), o) : !1;
   }
 }, go = {
@@ -738,7 +738,7 @@ var po = {
     actions: bo
   }
 };
-const Ke = class Ke extends j {
+const Ze = class Ze extends G {
   constructor(e) {
     super(e), this.mode = !0, this.pasteParser = function() {
     }, this.pasteAction = function() {
@@ -788,7 +788,7 @@ const Ke = class Ke extends j {
   setPasteAction(e) {
     switch (typeof e) {
       case "string":
-        this.pasteAction = Ke.pasteActions[e], this.pasteAction || console.warn("Clipboard Error - No such paste action found:", e);
+        this.pasteAction = Ze.pasteActions[e], this.pasteAction || console.warn("Clipboard Error - No such paste action found:", e);
         break;
       case "function":
         this.pasteAction = e;
@@ -798,7 +798,7 @@ const Ke = class Ke extends j {
   setPasteParser(e) {
     switch (typeof e) {
       case "string":
-        this.pasteParser = Ke.pasteParsers[e], this.pasteParser || console.warn("Clipboard Error - No such paste parser found:", e);
+        this.pasteParser = Ze.pasteParsers[e], this.pasteParser || console.warn("Clipboard Error - No such paste parser found:", e);
         break;
       case "function":
         this.pasteParser = e;
@@ -824,9 +824,9 @@ const Ke = class Ke extends j {
     return window.clipboardData && window.clipboardData.getData ? t = window.clipboardData.getData("Text") : e.clipboardData && e.clipboardData.getData ? t = e.clipboardData.getData("text/plain") : e.originalEvent && e.originalEvent.clipboardData.getData && (t = e.originalEvent.clipboardData.getData("text/plain")), t;
   }
 };
-M(Ke, "moduleName", "clipboard"), M(Ke, "moduleExtensions", vo), //load defaults
-M(Ke, "pasteActions", po), M(Ke, "pasteParsers", mo);
-let li = Ke;
+S(Ze, "moduleName", "clipboard"), S(Ze, "moduleExtensions", vo), //load defaults
+S(Ze, "pasteActions", po), S(Ze, "pasteParsers", mo);
+let li = Ze;
 class wo {
   constructor(e) {
     return this._row = e, new Proxy(this, {
@@ -912,7 +912,7 @@ class es {
     return this._cell;
   }
 }
-class Pt extends de {
+class zt extends be {
   constructor(e, t) {
     super(e.table), this.table = e.table, this.column = e, this.row = t, this.element = null, this.value = null, this.initialValue, this.oldValue = null, this.modules = {}, this.height = null, this.width = null, this.minWidth = null, this.component = null, this.loaded = !1, this.build();
   }
@@ -1136,10 +1136,10 @@ var is = {
   headerWordWrap: !1,
   editableTitle: void 0
 };
-const ot = class ot extends de {
+const lt = class lt extends be {
   constructor(e, t, i) {
     super(t.table), this.definition = e, this.parent = t, this.type = "column", this.columns = [], this.cells = [], this.isGroup = !1, this.isRowHeader = i, this.element = this.createElement(), this.contentElement = !1, this.titleHolderElement = !1, this.titleElement = !1, this.groupElement = this.createGroupElement(), this.hozAlign = "", this.vertAlign = "", this.field = "", this.fieldStructure = "", this.getFieldValue = "", this.setFieldValue = "", this.titleDownload = null, this.titleFormatterRendered = !1, this.mapDefinitions(), this.setField(this.definition.field), this.modules = {}, this.width = null, this.widthStyled = "", this.maxWidth = null, this.maxWidthStyled = "", this.maxInitialWidth = null, this.minWidth = null, this.minWidthStyled = "", this.widthFixed = !1, this.visible = !0, this.component = null, this.definition.columns ? (this.isGroup = !0, this.definition.columns.forEach((s, o) => {
-      var n = new ot(s, this);
+      var n = new lt(s, this);
       this.attachColumn(n);
     }), this.checkColumnVisibility()) : t.registerColumnField(this), this._initialize();
   }
@@ -1164,11 +1164,11 @@ const ot = class ot extends de {
     if (e)
       for (let t in e)
         typeof this.definition[t] > "u" && (this.definition[t] = e[t]);
-    this.definition = this.table.columnManager.optionsList.generate(ot.defaultOptionList, this.definition);
+    this.definition = this.table.columnManager.optionsList.generate(lt.defaultOptionList, this.definition);
   }
   checkDefinition() {
     Object.keys(this.definition).forEach((e) => {
-      ot.defaultOptionList.indexOf(e) === -1 && console.warn("Invalid column definition option in '" + (this.field || this.definition.title) + "' column:", e);
+      lt.defaultOptionList.indexOf(e) === -1 && console.warn("Invalid column definition option in '" + (this.field || this.definition.title) + "' column:", e);
     });
   }
   setField(e) {
@@ -1431,7 +1431,7 @@ const ot = class ot extends de {
   //////////////// Cell Management /////////////////
   //generate cell for this column
   generateCell(e) {
-    var t = new Pt(this, e);
+    var t = new zt(this, e);
     return this.cells.push(t), t;
   }
   nextColumn() {
@@ -1485,12 +1485,12 @@ const ot = class ot extends de {
     return this.table.columnManager.getVisibleColumnsByIndex().indexOf(this) + 1;
   }
   getParentComponent() {
-    return this.parent instanceof ot ? this.parent.getComponent() : !1;
+    return this.parent instanceof lt ? this.parent.getComponent() : !1;
   }
 };
-M(ot, "defaultOptionList", is);
-let at = ot;
-class $t {
+S(lt, "defaultOptionList", is);
+let ut = lt;
+class Wt {
   constructor(e) {
     return this._row = e, new Proxy(this, {
       get: function(t, i, s) {
@@ -1556,7 +1556,7 @@ class $t {
     return e && e.getComponent();
   }
 }
-class pe extends de {
+class ve extends be {
   constructor(e, t, i = "row") {
     super(t.table), this.parent = t, this.data = {}, this.type = i, this.element = !1, this.modules = {}, this.cells = [], this.height = 0, this.heightStyled = "", this.manualHeight = !1, this.outerHeight = 0, this.initialized = !1, this.heightInitialized = !1, this.position = 0, this.positionWatchers = [], this.component = null, this.created = !1, this.setData(e);
   }
@@ -1660,11 +1660,11 @@ class pe extends de {
     var t = this.element && Y.elVisible(this.element), i = {}, s;
     return new Promise((o, n) => {
       typeof e == "string" && (e = JSON.parse(e)), this.dispatch("row-data-save-before", this), this.subscribed("row-data-changing") && (i = Object.assign(i, this.data), i = Object.assign(i, e)), s = this.chain("row-data-changing", [this, i, e], null, e);
-      for (let r in s)
-        this.data[r] = s[r];
+      for (let a in s)
+        this.data[a] = s[a];
       this.dispatch("row-data-save-after", this);
-      for (let r in e)
-        this.table.columnManager.getColumnsByFieldRoot(r).forEach((h) => {
+      for (let a in e)
+        this.table.columnManager.getColumnsByFieldRoot(a).forEach((h) => {
           let d = this.getCell(h.getField());
           if (d) {
             let u = h.getFieldValue(s);
@@ -1747,7 +1747,7 @@ class pe extends de {
   }
   //////////////// Object Generation /////////////////
   getComponent() {
-    return this.component || (this.component = new $t(this)), this.component;
+    return this.component || (this.component = new Wt(this)), this.component;
   }
 }
 var Co = {
@@ -1792,7 +1792,7 @@ var Co = {
     return i.length;
   }
 };
-const Xe = class Xe extends j {
+const et = class et extends G {
   constructor(e) {
     super(e), this.topCalcs = [], this.botCalcs = [], this.genColumn = !1, this.topElement = this.createElement(), this.botElement = this.createElement(), this.topRow = !1, this.botRow = !1, this.topInitialized = !1, this.botInitialized = !1, this.blocked = !1, this.recalcAfterBlock = !1, this.registerTableOption("columnCalcs", !0), this.registerColumnOption("topCalc"), this.registerColumnOption("topCalcParams"), this.registerColumnOption("topCalcFormatter"), this.registerColumnOption("topCalcFormatterParams"), this.registerColumnOption("bottomCalc"), this.registerColumnOption("bottomCalcParams"), this.registerColumnOption("bottomCalcFormatter"), this.registerColumnOption("bottomCalcFormatterParams");
   }
@@ -1801,7 +1801,7 @@ const Xe = class Xe extends j {
     return e.classList.add("tabulator-calcs-holder"), e;
   }
   initialize() {
-    this.genColumn = new at({ field: "value" }, this), this.subscribe("cell-value-changed", this.cellValueChanged.bind(this)), this.subscribe("column-init", this.initializeColumnCheck.bind(this)), this.subscribe("row-deleted", this.rowsUpdated.bind(this)), this.subscribe("scroll-horizontal", this.scrollHorizontal.bind(this)), this.subscribe("row-added", this.rowsUpdated.bind(this)), this.subscribe("column-moved", this.recalcActiveRows.bind(this)), this.subscribe("column-add", this.recalcActiveRows.bind(this)), this.subscribe("data-refreshed", this.recalcActiveRowsRefresh.bind(this)), this.subscribe("table-redraw", this.tableRedraw.bind(this)), this.subscribe("rows-visible", this.visibleRows.bind(this)), this.subscribe("scrollbar-vertical", this.adjustForScrollbar.bind(this)), this.subscribe("redraw-blocked", this.blockRedraw.bind(this)), this.subscribe("redraw-restored", this.restoreRedraw.bind(this)), this.subscribe("table-redrawing", this.resizeHolderWidth.bind(this)), this.subscribe("column-resized", this.resizeHolderWidth.bind(this)), this.subscribe("column-show", this.resizeHolderWidth.bind(this)), this.subscribe("column-hide", this.resizeHolderWidth.bind(this)), this.registerTableFunction("getCalcResults", this.getResults.bind(this)), this.registerTableFunction("recalc", this.userRecalc.bind(this)), this.resizeHolderWidth();
+    this.genColumn = new ut({ field: "value" }, this), this.subscribe("cell-value-changed", this.cellValueChanged.bind(this)), this.subscribe("column-init", this.initializeColumnCheck.bind(this)), this.subscribe("row-deleted", this.rowsUpdated.bind(this)), this.subscribe("scroll-horizontal", this.scrollHorizontal.bind(this)), this.subscribe("row-added", this.rowsUpdated.bind(this)), this.subscribe("column-moved", this.recalcActiveRows.bind(this)), this.subscribe("column-add", this.recalcActiveRows.bind(this)), this.subscribe("data-refreshed", this.recalcActiveRowsRefresh.bind(this)), this.subscribe("table-redraw", this.tableRedraw.bind(this)), this.subscribe("rows-visible", this.visibleRows.bind(this)), this.subscribe("scrollbar-vertical", this.adjustForScrollbar.bind(this)), this.subscribe("redraw-blocked", this.blockRedraw.bind(this)), this.subscribe("redraw-restored", this.restoreRedraw.bind(this)), this.subscribe("table-redrawing", this.resizeHolderWidth.bind(this)), this.subscribe("column-resized", this.resizeHolderWidth.bind(this)), this.subscribe("column-show", this.resizeHolderWidth.bind(this)), this.subscribe("column-hide", this.resizeHolderWidth.bind(this)), this.registerTableFunction("getCalcResults", this.getResults.bind(this)), this.registerTableFunction("recalc", this.userRecalc.bind(this)), this.resizeHolderWidth();
   }
   resizeHolderWidth() {
     this.topElement.style.minWidth = this.table.columnManager.headersElement.offsetWidth + "px";
@@ -1854,7 +1854,7 @@ const Xe = class Xe extends j {
     if (t.topCalc) {
       switch (typeof t.topCalc) {
         case "string":
-          Xe.calculations[t.topCalc] ? i.topCalc = Xe.calculations[t.topCalc] : console.warn("Column Calc Error - No such calculation found, ignoring: ", t.topCalc);
+          et.calculations[t.topCalc] ? i.topCalc = et.calculations[t.topCalc] : console.warn("Column Calc Error - No such calculation found, ignoring: ", t.topCalc);
           break;
         case "function":
           i.topCalc = t.topCalc;
@@ -1865,7 +1865,7 @@ const Xe = class Xe extends j {
     if (t.bottomCalc) {
       switch (typeof t.bottomCalc) {
         case "string":
-          Xe.calculations[t.bottomCalc] ? i.botCalc = Xe.calculations[t.bottomCalc] : console.warn("Column Calc Error - No such calculation found, ignoring: ", t.bottomCalc);
+          et.calculations[t.bottomCalc] ? i.botCalc = et.calculations[t.bottomCalc] : console.warn("Column Calc Error - No such calculation found, ignoring: ", t.bottomCalc);
           break;
         case "function":
           i.botCalc = t.bottomCalc;
@@ -1935,7 +1935,7 @@ const Xe = class Xe extends j {
     var t = [], i = this.table.options.dataTree && this.table.options.dataTreeChildColumnCalcs, s = this.table.modules.dataTree;
     return e.forEach((o) => {
       var n;
-      t.push(o.getData()), i && ((n = o.modules.dataTree) != null && n.open) && this.rowsToData(s.getFilteredTreeChildren(o)).forEach((r) => {
+      t.push(o.getData()), i && ((n = o.modules.dataTree) != null && n.open) && this.rowsToData(s.getFilteredTreeChildren(o)).forEach((a) => {
         t.push(o);
       });
     }), t;
@@ -1943,7 +1943,7 @@ const Xe = class Xe extends j {
   //generate stats row
   generateRow(e, t) {
     var i = this.generateRowData(e, t), s;
-    return this.table.modExists("mutator") && this.table.modules.mutator.disable(), s = new pe(i, this, "calc"), this.table.modExists("mutator") && this.table.modules.mutator.enable(), s.getElement().classList.add("tabulator-calcs", "tabulator-calcs-" + e), s.component = !1, s.getComponent = () => (s.component || (s.component = new wo(s)), s.component), s.generateCells = () => {
+    return this.table.modExists("mutator") && this.table.modules.mutator.disable(), s = new ve(i, this, "calc"), this.table.modExists("mutator") && this.table.modules.mutator.enable(), s.getElement().classList.add("tabulator-calcs", "tabulator-calcs-" + e), s.component = !1, s.getComponent = () => (s.component || (s.component = new wo(s)), s.component), s.generateCells = () => {
       var o = [];
       this.table.columnManager.columnsByIndex.forEach((n) => {
         this.genColumn.setField(n.getField()), this.genColumn.hozAlign = n.hozAlign, n.definition[e + "CalcFormatter"] && this.table.modExists("format") ? this.genColumn.modules.format = {
@@ -1953,19 +1953,19 @@ const Xe = class Xe extends j {
           formatter: this.table.modules.format.lookupFormatter("plaintext"),
           params: {}
         }, this.genColumn.definition.cssClass = n.definition.cssClass;
-        var r = new Pt(this.genColumn, s);
-        r.getElement(), r.column = n, r.setWidth(), n.cells.push(r), o.push(r), n.visible || r.hide();
+        var a = new zt(this.genColumn, s);
+        a.getElement(), a.column = n, a.setWidth(), n.cells.push(a), o.push(a), n.visible || a.hide();
       }), s.cells = o;
     }, s;
   }
   //generate stats row
   generateRowData(e, t) {
-    var i = {}, s = e == "top" ? this.topCalcs : this.botCalcs, o = e == "top" ? "topCalc" : "botCalc", n, r;
-    return s.forEach(function(a) {
+    var i = {}, s = e == "top" ? this.topCalcs : this.botCalcs, o = e == "top" ? "topCalc" : "botCalc", n, a;
+    return s.forEach(function(r) {
       var h = [];
-      a.modules.columnCalcs && a.modules.columnCalcs[o] && (t.forEach(function(d) {
-        h.push(a.getFieldValue(d));
-      }), r = o + "Params", n = typeof a.modules.columnCalcs[r] == "function" ? a.modules.columnCalcs[r](h, t) : a.modules.columnCalcs[r], a.setFieldValue(i, a.modules.columnCalcs[o](h, t, n)));
+      r.modules.columnCalcs && r.modules.columnCalcs[o] && (t.forEach(function(d) {
+        h.push(r.getFieldValue(d));
+      }), a = o + "Params", n = typeof r.modules.columnCalcs[a] == "function" ? r.modules.columnCalcs[a](h, t) : r.modules.columnCalcs[a], r.setFieldValue(i, r.modules.columnCalcs[o](h, t, n)));
     }), i;
   }
   hasTopCalcs() {
@@ -2003,10 +2003,10 @@ const Xe = class Xe extends j {
     this.botRow && (this.table.rtl ? this.botElement.style.paddingLeft = e + "px" : this.botElement.style.paddingRight = e + "px");
   }
 };
-M(Xe, "moduleName", "columnCalcs"), //load defaults
-M(Xe, "calculations", Co);
-let hi = Xe;
-class ss extends j {
+S(et, "moduleName", "columnCalcs"), //load defaults
+S(et, "calculations", Co);
+let hi = et;
+class ss extends G {
   constructor(e) {
     super(e), this.indent = 10, this.field = "", this.collapseEl = null, this.expandEl = null, this.branchEl = null, this.elementField = !1, this.startOpen = function() {
     }, this.registerTableOption("dataTree", !1), this.registerTableOption("dataTreeFilter", !0), this.registerTableOption("dataTreeSort", !0), this.registerTableOption("dataTreeElementColumn", !1), this.registerTableOption("dataTreeBranchElement", !0), this.registerTableOption("dataTreeChildIndent", 9), this.registerTableOption("dataTreeChildField", "_children"), this.registerTableOption("dataTreeCollapseElement", !1), this.registerTableOption("dataTreeExpandElement", !1), this.registerTableOption("dataTreeStartExpanded", !1), this.registerTableOption("dataTreeChildColumnCalcs", !1), this.registerTableOption("dataTreeSelectPropagate", !1), this.registerComponentFunction("row", "treeCollapse", this.collapseRow.bind(this)), this.registerComponentFunction("row", "treeExpand", this.expandRow.bind(this)), this.registerComponentFunction("row", "treeToggle", this.toggleRow.bind(this)), this.registerComponentFunction("row", "getTreeParent", this.getTreeParent.bind(this)), this.registerComponentFunction("row", "getTreeChildren", this.getRowChildren.bind(this)), this.registerComponentFunction("row", "addTreeChild", this.addTreeChildRow.bind(this)), this.registerComponentFunction("row", "isTreeExpanded", this.isRowExpanded.bind(this));
@@ -2093,17 +2093,17 @@ class ss extends j {
     var t = [];
     return e.forEach((i, s) => {
       var o, n;
-      t.push(i), i instanceof pe && (i.create(), o = i.modules.dataTree, !o.index && o.children !== !1 && (n = this.getChildren(i, !1, !0), n.forEach((r) => {
-        r.create(), t.push(r);
+      t.push(i), i instanceof ve && (i.create(), o = i.modules.dataTree, !o.index && o.children !== !1 && (n = this.getChildren(i, !1, !0), n.forEach((a) => {
+        a.create(), t.push(a);
       })));
     }), t;
   }
   getChildren(e, t, i) {
     var s = e.modules.dataTree, o = [], n = [];
-    return s.children !== !1 && (s.open || t) && (Array.isArray(s.children) || (s.children = this.generateChildren(e)), this.table.modExists("filter") && this.table.options.dataTreeFilter ? o = this.table.modules.filter.filter(s.children) : o = s.children, this.table.modExists("sort") && this.table.options.dataTreeSort && this.table.modules.sort.sort(o, i), o.forEach((r) => {
-      n.push(r);
-      var a = this.getChildren(r, !1, !0);
-      a.forEach((h) => {
+    return s.children !== !1 && (s.open || t) && (Array.isArray(s.children) || (s.children = this.generateChildren(e)), this.table.modExists("filter") && this.table.options.dataTreeFilter ? o = this.table.modules.filter.filter(s.children) : o = s.children, this.table.modExists("sort") && this.table.options.dataTreeSort && this.table.modules.sort.sort(o, i), o.forEach((a) => {
+      n.push(a);
+      var r = this.getChildren(a, !1, !0);
+      r.forEach((h) => {
         n.push(h);
       });
     })), n;
@@ -2111,7 +2111,7 @@ class ss extends j {
   generateChildren(e) {
     var t = [], i = e.getData()[this.field];
     return Array.isArray(i) || (i = [i]), i.forEach((s) => {
-      var o = new pe(s || {}, this.table.rowManager);
+      var o = new ve(s || {}, this.table.rowManager);
       o.create(), o.modules.dataTree.index = e.modules.dataTree.index + 1, o.modules.dataTree.parent = e, o.modules.dataTree.children && (o.modules.dataTree.open = this.startOpen(o.getComponent(), o.modules.dataTree.index)), t.push(o);
     }), t;
   }
@@ -2139,13 +2139,13 @@ class ss extends j {
   getFilteredTreeChildren(e) {
     var t = e.modules.dataTree, i = [], s;
     return t.children && (Array.isArray(t.children) || (t.children = this.generateChildren(e)), this.table.modExists("filter") && this.table.options.dataTreeFilter ? s = this.table.modules.filter.filter(t.children) : s = t.children, s.forEach((o) => {
-      o instanceof pe && i.push(o);
+      o instanceof ve && i.push(o);
     })), i;
   }
   rowDeleting(e) {
     var t = e.modules.dataTree;
     t && t.children && Array.isArray(t.children) && t.children.forEach((i) => {
-      i instanceof pe && i.wipe();
+      i instanceof ve && i.wipe();
     });
   }
   rowDelete(e) {
@@ -2158,13 +2158,13 @@ class ss extends j {
   }
   findChildIndex(e, t) {
     var i = !1;
-    return typeof e == "object" ? e instanceof pe ? i = e.data : e instanceof $t ? i = e._getSelf().data : typeof HTMLElement < "u" && e instanceof HTMLElement ? t.modules.dataTree && (i = t.modules.dataTree.children.find((s) => s instanceof pe ? s.element === e : !1), i && (i = i.data)) : e === null && (i = !1) : typeof e > "u" ? i = !1 : i = t.data[this.field].find((s) => s.data[this.table.options.index] == e), i && (Array.isArray(t.data[this.field]) && (i = t.data[this.field].indexOf(i)), i == -1 && (i = !1)), i;
+    return typeof e == "object" ? e instanceof ve ? i = e.data : e instanceof Wt ? i = e._getSelf().data : typeof HTMLElement < "u" && e instanceof HTMLElement ? t.modules.dataTree && (i = t.modules.dataTree.children.find((s) => s instanceof ve ? s.element === e : !1), i && (i = i.data)) : e === null && (i = !1) : typeof e > "u" ? i = !1 : i = t.data[this.field].find((s) => s.data[this.table.options.index] == e), i && (Array.isArray(t.data[this.field]) && (i = t.data[this.field].indexOf(i)), i == -1 && (i = !1)), i;
   }
   getTreeChildren(e, t, i) {
     var s = e.modules.dataTree, o = [];
     return s && s.children && (Array.isArray(s.children) || (s.children = this.generateChildren(e)), s.children.forEach((n) => {
-      n instanceof pe && (o.push(t ? n.getComponent() : n), i && this.getTreeChildren(n, t, i).forEach((r) => {
-        o.push(r);
+      n instanceof ve && (o.push(t ? n.getComponent() : n), i && this.getTreeChildren(n, t, i).forEach((a) => {
+        o.push(a);
       }));
     })), o;
   }
@@ -2175,11 +2175,11 @@ class ss extends j {
     return (this.field ? typeof e[this.field] < "u" : !1) || (this.elementField ? typeof e[this.elementField] < "u" : !1);
   }
 }
-M(ss, "moduleName", "dataTree");
+S(ss, "moduleName", "dataTree");
 function yo(l, e = {}, t) {
   var i = e.delimiter ? e.delimiter : ",", s = [], o = [];
   l.forEach((n) => {
-    var r = [];
+    var a = [];
     switch (n.type) {
       case "group":
         console.warn("Download Warning - CSV downloader cannot process row groups");
@@ -2188,24 +2188,24 @@ function yo(l, e = {}, t) {
         console.warn("Download Warning - CSV downloader cannot process column calculations");
         break;
       case "header":
-        n.columns.forEach((a, h) => {
-          a && a.depth === 1 && (o[h] = typeof a.value > "u" || a.value === null ? "" : '"' + String(a.value).split('"').join('""') + '"');
+        n.columns.forEach((r, h) => {
+          r && r.depth === 1 && (o[h] = typeof r.value > "u" || r.value === null ? "" : '"' + String(r.value).split('"').join('""') + '"');
         });
         break;
       case "row":
-        n.columns.forEach((a) => {
-          if (a) {
-            switch (typeof a.value) {
+        n.columns.forEach((r) => {
+          if (r) {
+            switch (typeof r.value) {
               case "object":
-                a.value = a.value !== null ? JSON.stringify(a.value) : "";
+                r.value = r.value !== null ? JSON.stringify(r.value) : "";
                 break;
               case "undefined":
-                a.value = "";
+                r.value = "";
                 break;
             }
-            r.push('"' + String(a.value).split('"').join('""') + '"');
+            a.push('"' + String(r.value).split('"').join('""') + '"');
           }
-        }), s.push(r.join(i));
+        }), s.push(a.join(i));
         break;
     }
   }), o.length && s.unshift(o.join(i)), s = s.join(`
@@ -2238,31 +2238,31 @@ function Ro(l, e = {}, t) {
     fontSize: 12,
     cellPadding: 6,
     fillColor: 220
-  }, r = e.rowCalcStyles || {
+  }, a = e.rowCalcStyles || {
     fontStyle: "bold",
     fontSize: 10,
     cellPadding: 4,
     fillColor: 232
-  }, a = e.jsPDF || {}, h = e.title ? e.title : "", d, u;
-  a.orientation || (a.orientation = e.orientation || "landscape"), a.unit || (a.unit = "pt"), l.forEach((m) => {
-    switch (m.type) {
+  }, r = e.jsPDF || {}, h = e.title ? e.title : "", d, u;
+  r.orientation || (r.orientation = e.orientation || "landscape"), r.unit || (r.unit = "pt"), l.forEach((g) => {
+    switch (g.type) {
       case "header":
-        i.push(c(m));
+        i.push(c(g));
         break;
       case "group":
-        s.push(c(m, n));
+        s.push(c(g, n));
         break;
       case "calc":
-        s.push(c(m, r));
+        s.push(c(g, a));
         break;
       case "row":
-        s.push(c(m));
+        s.push(c(g));
         break;
     }
   });
-  function c(m, b) {
+  function c(g, b) {
     var E = [];
-    return m.columns.forEach((y) => {
+    return g.columns.forEach((y) => {
       var C;
       if (y) {
         switch (typeof y.value) {
@@ -2281,20 +2281,20 @@ function Ro(l, e = {}, t) {
       }
     }), E;
   }
-  d = this.dependencyRegistry.lookup("jspdf", "jsPDF"), u = new d(a), e.autoTable && (typeof e.autoTable == "function" ? o = e.autoTable(u) || {} : o = e.autoTable), h && (o.didDrawPage = function(m) {
+  d = this.dependencyRegistry.lookup("jspdf", "jsPDF"), u = new d(r), e.autoTable && (typeof e.autoTable == "function" ? o = e.autoTable(u) || {} : o = e.autoTable), h && (o.didDrawPage = function(g) {
     u.text(h, 40, 30);
   }), o.head = i, o.body = s, u.autoTable(o), e.documentProcessing && e.documentProcessing(u), t(u.output("arraybuffer"), "application/pdf");
 }
 function xo(l, e, t) {
-  var i = this, s = e.sheetName || "Sheet1", o = this.dependencyRegistry.lookup("XLSX"), n = o.utils.book_new(), r = new de(this), a = "compress" in e ? e.compress : !0, h = e.writeOptions || { bookType: "xlsx", bookSST: !0, compression: a }, d;
+  var i = this, s = e.sheetName || "Sheet1", o = this.dependencyRegistry.lookup("XLSX"), n = o.utils.book_new(), a = new be(this), r = "compress" in e ? e.compress : !0, h = e.writeOptions || { bookType: "xlsx", bookSST: !0, compression: r }, d;
   h.type = "binary", n.SheetNames = [], n.Sheets = {};
   function u() {
-    var b = [], E = [], y = {}, C = { s: { c: 0, r: 0 }, e: { c: l[0] ? l[0].columns.reduce((T, A) => T + (A && A.width ? A.width : 1), 0) : 0, r: l.length } };
-    return l.forEach((T, A) => {
-      var F = [];
-      T.columns.forEach(function(D, L) {
-        D ? (F.push(!(D.value instanceof Date) && typeof D.value == "object" ? JSON.stringify(D.value) : D.value), (D.width > 1 || D.height > -1) && (D.height > 1 || D.width > 1) && E.push({ s: { r: A, c: L }, e: { r: A + D.height - 1, c: L + D.width - 1 } })) : F.push("");
-      }), b.push(F);
+    var b = [], E = [], y = {}, C = { s: { c: 0, r: 0 }, e: { c: l[0] ? l[0].columns.reduce((T, H) => T + (H && H.width ? H.width : 1), 0) : 0, r: l.length } };
+    return l.forEach((T, H) => {
+      var _ = [];
+      T.columns.forEach(function(F, L) {
+        F ? (_.push(!(F.value instanceof Date) && typeof F.value == "object" ? JSON.stringify(F.value) : F.value), (F.width > 1 || F.height > -1) && (F.height > 1 || F.width > 1) && E.push({ s: { r: H, c: L }, e: { r: H + F.height - 1, c: L + F.width - 1 } })) : _.push("");
+      }), b.push(_);
     }), o.utils.sheet_add_aoa(y, b), y["!ref"] = o.utils.encode_range(C), E.length && (y["!merges"] = E), y;
   }
   if (e.sheetOnly) {
@@ -2303,7 +2303,7 @@ function xo(l, e, t) {
   }
   if (e.sheets)
     for (var c in e.sheets)
-      e.sheets[c] === !0 ? (n.SheetNames.push(c), n.Sheets[c] = u()) : (n.SheetNames.push(c), r.commsSend(e.sheets[c], "download", "intercept", {
+      e.sheets[c] === !0 ? (n.SheetNames.push(c), n.Sheets[c] = u()) : (n.SheetNames.push(c), a.commsSend(e.sheets[c], "download", "intercept", {
         type: "xlsx",
         options: { sheetOnly: !0 },
         active: i.active,
@@ -2314,11 +2314,11 @@ function xo(l, e, t) {
   else
     n.SheetNames.push(s), n.Sheets[s] = u();
   e.documentProcessing && (n = e.documentProcessing(n));
-  function m(b) {
+  function g(b) {
     for (var E = new ArrayBuffer(b.length), y = new Uint8Array(E), C = 0; C != b.length; ++C) y[C] = b.charCodeAt(C) & 255;
     return E;
   }
-  d = o.write(n, h), t(m(d), "application/octet-stream");
+  d = o.write(n, h), t(g(d), "application/octet-stream");
 }
 function ko(l, e, t) {
   this.modExists("export", !0) && t(this.modules.export.generateHTMLTable(l), "text/html");
@@ -2345,7 +2345,7 @@ function To(l, e, t) {
   }), t(i.join(`
 `), "application/x-ndjson");
 }
-var Mo = {
+var So = {
   csv: yo,
   json: Eo,
   jsonLines: To,
@@ -2353,7 +2353,7 @@ var Mo = {
   xlsx: xo,
   html: ko
 };
-const pt = class pt extends j {
+const gt = class gt extends G {
   constructor(e) {
     super(e), this.registerTableOption("downloadEncoder", function(t, i) {
       return new Blob([t], { type: i });
@@ -2376,12 +2376,12 @@ const pt = class pt extends j {
   //trigger file download
   download(e, t, i, s, o) {
     var n = !1;
-    function r(h, d) {
+    function a(h, d) {
       o ? o === !0 ? this.triggerDownload(h, d, e, t, !0) : o(h) : this.triggerDownload(h, d, e, t);
     }
-    if (typeof e == "function" ? n = e : pt.downloaders[e] ? n = pt.downloaders[e] : console.warn("Download Error - No such download type found: ", e), n) {
-      var a = this.generateExportList(s);
-      n.call(this.table, a, i || {}, r.bind(this));
+    if (typeof e == "function" ? n = e : gt.downloaders[e] ? n = gt.downloaders[e] : console.warn("Download Error - No such download type found: ", e), n) {
+      var r = this.generateExportList(s);
+      n.call(this.table, r, i || {}, a.bind(this));
     }
   }
   generateExportList(e) {
@@ -2392,8 +2392,8 @@ const pt = class pt extends j {
     }), t;
   }
   triggerDownload(e, t, i, s, o) {
-    var n = document.createElement("a"), r = this.table.options.downloadEncoder(e, t);
-    r && (o ? window.open(window.URL.createObjectURL(r)) : (s = s || "Tabulator." + (typeof i == "function" ? "txt" : i), navigator.msSaveOrOpenBlob ? navigator.msSaveOrOpenBlob(r, s) : (n.setAttribute("href", window.URL.createObjectURL(r)), n.setAttribute("download", s), n.style.display = "none", document.body.appendChild(n), n.click(), document.body.removeChild(n))), this.dispatchExternal("downloadComplete"));
+    var n = document.createElement("a"), a = this.table.options.downloadEncoder(e, t);
+    a && (o ? window.open(window.URL.createObjectURL(a)) : (s = s || "Tabulator." + (typeof i == "function" ? "txt" : i), navigator.msSaveOrOpenBlob ? navigator.msSaveOrOpenBlob(a, s) : (n.setAttribute("href", window.URL.createObjectURL(a)), n.setAttribute("download", s), n.style.display = "none", document.body.appendChild(n), n.click(), document.body.removeChild(n))), this.dispatchExternal("downloadComplete"));
   }
   commsReceived(e, t, i) {
     switch (t) {
@@ -2403,84 +2403,84 @@ const pt = class pt extends j {
     }
   }
 };
-M(pt, "moduleName", "download"), //load defaults
-M(pt, "downloaders", Mo);
-let di = pt;
-function Wt(l, e) {
+S(gt, "moduleName", "download"), //load defaults
+S(gt, "downloaders", So);
+let di = gt;
+function Gt(l, e) {
   var t = e.mask, i = typeof e.maskLetterChar < "u" ? e.maskLetterChar : "A", s = typeof e.maskNumberChar < "u" ? e.maskNumberChar : "9", o = typeof e.maskWildcardChar < "u" ? e.maskWildcardChar : "*";
-  function n(r) {
-    var a = t[r];
-    typeof a < "u" && a !== o && a !== i && a !== s && (l.value = l.value + "" + a, n(r + 1));
+  function n(a) {
+    var r = t[a];
+    typeof r < "u" && r !== o && r !== i && r !== s && (l.value = l.value + "" + r, n(a + 1));
   }
-  l.addEventListener("keydown", (r) => {
-    var a = l.value.length, h = r.key;
-    if (r.keyCode > 46 && !r.ctrlKey && !r.metaKey) {
-      if (a >= t.length)
-        return r.preventDefault(), r.stopPropagation(), !1;
-      switch (t[a]) {
+  l.addEventListener("keydown", (a) => {
+    var r = l.value.length, h = a.key;
+    if (a.keyCode > 46 && !a.ctrlKey && !a.metaKey) {
+      if (r >= t.length)
+        return a.preventDefault(), a.stopPropagation(), !1;
+      switch (t[r]) {
         case i:
           if (h.toUpperCase() == h.toLowerCase())
-            return r.preventDefault(), r.stopPropagation(), !1;
+            return a.preventDefault(), a.stopPropagation(), !1;
           break;
         case s:
           if (isNaN(h))
-            return r.preventDefault(), r.stopPropagation(), !1;
+            return a.preventDefault(), a.stopPropagation(), !1;
           break;
         case o:
           break;
         default:
-          if (h !== t[a])
-            return r.preventDefault(), r.stopPropagation(), !1;
+          if (h !== t[r])
+            return a.preventDefault(), a.stopPropagation(), !1;
       }
     }
-  }), l.addEventListener("keyup", (r) => {
-    r.keyCode > 46 && e.maskAutoFill && n(l.value.length);
+  }), l.addEventListener("keyup", (a) => {
+    a.keyCode > 46 && e.maskAutoFill && n(l.value.length);
   }), l.placeholder || (l.placeholder = t), e.maskAutoFill && n(l.value.length);
 }
 function Lo(l, e, t, i, s) {
   var o = l.getValue(), n = document.createElement("input");
   if (n.setAttribute("type", s.search ? "search" : "text"), n.style.padding = "4px", n.style.width = "100%", n.style.boxSizing = "border-box", s.elementAttributes && typeof s.elementAttributes == "object")
-    for (let a in s.elementAttributes)
-      a.charAt(0) == "+" ? (a = a.slice(1), n.setAttribute(a, n.getAttribute(a) + s.elementAttributes["+" + a])) : n.setAttribute(a, s.elementAttributes[a]);
+    for (let r in s.elementAttributes)
+      r.charAt(0) == "+" ? (r = r.slice(1), n.setAttribute(r, n.getAttribute(r) + s.elementAttributes["+" + r])) : n.setAttribute(r, s.elementAttributes[r]);
   n.value = typeof o < "u" ? o : "", e(function() {
     l.getType() === "cell" && (n.focus({ preventScroll: !0 }), n.style.height = "100%", s.selectContents && n.select());
   });
-  function r(a) {
+  function a(r) {
     (o === null || typeof o > "u") && n.value !== "" || n.value !== o ? t(n.value) && (o = n.value) : i();
   }
-  return n.addEventListener("change", r), n.addEventListener("blur", r), n.addEventListener("keydown", function(a) {
-    switch (a.keyCode) {
+  return n.addEventListener("change", a), n.addEventListener("blur", a), n.addEventListener("keydown", function(r) {
+    switch (r.keyCode) {
       case 13:
-        r();
+        a();
         break;
       case 27:
         i();
         break;
       case 35:
       case 36:
-        a.stopPropagation();
+        r.stopPropagation();
         break;
     }
-  }), s.mask && Wt(n, s), n;
+  }), s.mask && Gt(n, s), n;
 }
-function So(l, e, t, i, s) {
-  var o = l.getValue(), n = s.verticalNavigation || "hybrid", r = String(o !== null && typeof o < "u" ? o : ""), a = document.createElement("textarea"), h = 0;
-  if (a.style.display = "block", a.style.padding = "2px", a.style.height = "100%", a.style.width = "100%", a.style.boxSizing = "border-box", a.style.whiteSpace = "pre-wrap", a.style.resize = "none", s.elementAttributes && typeof s.elementAttributes == "object")
+function Mo(l, e, t, i, s) {
+  var o = l.getValue(), n = s.verticalNavigation || "hybrid", a = String(o !== null && typeof o < "u" ? o : ""), r = document.createElement("textarea"), h = 0;
+  if (r.style.display = "block", r.style.padding = "2px", r.style.height = "100%", r.style.width = "100%", r.style.boxSizing = "border-box", r.style.whiteSpace = "pre-wrap", r.style.resize = "none", s.elementAttributes && typeof s.elementAttributes == "object")
     for (let u in s.elementAttributes)
-      u.charAt(0) == "+" ? (u = u.slice(1), a.setAttribute(u, a.getAttribute(u) + s.elementAttributes["+" + u])) : a.setAttribute(u, s.elementAttributes[u]);
-  a.value = r, e(function() {
-    l.getType() === "cell" && (a.focus({ preventScroll: !0 }), a.style.height = "100%", a.scrollHeight, a.style.height = a.scrollHeight + "px", l.getRow().normalizeHeight(), s.selectContents && a.select());
+      u.charAt(0) == "+" ? (u = u.slice(1), r.setAttribute(u, r.getAttribute(u) + s.elementAttributes["+" + u])) : r.setAttribute(u, s.elementAttributes[u]);
+  r.value = a, e(function() {
+    l.getType() === "cell" && (r.focus({ preventScroll: !0 }), r.style.height = "100%", r.scrollHeight, r.style.height = r.scrollHeight + "px", l.getRow().normalizeHeight(), s.selectContents && r.select());
   });
   function d(u) {
-    (o === null || typeof o > "u") && a.value !== "" || a.value !== o ? (t(a.value) && (o = a.value), setTimeout(function() {
+    (o === null || typeof o > "u") && r.value !== "" || r.value !== o ? (t(r.value) && (o = r.value), setTimeout(function() {
       l.getRow().normalizeHeight();
     }, 300)) : i();
   }
-  return a.addEventListener("change", d), a.addEventListener("blur", d), a.addEventListener("keyup", function() {
-    a.style.height = "";
-    var u = a.scrollHeight;
-    a.style.height = u + "px", u != h && (h = u, l.getRow().normalizeHeight());
-  }), a.addEventListener("keydown", function(u) {
+  return r.addEventListener("change", d), r.addEventListener("blur", d), r.addEventListener("keyup", function() {
+    r.style.height = "";
+    var u = r.scrollHeight;
+    r.style.height = u + "px", u != h && (h = u, l.getRow().normalizeHeight());
+  }), r.addEventListener("keydown", function(u) {
     switch (u.keyCode) {
       case 13:
         u.shiftKey && s.shiftEnterSubmit && d();
@@ -2489,35 +2489,35 @@ function So(l, e, t, i, s) {
         i();
         break;
       case 38:
-        (n == "editor" || n == "hybrid" && a.selectionStart) && (u.stopImmediatePropagation(), u.stopPropagation());
+        (n == "editor" || n == "hybrid" && r.selectionStart) && (u.stopImmediatePropagation(), u.stopPropagation());
         break;
       case 40:
-        (n == "editor" || n == "hybrid" && a.selectionStart !== a.value.length) && (u.stopImmediatePropagation(), u.stopPropagation());
+        (n == "editor" || n == "hybrid" && r.selectionStart !== r.value.length) && (u.stopImmediatePropagation(), u.stopPropagation());
         break;
       case 35:
       case 36:
         u.stopPropagation();
         break;
     }
-  }), s.mask && Wt(a, s), a;
+  }), s.mask && Gt(r, s), r;
 }
 function Do(l, e, t, i, s) {
-  var o = l.getValue(), n = s.verticalNavigation || "editor", r = document.createElement("input");
-  if (r.setAttribute("type", "number"), typeof s.max < "u" && r.setAttribute("max", s.max), typeof s.min < "u" && r.setAttribute("min", s.min), typeof s.step < "u" && r.setAttribute("step", s.step), r.style.padding = "4px", r.style.width = "100%", r.style.boxSizing = "border-box", s.elementAttributes && typeof s.elementAttributes == "object")
+  var o = l.getValue(), n = s.verticalNavigation || "editor", a = document.createElement("input");
+  if (a.setAttribute("type", "number"), typeof s.max < "u" && a.setAttribute("max", s.max), typeof s.min < "u" && a.setAttribute("min", s.min), typeof s.step < "u" && a.setAttribute("step", s.step), a.style.padding = "4px", a.style.width = "100%", a.style.boxSizing = "border-box", s.elementAttributes && typeof s.elementAttributes == "object")
     for (let d in s.elementAttributes)
-      d.charAt(0) == "+" ? (d = d.slice(1), r.setAttribute(d, r.getAttribute(d) + s.elementAttributes["+" + d])) : r.setAttribute(d, s.elementAttributes[d]);
-  r.value = o;
-  var a = function(d) {
+      d.charAt(0) == "+" ? (d = d.slice(1), a.setAttribute(d, a.getAttribute(d) + s.elementAttributes["+" + d])) : a.setAttribute(d, s.elementAttributes[d]);
+  a.value = o;
+  var r = function(d) {
     h();
   };
   e(function() {
-    l.getType() === "cell" && (r.removeEventListener("blur", a), r.focus({ preventScroll: !0 }), r.style.height = "100%", r.addEventListener("blur", a), s.selectContents && r.select());
+    l.getType() === "cell" && (a.removeEventListener("blur", r), a.focus({ preventScroll: !0 }), a.style.height = "100%", a.addEventListener("blur", r), s.selectContents && a.select());
   });
   function h() {
-    var d = r.value;
+    var d = a.value;
     !isNaN(d) && d !== "" && (d = Number(d)), d !== o ? t(d) && (o = d) : i();
   }
-  return r.addEventListener("keydown", function(d) {
+  return a.addEventListener("keydown", function(d) {
     switch (d.keyCode) {
       case 13:
         h();
@@ -2534,26 +2534,26 @@ function Do(l, e, t, i, s) {
         d.stopPropagation();
         break;
     }
-  }), s.mask && Wt(r, s), r;
+  }), s.mask && Gt(a, s), a;
 }
 function Fo(l, e, t, i, s) {
   var o = l.getValue(), n = document.createElement("input");
   if (n.setAttribute("type", "range"), typeof s.max < "u" && n.setAttribute("max", s.max), typeof s.min < "u" && n.setAttribute("min", s.min), typeof s.step < "u" && n.setAttribute("step", s.step), n.style.padding = "4px", n.style.width = "100%", n.style.boxSizing = "border-box", s.elementAttributes && typeof s.elementAttributes == "object")
-    for (let a in s.elementAttributes)
-      a.charAt(0) == "+" ? (a = a.slice(1), n.setAttribute(a, n.getAttribute(a) + s.elementAttributes["+" + a])) : n.setAttribute(a, s.elementAttributes[a]);
+    for (let r in s.elementAttributes)
+      r.charAt(0) == "+" ? (r = r.slice(1), n.setAttribute(r, n.getAttribute(r) + s.elementAttributes["+" + r])) : n.setAttribute(r, s.elementAttributes[r]);
   n.value = o, e(function() {
     l.getType() === "cell" && (n.focus({ preventScroll: !0 }), n.style.height = "100%");
   });
-  function r() {
-    var a = n.value;
-    !isNaN(a) && a !== "" && (a = Number(a)), a != o ? t(a) && (o = a) : i();
+  function a() {
+    var r = n.value;
+    !isNaN(r) && r !== "" && (r = Number(r)), r != o ? t(r) && (o = r) : i();
   }
-  return n.addEventListener("blur", function(a) {
-    r();
-  }), n.addEventListener("keydown", function(a) {
-    switch (a.keyCode) {
+  return n.addEventListener("blur", function(r) {
+    a();
+  }), n.addEventListener("keydown", function(r) {
+    switch (r.keyCode) {
       case 13:
-        r();
+        a();
         break;
       case 27:
         i();
@@ -2562,32 +2562,32 @@ function Fo(l, e, t, i, s) {
   }), n;
 }
 function _o(l, e, t, i, s) {
-  var o = s.format, n = s.verticalNavigation || "editor", r = o ? window.DateTime || luxon.DateTime : null, a = l.getValue(), h = document.createElement("input");
+  var o = s.format, n = s.verticalNavigation || "editor", a = o ? window.DateTime || luxon.DateTime : null, r = l.getValue(), h = document.createElement("input");
   function d(c) {
-    var m;
-    return r.isDateTime(c) ? m = c : o === "iso" ? m = r.fromISO(String(c)) : m = r.fromFormat(String(c), o), m.toFormat("yyyy-MM-dd");
+    var g;
+    return a.isDateTime(c) ? g = c : o === "iso" ? g = a.fromISO(String(c)) : g = a.fromFormat(String(c), o), g.toFormat("yyyy-MM-dd");
   }
   if (h.type = "date", h.style.padding = "4px", h.style.width = "100%", h.style.boxSizing = "border-box", s.max && h.setAttribute("max", o ? d(s.max) : s.max), s.min && h.setAttribute("min", o ? d(s.min) : s.min), s.elementAttributes && typeof s.elementAttributes == "object")
     for (let c in s.elementAttributes)
       c.charAt(0) == "+" ? (c = c.slice(1), h.setAttribute(c, h.getAttribute(c) + s.elementAttributes["+" + c])) : h.setAttribute(c, s.elementAttributes[c]);
-  a = typeof a < "u" ? a : "", o && (r ? a = d(a) : console.error("Editor Error - 'date' editor 'format' param is dependant on luxon.js")), h.value = a, e(function() {
+  r = typeof r < "u" ? r : "", o && (a ? r = d(r) : console.error("Editor Error - 'date' editor 'format' param is dependant on luxon.js")), h.value = r, e(function() {
     l.getType() === "cell" && (h.focus({ preventScroll: !0 }), h.style.height = "100%", s.selectContents && h.select());
   });
   function u() {
-    var c = h.value, m;
-    if ((a === null || typeof a > "u") && c !== "" || c !== a) {
+    var c = h.value, g;
+    if ((r === null || typeof r > "u") && c !== "" || c !== r) {
       if (c && o)
-        switch (m = r.fromFormat(String(c), "yyyy-MM-dd"), o) {
+        switch (g = a.fromFormat(String(c), "yyyy-MM-dd"), o) {
           case !0:
-            c = m;
+            c = g;
             break;
           case "iso":
-            c = m.toISO();
+            c = g.toISO();
             break;
           default:
-            c = m.toFormat(o);
+            c = g.toFormat(o);
         }
-      t(c) && (a = h.value);
+      t(c) && (r = h.value);
     } else
       i();
   }
@@ -2613,26 +2613,26 @@ function _o(l, e, t, i, s) {
   }), h;
 }
 function Po(l, e, t, i, s) {
-  var o = s.format, n = s.verticalNavigation || "editor", r = o ? window.DateTime || luxon.DateTime : null, a, h = l.getValue(), d = document.createElement("input");
+  var o = s.format, n = s.verticalNavigation || "editor", a = o ? window.DateTime || luxon.DateTime : null, r, h = l.getValue(), d = document.createElement("input");
   if (d.type = "time", d.style.padding = "4px", d.style.width = "100%", d.style.boxSizing = "border-box", s.elementAttributes && typeof s.elementAttributes == "object")
     for (let c in s.elementAttributes)
       c.charAt(0) == "+" ? (c = c.slice(1), d.setAttribute(c, d.getAttribute(c) + s.elementAttributes["+" + c])) : d.setAttribute(c, s.elementAttributes[c]);
-  h = typeof h < "u" ? h : "", o && (r ? (r.isDateTime(h) ? a = h : o === "iso" ? a = r.fromISO(String(h)) : a = r.fromFormat(String(h), o), h = a.toFormat("HH:mm")) : console.error("Editor Error - 'date' editor 'format' param is dependant on luxon.js")), d.value = h, e(function() {
+  h = typeof h < "u" ? h : "", o && (a ? (a.isDateTime(h) ? r = h : o === "iso" ? r = a.fromISO(String(h)) : r = a.fromFormat(String(h), o), h = r.toFormat("HH:mm")) : console.error("Editor Error - 'date' editor 'format' param is dependant on luxon.js")), d.value = h, e(function() {
     l.getType() == "cell" && (d.focus({ preventScroll: !0 }), d.style.height = "100%", s.selectContents && d.select());
   });
   function u() {
-    var c = d.value, m;
+    var c = d.value, g;
     if ((h === null || typeof h > "u") && c !== "" || c !== h) {
       if (c && o)
-        switch (m = r.fromFormat(String(c), "hh:mm"), o) {
+        switch (g = a.fromFormat(String(c), "hh:mm"), o) {
           case !0:
-            c = m;
+            c = g;
             break;
           case "iso":
-            c = m.toISO();
+            c = g.toISO();
             break;
           default:
-            c = m.toFormat(o);
+            c = g.toFormat(o);
         }
       t(c) && (h = d.value);
     } else
@@ -2660,26 +2660,26 @@ function Po(l, e, t, i, s) {
   }), d;
 }
 function zo(l, e, t, i, s) {
-  var o = s.format, n = s.verticalNavigation || "editor", r = o ? this.table.dependencyRegistry.lookup(["luxon", "DateTime"], "DateTime") : null, a, h = l.getValue(), d = document.createElement("input");
+  var o = s.format, n = s.verticalNavigation || "editor", a = o ? this.table.dependencyRegistry.lookup(["luxon", "DateTime"], "DateTime") : null, r, h = l.getValue(), d = document.createElement("input");
   if (d.type = "datetime-local", d.style.padding = "4px", d.style.width = "100%", d.style.boxSizing = "border-box", s.elementAttributes && typeof s.elementAttributes == "object")
     for (let c in s.elementAttributes)
       c.charAt(0) == "+" ? (c = c.slice(1), d.setAttribute(c, d.getAttribute(c) + s.elementAttributes["+" + c])) : d.setAttribute(c, s.elementAttributes[c]);
-  h = typeof h < "u" ? h : "", o && (r ? (r.isDateTime(h) ? a = h : o === "iso" ? a = r.fromISO(String(h)) : a = r.fromFormat(String(h), o), h = a.toFormat("yyyy-MM-dd") + "T" + a.toFormat("HH:mm")) : console.error("Editor Error - 'date' editor 'format' param is dependant on luxon.js")), d.value = h, e(function() {
+  h = typeof h < "u" ? h : "", o && (a ? (a.isDateTime(h) ? r = h : o === "iso" ? r = a.fromISO(String(h)) : r = a.fromFormat(String(h), o), h = r.toFormat("yyyy-MM-dd") + "T" + r.toFormat("HH:mm")) : console.error("Editor Error - 'date' editor 'format' param is dependant on luxon.js")), d.value = h, e(function() {
     l.getType() === "cell" && (d.focus({ preventScroll: !0 }), d.style.height = "100%", s.selectContents && d.select());
   });
   function u() {
-    var c = d.value, m;
+    var c = d.value, g;
     if ((h === null || typeof h > "u") && c !== "" || c !== h) {
       if (c && o)
-        switch (m = r.fromISO(String(c)), o) {
+        switch (g = a.fromISO(String(c)), o) {
           case !0:
-            c = m;
+            c = g;
             break;
           case "iso":
-            c = m.toISO();
+            c = g.toISO();
             break;
           default:
-            c = m.toFormat(o);
+            c = g.toFormat(o);
         }
       t(c) && (h = d.value);
     } else
@@ -2741,7 +2741,7 @@ let Ao = class {
     if (t.setAttribute("type", this.params.clearable ? "search" : "text"), t.style.padding = "4px", t.style.width = "100%", t.style.boxSizing = "border-box", this.params.autocomplete || (t.style.cursor = "default", t.style.caretColor = "transparent"), e && typeof e == "object")
       for (let i in e)
         i.charAt(0) == "+" ? (i = i.slice(1), t.setAttribute(i, t.getAttribute(i) + e["+" + i])) : t.setAttribute(i, e[i]);
-    return this.params.mask && Wt(t, this.params), this._bindInputEvents(t), t;
+    return this.params.mask && Gt(t, this.params), this._bindInputEvents(t), t;
   }
   _initializeParams(e) {
     var t = ["values", "valuesURL", "valuesLookup"], i;
@@ -2896,8 +2896,8 @@ let Ao = class {
     var t = {}, i = this.table.getData(this.params.valuesLookup), s;
     return e ? s = this.table.columnManager.getColumnByField(e) : s = this.cell.getColumn()._getSelf(), s ? i.forEach((o) => {
       var n = s.getFieldValue(o);
-      this._emptyValueCheck(n) || (this.params.multiselect && Array.isArray(n) ? n.forEach((r) => {
-        this._emptyValueCheck(r) || (t[r] = !0);
+      this._emptyValueCheck(n) || (this.params.multiselect && Array.isArray(n) ? n.forEach((a) => {
+        this._emptyValueCheck(a) || (t[a] = !0);
       }) : t[n] = !0);
     }) : (console.warn("unable to find matching column to create select lookup list:", e), t = []), Object.keys(t);
   }
@@ -2956,7 +2956,7 @@ let Ao = class {
     });
   }
   _defaultSortFunction(e, t) {
-    var i, s, o, n, r = 0, a, h = /(\d+)|(\D+)/g, d = /\d/, u = 0;
+    var i, s, o, n, a = 0, r, h = /(\d+)|(\D+)/g, d = /\d/, u = 0;
     if (this.params.sort === "desc" && ([e, t] = [t, e]), !e && e !== 0)
       u = !t && t !== 0 ? 0 : -1;
     else if (!t && t !== 0)
@@ -2965,8 +2965,8 @@ let Ao = class {
       if (isFinite(e) && isFinite(t)) return e - t;
       if (i = String(e).toLowerCase(), s = String(t).toLowerCase(), i === s) return 0;
       if (!(d.test(i) && d.test(s))) return i > s ? 1 : -1;
-      for (i = i.match(h), s = s.match(h), a = i.length > s.length ? s.length : i.length; r < a; )
-        if (o = i[r], n = s[r++], o !== n)
+      for (i = i.match(h), s = s.match(h), r = i.length > s.length ? s.length : i.length; a < r; )
+        if (o = i[a], n = s[a++], o !== n)
           return isFinite(o) && isFinite(n) ? (o.charAt(0) === "0" && (o = "." + o), n.charAt(0) === "0" && (n = "." + n), o - n) : o > n ? 1 : -1;
       return i.length > s.length;
     }
@@ -3073,32 +3073,32 @@ function Ho(l, e, t, i, s) {
   return o.input;
 }
 function Oo(l, e, t, i, s) {
-  var o = this, n = l.getElement(), r = l.getValue(), a = n.getElementsByTagName("svg").length || 5, h = n.getElementsByTagName("svg")[0] ? n.getElementsByTagName("svg")[0].getAttribute("width") : 14, d = [], u = document.createElement("div"), c = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-  function m(C) {
-    d.forEach(function(T, A) {
-      A < C ? (o.table.browser == "ie" ? T.setAttribute("class", "tabulator-star-active") : T.classList.replace("tabulator-star-inactive", "tabulator-star-active"), T.innerHTML = '<polygon fill="#488CE9" stroke="#014AAE" stroke-width="37.6152" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="259.216,29.942 330.27,173.919 489.16,197.007 374.185,309.08 401.33,467.31 259.216,392.612 117.104,467.31 144.25,309.08 29.274,197.007 188.165,173.919 "/>') : (o.table.browser == "ie" ? T.setAttribute("class", "tabulator-star-inactive") : T.classList.replace("tabulator-star-active", "tabulator-star-inactive"), T.innerHTML = '<polygon fill="#010155" stroke="#686868" stroke-width="37.6152" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="259.216,29.942 330.27,173.919 489.16,197.007 374.185,309.08 401.33,467.31 259.216,392.612 117.104,467.31 144.25,309.08 29.274,197.007 188.165,173.919 "/>');
+  var o = this, n = l.getElement(), a = l.getValue(), r = n.getElementsByTagName("svg").length || 5, h = n.getElementsByTagName("svg")[0] ? n.getElementsByTagName("svg")[0].getAttribute("width") : 14, d = [], u = document.createElement("div"), c = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  function g(C) {
+    d.forEach(function(T, H) {
+      H < C ? (o.table.browser == "ie" ? T.setAttribute("class", "tabulator-star-active") : T.classList.replace("tabulator-star-inactive", "tabulator-star-active"), T.innerHTML = '<polygon fill="#488CE9" stroke="#014AAE" stroke-width="37.6152" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="259.216,29.942 330.27,173.919 489.16,197.007 374.185,309.08 401.33,467.31 259.216,392.612 117.104,467.31 144.25,309.08 29.274,197.007 188.165,173.919 "/>') : (o.table.browser == "ie" ? T.setAttribute("class", "tabulator-star-inactive") : T.classList.replace("tabulator-star-active", "tabulator-star-inactive"), T.innerHTML = '<polygon fill="#010155" stroke="#686868" stroke-width="37.6152" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="259.216,29.942 330.27,173.919 489.16,197.007 374.185,309.08 401.33,467.31 259.216,392.612 117.104,467.31 144.25,309.08 29.274,197.007 188.165,173.919 "/>');
     });
   }
   function b(C) {
-    var T = document.createElement("span"), A = c.cloneNode(!0);
-    d.push(A), T.addEventListener("mouseenter", function(F) {
-      F.stopPropagation(), F.stopImmediatePropagation(), m(C);
-    }), T.addEventListener("mousemove", function(F) {
-      F.stopPropagation(), F.stopImmediatePropagation();
-    }), T.addEventListener("click", function(F) {
-      F.stopPropagation(), F.stopImmediatePropagation(), t(C), n.blur();
-    }), T.appendChild(A), u.appendChild(T);
+    var T = document.createElement("span"), H = c.cloneNode(!0);
+    d.push(H), T.addEventListener("mouseenter", function(_) {
+      _.stopPropagation(), _.stopImmediatePropagation(), g(C);
+    }), T.addEventListener("mousemove", function(_) {
+      _.stopPropagation(), _.stopImmediatePropagation();
+    }), T.addEventListener("click", function(_) {
+      _.stopPropagation(), _.stopImmediatePropagation(), t(C), n.blur();
+    }), T.appendChild(H), u.appendChild(T);
   }
   function E(C) {
-    r = C, m(C);
+    a = C, g(C);
   }
   if (n.style.whiteSpace = "nowrap", n.style.overflow = "hidden", n.style.textOverflow = "ellipsis", u.style.verticalAlign = "middle", u.style.display = "inline-block", u.style.padding = "4px", c.setAttribute("width", h), c.setAttribute("height", h), c.setAttribute("viewBox", "0 0 512 512"), c.setAttribute("xml:space", "preserve"), c.style.padding = "0 1px", s.elementAttributes && typeof s.elementAttributes == "object")
     for (let C in s.elementAttributes)
       C.charAt(0) == "+" ? (C = C.slice(1), u.setAttribute(C, u.getAttribute(C) + s.elementAttributes["+" + C])) : u.setAttribute(C, s.elementAttributes[C]);
-  for (var y = 1; y <= a; y++)
+  for (var y = 1; y <= r; y++)
     b(y);
-  return r = Math.min(parseInt(r), a), m(r), u.addEventListener("mousemove", function(C) {
-    m(0);
+  return a = Math.min(parseInt(a), r), g(a), u.addEventListener("mousemove", function(C) {
+    g(0);
   }), u.addEventListener("click", function(C) {
     t(0);
   }), n.addEventListener("blur", function(C) {
@@ -3106,13 +3106,13 @@ function Oo(l, e, t, i, s) {
   }), n.addEventListener("keydown", function(C) {
     switch (C.keyCode) {
       case 39:
-        E(r + 1);
+        E(a + 1);
         break;
       case 37:
-        E(r - 1);
+        E(a - 1);
         break;
       case 13:
-        t(r);
+        t(a);
         break;
       case 27:
         i();
@@ -3121,22 +3121,22 @@ function Oo(l, e, t, i, s) {
   }), u;
 }
 function Bo(l, e, t, i, s) {
-  var o = l.getElement(), n = typeof s.max > "u" ? o.getElementsByTagName("div")[0] && o.getElementsByTagName("div")[0].getAttribute("max") || 100 : s.max, r = typeof s.min > "u" ? o.getElementsByTagName("div")[0] && o.getElementsByTagName("div")[0].getAttribute("min") || 0 : s.min, a = (n - r) / 100, h = l.getValue() || 0, d = document.createElement("div"), u = document.createElement("div"), c, m;
+  var o = l.getElement(), n = typeof s.max > "u" ? o.getElementsByTagName("div")[0] && o.getElementsByTagName("div")[0].getAttribute("max") || 100 : s.max, a = typeof s.min > "u" ? o.getElementsByTagName("div")[0] && o.getElementsByTagName("div")[0].getAttribute("min") || 0 : s.min, r = (n - a) / 100, h = l.getValue() || 0, d = document.createElement("div"), u = document.createElement("div"), c, g;
   function b() {
-    var E = window.getComputedStyle(o, null), y = a * Math.round(u.offsetWidth / ((o.clientWidth - parseInt(E.getPropertyValue("padding-left")) - parseInt(E.getPropertyValue("padding-right"))) / 100)) + r;
+    var E = window.getComputedStyle(o, null), y = r * Math.round(u.offsetWidth / ((o.clientWidth - parseInt(E.getPropertyValue("padding-left")) - parseInt(E.getPropertyValue("padding-right"))) / 100)) + a;
     t(y), o.setAttribute("aria-valuenow", y), o.setAttribute("aria-label", h);
   }
   if (d.style.position = "absolute", d.style.right = "0", d.style.top = "0", d.style.bottom = "0", d.style.width = "5px", d.classList.add("tabulator-progress-handle"), u.style.display = "inline-block", u.style.position = "relative", u.style.height = "100%", u.style.backgroundColor = "#488CE9", u.style.maxWidth = "100%", u.style.minWidth = "0%", s.elementAttributes && typeof s.elementAttributes == "object")
     for (let E in s.elementAttributes)
       E.charAt(0) == "+" ? (E = E.slice(1), u.setAttribute(E, u.getAttribute(E) + s.elementAttributes["+" + E])) : u.setAttribute(E, s.elementAttributes[E]);
-  return o.style.padding = "4px 4px", h = Math.min(parseFloat(h), n), h = Math.max(parseFloat(h), r), h = Math.round((h - r) / a), u.style.width = h + "%", o.setAttribute("aria-valuemin", r), o.setAttribute("aria-valuemax", n), u.appendChild(d), d.addEventListener("mousedown", function(E) {
-    c = E.screenX, m = u.offsetWidth;
+  return o.style.padding = "4px 4px", h = Math.min(parseFloat(h), n), h = Math.max(parseFloat(h), a), h = Math.round((h - a) / r), u.style.width = h + "%", o.setAttribute("aria-valuemin", a), o.setAttribute("aria-valuemax", n), u.appendChild(d), d.addEventListener("mousedown", function(E) {
+    c = E.screenX, g = u.offsetWidth;
   }), d.addEventListener("mouseover", function() {
     d.style.cursor = "ew-resize";
   }), o.addEventListener("mousemove", function(E) {
-    c && (u.style.width = m + E.screenX - c + "px");
+    c && (u.style.width = g + E.screenX - c + "px");
   }), o.addEventListener("mouseup", function(E) {
-    c && (E.stopPropagation(), E.stopImmediatePropagation(), c = !1, m = !1, b());
+    c && (E.stopPropagation(), E.stopImmediatePropagation(), c = !1, g = !1, b());
   }), o.addEventListener("keydown", function(E) {
     switch (E.keyCode) {
       case 39:
@@ -3158,27 +3158,27 @@ function Bo(l, e, t, i, s) {
   }), u;
 }
 function No(l, e, t, i, s) {
-  var o = l.getValue(), n = document.createElement("input"), r = s.tristate, a = typeof s.indeterminateValue > "u" ? null : s.indeterminateValue, h = !1, d = Object.keys(s).includes("trueValue"), u = Object.keys(s).includes("falseValue");
+  var o = l.getValue(), n = document.createElement("input"), a = s.tristate, r = typeof s.indeterminateValue > "u" ? null : s.indeterminateValue, h = !1, d = Object.keys(s).includes("trueValue"), u = Object.keys(s).includes("falseValue");
   if (n.setAttribute("type", "checkbox"), n.style.marginTop = "5px", n.style.boxSizing = "border-box", s.elementAttributes && typeof s.elementAttributes == "object")
-    for (let m in s.elementAttributes)
-      m.charAt(0) == "+" ? (m = m.slice(1), n.setAttribute(m, n.getAttribute(m) + s.elementAttributes["+" + m])) : n.setAttribute(m, s.elementAttributes[m]);
-  n.value = o, r && (typeof o > "u" || o === a || o === "") && (h = !0, n.indeterminate = !0), this.table.browser != "firefox" && this.table.browser != "safari" && e(function() {
+    for (let g in s.elementAttributes)
+      g.charAt(0) == "+" ? (g = g.slice(1), n.setAttribute(g, n.getAttribute(g) + s.elementAttributes["+" + g])) : n.setAttribute(g, s.elementAttributes[g]);
+  n.value = o, a && (typeof o > "u" || o === r || o === "") && (h = !0, n.indeterminate = !0), this.table.browser != "firefox" && this.table.browser != "safari" && e(function() {
     l.getType() === "cell" && n.focus({ preventScroll: !0 });
   }), n.checked = d ? o === s.trueValue : o === !0 || o === "true" || o === "True" || o === 1;
-  function c(m) {
+  function c(g) {
     var b = n.checked;
-    return d && b ? b = s.trueValue : u && !b && (b = s.falseValue), r ? m ? h ? a : b : n.checked && !h ? (n.checked = !1, n.indeterminate = !0, h = !0, a) : (h = !1, b) : b;
+    return d && b ? b = s.trueValue : u && !b && (b = s.falseValue), a ? g ? h ? r : b : n.checked && !h ? (n.checked = !1, n.indeterminate = !0, h = !0, r) : (h = !1, b) : b;
   }
-  return n.addEventListener("change", function(m) {
+  return n.addEventListener("change", function(g) {
     t(c());
-  }), n.addEventListener("blur", function(m) {
+  }), n.addEventListener("blur", function(g) {
     t(c(!0));
-  }), n.addEventListener("keydown", function(m) {
-    m.keyCode == 13 && t(c()), m.keyCode == 27 && i();
+  }), n.addEventListener("keydown", function(g) {
+    g.keyCode == 13 && t(c()), g.keyCode == 27 && i();
   }), n;
 }
-function Vo(l, e, t, i, s) {
-  var o = l._getSelf().column, n, r, a;
+function $o(l, e, t, i, s) {
+  var o = l._getSelf().column, n, a, r;
   function h(d) {
     var u = d.getValue(), c = "input";
     switch (typeof u) {
@@ -3195,11 +3195,11 @@ function Vo(l, e, t, i, s) {
     }
     return c;
   }
-  return n = s.editorLookup ? s.editorLookup(l) : h(l), s.paramsLookup && (a = typeof s.paramsLookup == "function" ? s.paramsLookup(n, l) : s.paramsLookup[n]), r = this.table.modules.edit.lookupEditor(n, o), r.call(this, l, e, t, i, a || {});
+  return n = s.editorLookup ? s.editorLookup(l) : h(l), s.paramsLookup && (r = typeof s.paramsLookup == "function" ? s.paramsLookup(n, l) : s.paramsLookup[n]), a = this.table.modules.edit.lookupEditor(n, o), a.call(this, l, e, t, i, r || {});
 }
-var Io = {
+var Vo = {
   input: Lo,
-  textarea: So,
+  textarea: Mo,
   number: Do,
   range: Fo,
   date: _o,
@@ -3209,11 +3209,11 @@ var Io = {
   star: Oo,
   progress: Bo,
   tickCross: No,
-  adaptable: Vo
+  adaptable: $o
 };
-const Lt = class Lt extends j {
+const Mt = class Mt extends G {
   constructor(e) {
-    super(e), this.currentCell = !1, this.mouseClick = !1, this.recursionBlock = !1, this.invalidEdit = !1, this.editedCells = [], this.convertEmptyValues = !1, this.editors = Lt.editors, this.registerTableOption("editTriggerEvent", "focus"), this.registerTableOption("editorEmptyValue"), this.registerTableOption("editorEmptyValueFunc", this.emptyValueCheck.bind(this)), this.registerColumnOption("editable"), this.registerColumnOption("editor"), this.registerColumnOption("editorParams"), this.registerColumnOption("editorEmptyValue"), this.registerColumnOption("editorEmptyValueFunc"), this.registerColumnOption("cellEditing"), this.registerColumnOption("cellEdited"), this.registerColumnOption("cellEditCancelled"), this.registerTableFunction("getEditedCells", this.getEditedCells.bind(this)), this.registerTableFunction("clearCellEdited", this.clearCellEdited.bind(this)), this.registerTableFunction("navigatePrev", this.navigatePrev.bind(this)), this.registerTableFunction("navigateNext", this.navigateNext.bind(this)), this.registerTableFunction("navigateLeft", this.navigateLeft.bind(this)), this.registerTableFunction("navigateRight", this.navigateRight.bind(this)), this.registerTableFunction("navigateUp", this.navigateUp.bind(this)), this.registerTableFunction("navigateDown", this.navigateDown.bind(this)), this.registerComponentFunction("cell", "isEdited", this.cellIsEdited.bind(this)), this.registerComponentFunction("cell", "clearEdited", this.clearEdited.bind(this)), this.registerComponentFunction("cell", "edit", this.editCell.bind(this)), this.registerComponentFunction("cell", "cancelEdit", this.cellCancelEdit.bind(this)), this.registerComponentFunction("cell", "navigatePrev", this.navigatePrev.bind(this)), this.registerComponentFunction("cell", "navigateNext", this.navigateNext.bind(this)), this.registerComponentFunction("cell", "navigateLeft", this.navigateLeft.bind(this)), this.registerComponentFunction("cell", "navigateRight", this.navigateRight.bind(this)), this.registerComponentFunction("cell", "navigateUp", this.navigateUp.bind(this)), this.registerComponentFunction("cell", "navigateDown", this.navigateDown.bind(this));
+    super(e), this.currentCell = !1, this.mouseClick = !1, this.recursionBlock = !1, this.invalidEdit = !1, this.editedCells = [], this.convertEmptyValues = !1, this.editors = Mt.editors, this.registerTableOption("editTriggerEvent", "focus"), this.registerTableOption("editorEmptyValue"), this.registerTableOption("editorEmptyValueFunc", this.emptyValueCheck.bind(this)), this.registerColumnOption("editable"), this.registerColumnOption("editor"), this.registerColumnOption("editorParams"), this.registerColumnOption("editorEmptyValue"), this.registerColumnOption("editorEmptyValueFunc"), this.registerColumnOption("cellEditing"), this.registerColumnOption("cellEdited"), this.registerColumnOption("cellEditCancelled"), this.registerTableFunction("getEditedCells", this.getEditedCells.bind(this)), this.registerTableFunction("clearCellEdited", this.clearCellEdited.bind(this)), this.registerTableFunction("navigatePrev", this.navigatePrev.bind(this)), this.registerTableFunction("navigateNext", this.navigateNext.bind(this)), this.registerTableFunction("navigateLeft", this.navigateLeft.bind(this)), this.registerTableFunction("navigateRight", this.navigateRight.bind(this)), this.registerTableFunction("navigateUp", this.navigateUp.bind(this)), this.registerTableFunction("navigateDown", this.navigateDown.bind(this)), this.registerComponentFunction("cell", "isEdited", this.cellIsEdited.bind(this)), this.registerComponentFunction("cell", "clearEdited", this.clearEdited.bind(this)), this.registerComponentFunction("cell", "edit", this.editCell.bind(this)), this.registerComponentFunction("cell", "cancelEdit", this.cellCancelEdit.bind(this)), this.registerComponentFunction("cell", "navigatePrev", this.navigatePrev.bind(this)), this.registerComponentFunction("cell", "navigateNext", this.navigateNext.bind(this)), this.registerComponentFunction("cell", "navigateLeft", this.navigateLeft.bind(this)), this.registerComponentFunction("cell", "navigateRight", this.navigateRight.bind(this)), this.registerComponentFunction("cell", "navigateUp", this.navigateUp.bind(this)), this.registerComponentFunction("cell", "navigateDown", this.navigateDown.bind(this));
   }
   initialize() {
     this.subscribe("cell-init", this.bindEditor.bind(this)), this.subscribe("cell-delete", this.clearEdited.bind(this)), this.subscribe("cell-value-changed", this.updateCellClass.bind(this)), this.subscribe("column-layout", this.initializeColumnCheck.bind(this)), this.subscribe("column-delete", this.columnDeleteCheck.bind(this)), this.subscribe("row-deleting", this.rowDeleteCheck.bind(this)), this.subscribe("row-layout", this.rowEditableCheck.bind(this)), this.subscribe("data-refreshing", this.cancelEdit.bind(this)), this.subscribe("clipboard-paste", this.pasteBlocker.bind(this)), this.subscribe("keybinding-nav-prev", this.navigatePrev.bind(this, void 0)), this.subscribe("keybinding-nav-next", this.keybindingNavigateNext.bind(this)), this.subscribe("keybinding-nav-up", this.navigateUp.bind(this, void 0)), this.subscribe("keybinding-nav-down", this.navigateDown.bind(this, void 0)), Object.keys(this.table.options).includes("editorEmptyValue") && (this.convertEmptyValues = !0);
@@ -3402,8 +3402,8 @@ const Lt = class Lt extends j {
     if (this.table.rowManager.getRenderMode() == "virtual") {
       var t = this.table.rowManager.element.scrollTop, i = this.table.rowManager.element.clientHeight + this.table.rowManager.element.scrollTop, s = e.row.getElement();
       s.offsetTop < t ? this.table.rowManager.element.scrollTop -= t - s.offsetTop : s.offsetTop + s.offsetHeight > i && (this.table.rowManager.element.scrollTop += s.offsetTop + s.offsetHeight - i);
-      var o = this.table.rowManager.element.scrollLeft, n = this.table.rowManager.element.clientWidth + this.table.rowManager.element.scrollLeft, r = e.getElement();
-      this.table.modExists("frozenColumns") && (o += parseInt(this.table.modules.frozenColumns.leftMargin || 0), n -= parseInt(this.table.modules.frozenColumns.rightMargin || 0)), this.table.options.renderHorizontal === "virtual" && (o -= parseInt(this.table.columnManager.renderer.vDomPadLeft), n -= parseInt(this.table.columnManager.renderer.vDomPadLeft)), r.offsetLeft < o ? this.table.rowManager.element.scrollLeft -= o - r.offsetLeft : r.offsetLeft + r.offsetWidth > n && (this.table.rowManager.element.scrollLeft += r.offsetLeft + r.offsetWidth - n);
+      var o = this.table.rowManager.element.scrollLeft, n = this.table.rowManager.element.clientWidth + this.table.rowManager.element.scrollLeft, a = e.getElement();
+      this.table.modExists("frozenColumns") && (o += parseInt(this.table.modules.frozenColumns.leftMargin || 0), n -= parseInt(this.table.modules.frozenColumns.rightMargin || 0)), this.table.options.renderHorizontal === "virtual" && (o -= parseInt(this.table.columnManager.renderer.vDomPadLeft), n -= parseInt(this.table.columnManager.renderer.vDomPadLeft)), a.offsetLeft < o ? this.table.rowManager.element.scrollLeft -= o - a.offsetLeft : a.offsetLeft + a.offsetWidth > n && (this.table.rowManager.element.scrollLeft += a.offsetLeft + a.offsetWidth - n);
     }
   }
   allowEdit(e) {
@@ -3424,43 +3424,43 @@ const Lt = class Lt extends j {
   }
   edit(e, t, i) {
     var s = this, o = !0, n = function() {
-    }, r = e.getElement(), a = !1, h, d, u;
+    }, a = e.getElement(), r = !1, h, d, u;
     if (this.currentCell) {
       !this.invalidEdit && this.currentCell !== e && this.cancelEdit();
       return;
     }
     function c(C) {
-      if (s.currentCell === e && !a) {
+      if (s.currentCell === e && !r) {
         var T = s.chain("edit-success", [e, C], !0, !0);
-        return T === !0 || s.table.options.validationMode === "highlight" ? (a = !0, s.clearEditor(), e.modules.edit || (e.modules.edit = {}), e.modules.edit.edited = !0, s.editedCells.indexOf(e) == -1 && s.editedCells.push(e), C = s.transformEmptyValues(C, e), e.setValue(C, !0), T === !0) : (a = !0, s.invalidEdit = !0, s.focusCellNoEvent(e, !0), n(), setTimeout(() => {
-          a = !1;
+        return T === !0 || s.table.options.validationMode === "highlight" ? (r = !0, s.clearEditor(), e.modules.edit || (e.modules.edit = {}), e.modules.edit.edited = !0, s.editedCells.indexOf(e) == -1 && s.editedCells.push(e), C = s.transformEmptyValues(C, e), e.setValue(C, !0), T === !0) : (r = !0, s.invalidEdit = !0, s.focusCellNoEvent(e, !0), n(), setTimeout(() => {
+          r = !1;
         }, 10), !1);
       }
     }
-    function m() {
-      s.currentCell === e && !a && s.cancelEdit();
+    function g() {
+      s.currentCell === e && !r && s.cancelEdit();
     }
     function b(C) {
       n = C;
     }
     if (e.column.modules.edit.blocked)
-      return this.mouseClick = !1, this.blur(r), !1;
+      return this.mouseClick = !1, this.blur(a), !1;
     if (t && t.stopPropagation(), o = this.allowEdit(e), o || i) {
-      if (s.cancelEdit(), s.currentCell = e, this.focusScrollAdjust(e), d = e.getComponent(), this.mouseClick && (this.mouseClick = !1, e.column.definition.cellClick && e.column.definition.cellClick.call(this.table, t, d)), e.column.definition.cellEditing && e.column.definition.cellEditing.call(this.table, d), this.dispatch("cell-editing", e), this.dispatchExternal("cellEditing", d), u = typeof e.column.modules.edit.params == "function" ? e.column.modules.edit.params(d) : e.column.modules.edit.params, h = e.column.modules.edit.editor.call(s, d, b, c, m, u), this.currentCell && h !== !1)
+      if (s.cancelEdit(), s.currentCell = e, this.focusScrollAdjust(e), d = e.getComponent(), this.mouseClick && (this.mouseClick = !1, e.column.definition.cellClick && e.column.definition.cellClick.call(this.table, t, d)), e.column.definition.cellEditing && e.column.definition.cellEditing.call(this.table, d), this.dispatch("cell-editing", e), this.dispatchExternal("cellEditing", d), u = typeof e.column.modules.edit.params == "function" ? e.column.modules.edit.params(d) : e.column.modules.edit.params, h = e.column.modules.edit.editor.call(s, d, b, c, g, u), this.currentCell && h !== !1)
         if (h instanceof Node) {
-          for (r.classList.add("tabulator-editing"), e.row.getElement().classList.add("tabulator-editing"), e.table.element.classList.add("tabulator-editing"); r.firstChild; ) r.removeChild(r.firstChild);
-          r.appendChild(h), n();
-          for (var E = r.children, y = 0; y < E.length; y++)
+          for (a.classList.add("tabulator-editing"), e.row.getElement().classList.add("tabulator-editing"), e.table.element.classList.add("tabulator-editing"); a.firstChild; ) a.removeChild(a.firstChild);
+          a.appendChild(h), n();
+          for (var E = a.children, y = 0; y < E.length; y++)
             E[y].addEventListener("click", function(C) {
               C.stopPropagation();
             });
         } else
-          return console.warn("Edit Error - Editor should return an instance of Node, the editor returned:", h), this.blur(r), !1;
+          return console.warn("Edit Error - Editor should return an instance of Node, the editor returned:", h), this.blur(a), !1;
       else
-        return this.blur(r), !1;
+        return this.blur(a), !1;
       return !0;
     } else
-      return this.mouseClick = !1, this.blur(r), !1;
+      return this.mouseClick = !1, this.blur(a), !1;
   }
   emptyValueCheck(e) {
     return e === "" || e === null || typeof e > "u";
@@ -3483,9 +3483,9 @@ const Lt = class Lt extends j {
     e.modules.edit && e.modules.edit.edited && (e.modules.edit.edited = !1, this.dispatch("edit-edited-clear", e)), t = this.editedCells.indexOf(e), t > -1 && this.editedCells.splice(t, 1);
   }
 };
-M(Lt, "moduleName", "edit"), //load defaults
-M(Lt, "editors", Io);
-let ui = Lt;
+S(Mt, "moduleName", "edit"), //load defaults
+S(Mt, "editors", Vo);
+let ui = Mt;
 class Ui {
   constructor(e, t, i, s) {
     this.type = e, this.columns = t, this.component = i || !1, this.indent = s || 0;
@@ -3496,7 +3496,7 @@ class ii {
     this.value = e, this.component = t || !1, this.width = i, this.height = s, this.depth = o;
   }
 }
-var $o = {}, Wo = {
+var Io = {}, Wo = {
   visible: function() {
     return this.rowManager.getVisibleRows(!1, !0);
   },
@@ -3510,7 +3510,7 @@ var $o = {}, Wo = {
     return this.options.pagination ? this.rowManager.getDisplayRows(this.rowManager.displayRows.length - 2) : this.rowManager.getDisplayRows();
   }
 };
-const Je = class Je extends j {
+const tt = class tt extends G {
   constructor(e) {
     super(e), this.config = {}, this.cloneTableStyle = !0, this.colVisProp = "", this.colVisPropAttach = "", this.registerTableOption("htmlOutputConfig", !1), this.registerColumnOption("htmlOutput"), this.registerColumnOption("titleHtmlOutput");
   }
@@ -3521,8 +3521,8 @@ const Je = class Je extends j {
   ///////// Internal Logic //////////
   ///////////////////////////////////
   generateExportList(e, t, i, s) {
-    var o, n, r, a;
-    return this.cloneTableStyle = t, this.config = e || {}, this.colVisProp = s, this.colVisPropAttach = this.colVisProp.charAt(0).toUpperCase() + this.colVisProp.slice(1), a = Je.columnLookups[i], a && (r = a.call(this.table), r = r.filter((h) => this.columnVisCheck(h))), o = this.config.columnHeaders !== !1 ? this.headersToExportRows(this.generateColumnGroupHeaders(r)) : [], r && (r = r.map((h) => h.getComponent())), n = this.bodyToExportRows(this.rowLookup(i), r), o.concat(n);
+    var o, n, a, r;
+    return this.cloneTableStyle = t, this.config = e || {}, this.colVisProp = s, this.colVisPropAttach = this.colVisProp.charAt(0).toUpperCase() + this.colVisProp.slice(1), r = tt.columnLookups[i], r && (a = r.call(this.table), a = a.filter((h) => this.columnVisCheck(h))), o = this.config.columnHeaders !== !1 ? this.headersToExportRows(this.generateColumnGroupHeaders(a)) : [], a && (a = a.map((h) => h.getComponent())), n = this.bodyToExportRows(this.rowLookup(i), a), o.concat(n);
   }
   generateTable(e, t, i, s) {
     var o = this.generateExportList(e, t, i, s);
@@ -3532,7 +3532,7 @@ const Je = class Je extends j {
     var t = [], i;
     return typeof e == "function" ? e.call(this.table).forEach((s) => {
       s = this.table.rowManager.findRow(s), s && t.push(s);
-    }) : (i = Je.rowLookups[e] || Je.rowLookups.active, t = i.call(this.table)), Object.assign([], t);
+    }) : (i = tt.rowLookups[e] || tt.rowLookups.active, t = i.call(this.table)), Object.assign([], t);
   }
   generateColumnGroupHeaders(e) {
     var t = [];
@@ -3549,8 +3549,8 @@ const Je = class Je extends j {
     };
     if (t.length) {
       if (o.subGroups = [], o.width = 0, t.forEach((n) => {
-        var r = this.processColumnGroup(n);
-        r && (o.width += r.width, o.subGroups.push(r), r.depth > i && (i = r.depth));
+        var a = this.processColumnGroup(n);
+        a && (o.width += a.width, o.subGroups.push(a), a.depth > i && (i = a.depth));
       }), o.depth += i, !o.width)
         return !1;
     } else if (this.columnVisCheck(e))
@@ -3565,16 +3565,16 @@ const Je = class Je extends j {
   }
   headersToExportRows(e) {
     var t = [], i = 0, s = [];
-    function o(n, r) {
-      var a = i - r;
-      if (typeof t[r] > "u" && (t[r] = []), n.height = n.subGroups ? 1 : a - n.depth + 1, t[r].push(n), n.height > 1)
+    function o(n, a) {
+      var r = i - a;
+      if (typeof t[a] > "u" && (t[a] = []), n.height = n.subGroups ? 1 : r - n.depth + 1, t[a].push(n), n.height > 1)
         for (let h = 1; h < n.height; h++)
-          typeof t[r + h] > "u" && (t[r + h] = []), t[r + h].push(!1);
+          typeof t[a + h] > "u" && (t[a + h] = []), t[a + h].push(!1);
       if (n.width > 1)
         for (let h = 1; h < n.width; h++)
-          t[r].push(!1);
+          t[a].push(!1);
       n.subGroups && n.subGroups.forEach(function(h) {
-        o(h, r + 1);
+        o(h, a + 1);
       });
     }
     return e.forEach(function(n) {
@@ -3582,14 +3582,14 @@ const Je = class Je extends j {
     }), e.forEach(function(n) {
       o(n, 0);
     }), t.forEach((n) => {
-      var r = [];
-      n.forEach((a) => {
-        if (a) {
-          let h = typeof a.title > "u" ? "" : a.title;
-          r.push(new ii(h, a.column.getComponent(), a.width, a.height, a.depth));
+      var a = [];
+      n.forEach((r) => {
+        if (r) {
+          let h = typeof r.title > "u" ? "" : r.title;
+          a.push(new ii(h, r.column.getComponent(), r.width, r.height, r.depth));
         } else
-          r.push(null);
-      }), s.push(new Ui("header", r));
+          a.push(null);
+      }), s.push(new Ui("header", a));
     }), s;
   }
   bodyToExportRows(e, t = []) {
@@ -3607,37 +3607,37 @@ const Je = class Je extends j {
       }
       return !0;
     }), e.forEach((s, o) => {
-      var n = s.getData(this.colVisProp), r = [], a = 0;
+      var n = s.getData(this.colVisProp), a = [], r = 0;
       switch (s.type) {
         case "group":
-          a = s.level, r.push(new ii(s.key, s.getComponent(), t.length, 1));
+          r = s.level, a.push(new ii(s.key, s.getComponent(), t.length, 1));
           break;
         case "calc":
         case "row":
           t.forEach((h) => {
-            r.push(new ii(h._column.getFieldValue(n), h, 1, 1));
-          }), this.table.options.dataTree && this.config.dataTree !== !1 && (a = s.modules.dataTree.index);
+            a.push(new ii(h._column.getFieldValue(n), h, 1, 1));
+          }), this.table.options.dataTree && this.config.dataTree !== !1 && (r = s.modules.dataTree.index);
           break;
       }
-      i.push(new Ui(s.type, r, s.getComponent(), a));
+      i.push(new Ui(s.type, a, s.getComponent(), r));
     }), i;
   }
   generateTableElement(e) {
-    var t = document.createElement("table"), i = document.createElement("thead"), s = document.createElement("tbody"), o = this.lookupTableStyles(), n = this.table.options["rowFormatter" + this.colVisPropAttach], r = {};
-    return r.rowFormatter = n !== null ? n : this.table.options.rowFormatter, this.table.options.dataTree && this.config.dataTree !== !1 && this.table.modExists("columnCalcs") && (r.treeElementField = this.table.modules.dataTree.elementField), r.groupHeader = this.table.options["groupHeader" + this.colVisPropAttach], r.groupHeader && !Array.isArray(r.groupHeader) && (r.groupHeader = [r.groupHeader]), t.classList.add("tabulator-print-table"), this.mapElementStyles(this.table.columnManager.getHeadersElement(), i, ["border-top", "border-left", "border-right", "border-bottom", "background-color", "color", "font-weight", "font-family", "font-size"]), e.length > 1e3 && console.warn("It may take a long time to render an HTML table with more than 1000 rows"), e.forEach((a, h) => {
+    var t = document.createElement("table"), i = document.createElement("thead"), s = document.createElement("tbody"), o = this.lookupTableStyles(), n = this.table.options["rowFormatter" + this.colVisPropAttach], a = {};
+    return a.rowFormatter = n !== null ? n : this.table.options.rowFormatter, this.table.options.dataTree && this.config.dataTree !== !1 && this.table.modExists("columnCalcs") && (a.treeElementField = this.table.modules.dataTree.elementField), a.groupHeader = this.table.options["groupHeader" + this.colVisPropAttach], a.groupHeader && !Array.isArray(a.groupHeader) && (a.groupHeader = [a.groupHeader]), t.classList.add("tabulator-print-table"), this.mapElementStyles(this.table.columnManager.getHeadersElement(), i, ["border-top", "border-left", "border-right", "border-bottom", "background-color", "color", "font-weight", "font-family", "font-size"]), e.length > 1e3 && console.warn("It may take a long time to render an HTML table with more than 1000 rows"), e.forEach((r, h) => {
       let d;
-      switch (a.type) {
+      switch (r.type) {
         case "header":
-          i.appendChild(this.generateHeaderElement(a, r, o));
+          i.appendChild(this.generateHeaderElement(r, a, o));
           break;
         case "group":
-          s.appendChild(this.generateGroupElement(a, r, o));
+          s.appendChild(this.generateGroupElement(r, a, o));
           break;
         case "calc":
-          s.appendChild(this.generateCalcElement(a, r, o));
+          s.appendChild(this.generateCalcElement(r, a, o));
           break;
         case "row":
-          d = this.generateRowElement(a, r, o), this.mapElementStyles(h % 2 && o.evenRow ? o.evenRow : o.oddRow, d, ["border-top", "border-left", "border-right", "border-bottom", "color", "font-weight", "font-family", "font-size", "background-color"]), s.appendChild(d);
+          d = this.generateRowElement(r, a, o), this.mapElementStyles(h % 2 && o.evenRow ? o.evenRow : o.oddRow, d, ["border-top", "border-left", "border-right", "border-bottom", "color", "font-weight", "font-family", "font-size", "background-color"]), s.appendChild(d);
           break;
       }
     }), i.innerHTML && t.appendChild(i), t.appendChild(s), this.mapElementStyles(this.table.element, t, ["border-top", "border-left", "border-right", "border-bottom"]), t;
@@ -3650,9 +3650,9 @@ const Je = class Je extends j {
     var s = document.createElement("tr");
     return e.columns.forEach((o) => {
       if (o) {
-        var n = document.createElement("th"), r = o.component._column.definition.cssClass ? o.component._column.definition.cssClass.split(" ") : [];
-        n.colSpan = o.width, n.rowSpan = o.height, n.innerHTML = o.value, this.cloneTableStyle && (n.style.boxSizing = "border-box"), r.forEach(function(a) {
-          n.classList.add(a);
+        var n = document.createElement("th"), a = o.component._column.definition.cssClass ? o.component._column.definition.cssClass.split(" ") : [];
+        n.colSpan = o.width, n.rowSpan = o.height, n.innerHTML = o.value, this.cloneTableStyle && (n.style.boxSizing = "border-box"), a.forEach(function(r) {
+          n.classList.add(r);
         }), this.mapElementStyles(o.component.getElement(), n, ["text-align", "border-left", "border-right", "background-color", "color", "font-weight", "font-family", "font-size"]), this.mapElementStyles(o.component._column.contentElement, n, ["padding-top", "padding-left", "padding-right", "padding-bottom"]), o.component._column.visible ? this.mapElementStyles(o.component.getElement(), n, ["width"]) : o.component._column.definition.width && (n.style.width = o.component._column.definition.width + "px"), o.component._column.parent && o.component._column.parent.isGroup ? this.mapElementStyles(o.component._column.parent.groupElement, n, ["border-top"]) : this.mapElementStyles(o.component.getElement(), n, ["border-top"]), o.component._column.isGroup ? this.mapElementStyles(o.component.getElement(), n, ["border-bottom"]) : this.mapElementStyles(this.table.columnManager.getElement(), n, ["border-bottom"]), s.appendChild(n);
       }
     }), s;
@@ -3669,22 +3669,22 @@ const Je = class Je extends j {
     var s = document.createElement("tr");
     if (s.classList.add("tabulator-print-table-row"), e.columns.forEach((o, n) => {
       if (o) {
-        var r = document.createElement("td"), a = o.component._column, h = this.table, d = h.columnManager.findColumnIndex(a), u = o.value, c, m, b = {
+        var a = document.createElement("td"), r = o.component._column, h = this.table, d = h.columnManager.findColumnIndex(r), u = o.value, c, g, b = {
           modules: {},
           getValue: function() {
             return u;
           },
           getField: function() {
-            return a.definition.field;
+            return r.definition.field;
           },
           getElement: function() {
-            return r;
+            return a;
           },
           getType: function() {
             return "cell";
           },
           getColumn: function() {
-            return a.getComponent();
+            return r.getComponent();
           },
           getData: function() {
             return e.component.getData();
@@ -3698,10 +3698,10 @@ const Je = class Je extends j {
           getComponent: function() {
             return b;
           },
-          column: a
-        }, E = a.definition.cssClass ? a.definition.cssClass.split(" ") : [];
+          column: r
+        }, E = r.definition.cssClass ? r.definition.cssClass.split(" ") : [];
         if (E.forEach(function(y) {
-          r.classList.add(y);
+          a.classList.add(y);
         }), this.table.modExists("format") && this.config.formatCells !== !1)
           u = this.table.modules.format.formatExportValue(b, this.colVisProp);
         else
@@ -3713,7 +3713,7 @@ const Je = class Je extends j {
               u = "";
               break;
           }
-        u instanceof Node ? r.appendChild(u) : r.innerHTML = u, m = ["padding-top", "padding-left", "padding-right", "padding-bottom", "border-top", "border-left", "border-right", "border-bottom", "color", "font-weight", "font-family", "font-size", "text-align"], a.isRowHeader ? (c = i.styleRowHeader, m.push("background-color")) : c = i.styleCells && i.styleCells[d] ? i.styleCells[d] : i.firstCell, c && (this.mapElementStyles(c, r, m), a.definition.align && (r.style.textAlign = a.definition.align)), this.table.options.dataTree && this.config.dataTree !== !1 && (t.treeElementField && t.treeElementField == a.field || !t.treeElementField && n == 0) && (e.component._row.modules.dataTree.controlEl && r.insertBefore(e.component._row.modules.dataTree.controlEl.cloneNode(!0), r.firstChild), e.component._row.modules.dataTree.branchEl && r.insertBefore(e.component._row.modules.dataTree.branchEl.cloneNode(!0), r.firstChild)), s.appendChild(r), b.modules.format && b.modules.format.renderedCallback && b.modules.format.renderedCallback();
+        u instanceof Node ? a.appendChild(u) : a.innerHTML = u, g = ["padding-top", "padding-left", "padding-right", "padding-bottom", "border-top", "border-left", "border-right", "border-bottom", "color", "font-weight", "font-family", "font-size", "text-align"], r.isRowHeader ? (c = i.styleRowHeader, g.push("background-color")) : c = i.styleCells && i.styleCells[d] ? i.styleCells[d] : i.firstCell, c && (this.mapElementStyles(c, a, g), r.definition.align && (a.style.textAlign = r.definition.align)), this.table.options.dataTree && this.config.dataTree !== !1 && (t.treeElementField && t.treeElementField == r.field || !t.treeElementField && n == 0) && (e.component._row.modules.dataTree.controlEl && a.insertBefore(e.component._row.modules.dataTree.controlEl.cloneNode(!0), a.firstChild), e.component._row.modules.dataTree.branchEl && a.insertBefore(e.component._row.modules.dataTree.branchEl.cloneNode(!0), a.firstChild)), s.appendChild(a), b.modules.format && b.modules.format.renderedCallback && b.modules.format.renderedCallback();
       }
     }), t.rowFormatter && e.type === "row" && this.config.formatCells !== !1) {
       let o = Object.assign(e.component);
@@ -3759,8 +3759,8 @@ const Je = class Je extends j {
     }
   }
 };
-M(Je, "moduleName", "export"), M(Je, "columnLookups", $o), M(Je, "rowLookups", Wo);
-let ci = Je;
+S(tt, "moduleName", "export"), S(tt, "columnLookups", Io), S(tt, "rowLookups", Wo);
+let ci = tt;
 var Go = {
   //equal to
   "=": function(l, e, t, i) {
@@ -3796,8 +3796,8 @@ var Go = {
   //contains the keywords
   keywords: function(l, e, t, i) {
     var s = l.toLowerCase().split(typeof i.separator > "u" ? " " : i.separator), o = String(e === null || typeof e > "u" ? "" : e).toLowerCase(), n = [];
-    return s.forEach((r) => {
-      o.includes(r) && n.push(!0);
+    return s.forEach((a) => {
+      o.includes(a) && n.push(!0);
     }), i.matchAll ? n.length === s.length : !!n.length;
   },
   //starts with the string
@@ -3813,7 +3813,7 @@ var Go = {
     return Array.isArray(l) ? l.length ? l.indexOf(e) > -1 : !0 : (console.warn("Filter Error - filter value is not an array:", l), !1);
   }
 };
-const We = class We extends j {
+const qe = class qe extends G {
   constructor(e) {
     super(e), this.filterList = [], this.headerFilters = {}, this.headerFilterColumns = [], this.prevHeaderFilterChangeCheck = "", this.prevHeaderFilterChangeCheck = "{}", this.changed = !1, this.tableInitialized = !1, this.registerTableOption("filterMode", "local"), this.registerTableOption("initialFilter", !1), this.registerTableOption("initialHeaderFilter", !1), this.registerTableOption("headerFilterLiveFilterDelay", 300), this.registerTableOption("placeholderHeaderFilter", !1), this.registerColumnOption("headerFilter"), this.registerColumnOption("headerFilterPlaceholder"), this.registerColumnOption("headerFilterParams"), this.registerColumnOption("headerFilterEmptyCheck"), this.registerColumnOption("headerFilterFunc"), this.registerColumnOption("headerFilterFuncParams"), this.registerColumnOption("headerFilterLiveFilter"), this.registerTableFunction("searchRows", this.searchRows.bind(this)), this.registerTableFunction("searchData", this.searchData.bind(this)), this.registerTableFunction("setFilter", this.userSetFilter.bind(this)), this.registerTableFunction("refreshFilter", this.userRefreshFilter.bind(this)), this.registerTableFunction("addFilter", this.userAddFilter.bind(this)), this.registerTableFunction("getFilters", this.getFilters.bind(this)), this.registerTableFunction("setHeaderFilterFocus", this.userSetHeaderFilterFocus.bind(this)), this.registerTableFunction("getHeaderFilterValue", this.userGetHeaderFilterValue.bind(this)), this.registerTableFunction("setHeaderFilterValue", this.userSetHeaderFilterValue.bind(this)), this.registerTableFunction("getHeaderFilters", this.getHeaderFilters.bind(this)), this.registerTableFunction("removeFilter", this.userRemoveFilter.bind(this)), this.registerTableFunction("clearFilter", this.userClearFilter.bind(this)), this.registerTableFunction("clearHeaderFilter", this.userClearHeaderFilter.bind(this)), this.registerComponentFunction("column", "headerFilterFocus", this.setHeaderFilterFocus.bind(this)), this.registerComponentFunction("column", "reloadHeaderFilter", this.reloadHeaderFilter.bind(this)), this.registerComponentFunction("column", "getHeaderFilterValue", this.getHeaderFilterValue.bind(this)), this.registerComponentFunction("column", "setHeaderFilterValue", this.setHeaderFilterValue.bind(this));
   }
@@ -3902,39 +3902,39 @@ const We = class We extends j {
   initializeColumn(e, t) {
     var i = this, s = e.getField();
     function o(n) {
-      var r = e.modules.filter.tagType == "input" && e.modules.filter.attrType == "text" || e.modules.filter.tagType == "textarea" ? "partial" : "match", a = "", h = "", d;
+      var a = e.modules.filter.tagType == "input" && e.modules.filter.attrType == "text" || e.modules.filter.tagType == "textarea" ? "partial" : "match", r = "", h = "", d;
       if (typeof e.modules.filter.prevSuccess > "u" || e.modules.filter.prevSuccess !== n) {
         if (e.modules.filter.prevSuccess = n, e.modules.filter.emptyFunc(n))
           delete i.headerFilters[s];
         else {
           switch (e.modules.filter.value = n, typeof e.definition.headerFilterFunc) {
             case "string":
-              We.filters[e.definition.headerFilterFunc] ? (a = e.definition.headerFilterFunc, d = function(u) {
-                var c = e.definition.headerFilterFuncParams || {}, m = e.getFieldValue(u);
-                return c = typeof c == "function" ? c(n, m, u) : c, We.filters[e.definition.headerFilterFunc](n, m, u, c);
+              qe.filters[e.definition.headerFilterFunc] ? (r = e.definition.headerFilterFunc, d = function(u) {
+                var c = e.definition.headerFilterFuncParams || {}, g = e.getFieldValue(u);
+                return c = typeof c == "function" ? c(n, g, u) : c, qe.filters[e.definition.headerFilterFunc](n, g, u, c);
               }) : console.warn("Header Filter Error - Matching filter function not found: ", e.definition.headerFilterFunc);
               break;
             case "function":
               d = function(u) {
-                var c = e.definition.headerFilterFuncParams || {}, m = e.getFieldValue(u);
-                return c = typeof c == "function" ? c(n, m, u) : c, e.definition.headerFilterFunc(n, m, u, c);
-              }, a = d;
+                var c = e.definition.headerFilterFuncParams || {}, g = e.getFieldValue(u);
+                return c = typeof c == "function" ? c(n, g, u) : c, e.definition.headerFilterFunc(n, g, u, c);
+              }, r = d;
               break;
           }
           if (!d)
-            switch (r) {
+            switch (a) {
               case "partial":
                 d = function(u) {
                   var c = e.getFieldValue(u);
                   return typeof c < "u" && c !== null ? String(c).toLowerCase().indexOf(String(n).toLowerCase()) > -1 : !1;
-                }, a = "like";
+                }, r = "like";
                 break;
               default:
                 d = function(u) {
                   return e.getFieldValue(u) == n;
-                }, a = "=";
+                }, r = "=";
             }
-          i.headerFilters[s] = { value: n, func: d, type: a };
+          i.headerFilters[s] = { value: n, func: d, type: r };
         }
         e.modules.filter.value = n, h = JSON.stringify(i.headerFilters), i.prevHeaderFilterChangeCheck !== h && (i.prevHeaderFilterChangeCheck = h, i.trackChanges(), i.refreshFilter());
       }
@@ -3948,7 +3948,7 @@ const We = class We extends j {
     }, this.generateHeaderFilterElement(e);
   }
   generateHeaderFilterElement(e, t, i) {
-    var s = this, o = e.modules.filter.success, n = e.getField(), r, a, h, d, u, c, m, b;
+    var s = this, o = e.modules.filter.success, n = e.getField(), a, r, h, d, u, c, g, b;
     e.modules.filter.value = t;
     function E() {
     }
@@ -3958,22 +3958,22 @@ const We = class We extends j {
     if (e.modules.filter.headerElement && e.modules.filter.headerElement.parentNode && e.contentElement.removeChild(e.modules.filter.headerElement.parentNode), n) {
       switch (e.modules.filter.emptyFunc = e.definition.headerFilterEmptyCheck || function(C) {
         return !C && C !== 0;
-      }, r = document.createElement("div"), r.classList.add("tabulator-header-filter"), typeof e.definition.headerFilter) {
+      }, a = document.createElement("div"), a.classList.add("tabulator-header-filter"), typeof e.definition.headerFilter) {
         case "string":
-          s.table.modules.edit.editors[e.definition.headerFilter] ? (a = s.table.modules.edit.editors[e.definition.headerFilter], (e.definition.headerFilter === "tick" || e.definition.headerFilter === "tickCross") && !e.definition.headerFilterEmptyCheck && (e.modules.filter.emptyFunc = function(C) {
+          s.table.modules.edit.editors[e.definition.headerFilter] ? (r = s.table.modules.edit.editors[e.definition.headerFilter], (e.definition.headerFilter === "tick" || e.definition.headerFilter === "tickCross") && !e.definition.headerFilterEmptyCheck && (e.modules.filter.emptyFunc = function(C) {
             return C !== !0 && C !== !1;
           })) : console.warn("Filter Error - Cannot build header filter, No such editor found: ", e.definition.editor);
           break;
         case "function":
-          a = e.definition.headerFilter;
+          r = e.definition.headerFilter;
           break;
         case "boolean":
-          e.modules.edit && e.modules.edit.editor ? a = e.modules.edit.editor : e.definition.formatter && s.table.modules.edit.editors[e.definition.formatter] ? (a = s.table.modules.edit.editors[e.definition.formatter], (e.definition.formatter === "tick" || e.definition.formatter === "tickCross") && !e.definition.headerFilterEmptyCheck && (e.modules.filter.emptyFunc = function(C) {
+          e.modules.edit && e.modules.edit.editor ? r = e.modules.edit.editor : e.definition.formatter && s.table.modules.edit.editors[e.definition.formatter] ? (r = s.table.modules.edit.editors[e.definition.formatter], (e.definition.formatter === "tick" || e.definition.formatter === "tickCross") && !e.definition.headerFilterEmptyCheck && (e.modules.filter.emptyFunc = function(C) {
             return C !== !0 && C !== !1;
-          })) : a = s.table.modules.edit.editors.input;
+          })) : r = s.table.modules.edit.editors.input;
           break;
       }
-      if (a) {
+      if (r) {
         if (d = {
           getValue: function() {
             return typeof t < "u" ? t : "";
@@ -3982,7 +3982,7 @@ const We = class We extends j {
             return e.definition.field;
           },
           getElement: function() {
-            return r;
+            return a;
           },
           getColumn: function() {
             return e.getComponent();
@@ -3995,7 +3995,7 @@ const We = class We extends j {
               }
             };
           }
-        }, m = e.definition.headerFilterParams || {}, m = typeof m == "function" ? m.call(s.table, d) : m, h = a.call(this.table.modules.edit, d, y, o, E, m), !h) {
+        }, g = e.definition.headerFilterParams || {}, g = typeof g == "function" ? g.call(s.table, d) : g, h = r.call(this.table.modules.edit, d, y, o, E, g), !h) {
           console.warn("Filter Error - Cannot add filter to " + n + " column, editor returned a value of false");
           return;
         }
@@ -4008,8 +4008,8 @@ const We = class We extends j {
         }), h.addEventListener("click", function(C) {
           C.stopPropagation(), h.focus();
         }), h.addEventListener("focus", (C) => {
-          var T = this.table.columnManager.contentsElement.scrollLeft, A = this.table.rowManager.element.scrollLeft;
-          T !== A && (this.table.rowManager.scrollHorizontal(T), this.table.columnManager.scrollHorizontal(T));
+          var T = this.table.columnManager.contentsElement.scrollLeft, H = this.table.rowManager.element.scrollLeft;
+          T !== H && (this.table.rowManager.scrollHorizontal(T), this.table.columnManager.scrollHorizontal(T));
         }), u = !1, c = function(C) {
           u && clearTimeout(u), u = setTimeout(function() {
             o(h.value);
@@ -4018,7 +4018,7 @@ const We = class We extends j {
           o(h.value);
         }), e.modules.filter.attrType == "text" && this.table.browser !== "ie" && h.setAttribute("type", "search")), (e.modules.filter.tagType == "input" || e.modules.filter.tagType == "select" || e.modules.filter.tagType == "textarea") && h.addEventListener("mousedown", function(C) {
           C.stopPropagation();
-        })), r.appendChild(h), e.contentElement.appendChild(r), i || s.headerFilterColumns.push(e), b && b();
+        })), a.appendChild(h), e.contentElement.appendChild(a), i || s.headerFilterColumns.push(e), b && b();
       }
     } else
       console.warn("Filter Error - Cannot add header filter, column has no field set:", e.definition.title);
@@ -4082,10 +4082,10 @@ const We = class We extends j {
     var i = !1;
     return typeof e.field == "function" ? i = function(s) {
       return e.field(s, e.type || {});
-    } : We.filters[e.type] ? (t = this.table.columnManager.getColumnByField(e.field), t ? i = function(s) {
-      return We.filters[e.type](e.value, t.getFieldValue(s), s, e.params || {});
+    } : qe.filters[e.type] ? (t = this.table.columnManager.getColumnByField(e.field), t ? i = function(s) {
+      return qe.filters[e.type](e.value, t.getFieldValue(s), s, e.params || {});
     } : i = function(s) {
-      return We.filters[e.type](e.value, s[e.field], s, e.params || {});
+      return qe.filters[e.type](e.value, s[e.field], s, e.params || {});
     }) : console.warn("Filter Error - No such filter type found, ignoring: ", e.type), e.func = i, e.func ? e : !1;
   }
   findSubFilters(e) {
@@ -4136,13 +4136,13 @@ const We = class We extends j {
   //search data and return matching rows
   search(e, t, i, s) {
     var o = [], n = [];
-    return Array.isArray(t) || (t = [{ field: t, type: i, value: s }]), t.forEach((r) => {
-      r = this.findFilter(r), r && n.push(r);
-    }), this.table.rowManager.rows.forEach((r) => {
-      var a = !0;
+    return Array.isArray(t) || (t = [{ field: t, type: i, value: s }]), t.forEach((a) => {
+      a = this.findFilter(a), a && n.push(a);
+    }), this.table.rowManager.rows.forEach((a) => {
+      var r = !0;
       n.forEach((h) => {
-        this.filterRecurse(h, r.getData()) || (a = !1);
-      }), a && o.push(e === "data" ? r.getData("data") : r.getComponent());
+        this.filterRecurse(h, a.getData()) || (r = !1);
+      }), r && o.push(e === "data" ? a.getData("data") : a.getComponent());
     }), o;
   }
   //filter row array
@@ -4171,9 +4171,9 @@ const We = class We extends j {
     }) : i = e.func(t), i;
   }
 };
-M(We, "moduleName", "filter"), //load defaults
-M(We, "filters", Go);
-let fi = We;
+S(qe, "moduleName", "filter"), //load defaults
+S(qe, "filters", Go);
+let fi = qe;
 function jo(l, e, t) {
   return this.emptyToSpace(this.sanitizeHTML(l.getValue()));
 }
@@ -4184,21 +4184,21 @@ function qo(l, e, t) {
   return l.getElement().style.whiteSpace = "pre-wrap", this.emptyToSpace(this.sanitizeHTML(l.getValue()));
 }
 function Ko(l, e, t) {
-  var i = parseFloat(l.getValue()), s = "", o, n, r, a, h, d = e.decimal || ".", u = e.thousand || ",", c = e.negativeSign || "-", m = e.symbol || "", b = !!e.symbolAfter, E = typeof e.precision < "u" ? e.precision : 2;
+  var i = parseFloat(l.getValue()), s = "", o, n, a, r, h, d = e.decimal || ".", u = e.thousand || ",", c = e.negativeSign || "-", g = e.symbol || "", b = !!e.symbolAfter, E = typeof e.precision < "u" ? e.precision : 2;
   if (isNaN(i))
     return this.emptyToSpace(this.sanitizeHTML(l.getValue()));
-  if (i < 0 && (i = Math.abs(i), s = c), o = E !== !1 ? i.toFixed(E) : i, o = String(o).split("."), n = o[0], r = o.length > 1 ? d + o[1] : "", e.thousand !== !1)
-    for (a = /(\d+)(\d{3})/; a.test(n); )
-      n = n.replace(a, "$1" + u + "$2");
-  return h = n + r, s === !0 ? (h = "(" + h + ")", b ? h + m : m + h) : b ? s + h + m : s + m + h;
+  if (i < 0 && (i = Math.abs(i), s = c), o = E !== !1 ? i.toFixed(E) : i, o = String(o).split("."), n = o[0], a = o.length > 1 ? d + o[1] : "", e.thousand !== !1)
+    for (r = /(\d+)(\d{3})/; r.test(n); )
+      n = n.replace(r, "$1" + u + "$2");
+  return h = n + a, s === !0 ? (h = "(" + h + ")", b ? h + g : g + h) : b ? s + h + g : s + g + h;
 }
 function Xo(l, e, t) {
-  var i = l.getValue(), s = e.urlPrefix || "", o = e.download, n = i, r = document.createElement("a"), a;
+  var i = l.getValue(), s = e.urlPrefix || "", o = e.download, n = i, a = document.createElement("a"), r;
   function h(d, u) {
-    var c = d.shift(), m = u[c];
-    return d.length && typeof m == "object" ? h(d, m) : m;
+    var c = d.shift(), g = u[c];
+    return d.length && typeof g == "object" ? h(d, g) : g;
   }
-  if (e.labelField && (a = l.getData(), n = h(e.labelField.split(this.table.options.nestedFieldSeparator), a)), e.label)
+  if (e.labelField && (r = l.getData(), n = h(e.labelField.split(this.table.options.nestedFieldSeparator), r)), e.label)
     switch (typeof e.label) {
       case "string":
         n = e.label;
@@ -4208,7 +4208,7 @@ function Xo(l, e, t) {
         break;
     }
   if (n) {
-    if (e.urlField && (a = l.getData(), i = Y.retrieveNestedData(this.table.options.nestedFieldSeparator, e.urlField, a)), e.url)
+    if (e.urlField && (r = l.getData(), i = Y.retrieveNestedData(this.table.options.nestedFieldSeparator, e.urlField, r)), e.url)
       switch (typeof e.url) {
         case "string":
           i = e.url;
@@ -4217,7 +4217,7 @@ function Xo(l, e, t) {
           i = e.url(l);
           break;
       }
-    return r.setAttribute("href", s + i), e.target && r.setAttribute("target", e.target), e.download && (typeof o == "function" ? o = o(l) : o = o === !0 ? "" : o, r.setAttribute("download", o)), r.innerHTML = this.emptyToSpace(this.sanitizeHTML(n)), r;
+    return a.setAttribute("href", s + i), e.target && a.setAttribute("target", e.target), e.download && (typeof o == "function" ? o = o(l) : o = o === !0 ? "" : o, a.setAttribute("download", o)), a.innerHTML = this.emptyToSpace(this.sanitizeHTML(n)), a;
   } else
     return "&nbsp;";
 }
@@ -4244,22 +4244,22 @@ function Jo(l, e, t) {
   }), i;
 }
 function Qo(l, e, t) {
-  var i = l.getValue(), s = l.getElement(), o = e.allowEmpty, n = e.allowTruthy, r = Object.keys(e).includes("trueValue"), a = typeof e.tickElement < "u" ? e.tickElement : '<svg enable-background="new 0 0 24 24" height="14" width="14" viewBox="0 0 24 24" xml:space="preserve" ><path fill="#2DC214" clip-rule="evenodd" d="M21.652,3.211c-0.293-0.295-0.77-0.295-1.061,0L9.41,14.34  c-0.293,0.297-0.771,0.297-1.062,0L3.449,9.351C3.304,9.203,3.114,9.13,2.923,9.129C2.73,9.128,2.534,9.201,2.387,9.351  l-2.165,1.946C0.078,11.445,0,11.63,0,11.823c0,0.194,0.078,0.397,0.223,0.544l4.94,5.184c0.292,0.296,0.771,0.776,1.062,1.07  l2.124,2.141c0.292,0.293,0.769,0.293,1.062,0l14.366-14.34c0.293-0.294,0.293-0.777,0-1.071L21.652,3.211z" fill-rule="evenodd"/></svg>', h = typeof e.crossElement < "u" ? e.crossElement : '<svg enable-background="new 0 0 24 24" height="14" width="14"  viewBox="0 0 24 24" xml:space="preserve" ><path fill="#CE1515" d="M22.245,4.015c0.313,0.313,0.313,0.826,0,1.139l-6.276,6.27c-0.313,0.312-0.313,0.826,0,1.14l6.273,6.272  c0.313,0.313,0.313,0.826,0,1.14l-2.285,2.277c-0.314,0.312-0.828,0.312-1.142,0l-6.271-6.271c-0.313-0.313-0.828-0.313-1.141,0  l-6.276,6.267c-0.313,0.313-0.828,0.313-1.141,0l-2.282-2.28c-0.313-0.313-0.313-0.826,0-1.14l6.278-6.269  c0.313-0.312,0.313-0.826,0-1.14L1.709,5.147c-0.314-0.313-0.314-0.827,0-1.14l2.284-2.278C4.308,1.417,4.821,1.417,5.135,1.73  L11.405,8c0.314,0.314,0.828,0.314,1.141,0.001l6.276-6.267c0.312-0.312,0.826-0.312,1.141,0L22.245,4.015z"/></svg>';
-  return r && i === e.trueValue || !r && (n && i || i === !0 || i === "true" || i === "True" || i === 1 || i === "1") ? (s.setAttribute("aria-checked", !0), a || "") : o && (i === "null" || i === "" || i === null || typeof i > "u") ? (s.setAttribute("aria-checked", "mixed"), "") : (s.setAttribute("aria-checked", !1), h || "");
+  var i = l.getValue(), s = l.getElement(), o = e.allowEmpty, n = e.allowTruthy, a = Object.keys(e).includes("trueValue"), r = typeof e.tickElement < "u" ? e.tickElement : '<svg enable-background="new 0 0 24 24" height="14" width="14" viewBox="0 0 24 24" xml:space="preserve" ><path fill="#2DC214" clip-rule="evenodd" d="M21.652,3.211c-0.293-0.295-0.77-0.295-1.061,0L9.41,14.34  c-0.293,0.297-0.771,0.297-1.062,0L3.449,9.351C3.304,9.203,3.114,9.13,2.923,9.129C2.73,9.128,2.534,9.201,2.387,9.351  l-2.165,1.946C0.078,11.445,0,11.63,0,11.823c0,0.194,0.078,0.397,0.223,0.544l4.94,5.184c0.292,0.296,0.771,0.776,1.062,1.07  l2.124,2.141c0.292,0.293,0.769,0.293,1.062,0l14.366-14.34c0.293-0.294,0.293-0.777,0-1.071L21.652,3.211z" fill-rule="evenodd"/></svg>', h = typeof e.crossElement < "u" ? e.crossElement : '<svg enable-background="new 0 0 24 24" height="14" width="14"  viewBox="0 0 24 24" xml:space="preserve" ><path fill="#CE1515" d="M22.245,4.015c0.313,0.313,0.313,0.826,0,1.139l-6.276,6.27c-0.313,0.312-0.313,0.826,0,1.14l6.273,6.272  c0.313,0.313,0.313,0.826,0,1.14l-2.285,2.277c-0.314,0.312-0.828,0.312-1.142,0l-6.271-6.271c-0.313-0.313-0.828-0.313-1.141,0  l-6.276,6.267c-0.313,0.313-0.828,0.313-1.141,0l-2.282-2.28c-0.313-0.313-0.313-0.826,0-1.14l6.278-6.269  c0.313-0.312,0.313-0.826,0-1.14L1.709,5.147c-0.314-0.313-0.314-0.827,0-1.14l2.284-2.278C4.308,1.417,4.821,1.417,5.135,1.73  L11.405,8c0.314,0.314,0.828,0.314,1.141,0.001l6.276-6.267c0.312-0.312,0.826-0.312,1.141,0L22.245,4.015z"/></svg>';
+  return a && i === e.trueValue || !a && (n && i || i === !0 || i === "true" || i === "True" || i === 1 || i === "1") ? (s.setAttribute("aria-checked", !0), r || "") : o && (i === "null" || i === "" || i === null || typeof i > "u") ? (s.setAttribute("aria-checked", "mixed"), "") : (s.setAttribute("aria-checked", !1), h || "");
 }
 function Yo(l, e, t) {
-  var i = this.table.dependencyRegistry.lookup(["luxon", "DateTime"], "DateTime"), s = e.inputFormat || "yyyy-MM-dd HH:mm:ss", o = e.outputFormat || "dd/MM/yyyy HH:mm:ss", n = typeof e.invalidPlaceholder < "u" ? e.invalidPlaceholder : "", r = l.getValue();
+  var i = this.table.dependencyRegistry.lookup(["luxon", "DateTime"], "DateTime"), s = e.inputFormat || "yyyy-MM-dd HH:mm:ss", o = e.outputFormat || "dd/MM/yyyy HH:mm:ss", n = typeof e.invalidPlaceholder < "u" ? e.invalidPlaceholder : "", a = l.getValue();
   if (typeof i < "u") {
-    var a;
-    return i.isDateTime(r) ? a = r : s === "iso" ? a = i.fromISO(String(r)) : a = i.fromFormat(String(r), s), a.isValid ? (e.timezone && (a = a.setZone(e.timezone)), a.toFormat(o)) : n === !0 || !r ? r : typeof n == "function" ? n(r) : n;
+    var r;
+    return i.isDateTime(a) ? r = a : s === "iso" ? r = i.fromISO(String(a)) : r = i.fromFormat(String(a), s), r.isValid ? (e.timezone && (r = r.setZone(e.timezone)), r.toFormat(o)) : n === !0 || !a ? a : typeof n == "function" ? n(a) : n;
   } else
     console.error("Format Error - 'datetime' formatter is dependant on luxon.js");
 }
 function Zo(l, e, t) {
-  var i = this.table.dependencyRegistry.lookup(["luxon", "DateTime"], "DateTime"), s = e.inputFormat || "yyyy-MM-dd HH:mm:ss", o = typeof e.invalidPlaceholder < "u" ? e.invalidPlaceholder : "", n = typeof e.suffix < "u" ? e.suffix : !1, r = typeof e.unit < "u" ? e.unit : "days", a = typeof e.humanize < "u" ? e.humanize : !1, h = typeof e.date < "u" ? e.date : i.now(), d = l.getValue();
+  var i = this.table.dependencyRegistry.lookup(["luxon", "DateTime"], "DateTime"), s = e.inputFormat || "yyyy-MM-dd HH:mm:ss", o = typeof e.invalidPlaceholder < "u" ? e.invalidPlaceholder : "", n = typeof e.suffix < "u" ? e.suffix : !1, a = typeof e.unit < "u" ? e.unit : "days", r = typeof e.humanize < "u" ? e.humanize : !1, h = typeof e.date < "u" ? e.date : i.now(), d = l.getValue();
   if (typeof i < "u") {
     var u;
-    return i.isDateTime(d) ? u = d : s === "iso" ? u = i.fromISO(String(d)) : u = i.fromFormat(String(d), s), u.isValid ? a ? u.diff(h, r).toHuman() + (n ? " " + n : "") : parseInt(u.diff(h, r)[r]) + (n ? " " + n : "") : o === !0 ? d : typeof o == "function" ? o(d) : o;
+    return i.isDateTime(d) ? u = d : s === "iso" ? u = i.fromISO(String(d)) : u = i.fromFormat(String(d), s), u.isValid ? r ? u.diff(h, a).toHuman() + (n ? " " + n : "") : parseInt(u.diff(h, a)[a]) + (n ? " " + n : "") : o === !0 ? d : typeof o == "function" ? o(d) : o;
   } else
     console.error("Format Error - 'datetimediff' formatter is dependant on luxon.js");
 }
@@ -4268,37 +4268,37 @@ function en(l, e, t) {
   return typeof e[i] > "u" ? (console.warn("Missing display value for " + i), i) : e[i];
 }
 function tn(l, e, t) {
-  var i = l.getValue(), s = l.getElement(), o = e && e.stars ? e.stars : 5, n = document.createElement("span"), r = document.createElementNS("http://www.w3.org/2000/svg", "svg"), a = '<polygon fill="#FFEA00" stroke="#C1AB60" stroke-width="37.6152" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="259.216,29.942 330.27,173.919 489.16,197.007 374.185,309.08 401.33,467.31 259.216,392.612 117.104,467.31 144.25,309.08 29.274,197.007 188.165,173.919 "/>', h = '<polygon fill="#D2D2D2" stroke="#686868" stroke-width="37.6152" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="259.216,29.942 330.27,173.919 489.16,197.007 374.185,309.08 401.33,467.31 259.216,392.612 117.104,467.31 144.25,309.08 29.274,197.007 188.165,173.919 "/>';
-  n.style.verticalAlign = "middle", r.setAttribute("width", "14"), r.setAttribute("height", "14"), r.setAttribute("viewBox", "0 0 512 512"), r.setAttribute("xml:space", "preserve"), r.style.padding = "0 1px", i = i && !isNaN(i) ? parseInt(i) : 0, i = Math.max(0, Math.min(i, o));
+  var i = l.getValue(), s = l.getElement(), o = e && e.stars ? e.stars : 5, n = document.createElement("span"), a = document.createElementNS("http://www.w3.org/2000/svg", "svg"), r = '<polygon fill="#FFEA00" stroke="#C1AB60" stroke-width="37.6152" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="259.216,29.942 330.27,173.919 489.16,197.007 374.185,309.08 401.33,467.31 259.216,392.612 117.104,467.31 144.25,309.08 29.274,197.007 188.165,173.919 "/>', h = '<polygon fill="#D2D2D2" stroke="#686868" stroke-width="37.6152" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="259.216,29.942 330.27,173.919 489.16,197.007 374.185,309.08 401.33,467.31 259.216,392.612 117.104,467.31 144.25,309.08 29.274,197.007 188.165,173.919 "/>';
+  n.style.verticalAlign = "middle", a.setAttribute("width", "14"), a.setAttribute("height", "14"), a.setAttribute("viewBox", "0 0 512 512"), a.setAttribute("xml:space", "preserve"), a.style.padding = "0 1px", i = i && !isNaN(i) ? parseInt(i) : 0, i = Math.max(0, Math.min(i, o));
   for (var d = 1; d <= o; d++) {
-    var u = r.cloneNode(!0);
-    u.innerHTML = d <= i ? a : h, n.appendChild(u);
+    var u = a.cloneNode(!0);
+    u.innerHTML = d <= i ? r : h, n.appendChild(u);
   }
   return s.style.whiteSpace = "nowrap", s.style.overflow = "hidden", s.style.textOverflow = "ellipsis", s.setAttribute("aria-label", i), n;
 }
 function sn(l, e, t) {
-  var i = this.sanitizeHTML(l.getValue()) || 0, s = document.createElement("span"), o = e && e.max ? e.max : 100, n = e && e.min ? e.min : 0, r = e && typeof e.color < "u" ? e.color : ["red", "orange", "green"], a = "#666666", h, d;
+  var i = this.sanitizeHTML(l.getValue()) || 0, s = document.createElement("span"), o = e && e.max ? e.max : 100, n = e && e.min ? e.min : 0, a = e && typeof e.color < "u" ? e.color : ["red", "orange", "green"], r = "#666666", h, d;
   if (!(isNaN(i) || typeof l.getValue() > "u")) {
-    switch (s.classList.add("tabulator-traffic-light"), d = parseFloat(i) <= o ? parseFloat(i) : o, d = parseFloat(d) >= n ? parseFloat(d) : n, h = (o - n) / 100, d = Math.round((d - n) / h), typeof r) {
+    switch (s.classList.add("tabulator-traffic-light"), d = parseFloat(i) <= o ? parseFloat(i) : o, d = parseFloat(d) >= n ? parseFloat(d) : n, h = (o - n) / 100, d = Math.round((d - n) / h), typeof a) {
       case "string":
-        a = r;
+        r = a;
         break;
       case "function":
-        a = r(i);
+        r = a(i);
         break;
       case "object":
-        if (Array.isArray(r)) {
-          var u = 100 / r.length, c = Math.floor(d / u);
-          c = Math.min(c, r.length - 1), c = Math.max(c, 0), a = r[c];
+        if (Array.isArray(a)) {
+          var u = 100 / a.length, c = Math.floor(d / u);
+          c = Math.min(c, a.length - 1), c = Math.max(c, 0), r = a[c];
           break;
         }
     }
-    return s.style.backgroundColor = a, s;
+    return s.style.backgroundColor = r, s;
   }
 }
 function on(l, e = {}, t) {
-  var i = this.sanitizeHTML(l.getValue()) || 0, s = l.getElement(), o = e.max ? e.max : 100, n = e.min ? e.min : 0, r = e.legendAlign ? e.legendAlign : "center", a, h, d, u, c;
-  switch (h = parseFloat(i) <= o ? parseFloat(i) : o, h = parseFloat(h) >= n ? parseFloat(h) : n, a = (o - n) / 100, h = Math.round((h - n) / a), typeof e.color) {
+  var i = this.sanitizeHTML(l.getValue()) || 0, s = l.getElement(), o = e.max ? e.max : 100, n = e.min ? e.min : 0, a = e.legendAlign ? e.legendAlign : "center", r, h, d, u, c;
+  switch (h = parseFloat(i) <= o ? parseFloat(i) : o, h = parseFloat(h) >= n ? parseFloat(h) : n, r = (o - n) / 100, h = Math.round((h - n) / r), typeof e.color) {
     case "string":
       d = e.color;
       break;
@@ -4344,35 +4344,35 @@ function on(l, e = {}, t) {
       c = "#000";
   }
   s.style.minWidth = "30px", s.style.position = "relative", s.setAttribute("aria-label", h);
-  var m = document.createElement("div");
-  m.style.display = "inline-block", m.style.width = h + "%", m.style.backgroundColor = d, m.style.height = "100%", m.setAttribute("data-max", o), m.setAttribute("data-min", n);
+  var g = document.createElement("div");
+  g.style.display = "inline-block", g.style.width = h + "%", g.style.backgroundColor = d, g.style.height = "100%", g.setAttribute("data-max", o), g.setAttribute("data-min", n);
   var b = document.createElement("div");
   if (b.style.position = "relative", b.style.width = "100%", b.style.height = "100%", u) {
     var E = document.createElement("div");
-    E.style.position = "absolute", E.style.top = 0, E.style.left = 0, E.style.textAlign = r, E.style.width = "100%", E.style.color = c, E.innerHTML = u;
+    E.style.position = "absolute", E.style.top = 0, E.style.left = 0, E.style.textAlign = a, E.style.width = "100%", E.style.color = c, E.innerHTML = u;
   }
   return t(function() {
     if (!(l instanceof es)) {
       var y = document.createElement("div");
       y.style.position = "absolute", y.style.top = "4px", y.style.bottom = "4px", y.style.left = "4px", y.style.right = "4px", s.appendChild(y), s = y;
     }
-    s.appendChild(b), b.appendChild(m), u && b.appendChild(E);
+    s.appendChild(b), b.appendChild(g), u && b.appendChild(E);
   }), "";
 }
 function nn(l, e, t) {
   return l.getElement().style.backgroundColor = this.sanitizeHTML(l.getValue()), "";
 }
-function rn(l, e, t) {
+function an(l, e, t) {
   return '<svg enable-background="new 0 0 24 24" height="14" width="14" viewBox="0 0 24 24" xml:space="preserve" ><path fill="#2DC214" clip-rule="evenodd" d="M21.652,3.211c-0.293-0.295-0.77-0.295-1.061,0L9.41,14.34  c-0.293,0.297-0.771,0.297-1.062,0L3.449,9.351C3.304,9.203,3.114,9.13,2.923,9.129C2.73,9.128,2.534,9.201,2.387,9.351  l-2.165,1.946C0.078,11.445,0,11.63,0,11.823c0,0.194,0.078,0.397,0.223,0.544l4.94,5.184c0.292,0.296,0.771,0.776,1.062,1.07  l2.124,2.141c0.292,0.293,0.769,0.293,1.062,0l14.366-14.34c0.293-0.294,0.293-0.777,0-1.071L21.652,3.211z" fill-rule="evenodd"/></svg>';
 }
-function an(l, e, t) {
+function rn(l, e, t) {
   return '<svg enable-background="new 0 0 24 24" height="14" width="14" viewBox="0 0 24 24" xml:space="preserve" ><path fill="#CE1515" d="M22.245,4.015c0.313,0.313,0.313,0.826,0,1.139l-6.276,6.27c-0.313,0.312-0.313,0.826,0,1.14l6.273,6.272  c0.313,0.313,0.313,0.826,0,1.14l-2.285,2.277c-0.314,0.312-0.828,0.312-1.142,0l-6.271-6.271c-0.313-0.313-0.828-0.313-1.141,0  l-6.276,6.267c-0.313,0.313-0.828,0.313-1.141,0l-2.282-2.28c-0.313-0.313-0.313-0.826,0-1.14l6.278-6.269  c0.313-0.312,0.313-0.826,0-1.14L1.709,5.147c-0.314-0.313-0.314-0.827,0-1.14l2.284-2.278C4.308,1.417,4.821,1.417,5.135,1.73  L11.405,8c0.314,0.314,0.828,0.314,1.141,0.001l6.276-6.267c0.312-0.312,0.826-0.312,1.141,0L22.245,4.015z"/></svg>';
 }
 function ln(l, e, t) {
-  var i = l.getValue(), s = e.size || 15, o = s + "px", n, r, a = e.hasOwnProperty("onValue") ? e.onValue : !0, h = e.hasOwnProperty("offValue") ? e.offValue : !1, d = e.onTruthy ? i : i === a;
+  var i = l.getValue(), s = e.size || 15, o = s + "px", n, a, r = e.hasOwnProperty("onValue") ? e.onValue : !0, h = e.hasOwnProperty("offValue") ? e.offValue : !1, d = e.onTruthy ? i : i === r;
   return n = document.createElement("div"), n.classList.add("tabulator-toggle"), d ? (n.classList.add("tabulator-toggle-on"), n.style.flexDirection = "row-reverse", e.onColor && (n.style.background = e.onColor)) : e.offColor && (n.style.background = e.offColor), n.style.width = 2.5 * s + "px", n.style.borderRadius = o, e.clickable && n.addEventListener("click", (u) => {
-    l.setValue(d ? h : a);
-  }), r = document.createElement("div"), r.classList.add("tabulator-toggle-switch"), r.style.height = o, r.style.width = o, r.style.borderRadius = o, n.appendChild(r), n;
+    l.setValue(d ? h : r);
+  }), a = document.createElement("div"), a.classList.add("tabulator-toggle-switch"), a.style.height = o, a.style.width = o, a.style.borderRadius = o, n.appendChild(a), n;
 }
 function hn(l, e, t) {
   var i = document.createElement("span"), s = l.getRow(), o = l.getTable();
@@ -4385,14 +4385,14 @@ function dn(l, e, t) {
 }
 function un(l, e, t) {
   var i, s, o;
-  function n(r) {
-    var a = r.getValue(), h = "plaintext";
-    switch (typeof a) {
+  function n(a) {
+    var r = a.getValue(), h = "plaintext";
+    switch (typeof r) {
       case "boolean":
         h = "tickCross";
         break;
       case "string":
-        a.includes(`
+        r.includes(`
 `) && (h = "textarea");
         break;
     }
@@ -4402,8 +4402,8 @@ function un(l, e, t) {
 }
 function cn(l, e, t) {
   var i = e.delimiter || ",", s = l.getValue(), o = this.table, n;
-  return e.valueMap && (typeof e.valueMap == "string" ? n = function(r) {
-    return r.map((a) => Y.retrieveNestedData(o.options.nestedFieldSeparator, e.valueMap, a));
+  return e.valueMap && (typeof e.valueMap == "string" ? n = function(a) {
+    return a.map((r) => Y.retrieveNestedData(o.options.nestedFieldSeparator, e.valueMap, r));
   } : n = e.valueMap), Array.isArray(s) ? (n && (s = n(s)), s.join(i)) : s;
 }
 function fn(l, e, t) {
@@ -4425,8 +4425,8 @@ var pn = {
   traffic: sn,
   progress: on,
   color: nn,
-  buttonTick: rn,
-  buttonCross: an,
+  buttonTick: an,
+  buttonCross: rn,
   toggle: ln,
   rownum: hn,
   handle: dn,
@@ -4434,7 +4434,7 @@ var pn = {
   array: cn,
   json: fn
 };
-const Qe = class Qe extends j {
+const it = class it extends G {
   constructor(e) {
     super(e), this.registerColumnOption("formatter"), this.registerColumnOption("formatterParams"), this.registerColumnOption("formatterPrint"), this.registerColumnOption("formatterPrintParams"), this.registerColumnOption("formatterClipboard"), this.registerColumnOption("formatterClipboardParams"), this.registerColumnOption("formatterHtmlOutput"), this.registerColumnOption("formatterHtmlOutputParams"), this.registerColumnOption("titleFormatter"), this.registerColumnOption("titleFormatterParams");
   }
@@ -4453,13 +4453,13 @@ const Qe = class Qe extends j {
     var t;
     switch (typeof e) {
       case "string":
-        Qe.formatters[e] ? t = Qe.formatters[e] : (console.warn("Formatter Error - No such formatter found: ", e), t = Qe.formatters.plaintext);
+        it.formatters[e] ? t = it.formatters[e] : (console.warn("Formatter Error - No such formatter found: ", e), t = it.formatters.plaintext);
         break;
       case "function":
         t = e;
         break;
       default:
-        t = Qe.formatters.plaintext;
+        t = it.formatters.plaintext;
         break;
     }
     return t;
@@ -4469,10 +4469,10 @@ const Qe = class Qe extends j {
   }
   //return a formatted value for a column header
   formatHeader(e, t, i) {
-    var s, o, n, r;
-    return e.definition.titleFormatter ? (s = this.lookupFormatter(e.definition.titleFormatter), n = (a) => {
-      e.titleFormatterRendered = a;
-    }, r = {
+    var s, o, n, a;
+    return e.definition.titleFormatter ? (s = this.lookupFormatter(e.definition.titleFormatter), n = (r) => {
+      e.titleFormatterRendered = r;
+    }, a = {
       getValue: function() {
         return t;
       },
@@ -4486,7 +4486,7 @@ const Qe = class Qe extends j {
         return e.getComponent();
       },
       getTable: () => this.table
-    }, o = e.definition.titleFormatterParams || {}, o = typeof o == "function" ? o() : o, s.call(this, r, o, n)) : t;
+    }, o = e.definition.titleFormatterParams || {}, o = typeof o == "function" ? o() : o, s.call(this, a, o, n)) : t;
   }
   //return a formatted value for a cell
   formatValue(e) {
@@ -4528,10 +4528,10 @@ const Qe = class Qe extends j {
     return e === null || typeof e > "u" || e === "" ? "&nbsp;" : e;
   }
 };
-M(Qe, "moduleName", "format"), //load defaults
-M(Qe, "formatters", pn);
-let pi = Qe;
-class os extends j {
+S(it, "moduleName", "format"), //load defaults
+S(it, "formatters", pn);
+let pi = it;
+class os extends G {
   constructor(e) {
     super(e), this.leftColumns = [], this.rightColumns = [], this.initializationMode = "left", this.active = !1, this.blocked = !0, this.registerColumnOption("frozen");
   }
@@ -4578,16 +4578,16 @@ class os extends j {
     var t = [], i = 0, s = 0;
     this.leftColumns.forEach((o, n) => {
       if (o.modules.frozen.marginValue = i, o.modules.frozen.margin = o.modules.frozen.marginValue + "px", o.visible && (i += o.getWidth()), n == this.leftColumns.length - 1 ? o.modules.frozen.edge = !0 : o.modules.frozen.edge = !1, o.parent.isGroup) {
-        var r = this.getColGroupParentElement(o);
-        t.includes(r) || (this.layoutElement(r, o), t.push(r)), r.classList.toggle("tabulator-frozen-left", o.modules.frozen.edge && o.modules.frozen.position === "left"), r.classList.toggle("tabulator-frozen-right", o.modules.frozen.edge && o.modules.frozen.position === "right");
+        var a = this.getColGroupParentElement(o);
+        t.includes(a) || (this.layoutElement(a, o), t.push(a)), a.classList.toggle("tabulator-frozen-left", o.modules.frozen.edge && o.modules.frozen.position === "left"), a.classList.toggle("tabulator-frozen-right", o.modules.frozen.edge && o.modules.frozen.position === "right");
       } else
         this.layoutElement(o.getElement(), o);
-      e && o.cells.forEach((a) => {
-        this.layoutElement(a.getElement(!0), o);
+      e && o.cells.forEach((r) => {
+        this.layoutElement(r.getElement(!0), o);
       });
     }), this.rightColumns.forEach((o, n) => {
-      o.modules.frozen.marginValue = s, o.modules.frozen.margin = o.modules.frozen.marginValue + "px", o.visible && (s += o.getWidth()), n == this.rightColumns.length - 1 ? o.modules.frozen.edge = !0 : o.modules.frozen.edge = !1, o.parent.isGroup ? this.layoutElement(this.getColGroupParentElement(o), o) : this.layoutElement(o.getElement(), o), e && o.cells.forEach((r) => {
-        this.layoutElement(r.getElement(!0), o);
+      o.modules.frozen.marginValue = s, o.modules.frozen.margin = o.modules.frozen.marginValue + "px", o.visible && (s += o.getWidth()), n == this.rightColumns.length - 1 ? o.modules.frozen.edge = !0 : o.modules.frozen.edge = !1, o.parent.isGroup ? this.layoutElement(this.getColGroupParentElement(o), o) : this.layoutElement(o.getElement(), o), e && o.cells.forEach((a) => {
+        this.layoutElement(a.getElement(!0), o);
       });
     });
   }
@@ -4632,8 +4632,8 @@ class os extends j {
     return i;
   }
 }
-M(os, "moduleName", "frozenColumns");
-class ns extends j {
+S(os, "moduleName", "frozenColumns");
+class ns extends G {
   constructor(e) {
     super(e), this.topElement = document.createElement("div"), this.rows = [], this.registerComponentFunction("row", "freeze", this.freezeRow.bind(this)), this.registerComponentFunction("row", "unfreeze", this.unfreezeRow.bind(this)), this.registerComponentFunction("row", "isFrozen", this.isRowFrozen.bind(this)), this.registerTableOption("frozenRowsField", "id"), this.registerTableOption("frozenRows", !1);
   }
@@ -4692,7 +4692,7 @@ class ns extends j {
     });
   }
 }
-M(ns, "moduleName", "frozenRows");
+S(ns, "moduleName", "frozenRows");
 class mn {
   constructor(e) {
     return this._group = e, this.type = "GroupComponent", new Proxy(this, {
@@ -4741,9 +4741,9 @@ class mn {
     return this._group.groupManager.table;
   }
 }
-class ct {
-  constructor(e, t, i, s, o, n, r) {
-    this.groupManager = e, this.parent = t, this.key = s, this.level = i, this.field = o, this.hasSubGroups = i < e.groupIDLookups.length - 1, this.addRow = this.hasSubGroups ? this._addRowToGroup : this._addRow, this.type = "group", this.old = r, this.rows = [], this.groups = [], this.groupList = [], this.generator = n, this.element = !1, this.elementContents = !1, this.height = 0, this.outerHeight = 0, this.initialized = !1, this.calcs = {}, this.initialized = !1, this.modules = {}, this.arrowElement = !1, this.visible = r ? r.visible : typeof e.startOpen[i] < "u" ? e.startOpen[i] : e.startOpen[0], this.component = null, this.createElements(), this.addBindings(), this.createValueGroups();
+class pt {
+  constructor(e, t, i, s, o, n, a) {
+    this.groupManager = e, this.parent = t, this.key = s, this.level = i, this.field = o, this.hasSubGroups = i < e.groupIDLookups.length - 1, this.addRow = this.hasSubGroups ? this._addRowToGroup : this._addRow, this.type = "group", this.old = a, this.rows = [], this.groups = [], this.groupList = [], this.generator = n, this.element = !1, this.elementContents = !1, this.height = 0, this.outerHeight = 0, this.initialized = !1, this.calcs = {}, this.initialized = !1, this.modules = {}, this.arrowElement = !1, this.visible = a ? a.visible : typeof e.startOpen[i] < "u" ? e.startOpen[i] : e.startOpen[0], this.component = null, this.createElements(), this.addBindings(), this.createValueGroups();
   }
   wipe(e) {
     e || (this.groupList.length ? this.groupList.forEach(function(t) {
@@ -4771,7 +4771,7 @@ class ct {
     }));
   }
   _createGroup(e, t) {
-    var i = t + "_" + e, s = new ct(this.groupManager, this, t, e, this.groupManager.groupIDLookups[t].field, this.groupManager.headerGenerator[t] || this.groupManager.headerGenerator[0], this.old ? this.old.groups[i] : !1);
+    var i = t + "_" + e, s = new pt(this.groupManager, this, t, e, this.groupManager.groupIDLookups[t].field, this.groupManager.headerGenerator[t] || this.groupManager.headerGenerator[0], this.old ? this.old.groups[i] : !1);
     this.groups[i] = s, this.groupList.push(s);
   }
   _addRowToGroup(e) {
@@ -4948,7 +4948,7 @@ class ct {
     return this.component || (this.component = new mn(this)), this.component;
   }
 }
-class rs extends j {
+class as extends G {
   constructor(e) {
     super(e), this.groupIDLookups = !1, this.startOpen = [function() {
       return !1;
@@ -4974,7 +4974,7 @@ class rs extends j {
       }], this.startOpen = [function() {
         return !1;
       }], this.langBind("groups|item", (o, n) => {
-        this.headerGenerator[0] = (r, a, h) => (typeof r > "u" ? "" : r) + "<span>(" + a + " " + (a === 1 ? o : n.groups.items) + ")</span>";
+        this.headerGenerator[0] = (a, r, h) => (typeof a > "u" ? "" : a) + "<span>(" + r + " " + (r === 1 ? o : n.groups.items) + ")</span>";
       }), this.groupIDLookups = [], e)
         this.table.modExists("columnCalcs") && this.table.options.columnCalcs != "table" && this.table.options.columnCalcs != "both" && this.table.modules.columnCalcs.removeCalcs();
       else if (this.table.modExists("columnCalcs") && this.table.options.columnCalcs != "group") {
@@ -4984,14 +4984,14 @@ class rs extends j {
         });
       }
       Array.isArray(e) || (e = [e]), e.forEach((o, n) => {
-        var r, a;
-        typeof o == "function" ? r = o : (a = this.table.columnManager.getColumnByField(o), a ? r = function(h) {
-          return a.getFieldValue(h);
-        } : r = function(h) {
+        var a, r;
+        typeof o == "function" ? a = o : (r = this.table.columnManager.getColumnByField(o), r ? a = function(h) {
+          return r.getFieldValue(h);
+        } : a = function(h) {
           return h[o];
         }), this.groupIDLookups.push({
           field: typeof o == "function" ? !1 : o,
-          func: r,
+          func: a,
           values: this.allowedValues ? this.allowedValues[n] : !1
         });
       }), t && (Array.isArray(t) || (t = [t]), t.forEach((o) => {
@@ -5056,8 +5056,8 @@ class rs extends j {
   ///////////////////////////////////
   rowMoving(e, t, i) {
     if (this.table.options.groupBy) {
-      !i && t instanceof ct && (t = this.table.rowManager.prevDisplayRow(e) || t);
-      var s = t instanceof ct ? t : t.modules.group, o = e instanceof ct ? e : e.modules.group;
+      !i && t instanceof pt && (t = this.table.rowManager.prevDisplayRow(e) || t);
+      var s = t instanceof pt ? t : t.modules.group, o = e instanceof pt ? e : e.modules.group;
       s === o ? this.table.rowManager.moveRowInArray(s.rows, e, t, i) : (o && o.removeRow(e), s.insertRow(e, t, i));
     }
   }
@@ -5129,7 +5129,7 @@ class rs extends j {
   }
   createGroup(e, t, i) {
     var s = t + "_" + e, o;
-    i = i || [], o = new ct(this, !1, t, e, this.groupIDLookups[0].field, this.headerGenerator[0], i[s]), this.groups[s] = o, this.groupList.push(o);
+    i = i || [], o = new pt(this, !1, t, e, this.groupIDLookups[0].field, this.headerGenerator[0], i[s]), this.groups[s] = o, this.groupList.push(o);
   }
   assignRowToExistingGroup(e, t) {
     var i = this.groupIDLookups[0].func(e.getData()), s = "0_" + i;
@@ -5142,7 +5142,7 @@ class rs extends j {
   reassignRowToGroup(e) {
     if (e.type === "row") {
       var t = e.modules.group, i = t.getPath(), s = this.getExpectedPath(e), o;
-      o = i.length == s.length && i.every((n, r) => n === s[r]), o || (t.removeRow(e), this.assignRowToGroup(e, this.groups), this.refreshData(!0));
+      o = i.length == s.length && i.every((n, a) => n === s[a]), o || (t.removeRow(e), this.assignRowToGroup(e, this.groups), this.refreshData(!0));
     }
   }
   getExpectedPath(e) {
@@ -5173,7 +5173,7 @@ class rs extends j {
     }), t ? e.style.minWidth = this.table.columnManager.getWidth() + "px" : e.style.minWidth = "";
   }
 }
-M(rs, "moduleName", "groupRows");
+S(as, "moduleName", "groupRows");
 var gn = {
   cellEdit: function(l) {
     l.component.setValueProcessData(l.data.oldValue), l.component.cellRendered();
@@ -5221,7 +5221,7 @@ var gn = {
     actions: wn
   }
 };
-const Ye = class Ye extends j {
+const st = class st extends G {
   constructor(e) {
     super(e), this.history = [], this.index = -1, this.registerTableOption("history", !1);
   }
@@ -5266,7 +5266,7 @@ const Ye = class Ye extends j {
   undo() {
     if (this.index > -1) {
       let e = this.history[this.index];
-      return Ye.undoers[e.type].call(this, e), this.index--, this.dispatchExternal("historyUndo", e.type, e.component.getComponent(), e.data), !0;
+      return st.undoers[e.type].call(this, e), this.index--, this.dispatchExternal("historyUndo", e.type, e.component.getComponent(), e.data), !0;
     } else
       return console.warn(this.options("history") ? "History Undo Error - No more history to undo" : "History module not enabled"), !1;
   }
@@ -5274,26 +5274,26 @@ const Ye = class Ye extends j {
     if (this.history.length - 1 > this.index) {
       this.index++;
       let e = this.history[this.index];
-      return Ye.redoers[e.type].call(this, e), this.dispatchExternal("historyRedo", e.type, e.component.getComponent(), e.data), !0;
+      return st.redoers[e.type].call(this, e), this.dispatchExternal("historyRedo", e.type, e.component.getComponent(), e.data), !0;
     } else
       return console.warn(this.options("history") ? "History Redo Error - No more history to redo" : "History module not enabled"), !1;
   }
   //rebind rows to new element after deletion
   _rebindRow(e, t) {
     this.history.forEach(function(i) {
-      if (i.component instanceof pe)
+      if (i.component instanceof ve)
         i.component === e && (i.component = t);
-      else if (i.component instanceof Pt && i.component.row === e) {
+      else if (i.component instanceof zt && i.component.row === e) {
         var s = i.component.column.getField();
         s && (i.component = t.getCell(s));
       }
     });
   }
 };
-M(Ye, "moduleName", "history"), M(Ye, "moduleExtensions", Cn), //load defaults
-M(Ye, "undoers", gn), M(Ye, "redoers", bn);
-let mi = Ye;
-class as extends j {
+S(st, "moduleName", "history"), S(st, "moduleExtensions", Cn), //load defaults
+S(st, "undoers", gn), S(st, "redoers", bn);
+let mi = st;
+class rs extends G {
   constructor(e) {
     super(e), this.fieldIndex = [], this.hasIndex = !1;
   }
@@ -5307,10 +5307,10 @@ class as extends j {
     var e = this.table.originalElement, t = this.table.options, i = e.getElementsByTagName("th"), s = e.getElementsByTagName("tbody")[0], o = [];
     this.hasIndex = !1, this.dispatchExternal("htmlImporting"), s = s ? s.getElementsByTagName("tr") : [], this._extractOptions(e, t), i.length ? this._extractHeaders(i, s) : this._generateBlankHeaders(i, s);
     for (var n = 0; n < s.length; n++) {
-      var r = s[n], a = r.getElementsByTagName("td"), h = {};
+      var a = s[n], r = a.getElementsByTagName("td"), h = {};
       this.hasIndex || (h[t.index] = n);
-      for (var d = 0; d < a.length; d++) {
-        var u = a[d];
+      for (var d = 0; d < r.length; d++) {
+        var u = r[d];
         typeof this.fieldIndex[d] < "u" && (h[this.fieldIndex[d]] = u.innerHTML);
       }
       o.push(h);
@@ -5323,9 +5323,9 @@ class as extends j {
     o.forEach((d) => {
       n[d.toLowerCase()] = d;
     });
-    for (var r in s) {
-      var a = s[r], h;
-      a && typeof a == "object" && a.name && a.name.indexOf("tabulator-") === 0 && (h = a.name.replace("tabulator-", ""), typeof n[h] < "u" && (t[n[h]] = this._attribValue(a.value)));
+    for (var a in s) {
+      var r = s[a], h;
+      r && typeof r == "object" && r.name && r.name.indexOf("tabulator-") === 0 && (h = r.name.replace("tabulator-", ""), typeof n[h] < "u" && (t[n[h]] = this._attribValue(r.value)));
     }
   }
   //get value of attribute
@@ -5340,8 +5340,8 @@ class as extends j {
   //extract column from headers
   _extractHeaders(e, t) {
     for (var i = 0; i < e.length; i++) {
-      var s = e[i], o = !1, n = this._findCol(s.textContent), r;
-      n ? o = !0 : n = { title: s.textContent.trim() }, n.field || (n.field = s.textContent.trim().toLowerCase().replaceAll(" ", "_")), r = s.getAttribute("width"), r && !n.width && (n.width = r), this._extractOptions(s, n, this.table.columnManager.optionsList.registeredDefaults), this.fieldIndex[i] = n.field, n.field == this.table.options.index && (this.hasIndex = !0), o || this.table.options.columns.push(n);
+      var s = e[i], o = !1, n = this._findCol(s.textContent), a;
+      n ? o = !0 : n = { title: s.textContent.trim() }, n.field || (n.field = s.textContent.trim().toLowerCase().replaceAll(" ", "_")), a = s.getAttribute("width"), a && !n.width && (n.width = a), this._extractOptions(s, n, this.table.columnManager.optionsList.registeredDefaults), this.fieldIndex[i] = n.field, n.field == this.table.options.index && (this.hasIndex = !0), o || this.table.options.columns.push(n);
     }
   }
   //generate blank headers
@@ -5354,12 +5354,12 @@ class as extends j {
     }
   }
 }
-M(as, "moduleName", "htmlTableImport");
+S(rs, "moduleName", "htmlTableImport");
 function yn(l) {
   var e = [], t = 0, i = 0, s = !1;
   for (let o = 0; o < l.length; o++) {
-    let n = l[o], r = l[o + 1];
-    if (e[t] || (e[t] = []), e[t][i] || (e[t][i] = ""), n == '"' && s && r == '"') {
+    let n = l[o], a = l[o + 1];
+    if (e[t] || (e[t] = []), e[t][i] || (e[t][i] = ""), n == '"' && s && a == '"') {
       e[t][i] += n, o++;
       continue;
     }
@@ -5371,7 +5371,7 @@ function yn(l) {
       i++;
       continue;
     }
-    if (n == "\r" && r == `
+    if (n == "\r" && a == `
 ` && !s) {
       i = 0, t++, o++;
       continue;
@@ -5405,7 +5405,7 @@ var kn = {
   array: Rn,
   xlsx: xn
 };
-const St = class St extends j {
+const Dt = class Dt extends G {
   constructor(e) {
     super(e), this.registerTableOption("importFormat"), this.registerTableOption("importReader", "text"), this.registerTableOption("importHeaderTransform"), this.registerTableOption("importValueTransform"), this.registerTableOption("importDataValidator"), this.registerTableOption("importFileValidator");
   }
@@ -5420,7 +5420,7 @@ const St = class St extends j {
   }
   lookupImporter(e) {
     var t;
-    return e || (e = this.table.options.importFormat), typeof e == "string" ? t = St.importers[e] : t = e, t || console.error("Import Error - Importer not found:", e), t;
+    return e || (e = this.table.options.importFormat), typeof e == "string" ? t = Dt.importers[e] : t = e, t || console.error("Import Error - Importer not found:", e), t;
   }
   importFromFile(e, t, i) {
     var s = this.lookupImporter(e);
@@ -5433,25 +5433,25 @@ const St = class St extends j {
     return new Promise((i, s) => {
       var o = document.createElement("input");
       o.type = "file", o.accept = e, o.addEventListener("change", (n) => {
-        var r = o.files[0], a = new FileReader(), h = this.validateFile(r);
+        var a = o.files[0], r = new FileReader(), h = this.validateFile(a);
         if (h === !0) {
           switch (this.dispatch("import-importing", o.files), this.dispatchExternal("importImporting", o.files), t || this.table.options.importReader) {
             case "buffer":
-              a.readAsArrayBuffer(r);
+              r.readAsArrayBuffer(a);
               break;
             case "binary":
-              a.readAsBinaryString(r);
+              r.readAsBinaryString(a);
               break;
             case "url":
-              a.readAsDataURL(r);
+              r.readAsDataURL(a);
               break;
             case "text":
             default:
-              a.readAsText(r);
+              r.readAsText(a);
           }
-          a.onload = (d) => {
-            i(a.result);
-          }, a.onerror = (d) => {
+          r.onload = (d) => {
+            i(r.result);
+          }, r.onerror = (d) => {
             console.warn("File Load Error - Unable to read file"), s(d);
           };
         } else
@@ -5500,8 +5500,8 @@ const St = class St extends j {
   structureArrayToObject(e) {
     var t = this.transformHeader(e.shift()), i = e.map((s) => {
       var o = {};
-      return s = this.transformData(s), t.forEach((n, r) => {
-        o[n] = s[r];
+      return s = this.transformData(s), t.forEach((n, a) => {
+        o[n] = s[a];
       }), o;
     });
     return i;
@@ -5510,9 +5510,9 @@ const St = class St extends j {
     var t = [], i = this.transformHeader(e[0]), s = this.table.getColumns();
     return s[0] && i[0] && s[0].getDefinition().title === i[0] && e.shift(), e.forEach((o) => {
       var n = {};
-      o = this.transformData(o), o.forEach((r, a) => {
-        var h = s[a];
-        h && (n[h.getField()] = r);
+      o = this.transformData(o), o.forEach((a, r) => {
+        var h = s[r];
+        h && (n[h.getField()] = a);
       }), t.push(n);
     }), t;
   }
@@ -5527,10 +5527,10 @@ const St = class St extends j {
     return this.dispatch("import-imported", e), this.dispatchExternal("importImported", e), this.table.dataLoader.clearAlert(), this.table.setData(e);
   }
 };
-M(St, "moduleName", "import"), //load defaults
-M(St, "importers", kn);
-let gi = St;
-class ls extends j {
+S(Dt, "moduleName", "import"), //load defaults
+S(Dt, "importers", kn);
+let gi = Dt;
+class ls extends G {
   constructor(e) {
     super(e), this.eventMap = {
       //row events
@@ -5677,10 +5677,10 @@ class ls extends j {
   }
   dispatchEvent(e, t, i) {
     var s = i.getComponent(), o;
-    this.columnSubscribers[e] && (i instanceof Pt ? o = i.column.definition[e] : i instanceof at && (o = i.definition[e]), o && o(t, s)), this.dispatchExternal(e, t, s);
+    this.columnSubscribers[e] && (i instanceof zt ? o = i.column.definition[e] : i instanceof ut && (o = i.definition[e]), o && o(t, s)), this.dispatchExternal(e, t, s);
   }
 }
-M(ls, "moduleName", "interaction");
+S(ls, "moduleName", "interaction");
 var Tn = {
   navPrev: "shift + 9",
   navNext: 9,
@@ -5692,7 +5692,7 @@ var Tn = {
   scrollPageDown: 34,
   scrollToStart: 36,
   scrollToEnd: 35
-}, Mn = {
+}, Sn = {
   keyBlock: function(l) {
     l.stopPropagation(), l.preventDefault();
   },
@@ -5731,17 +5731,17 @@ var Tn = {
     this.dispatch("keybinding-nav-down", l);
   }
 };
-const Ze = class Ze extends j {
+const ot = class ot extends G {
   constructor(e) {
     super(e), this.watchKeys = null, this.pressedKeys = null, this.keyupBinding = !1, this.keydownBinding = !1, this.registerTableOption("keybindings", {}), this.registerTableOption("tabEndNewRow", !1);
   }
   initialize() {
     var e = this.table.options.keybindings, t = {};
-    this.watchKeys = {}, this.pressedKeys = [], e !== !1 && (Object.assign(t, Ze.bindings), Object.assign(t, e), this.mapBindings(t), this.bindEvents()), this.subscribe("table-destroy", this.clearBindings.bind(this));
+    this.watchKeys = {}, this.pressedKeys = [], e !== !1 && (Object.assign(t, ot.bindings), Object.assign(t, e), this.mapBindings(t), this.bindEvents()), this.subscribe("table-destroy", this.clearBindings.bind(this));
   }
   mapBindings(e) {
     for (let t in e)
-      Ze.actions[t] ? e[t] && (typeof e[t] != "object" && (e[t] = [e[t]]), e[t].forEach((i) => {
+      ot.actions[t] ? e[t] && (typeof e[t] != "object" && (e[t] = [e[t]]), e[t].forEach((i) => {
         var s = Array.isArray(i) ? i : [i];
         s.forEach((o) => {
           this.mapBinding(t, o);
@@ -5750,7 +5750,7 @@ const Ze = class Ze extends j {
   }
   mapBinding(e, t) {
     var i = {
-      action: Ze.actions[e],
+      action: ot.actions[e],
       keys: [],
       ctrl: !1,
       shift: !1,
@@ -5798,10 +5798,10 @@ const Ze = class Ze extends j {
     }), i && t.action.call(this, e), !0) : !1;
   }
 };
-M(Ze, "moduleName", "keybindings"), //load defaults
-M(Ze, "bindings", Tn), M(Ze, "actions", Mn);
-let bi = Ze;
-class hs extends j {
+S(ot, "moduleName", "keybindings"), //load defaults
+S(ot, "bindings", Tn), S(ot, "actions", Sn);
+let bi = ot;
+class hs extends G {
   constructor(e) {
     super(e), this.menuContainer = null, this.nestedMenuBlock = !1, this.currentComponent = null, this.rootPopup = null, this.columnSubscribers = {}, this.registerTableOption("rowContextMenu", !1), this.registerTableOption("rowClickMenu", !1), this.registerTableOption("rowDblClickMenu", !1), this.registerTableOption("groupContextMenu", !1), this.registerTableOption("groupClickMenu", !1), this.registerTableOption("groupDblClickMenu", !1), this.registerColumnOption("headerContextMenu"), this.registerColumnOption("headerClickMenu"), this.registerColumnOption("headerDblClickMenu"), this.registerColumnOption("headerMenu"), this.registerColumnOption("headerMenuIcon"), this.registerColumnOption("contextMenu"), this.registerColumnOption("clickMenu"), this.registerColumnOption("dblClickMenu");
   }
@@ -5836,10 +5836,10 @@ class hs extends j {
     i._group ? i = i._group : i._row && (i = i._row), e = typeof e == "function" ? e.call(this.table, t, i.getComponent()) : e, this.loadMenu(t, i, e);
   }
   loadMenu(e, t, i, s, o) {
-    var n = !(e instanceof MouseEvent), r = document.createElement("div"), a;
-    if (r.classList.add("tabulator-menu"), n || e.preventDefault(), !(!i || !i.length)) {
+    var n = !(e instanceof MouseEvent), a = document.createElement("div"), r;
+    if (a.classList.add("tabulator-menu"), n || e.preventDefault(), !(!i || !i.length)) {
       if (s)
-        a = o.child(r);
+        r = o.child(a);
       else {
         if (this.nestedMenuBlock) {
           if (this.rootPopup)
@@ -5848,27 +5848,27 @@ class hs extends j {
           this.nestedMenuBlock = setTimeout(() => {
             this.nestedMenuBlock = !1;
           }, 100);
-        this.rootPopup && this.rootPopup.hide(), this.rootPopup = a = this.popup(r);
+        this.rootPopup && this.rootPopup.hide(), this.rootPopup = r = this.popup(a);
       }
       i.forEach((h) => {
         var d = document.createElement("div"), u = h.label, c = h.disabled;
-        h.separator ? d.classList.add("tabulator-menu-separator") : (d.classList.add("tabulator-menu-item"), typeof u == "function" && (u = u.call(this.table, t.getComponent())), u instanceof Node ? d.appendChild(u) : d.innerHTML = u, typeof c == "function" && (c = c.call(this.table, t.getComponent())), c ? (d.classList.add("tabulator-menu-item-disabled"), d.addEventListener("click", (m) => {
-          m.stopPropagation();
-        })) : h.menu && h.menu.length ? d.addEventListener("click", (m) => {
-          m.stopPropagation(), this.loadMenu(m, t, h.menu, d, a);
-        }) : h.action && d.addEventListener("click", (m) => {
-          h.action(m, t.getComponent());
-        }), h.menu && h.menu.length && d.classList.add("tabulator-menu-item-submenu")), r.appendChild(d);
-      }), r.addEventListener("click", (h) => {
+        h.separator ? d.classList.add("tabulator-menu-separator") : (d.classList.add("tabulator-menu-item"), typeof u == "function" && (u = u.call(this.table, t.getComponent())), u instanceof Node ? d.appendChild(u) : d.innerHTML = u, typeof c == "function" && (c = c.call(this.table, t.getComponent())), c ? (d.classList.add("tabulator-menu-item-disabled"), d.addEventListener("click", (g) => {
+          g.stopPropagation();
+        })) : h.menu && h.menu.length ? d.addEventListener("click", (g) => {
+          g.stopPropagation(), this.loadMenu(g, t, h.menu, d, r);
+        }) : h.action && d.addEventListener("click", (g) => {
+          h.action(g, t.getComponent());
+        }), h.menu && h.menu.length && d.classList.add("tabulator-menu-item-submenu")), a.appendChild(d);
+      }), a.addEventListener("click", (h) => {
         this.rootPopup && this.rootPopup.hide();
-      }), a.show(s || e), a === this.rootPopup && (this.rootPopup.hideOnBlur(() => {
-        this.rootPopup = null, this.currentComponent && (this.dispatch("menu-closed", i, a), this.dispatchExternal("menuClosed", this.currentComponent.getComponent()), this.currentComponent = null);
-      }), this.currentComponent = t, this.dispatch("menu-opened", i, a), this.dispatchExternal("menuOpened", t.getComponent()));
+      }), r.show(s || e), r === this.rootPopup && (this.rootPopup.hideOnBlur(() => {
+        this.rootPopup = null, this.currentComponent && (this.dispatch("menu-closed", i, r), this.dispatchExternal("menuClosed", this.currentComponent.getComponent()), this.currentComponent = null);
+      }), this.currentComponent = t, this.dispatch("menu-opened", i, r), this.dispatchExternal("menuOpened", t.getComponent()));
     }
   }
 }
-M(hs, "moduleName", "menu");
-class ds extends j {
+S(hs, "moduleName", "menu");
+class ds extends G {
   constructor(e) {
     super(e), this.placeholderElement = this.createPlaceholderElement(), this.hoverElement = !1, this.checkTimeout = !1, this.checkPeriod = 250, this.moving = !1, this.toCol = !1, this.toColAfter = !1, this.startX = 0, this.autoScrollMargin = 40, this.autoScrollStep = 5, this.autoScrollTimeout = !1, this.touchMove = !1, this.moveHover = this.moveHover.bind(this), this.endMove = this.endMove.bind(this), this.registerTableOption("movableColumns", !1);
   }
@@ -5895,14 +5895,14 @@ class ds extends j {
     }), t.bindTouchEvents(e)), e.modules.moveColumn = i;
   }
   bindTouchEvents(e) {
-    var t = e.getElement(), i = !1, s, o, n, r, a, h;
+    var t = e.getElement(), i = !1, s, o, n, a, r, h;
     t.addEventListener("touchstart", (d) => {
       this.checkTimeout = setTimeout(() => {
-        this.touchMove = !0, s = e.nextColumn(), n = s ? s.getWidth() / 2 : 0, o = e.prevColumn(), r = o ? o.getWidth() / 2 : 0, a = 0, h = 0, i = !1, this.startMove(d, e);
+        this.touchMove = !0, s = e.nextColumn(), n = s ? s.getWidth() / 2 : 0, o = e.prevColumn(), a = o ? o.getWidth() / 2 : 0, r = 0, h = 0, i = !1, this.startMove(d, e);
       }, this.checkPeriod);
     }, { passive: !0 }), t.addEventListener("touchmove", (d) => {
       var u, c;
-      this.moving && (this.moveHover(d), i || (i = d.touches[0].pageX), u = d.touches[0].pageX - i, u > 0 ? s && u - a > n && (c = s, c !== e && (i = d.touches[0].pageX, c.getElement().parentNode.insertBefore(this.placeholderElement, c.getElement().nextSibling), this.moveColumn(c, !0))) : o && -u - h > r && (c = o, c !== e && (i = d.touches[0].pageX, c.getElement().parentNode.insertBefore(this.placeholderElement, c.getElement()), this.moveColumn(c, !1))), c && (s = c.nextColumn(), a = n, n = s ? s.getWidth() / 2 : 0, o = c.prevColumn(), h = r, r = o ? o.getWidth() / 2 : 0));
+      this.moving && (this.moveHover(d), i || (i = d.touches[0].pageX), u = d.touches[0].pageX - i, u > 0 ? s && u - r > n && (c = s, c !== e && (i = d.touches[0].pageX, c.getElement().parentNode.insertBefore(this.placeholderElement, c.getElement().nextSibling), this.moveColumn(c, !0))) : o && -u - h > a && (c = o, c !== e && (i = d.touches[0].pageX, c.getElement().parentNode.insertBefore(this.placeholderElement, c.getElement()), this.moveColumn(c, !1))), c && (s = c.nextColumn(), r = n, n = s ? s.getWidth() / 2 : 0, o = c.prevColumn(), h = a, a = o ? o.getWidth() / 2 : 0));
     }, { passive: !0 }), t.addEventListener("touchend", (d) => {
       this.checkTimeout && clearTimeout(this.checkTimeout), this.moving && this.endMove(d);
     });
@@ -5943,12 +5943,12 @@ class ds extends j {
     }, 1)));
   }
 }
-M(ds, "moduleName", "moveColumn");
+S(ds, "moduleName", "moveColumn");
 var Ln = {
   delete: function(l, e, t) {
     l.delete();
   }
-}, Sn = {
+}, Mn = {
   insert: function(l, e, t) {
     return this.table.addRow(l.getData(), void 0, e), !0;
   },
@@ -5962,7 +5962,7 @@ var Ln = {
     return e ? (this.table.addRow(l.getData(), void 0, e), e.delete(), !0) : !1;
   }
 };
-const nt = class nt extends j {
+const ht = class ht extends G {
   constructor(e) {
     super(e), this.placeholderElement = this.createPlaceholderElement(), this.hoverElement = !1, this.checkTimeout = !1, this.checkPeriod = 150, this.moving = !1, this.toRow = !1, this.toRowAfter = !1, this.hasHandle = !1, this.startY = 0, this.startX = 0, this.moveHover = this.moveHover.bind(this), this.endMove = this.endMove.bind(this), this.tableRowDropEvent = !1, this.touchMove = !1, this.connection = !1, this.connectionSelectorsTables = !1, this.connectionSelectorsElements = !1, this.connectionElements = [], this.connections = [], this.connectedTable = !1, this.connectedRow = !1, this.registerTableOption("movableRows", !1), this.registerTableOption("movableRowsConnectedTables", !1), this.registerTableOption("movableRowsConnectedElements", !1), this.registerTableOption("movableRowsSender", !1), this.registerTableOption("movableRowsReceiver", "insert"), this.registerColumnOption("rowHandle");
   }
@@ -6013,14 +6013,14 @@ const nt = class nt extends j {
     }
   }
   bindTouchEvents(e, t) {
-    var i = !1, s, o, n, r, a, h;
+    var i = !1, s, o, n, a, r, h;
     t.addEventListener("touchstart", (d) => {
       this.checkTimeout = setTimeout(() => {
-        this.touchMove = !0, s = e.nextRow(), n = s ? s.getHeight() / 2 : 0, o = e.prevRow(), r = o ? o.getHeight() / 2 : 0, a = 0, h = 0, i = !1, this.startMove(d, e);
+        this.touchMove = !0, s = e.nextRow(), n = s ? s.getHeight() / 2 : 0, o = e.prevRow(), a = o ? o.getHeight() / 2 : 0, r = 0, h = 0, i = !1, this.startMove(d, e);
       }, this.checkPeriod);
     }, { passive: !0 }), this.moving, this.toRow, this.toRowAfter, t.addEventListener("touchmove", (d) => {
       var u, c;
-      this.moving && (d.preventDefault(), this.moveHover(d), i || (i = d.touches[0].pageY), u = d.touches[0].pageY - i, u > 0 ? s && u - a > n && (c = s, c !== e && (i = d.touches[0].pageY, c.getElement().parentNode.insertBefore(this.placeholderElement, c.getElement().nextSibling), this.moveRow(c, !0))) : o && -u - h > r && (c = o, c !== e && (i = d.touches[0].pageY, c.getElement().parentNode.insertBefore(this.placeholderElement, c.getElement()), this.moveRow(c, !1))), c && (s = c.nextRow(), a = n, n = s ? s.getHeight() / 2 : 0, o = c.prevRow(), h = r, r = o ? o.getHeight() / 2 : 0));
+      this.moving && (d.preventDefault(), this.moveHover(d), i || (i = d.touches[0].pageY), u = d.touches[0].pageY - i, u > 0 ? s && u - r > n && (c = s, c !== e && (i = d.touches[0].pageY, c.getElement().parentNode.insertBefore(this.placeholderElement, c.getElement().nextSibling), this.moveRow(c, !0))) : o && -u - h > a && (c = o, c !== e && (i = d.touches[0].pageY, c.getElement().parentNode.insertBefore(this.placeholderElement, c.getElement()), this.moveRow(c, !1))), c && (s = c.nextRow(), r = n, n = s ? s.getHeight() / 2 : 0, o = c.prevRow(), h = a, a = o ? o.getHeight() / 2 : 0));
     }), t.addEventListener("touchend", (d) => {
       this.checkTimeout && clearTimeout(this.checkTimeout), this.moving && (this.endMove(d), this.touchMove = !1);
     });
@@ -6100,7 +6100,7 @@ const nt = class nt extends j {
     if (i) {
       switch (typeof this.table.options.movableRowsSender) {
         case "string":
-          s = nt.senders[this.table.options.movableRowsSender];
+          s = ht.senders[this.table.options.movableRowsSender];
           break;
         case "function":
           s = this.table.options.movableRowsSender;
@@ -6115,7 +6115,7 @@ const nt = class nt extends j {
     var i = !1, s = !1;
     switch (e.stopImmediatePropagation(), typeof this.table.options.movableRowsReceiver) {
       case "string":
-        i = nt.receivers[this.table.options.movableRowsReceiver];
+        i = ht.receivers[this.table.options.movableRowsReceiver];
         break;
       case "function":
         i = this.table.options.movableRowsReceiver;
@@ -6137,11 +6137,11 @@ const nt = class nt extends j {
     }
   }
 };
-M(nt, "moduleName", "moveRow"), //load defaults
-M(nt, "senders", Ln), M(nt, "receivers", Sn);
-let vi = nt;
+S(ht, "moduleName", "moveRow"), //load defaults
+S(ht, "senders", Ln), S(ht, "receivers", Mn);
+let vi = ht;
 var Dn = {};
-const mt = class mt extends j {
+const bt = class bt extends G {
   constructor(e) {
     super(e), this.allowedTypes = ["", "data", "edit", "clipboard", "import"], this.enabled = !0, this.registerColumnOption("mutator"), this.registerColumnOption("mutatorParams"), this.registerColumnOption("mutatorData"), this.registerColumnOption("mutatorDataParams"), this.registerColumnOption("mutatorEdit"), this.registerColumnOption("mutatorEditParams"), this.registerColumnOption("mutatorClipboard"), this.registerColumnOption("mutatorClipboardParams"), this.registerColumnOption("mutatorImport"), this.registerColumnOption("mutatorImportParams"), this.registerColumnOption("mutateLink");
   }
@@ -6166,7 +6166,7 @@ const mt = class mt extends j {
     var t = !1;
     switch (typeof e) {
       case "string":
-        mt.mutators[e] ? t = mt.mutators[e] : console.warn("Mutator Error - No such mutator found, ignoring: ", e);
+        bt.mutators[e] ? t = bt.mutators[e] : console.warn("Mutator Error - No such mutator found, ignoring: ", e);
         break;
       case "function":
         t = e;
@@ -6178,8 +6178,8 @@ const mt = class mt extends j {
   transformRow(e, t, i) {
     var s = "mutator" + (t.charAt(0).toUpperCase() + t.slice(1)), o;
     return this.enabled && this.table.columnManager.traverse((n) => {
-      var r, a, h;
-      n.modules.mutate && (r = n.modules.mutate[s] || n.modules.mutate.mutator || !1, r && (o = n.getFieldValue(typeof i < "u" ? i : e), (t == "data" && !i || typeof o < "u") && (h = n.getComponent(), a = typeof r.params == "function" ? r.params(o, e, t, h) : r.params, n.setFieldValue(e, r.mutator(o, e, t, a, h)))));
+      var a, r, h;
+      n.modules.mutate && (a = n.modules.mutate[s] || n.modules.mutate.mutator || !1, a && (o = n.getFieldValue(typeof i < "u" ? i : e), (t == "data" && !i || typeof o < "u") && (h = n.getComponent(), r = typeof a.params == "function" ? a.params(o, e, t, h) : a.params, n.setFieldValue(e, a.mutator(o, e, t, r, h)))));
     }), e;
   }
   //apply mutator to new cell value
@@ -6205,34 +6205,34 @@ const mt = class mt extends j {
     this.enabled = !1;
   }
 };
-M(mt, "moduleName", "mutator"), //load defaults
-M(mt, "mutators", Dn);
-let wi = mt;
+S(bt, "moduleName", "mutator"), //load defaults
+S(bt, "mutators", Dn);
+let wi = bt;
 function Fn(l, e, t, i, s) {
-  var o = document.createElement("span"), n = document.createElement("span"), r = document.createElement("span"), a = document.createElement("span"), h = document.createElement("span"), d = document.createElement("span");
+  var o = document.createElement("span"), n = document.createElement("span"), a = document.createElement("span"), r = document.createElement("span"), h = document.createElement("span"), d = document.createElement("span");
   return this.table.modules.localize.langBind("pagination|counter|showing", (u) => {
     n.innerHTML = u;
   }), this.table.modules.localize.langBind("pagination|counter|of", (u) => {
-    a.innerHTML = u;
+    r.innerHTML = u;
   }), this.table.modules.localize.langBind("pagination|counter|rows", (u) => {
     d.innerHTML = u;
-  }), i ? (r.innerHTML = " " + e + "-" + Math.min(e + l - 1, i) + " ", h.innerHTML = " " + i + " ", o.appendChild(n), o.appendChild(r), o.appendChild(a), o.appendChild(h), o.appendChild(d)) : (r.innerHTML = " 0 ", o.appendChild(n), o.appendChild(r), o.appendChild(d)), o;
+  }), i ? (a.innerHTML = " " + e + "-" + Math.min(e + l - 1, i) + " ", h.innerHTML = " " + i + " ", o.appendChild(n), o.appendChild(a), o.appendChild(r), o.appendChild(h), o.appendChild(d)) : (a.innerHTML = " 0 ", o.appendChild(n), o.appendChild(a), o.appendChild(d)), o;
 }
 function _n(l, e, t, i, s) {
-  var o = document.createElement("span"), n = document.createElement("span"), r = document.createElement("span"), a = document.createElement("span"), h = document.createElement("span"), d = document.createElement("span");
+  var o = document.createElement("span"), n = document.createElement("span"), a = document.createElement("span"), r = document.createElement("span"), h = document.createElement("span"), d = document.createElement("span");
   return this.table.modules.localize.langBind("pagination|counter|showing", (u) => {
     n.innerHTML = u;
-  }), r.innerHTML = " " + t + " ", this.table.modules.localize.langBind("pagination|counter|of", (u) => {
-    a.innerHTML = u;
+  }), a.innerHTML = " " + t + " ", this.table.modules.localize.langBind("pagination|counter|of", (u) => {
+    r.innerHTML = u;
   }), h.innerHTML = " " + s + " ", this.table.modules.localize.langBind("pagination|counter|pages", (u) => {
     d.innerHTML = u;
-  }), o.appendChild(n), o.appendChild(r), o.appendChild(a), o.appendChild(h), o.appendChild(d), o;
+  }), o.appendChild(n), o.appendChild(a), o.appendChild(r), o.appendChild(h), o.appendChild(d), o;
 }
 var Pn = {
   rows: Fn,
   pages: _n
 };
-const Dt = class Dt extends j {
+const Ft = class Ft extends G {
   constructor(e) {
     super(e), this.mode = "local", this.progressiveLoad = !1, this.element = null, this.pageCounterElement = null, this.pageCounter = null, this.size = 0, this.page = 1, this.count = 5, this.max = 1, this.remoteRowCountEstimate = null, this.initialLoad = !0, this.dataChanging = !1, this.pageSizes = [], this.registerTableOption("pagination", !1), this.registerTableOption("paginationMode", "local"), this.registerTableOption("paginationSize", !1), this.registerTableOption("paginationInitialPage", 1), this.registerTableOption("paginationCounter", !1), this.registerTableOption("paginationCounterElement", !1), this.registerTableOption("paginationButtonCount", 5), this.registerTableOption("paginationSizeSelector", !1), this.registerTableOption("paginationElement", !1), this.registerTableOption("paginationAddRow", "page"), this.registerTableOption("paginationOutOfRange", !1), this.registerTableOption("progressiveLoad", !1), this.registerTableOption("progressiveLoadDelay", 0), this.registerTableOption("progressiveLoadScrollMargin", 0), this.registerTableFunction("setMaxPage", this.setMaxPage.bind(this)), this.registerTableFunction("setPage", this.setPage.bind(this)), this.registerTableFunction("setPageToRow", this.userSetPageToRow.bind(this)), this.registerTableFunction("setPageSize", this.userSetPageSize.bind(this)), this.registerTableFunction("getPageSize", this.getPageSize.bind(this)), this.registerTableFunction("previousPage", this.previousPage.bind(this)), this.registerTableFunction("nextPage", this.nextPage.bind(this)), this.registerTableFunction("getPage", this.getPage.bind(this)), this.registerTableFunction("getPageMax", this.getPageMax.bind(this)), this.registerComponentFunction("row", "pageTo", this.setPageToRow.bind(this));
   }
@@ -6303,7 +6303,7 @@ const Dt = class Dt extends j {
   }
   initializePageCounter() {
     var e = this.table.options.paginationCounter, t = null;
-    e && (typeof e == "function" ? t = e : t = Dt.pageCounters[e], t ? (this.pageCounter = t, this.pageCounterElement = document.createElement("span"), this.pageCounterElement.classList.add("tabulator-page-counter")) : console.warn("Pagination Error - No such page counter found: ", e));
+    e && (typeof e == "function" ? t = e : t = Ft.pageCounters[e], t ? (this.pageCounter = t, this.pageCounterElement = document.createElement("span"), this.pageCounterElement.classList.add("tabulator-page-counter")) : console.warn("Pagination Error - No such page counter found: ", e));
   }
   //setup pagination
   initializePaginator(e) {
@@ -6440,16 +6440,16 @@ const Dt = class Dt extends j {
   }
   //return appropriate rows for current page
   getRows(e) {
-    var t = 0, i, s, o, n, r = e.filter((a) => a.type === "row");
+    var t = 0, i, s, o, n, a = e.filter((r) => r.type === "row");
     if (this.mode == "local") {
       i = [], this.setMaxRows(e.length), this.size === !0 ? (s = 0, o = e.length) : (s = this.size * (this.page - 1), o = s + parseInt(this.size)), this._setPageButtons();
-      for (let a = s; a < o; a++) {
-        let h = e[a];
+      for (let r = s; r < o; r++) {
+        let h = e[r];
         h && (i.push(h), h.type === "row" && (n || (n = h), t++));
       }
-      return this._setPageCounter(r.length, t, n ? r.indexOf(n) + 1 : 0), i;
+      return this._setPageCounter(a.length, t, n ? a.indexOf(n) + 1 : 0), i;
     } else
-      return this._setPageButtons(), this._setPageCounter(r.length), e.slice(0);
+      return this._setPageButtons(), this._setPageCounter(a.length), e.slice(0);
   }
   trigger() {
     var e;
@@ -6499,9 +6499,9 @@ const Dt = class Dt extends j {
     Math.ceil(e.clientWidth) - e.scrollWidth < 0 ? this.pagesElement.style.display = "none" : (this.pagesElement.style.display = "", Math.ceil(e.clientWidth) - e.scrollWidth < 0 && (this.pagesElement.style.display = "none"));
   }
 };
-M(Dt, "moduleName", "page"), //load defaults
-M(Dt, "pageCounters", Pn);
-let Ci = Dt;
+S(Ft, "moduleName", "page"), //load defaults
+S(Ft, "pageCounters", Pn);
+let Ci = Ft;
 var zn = {
   local: function(l, e) {
     var t = localStorage.getItem(l + "-" + e);
@@ -6520,7 +6520,7 @@ var zn = {
     i.setDate(i.getDate() + 1e4), document.cookie = l + "-" + e + "=" + JSON.stringify(t) + "; expires=" + i.toUTCString();
   }
 };
-const ve = class ve extends j {
+const Re = class Re extends G {
   constructor(e) {
     super(e), this.mode = "", this.id = "", this.defWatcherBlock = !1, this.config = {}, this.readFunc = !1, this.writeFunc = !1, this.registerTableOption("persistence", !1), this.registerTableOption("persistenceID", ""), this.registerTableOption("persistenceMode", !0), this.registerTableOption("persistenceReaderFunc", !1), this.registerTableOption("persistenceWriterFunc", !1);
   }
@@ -6537,7 +6537,7 @@ const ve = class ve extends j {
   initialize() {
     if (this.table.options.persistence) {
       var e = this.table.options.persistenceMode, t = this.table.options.persistenceID, i;
-      this.mode = e !== !0 ? e : this.localStorageTest() ? "local" : "cookie", this.table.options.persistenceReaderFunc ? typeof this.table.options.persistenceReaderFunc == "function" ? this.readFunc = this.table.options.persistenceReaderFunc : ve.readers[this.table.options.persistenceReaderFunc] ? this.readFunc = ve.readers[this.table.options.persistenceReaderFunc] : console.warn("Persistence Read Error - invalid reader set", this.table.options.persistenceReaderFunc) : ve.readers[this.mode] ? this.readFunc = ve.readers[this.mode] : console.warn("Persistence Read Error - invalid reader set", this.mode), this.table.options.persistenceWriterFunc ? typeof this.table.options.persistenceWriterFunc == "function" ? this.writeFunc = this.table.options.persistenceWriterFunc : ve.writers[this.table.options.persistenceWriterFunc] ? this.writeFunc = ve.writers[this.table.options.persistenceWriterFunc] : console.warn("Persistence Write Error - invalid reader set", this.table.options.persistenceWriterFunc) : ve.writers[this.mode] ? this.writeFunc = ve.writers[this.mode] : console.warn("Persistence Write Error - invalid writer set", this.mode), this.id = "tabulator-" + (t || this.table.element.getAttribute("id") || ""), this.config = {
+      this.mode = e !== !0 ? e : this.localStorageTest() ? "local" : "cookie", this.table.options.persistenceReaderFunc ? typeof this.table.options.persistenceReaderFunc == "function" ? this.readFunc = this.table.options.persistenceReaderFunc : Re.readers[this.table.options.persistenceReaderFunc] ? this.readFunc = Re.readers[this.table.options.persistenceReaderFunc] : console.warn("Persistence Read Error - invalid reader set", this.table.options.persistenceReaderFunc) : Re.readers[this.mode] ? this.readFunc = Re.readers[this.mode] : console.warn("Persistence Read Error - invalid reader set", this.mode), this.table.options.persistenceWriterFunc ? typeof this.table.options.persistenceWriterFunc == "function" ? this.writeFunc = this.table.options.persistenceWriterFunc : Re.writers[this.table.options.persistenceWriterFunc] ? this.writeFunc = Re.writers[this.table.options.persistenceWriterFunc] : console.warn("Persistence Write Error - invalid reader set", this.table.options.persistenceWriterFunc) : Re.writers[this.mode] ? this.writeFunc = Re.writers[this.mode] : console.warn("Persistence Write Error - invalid writer set", this.mode), this.id = "tabulator-" + (t || this.table.element.getAttribute("id") || ""), this.config = {
         sort: this.table.options.persistence === !0 || this.table.options.persistence.sort,
         filter: this.table.options.persistence === !0 || this.table.options.persistence.filter,
         headerFilter: this.table.options.persistence === !0 || this.table.options.persistence.headerFilter,
@@ -6575,8 +6575,8 @@ const ve = class ve extends j {
     this.config.columns && (this.defWatcherBlock = !0, t = e.getDefinition(), i = this.config.columns === !0 ? Object.keys(t) : this.config.columns, i.forEach((s) => {
       var o = Object.getOwnPropertyDescriptor(t, s), n = t[s];
       o && Object.defineProperty(t, s, {
-        set: (r) => {
-          n = r, this.defWatcherBlock || this.save("columns"), o.set && o.set(r);
+        set: (a) => {
+          n = a, this.defWatcherBlock || this.save("columns"), o.set && o.set(a);
         },
         get: () => (o.get && o.get(), n)
       });
@@ -6595,13 +6595,13 @@ const ve = class ve extends j {
   mergeDefinition(e, t, i) {
     var s = [];
     return t = t || [], t.forEach((o, n) => {
-      var r = this._findColumn(e, o), a;
-      r && (i ? a = Object.keys(o) : this.config.columns === !0 || this.config.columns == null ? (a = Object.keys(r), a.push("width")) : a = this.config.columns, a.forEach((h) => {
-        h !== "columns" && typeof o[h] < "u" && (r[h] = o[h]);
-      }), r.columns && (r.columns = this.mergeDefinition(r.columns, o.columns)), s.push(r));
+      var a = this._findColumn(e, o), r;
+      a && (i ? r = Object.keys(o) : this.config.columns === !0 || this.config.columns == null ? (r = Object.keys(a), r.push("width")) : r = this.config.columns, r.forEach((h) => {
+        h !== "columns" && typeof o[h] < "u" && (a[h] = o[h]);
+      }), a.columns && (a.columns = this.mergeDefinition(a.columns, o.columns)), s.push(a));
     }), e.forEach((o, n) => {
-      var r = this._findColumn(t, o);
-      r || (s.length > n ? s.splice(n, 0, o) : s.push(o));
+      var a = this._findColumn(t, o);
+      a || (s.length > n ? s.splice(n, 0, o) : s.push(o));
     }), s;
   }
   //find matching columns
@@ -6661,9 +6661,9 @@ const ve = class ve extends j {
   parseColumns(e) {
     var t = [], i = ["headerContextMenu", "headerMenu", "contextMenu", "clickMenu"];
     return e.forEach((s) => {
-      var o = {}, n = s.getDefinition(), r;
-      s.isGroup ? (o.title = n.title, o.columns = this.parseColumns(s.getColumns())) : (o.field = s.getField(), this.config.columns === !0 || this.config.columns == null ? (r = Object.keys(n), r.push("width"), r.push("visible")) : r = this.config.columns, r.forEach((a) => {
-        switch (a) {
+      var o = {}, n = s.getDefinition(), a;
+      s.isGroup ? (o.title = n.title, o.columns = this.parseColumns(s.getColumns())) : (o.field = s.getField(), this.config.columns === !0 || this.config.columns == null ? (a = Object.keys(n), a.push("width"), a.push("visible")) : a = this.config.columns, a.forEach((r) => {
+        switch (r) {
           case "width":
             o.width = s.getWidth();
             break;
@@ -6671,16 +6671,16 @@ const ve = class ve extends j {
             o.visible = s.visible;
             break;
           default:
-            typeof n[a] != "function" && i.indexOf(a) === -1 && (o[a] = n[a]);
+            typeof n[r] != "function" && i.indexOf(r) === -1 && (o[r] = n[r]);
         }
       })), t.push(o);
     }), t;
   }
 };
-M(ve, "moduleName", "persistence"), M(ve, "moduleInitOrder", -10), //load defaults
-M(ve, "readers", zn), M(ve, "writers", An);
-let yi = ve;
-class us extends j {
+S(Re, "moduleName", "persistence"), S(Re, "moduleInitOrder", -10), //load defaults
+S(Re, "readers", zn), S(Re, "writers", An);
+let yi = Re;
+class us extends G {
   constructor(e) {
     super(e), this.columnSubscribers = {}, this.registerTableOption("rowContextPopup", !1), this.registerTableOption("rowClickPopup", !1), this.registerTableOption("rowDblClickPopup", !1), this.registerTableOption("groupContextPopup", !1), this.registerTableOption("groupClickPopup", !1), this.registerTableOption("groupDblClickPopup", !1), this.registerColumnOption("headerContextPopup"), this.registerColumnOption("headerClickPopup"), this.registerColumnOption("headerDblClickPopup"), this.registerColumnOption("headerPopup"), this.registerColumnOption("headerPopupIcon"), this.registerColumnOption("contextPopup"), this.registerColumnOption("clickPopup"), this.registerColumnOption("dblClickPopup"), this.registerComponentFunction("cell", "popup", this._componentPopupCall.bind(this)), this.registerComponentFunction("column", "popup", this._componentPopupCall.bind(this)), this.registerComponentFunction("row", "popup", this._componentPopupCall.bind(this)), this.registerComponentFunction("group", "popup", this._componentPopupCall.bind(this));
   }
@@ -6714,22 +6714,22 @@ class us extends j {
   }
   loadPopupEvent(e, t, i, s) {
     var o;
-    function n(r) {
-      o = r;
+    function n(a) {
+      o = a;
     }
     i._group ? i = i._group : i._row && (i = i._row), e = typeof e == "function" ? e.call(this.table, t, i.getComponent(), n) : e, this.loadPopup(t, i, e, o, s);
   }
   loadPopup(e, t, i, s, o) {
-    var n = !(e instanceof MouseEvent), r, a;
-    i instanceof HTMLElement ? r = i : (r = document.createElement("div"), r.innerHTML = i), r.classList.add("tabulator-popup"), r.addEventListener("click", (h) => {
+    var n = !(e instanceof MouseEvent), a, r;
+    i instanceof HTMLElement ? a = i : (a = document.createElement("div"), a.innerHTML = i), a.classList.add("tabulator-popup"), a.addEventListener("click", (h) => {
       h.stopPropagation();
-    }), n || e.preventDefault(), a = this.popup(r), typeof s == "function" && a.renderCallback(s), e ? a.show(e) : a.show(t.getElement(), o || "center"), a.hideOnBlur(() => {
+    }), n || e.preventDefault(), r = this.popup(a), typeof s == "function" && r.renderCallback(s), e ? r.show(e) : r.show(t.getElement(), o || "center"), r.hideOnBlur(() => {
       this.dispatchExternal("popupClosed", t.getComponent());
     }), this.dispatchExternal("popupOpened", t.getComponent());
   }
 }
-M(us, "moduleName", "popup");
-class cs extends j {
+S(us, "moduleName", "popup");
+class cs extends G {
   constructor(e) {
     super(e), this.element = !1, this.manualBlock = !1, this.beforeprintEventHandler = null, this.afterprintEventHandler = null, this.registerTableOption("printAsHtml", !1), this.registerTableOption("printFormatter", !1), this.registerTableOption("printHeader", !1), this.registerTableOption("printFooter", !1), this.registerTableOption("printStyled", !0), this.registerTableOption("printRowRange", "visible"), this.registerTableOption("printConfig", {}), this.registerColumnOption("print"), this.registerColumnOption("titlePrint");
   }
@@ -6752,12 +6752,12 @@ class cs extends j {
     document.body.classList.remove("tabulator-print-fullscreen-hide"), this.element && this.element.parentNode && (this.element.parentNode.removeChild(this.element), this.table.element.style.display = "");
   }
   printFullscreen(e, t, i) {
-    var s = window.scrollX, o = window.scrollY, n = document.createElement("div"), r = document.createElement("div"), a = this.table.modules.export.generateTable(typeof i < "u" ? i : this.table.options.printConfig, typeof t < "u" ? t : this.table.options.printStyled, e || this.table.options.printRowRange, "print"), h, d;
-    this.manualBlock = !0, this.element = document.createElement("div"), this.element.classList.add("tabulator-print-fullscreen"), this.table.options.printHeader && (n.classList.add("tabulator-print-header"), h = typeof this.table.options.printHeader == "function" ? this.table.options.printHeader.call(this.table) : this.table.options.printHeader, typeof h == "string" ? n.innerHTML = h : n.appendChild(h), this.element.appendChild(n)), this.element.appendChild(a), this.table.options.printFooter && (r.classList.add("tabulator-print-footer"), d = typeof this.table.options.printFooter == "function" ? this.table.options.printFooter.call(this.table) : this.table.options.printFooter, typeof d == "string" ? r.innerHTML = d : r.appendChild(d), this.element.appendChild(r)), document.body.classList.add("tabulator-print-fullscreen-hide"), document.body.appendChild(this.element), this.table.options.printFormatter && this.table.options.printFormatter(this.element, a), window.print(), this.cleanup(), window.scrollTo(s, o), this.manualBlock = !1;
+    var s = window.scrollX, o = window.scrollY, n = document.createElement("div"), a = document.createElement("div"), r = this.table.modules.export.generateTable(typeof i < "u" ? i : this.table.options.printConfig, typeof t < "u" ? t : this.table.options.printStyled, e || this.table.options.printRowRange, "print"), h, d;
+    this.manualBlock = !0, this.element = document.createElement("div"), this.element.classList.add("tabulator-print-fullscreen"), this.table.options.printHeader && (n.classList.add("tabulator-print-header"), h = typeof this.table.options.printHeader == "function" ? this.table.options.printHeader.call(this.table) : this.table.options.printHeader, typeof h == "string" ? n.innerHTML = h : n.appendChild(h), this.element.appendChild(n)), this.element.appendChild(r), this.table.options.printFooter && (a.classList.add("tabulator-print-footer"), d = typeof this.table.options.printFooter == "function" ? this.table.options.printFooter.call(this.table) : this.table.options.printFooter, typeof d == "string" ? a.innerHTML = d : a.appendChild(d), this.element.appendChild(a)), document.body.classList.add("tabulator-print-fullscreen-hide"), document.body.appendChild(this.element), this.table.options.printFormatter && this.table.options.printFormatter(this.element, r), window.print(), this.cleanup(), window.scrollTo(s, o), this.manualBlock = !1;
   }
 }
-M(cs, "moduleName", "print");
-class fs extends j {
+S(cs, "moduleName", "print");
+class fs extends G {
   constructor(e) {
     super(e), this.data = !1, this.blocked = !1, this.origFuncs = {}, this.currentVersion = 0, this.registerTableOption("reactiveData", !1);
   }
@@ -6802,20 +6802,20 @@ class fs extends j {
       enumerable: !1,
       configurable: !0,
       value: function() {
-        var s = Array.from(arguments), o = s[0] < 0 ? e.length + s[0] : s[0], n = s[1], r = s[2] ? s.slice(2) : !1, a, h;
+        var s = Array.from(arguments), o = s[0] < 0 ? e.length + s[0] : s[0], n = s[1], a = s[2] ? s.slice(2) : !1, r, h;
         if (!t.blocked && i === t.currentVersion) {
-          if (t.block("data-splice"), r && (a = e[o] ? t.table.rowManager.getRowFromDataObject(e[o]) : !1, a ? r.forEach((u) => {
-            t.table.rowManager.addRowActual(u, !0, a, !0);
-          }) : (r = r.slice().reverse(), r.forEach((u) => {
+          if (t.block("data-splice"), a && (r = e[o] ? t.table.rowManager.getRowFromDataObject(e[o]) : !1, r ? a.forEach((u) => {
+            t.table.rowManager.addRowActual(u, !0, r, !0);
+          }) : (a = a.slice().reverse(), a.forEach((u) => {
             t.table.rowManager.addRowActual(u, !0, !1, !0);
           }))), n !== 0) {
             var d = e.slice(o, typeof s[1] > "u" ? s[1] : o + n);
             d.forEach((u, c) => {
-              var m = t.table.rowManager.getRowFromDataObject(u);
-              m && m.deleteActual(c !== d.length - 1);
+              var g = t.table.rowManager.getRowFromDataObject(u);
+              g && g.deleteActual(c !== d.length - 1);
             });
           }
-          (r || n !== 0) && t.table.rowManager.reRenderInPosition(), h = t.origFuncs.splice.apply(e, arguments), t.unblock("data-splice");
+          (a || n !== 0) && t.table.rowManager.reRenderInPosition(), h = t.origFuncs.splice.apply(e, arguments), t.unblock("data-splice");
         }
         return h;
       }
@@ -6900,15 +6900,15 @@ class fs extends j {
     this.table.modules.dataTree.initializeRow(e), this.table.modules.dataTree.layoutRow(e), this.table.rowManager.refreshActiveData("tree", !1, !0);
   }
   watchKey(e, t, i) {
-    var s = this, o = Object.getOwnPropertyDescriptor(t, i), n = t[i], r = this.currentVersion;
+    var s = this, o = Object.getOwnPropertyDescriptor(t, i), n = t[i], a = this.currentVersion;
     Object.defineProperty(t, i, {
-      set: (a) => {
-        if (n = a, !s.blocked && r === s.currentVersion) {
+      set: (r) => {
+        if (n = r, !s.blocked && a === s.currentVersion) {
           s.block("key");
           var h = {};
-          h[i] = a, e.updateData(h), s.unblock("key");
+          h[i] = r, e.updateData(h), s.unblock("key");
         }
-        o.set && o.set(a);
+        o.set && o.set(r);
       },
       get: () => (o.get && o.get(), n)
     });
@@ -6927,8 +6927,8 @@ class fs extends j {
     this.blocked === e && (this.blocked = !1);
   }
 }
-M(fs, "moduleName", "reactiveData");
-class ps extends j {
+S(fs, "moduleName", "reactiveData");
+class ps extends G {
   constructor(e) {
     super(e), this.startColumn = !1, this.startX = !1, this.startWidth = !1, this.latestX = !1, this.handle = null, this.initialNextColumn = null, this.nextColumn = null, this.initialized = !1, this.registerColumnOption("resizable", !0), this.registerTableOption("resizableColumnFit", !1), this.registerTableOption("resizableColumnGuide", !1);
   }
@@ -6966,8 +6966,8 @@ class ps extends j {
     }), e.modules.resize && e.modules.resize.handleEl && (t && (e.modules.resize.handleEl.style[e.modules.frozen.position] = t), e.element.after(e.modules.resize.handleEl));
   }
   initializeColumn(e, t, i, s) {
-    var o = this, n = !1, r = i.definition.resizable, a = {}, h = i.getLastColumn();
-    if (e === "header" && (n = i.definition.formatter == "textarea" || i.definition.variableHeight, a = { variableHeight: n }), (r === !0 || r == e) && this._checkResizability(h)) {
+    var o = this, n = !1, a = i.definition.resizable, r = {}, h = i.getLastColumn();
+    if (e === "header" && (n = i.definition.formatter == "textarea" || i.definition.variableHeight, r = { variableHeight: n }), (a === !0 || a == e) && this._checkResizability(h)) {
       var d = document.createElement("span");
       d.className = "tabulator-col-resize-handle", d.addEventListener("click", function(c) {
         c.stopPropagation();
@@ -6976,11 +6976,11 @@ class ps extends j {
         o.startColumn = i, o.initialNextColumn = o.nextColumn = h.nextColumn(), o._mouseDown(c, h, d);
       };
       d.addEventListener("mousedown", u), d.addEventListener("touchstart", u, { passive: !0 }), d.addEventListener("dblclick", (c) => {
-        var m = h.getWidth();
-        c.stopPropagation(), h.reinitializeWidth(!0), m !== h.getWidth() && (o.dispatch("column-resized", h), o.dispatchExternal("columnResized", h.getComponent()));
-      }), i.modules.frozen && (d.style.position = "sticky", d.style[i.modules.frozen.position] = this.frozenColumnOffset(i)), a.handleEl = d, s.parentNode && i.visible && s.after(d);
+        var g = h.getWidth();
+        c.stopPropagation(), h.reinitializeWidth(!0), g !== h.getWidth() && (o.dispatch("column-resized", h), o.dispatchExternal("columnResized", h.getComponent()));
+      }), i.modules.frozen && (d.style.position = "sticky", d.style[i.modules.frozen.position] = this.frozenColumnOffset(i)), r.handleEl = d, s.parentNode && i.visible && s.after(d);
     }
-    t.modules.resize = a;
+    t.modules.resize = r;
   }
   deInitializeColumn(e) {
     this.deInitializeComponent(e), e.cells.forEach((t) => {
@@ -6995,16 +6995,16 @@ class ps extends j {
     e.modules.resize && e.modules.resize.handleEl && (e.modules.resize.handleEl.style.height = t);
   }
   resize(e, t) {
-    var i = typeof e.clientX > "u" ? e.touches[0].clientX : e.clientX, s = i - this.startX, o = i - this.latestX, n, r;
-    if (this.latestX = i, this.table.rtl && (s = -s, o = -o), n = t.width == t.minWidth || t.width == t.maxWidth, t.setWidth(this.startWidth + s), r = t.width == t.minWidth || t.width == t.maxWidth, o < 0 && (this.nextColumn = this.initialNextColumn), this.table.options.resizableColumnFit && this.nextColumn && !(n && r)) {
-      let a = this.nextColumn.getWidth();
-      o > 0 && a <= this.nextColumn.minWidth && (this.nextColumn = this.nextColumn.nextColumn()), this.nextColumn && this.nextColumn.setWidth(this.nextColumn.getWidth() - o);
+    var i = typeof e.clientX > "u" ? e.touches[0].clientX : e.clientX, s = i - this.startX, o = i - this.latestX, n, a;
+    if (this.latestX = i, this.table.rtl && (s = -s, o = -o), n = t.width == t.minWidth || t.width == t.maxWidth, t.setWidth(this.startWidth + s), a = t.width == t.minWidth || t.width == t.maxWidth, o < 0 && (this.nextColumn = this.initialNextColumn), this.table.options.resizableColumnFit && this.nextColumn && !(n && a)) {
+      let r = this.nextColumn.getWidth();
+      o > 0 && r <= this.nextColumn.minWidth && (this.nextColumn = this.nextColumn.nextColumn()), this.nextColumn && this.nextColumn.setWidth(this.nextColumn.getWidth() - o);
     }
     this.table.columnManager.rerenderColumns(!0), !this.table.browserSlow && t.modules.resize && t.modules.resize.variableHeight && t.checkCellHeights();
   }
   calcGuidePosition(e, t, i) {
-    var s = typeof e.clientX > "u" ? e.touches[0].clientX : e.clientX, o = i.getBoundingClientRect().x - this.table.element.getBoundingClientRect().x, n = this.table.element.getBoundingClientRect().x, r = t.element.getBoundingClientRect().left - n, a = s - this.startX, h = Math.max(o + a, r + t.minWidth);
-    return t.maxWidth && (h = Math.min(h, r + t.maxWidth)), h;
+    var s = typeof e.clientX > "u" ? e.touches[0].clientX : e.clientX, o = i.getBoundingClientRect().x - this.table.element.getBoundingClientRect().x, n = this.table.element.getBoundingClientRect().x, a = t.element.getBoundingClientRect().left - n, r = s - this.startX, h = Math.max(o + r, a + t.minWidth);
+    return t.maxWidth && (h = Math.min(h, a + t.maxWidth)), h;
   }
   _checkResizability(e) {
     return e.definition.resizable;
@@ -7014,17 +7014,17 @@ class ps extends j {
     this.dispatchExternal("columnResizing", t.getComponent()), s.table.options.resizableColumnGuide && (o = document.createElement("span"), o.classList.add("tabulator-col-resize-guide"), s.table.element.appendChild(o), setTimeout(() => {
       o.style.left = s.calcGuidePosition(e, t, i) + "px";
     })), s.table.element.classList.add("tabulator-block-select");
-    function n(a) {
-      s.table.options.resizableColumnGuide ? o.style.left = s.calcGuidePosition(a, t, i) + "px" : s.resize(a, t);
+    function n(r) {
+      s.table.options.resizableColumnGuide ? o.style.left = s.calcGuidePosition(r, t, i) + "px" : s.resize(r, t);
     }
-    function r(a) {
-      s.table.options.resizableColumnGuide && (s.resize(a, t), o.remove()), s.startColumn.modules.edit && (s.startColumn.modules.edit.blocked = !1), s.table.browserSlow && t.modules.resize && t.modules.resize.variableHeight && t.checkCellHeights(), document.body.removeEventListener("mouseup", r), document.body.removeEventListener("mousemove", n), i.removeEventListener("touchmove", n), i.removeEventListener("touchend", r), s.table.element.classList.remove("tabulator-block-select"), s.startWidth !== t.getWidth() && (s.table.columnManager.verticalAlignHeaders(), s.dispatch("column-resized", t), s.dispatchExternal("columnResized", t.getComponent()));
+    function a(r) {
+      s.table.options.resizableColumnGuide && (s.resize(r, t), o.remove()), s.startColumn.modules.edit && (s.startColumn.modules.edit.blocked = !1), s.table.browserSlow && t.modules.resize && t.modules.resize.variableHeight && t.checkCellHeights(), document.body.removeEventListener("mouseup", a), document.body.removeEventListener("mousemove", n), i.removeEventListener("touchmove", n), i.removeEventListener("touchend", a), s.table.element.classList.remove("tabulator-block-select"), s.startWidth !== t.getWidth() && (s.table.columnManager.verticalAlignHeaders(), s.dispatch("column-resized", t), s.dispatchExternal("columnResized", t.getComponent()));
     }
-    e.stopPropagation(), s.startColumn.modules.edit && (s.startColumn.modules.edit.blocked = !0), s.startX = typeof e.clientX > "u" ? e.touches[0].clientX : e.clientX, s.latestX = s.startX, s.startWidth = t.getWidth(), document.body.addEventListener("mousemove", n), document.body.addEventListener("mouseup", r), i.addEventListener("touchmove", n, { passive: !0 }), i.addEventListener("touchend", r);
+    e.stopPropagation(), s.startColumn.modules.edit && (s.startColumn.modules.edit.blocked = !0), s.startX = typeof e.clientX > "u" ? e.touches[0].clientX : e.clientX, s.latestX = s.startX, s.startWidth = t.getWidth(), document.body.addEventListener("mousemove", n), document.body.addEventListener("mouseup", a), i.addEventListener("touchmove", n, { passive: !0 }), i.addEventListener("touchend", a);
   }
 }
-M(ps, "moduleName", "resizeColumns");
-class ms extends j {
+S(ps, "moduleName", "resizeColumns");
+class ms extends G {
   constructor(e) {
     super(e), this.startColumn = !1, this.startY = !1, this.startHeight = !1, this.handle = null, this.prevHandle = null, this.registerTableOption("resizableRows", !1), this.registerTableOption("resizableRowGuide", !1);
   }
@@ -7035,44 +7035,44 @@ class ms extends j {
     var t = this, i = e.getElement(), s = document.createElement("div");
     s.className = "tabulator-row-resize-handle";
     var o = document.createElement("div");
-    o.className = "tabulator-row-resize-handle prev", s.addEventListener("click", function(a) {
-      a.stopPropagation();
+    o.className = "tabulator-row-resize-handle prev", s.addEventListener("click", function(r) {
+      r.stopPropagation();
     });
-    var n = function(a) {
-      t.startRow = e, t._mouseDown(a, e, s);
+    var n = function(r) {
+      t.startRow = e, t._mouseDown(r, e, s);
     };
-    s.addEventListener("mousedown", n), s.addEventListener("touchstart", n, { passive: !0 }), o.addEventListener("click", function(a) {
-      a.stopPropagation();
+    s.addEventListener("mousedown", n), s.addEventListener("touchstart", n, { passive: !0 }), o.addEventListener("click", function(r) {
+      r.stopPropagation();
     });
-    var r = function(a) {
+    var a = function(r) {
       var h = t.table.rowManager.prevDisplayRow(e);
-      h && (t.startRow = h, t._mouseDown(a, h, o));
+      h && (t.startRow = h, t._mouseDown(r, h, o));
     };
-    o.addEventListener("mousedown", r), o.addEventListener("touchstart", r, { passive: !0 }), i.appendChild(s), i.appendChild(o);
+    o.addEventListener("mousedown", a), o.addEventListener("touchstart", a, { passive: !0 }), i.appendChild(s), i.appendChild(o);
   }
   resize(e, t) {
     t.setHeight(this.startHeight + ((typeof e.screenY > "u" ? e.touches[0].screenY : e.screenY) - this.startY));
   }
   calcGuidePosition(e, t, i) {
-    var s = typeof e.screenY > "u" ? e.touches[0].screenY : e.screenY, o = i.getBoundingClientRect().y - this.table.element.getBoundingClientRect().y, n = this.table.element.getBoundingClientRect().y, r = t.element.getBoundingClientRect().top - n, a = s - this.startY;
-    return Math.max(o + a, r);
+    var s = typeof e.screenY > "u" ? e.touches[0].screenY : e.screenY, o = i.getBoundingClientRect().y - this.table.element.getBoundingClientRect().y, n = this.table.element.getBoundingClientRect().y, a = t.element.getBoundingClientRect().top - n, r = s - this.startY;
+    return Math.max(o + r, a);
   }
   _mouseDown(e, t, i) {
     var s = this, o;
     s.dispatchExternal("rowResizing", t.getComponent()), s.table.options.resizableRowGuide && (o = document.createElement("span"), o.classList.add("tabulator-row-resize-guide"), s.table.element.appendChild(o), setTimeout(() => {
       o.style.top = s.calcGuidePosition(e, t, i) + "px";
     })), s.table.element.classList.add("tabulator-block-select");
-    function n(a) {
-      s.table.options.resizableRowGuide ? o.style.top = s.calcGuidePosition(a, t, i) + "px" : s.resize(a, t);
+    function n(r) {
+      s.table.options.resizableRowGuide ? o.style.top = s.calcGuidePosition(r, t, i) + "px" : s.resize(r, t);
     }
-    function r(a) {
-      s.table.options.resizableRowGuide && (s.resize(a, t), o.remove()), document.body.removeEventListener("mouseup", n), document.body.removeEventListener("mousemove", n), i.removeEventListener("touchmove", n), i.removeEventListener("touchend", r), s.table.element.classList.remove("tabulator-block-select"), s.dispatchExternal("rowResized", t.getComponent());
+    function a(r) {
+      s.table.options.resizableRowGuide && (s.resize(r, t), o.remove()), document.body.removeEventListener("mouseup", n), document.body.removeEventListener("mousemove", n), i.removeEventListener("touchmove", n), i.removeEventListener("touchend", a), s.table.element.classList.remove("tabulator-block-select"), s.dispatchExternal("rowResized", t.getComponent());
     }
-    e.stopPropagation(), s.startY = typeof e.screenY > "u" ? e.touches[0].screenY : e.screenY, s.startHeight = t.getHeight(), document.body.addEventListener("mousemove", n), document.body.addEventListener("mouseup", r), i.addEventListener("touchmove", n, { passive: !0 }), i.addEventListener("touchend", r);
+    e.stopPropagation(), s.startY = typeof e.screenY > "u" ? e.touches[0].screenY : e.screenY, s.startHeight = t.getHeight(), document.body.addEventListener("mousemove", n), document.body.addEventListener("mouseup", a), i.addEventListener("touchmove", n, { passive: !0 }), i.addEventListener("touchend", a);
   }
 }
-M(ms, "moduleName", "resizeRows");
-class gs extends j {
+S(ms, "moduleName", "resizeRows");
+class gs extends G {
   constructor(e) {
     super(e), this.binding = !1, this.visibilityObserver = !1, this.resizeObserver = !1, this.containerObserver = !1, this.tableHeight = 0, this.tableWidth = 0, this.containerHeight = 0, this.containerWidth = 0, this.autoResize = !1, this.visible = !1, this.initialized = !1, this.initialRedraw = !1, this.registerTableOption("autoResize", !0);
   }
@@ -7109,7 +7109,7 @@ class gs extends j {
     this.binding && window.removeEventListener("resize", this.binding), this.resizeObserver && this.resizeObserver.unobserve(this.table.element), this.visibilityObserver && this.visibilityObserver.unobserve(this.table.element), this.containerObserver && this.containerObserver.unobserve(this.table.element.parentNode);
   }
 }
-M(gs, "moduleName", "resizeTable");
+S(gs, "moduleName", "resizeTable");
 function Hn(l, e, t) {
   var i = document.createElement("div"), s = l.getRow()._row.modules.responsiveLayout;
   i.classList.add("tabulator-responsive-collapse-toggle"), i.innerHTML = `<svg class='tabulator-responsive-collapse-toggle-open' viewbox="0 0 24 24">
@@ -7121,8 +7121,8 @@ function Hn(l, e, t) {
   <line x1="7" y1="12" x2="17" y2="12"  fill="none" stroke-width="3" stroke-linecap="round" />
 </svg>`, l.getElement().classList.add("tabulator-row-handle");
   function o(n) {
-    var r = s.element;
-    s.open = n, r && (s.open ? (i.classList.add("open"), r.style.display = "") : (i.classList.remove("open"), r.style.display = "none"));
+    var a = s.element;
+    s.open = n, a && (s.open ? (i.classList.add("open"), a.style.display = "") : (i.classList.remove("open"), a.style.display = "none"));
   }
   return i.addEventListener("click", function(n) {
     n.stopImmediatePropagation(), o(!s.open), l.getTable().rowManager.adjustTableSize();
@@ -7135,7 +7135,7 @@ var On = {
     }
   }
 };
-class Ei extends j {
+class Ei extends G {
   constructor(e) {
     super(e), this.columns = [], this.hiddenColumns = [], this.mode = "", this.index = 0, this.collapseFormatter = [], this.collapseStartOpen = !0, this.collapseHandleColumn = !1, this.registerTableOption("responsiveLayout", !1), this.registerTableOption("responsiveLayoutCollapseStartOpen", !0), this.registerTableOption("responsiveLayoutCollapseUseFormatters", !0), this.registerTableOption("responsiveLayoutCollapseFormatter", !1), this.registerColumnOption("responsive");
   }
@@ -7222,8 +7222,8 @@ class Ei extends j {
       var n = o.getFieldValue(t);
       if (o.definition.title && o.field)
         if (o.modules.format && this.table.options.responsiveLayoutCollapseUseFormatters) {
-          let r = function(a) {
-            a();
+          let a = function(r) {
+            r();
           };
           s = {
             value: !1,
@@ -7250,7 +7250,7 @@ class Ei extends j {
           }, i.push({
             field: o.field,
             title: o.definition.title,
-            value: o.modules.format.formatter.call(this.table.modules.format, s, o.modules.format.params, r)
+            value: o.modules.format.formatter.call(this.table.modules.format, s, o.modules.format.params, a)
           });
         } else
           i.push({
@@ -7263,14 +7263,14 @@ class Ei extends j {
   formatCollapsedData(e) {
     var t = document.createElement("table");
     return e.forEach((i) => {
-      var s = document.createElement("tr"), o = document.createElement("td"), n = document.createElement("td"), r, a = document.createElement("strong");
-      o.appendChild(a), this.modules.localize.bind("columns|" + i.field, function(h) {
-        a.innerHTML = h || i.title;
-      }), i.value instanceof Node ? (r = document.createElement("div"), r.appendChild(i.value), n.appendChild(r)) : n.innerHTML = i.value, s.appendChild(o), s.appendChild(n), t.appendChild(s);
+      var s = document.createElement("tr"), o = document.createElement("td"), n = document.createElement("td"), a, r = document.createElement("strong");
+      o.appendChild(r), this.modules.localize.bind("columns|" + i.field, function(h) {
+        r.innerHTML = h || i.title;
+      }), i.value instanceof Node ? (a = document.createElement("div"), a.appendChild(i.value), n.appendChild(a)) : n.innerHTML = i.value, s.appendChild(o), s.appendChild(n), t.appendChild(s);
     }), Object.keys(e).length ? t : "";
   }
 }
-M(Ei, "moduleName", "responsiveLayout"), M(Ei, "moduleExtensions", On);
+S(Ei, "moduleName", "responsiveLayout"), S(Ei, "moduleExtensions", On);
 function Bn(l, e, t) {
   var i = document.createElement("input"), s = !1;
   if (i.type = "checkbox", i.setAttribute("aria-label", "Select Row"), this.table.modExists("selectRow", !0))
@@ -7278,7 +7278,7 @@ function Bn(l, e, t) {
       n.stopPropagation();
     }), typeof l.getRow == "function") {
       var o = l.getRow();
-      o instanceof $t ? (i.addEventListener("change", (n) => {
+      o instanceof Wt ? (i.addEventListener("change", (n) => {
         this.table.options.selectableRowsRangeMode === "click" && s ? s = !1 : o.toggleSelect();
       }), this.table.options.selectableRowsRangeMode === "click" && i.addEventListener("click", (n) => {
         s = !0, this.table.modules.selectRow.handleComplexRowClick(o._row, n);
@@ -7296,7 +7296,7 @@ var Nn = {
     }
   }
 };
-class Ri extends j {
+class Ri extends G {
   constructor(e) {
     super(e), this.selecting = !1, this.lastClickedRow = !1, this.selectPrev = [], this.selectedRows = [], this.headerCheckboxElement = null, this.registerTableOption("selectableRows", "highlight"), this.registerTableOption("selectableRowsRangeMode", "drag"), this.registerTableOption("selectableRowsRollingSelection", !0), this.registerTableOption("selectableRowsPersistence", !0), this.registerTableOption("selectableRowsCheck", function(t, i) {
       return !0;
@@ -7337,10 +7337,10 @@ class Ri extends j {
   handleComplexRowClick(e, t) {
     if (t.shiftKey) {
       this.table._clearSelection(), this.lastClickedRow = this.lastClickedRow || e;
-      var i = this.table.rowManager.getDisplayRowIndex(this.lastClickedRow), s = this.table.rowManager.getDisplayRowIndex(e), o = i <= s ? i : s, n = i >= s ? i : s, r = this.table.rowManager.getDisplayRows().slice(0), a = r.splice(o, n - o + 1);
-      t.ctrlKey || t.metaKey ? (a.forEach((h) => {
+      var i = this.table.rowManager.getDisplayRowIndex(this.lastClickedRow), s = this.table.rowManager.getDisplayRowIndex(e), o = i <= s ? i : s, n = i >= s ? i : s, a = this.table.rowManager.getDisplayRows().slice(0), r = a.splice(o, n - o + 1);
+      t.ctrlKey || t.metaKey ? (r.forEach((h) => {
         h !== this.lastClickedRow && (this.table.options.selectableRows !== !0 && !this.isRowSelected(e) ? this.selectedRows.length < this.table.options.selectableRows && this.toggleRow(h) : this.toggleRow(h));
-      }), this.lastClickedRow = e) : (this.deselectRows(void 0, !0), this.table.options.selectableRows !== !0 && a.length > this.table.options.selectableRows && (a = a.slice(0, this.table.options.selectableRows)), this.selectRows(a)), this.table._clearSelection();
+      }), this.lastClickedRow = e) : (this.deselectRows(void 0, !0), this.table.options.selectableRows !== !0 && r.length > this.table.options.selectableRows && (r = r.slice(0, this.table.options.selectableRows)), this.selectRows(r)), this.table._clearSelection();
     } else t.ctrlKey || t.metaKey ? (this.toggleRow(e), this.lastClickedRow = e) : (this.deselectRows(void 0, !0), this.selectRows(e), this.lastClickedRow = e);
   }
   checkRowSelectability(e) {
@@ -7413,8 +7413,8 @@ class Ri extends j {
   _deselectRow(e, t) {
     var i = this, s = i.table.rowManager.findRow(e), o, n;
     if (s) {
-      if (o = i.selectedRows.findIndex(function(r) {
-        return r == s;
+      if (o = i.selectedRows.findIndex(function(a) {
+        return a == s;
       }), o > -1)
         return n = s.getElement(), n && n.classList.remove("tabulator-selected"), s.modules.select || (s.modules.select = {}), s.modules.select.selected = !1, s.modules.select.checkboxEl && (s.modules.select.checkboxEl.checked = !1), i.selectedRows.splice(o, 1), this.table.options.dataTreeSelectPropagate && this.childRowSelection(s, !1), this.dispatchExternal("rowDeselected", s.getComponent()), i._rowSelectionChanged(t, void 0, s), s;
     } else
@@ -7451,8 +7451,8 @@ class Ri extends j {
         this._deselectRow(s, !0);
   }
 }
-M(Ri, "moduleName", "selectRow"), M(Ri, "moduleExtensions", Nn);
-class Vn {
+S(Ri, "moduleName", "selectRow"), S(Ri, "moduleExtensions", Nn);
+class $n {
   constructor(e) {
     return this._range = e, new Proxy(this, {
       get: function(t, i, s) {
@@ -7509,7 +7509,7 @@ class Vn {
     this._range.destroyedGuard("remove") && this._range.destroy(!0);
   }
 }
-class In extends de {
+class Vn extends be {
   constructor(e, t, i, s) {
     super(e), this.rangeManager = t, this.element = null, this.initialized = !1, this.initializing = {
       start: !1,
@@ -7557,8 +7557,8 @@ class In extends de {
   ///////      Rendering      ///////
   ///////////////////////////////////
   layout() {
-    var e = this.table.rowManager.renderer.vDomTop, t = this.table.rowManager.renderer.vDomBottom, i = this.table.columnManager.renderer.leftCol, s = this.table.columnManager.renderer.rightCol, o, n, r, a, h, d, u, c, m, b;
-    this.table.options.renderHorizontal === "virtual" && this.rangeManager.rowHeader && (s += 1), e == null && (e = 0), t == null && (t = 1 / 0), i == null && (i = 0), s == null && (s = 1 / 0), this.overlaps(i, e, s, t) && (o = Math.max(this.top, e), n = Math.min(this.bottom, t), r = Math.max(this.left, i), a = Math.min(this.right, s), h = this.rangeManager.getCell(o, r), d = this.rangeManager.getCell(n, a), u = h.getElement(), c = d.getElement(), m = h.row.getElement(), b = d.row.getElement(), this.element.classList.add("tabulator-range-active"), this.table.rtl ? (this.element.style.right = m.offsetWidth - u.offsetLeft - u.offsetWidth + "px", this.element.style.width = u.offsetLeft + u.offsetWidth - c.offsetLeft + "px") : (this.element.style.left = m.offsetLeft + u.offsetLeft + "px", this.element.style.width = c.offsetLeft + c.offsetWidth - u.offsetLeft + "px"), this.element.style.top = m.offsetTop + "px", this.element.style.height = b.offsetTop + b.offsetHeight - m.offsetTop + "px");
+    var e = this.table.rowManager.renderer.vDomTop, t = this.table.rowManager.renderer.vDomBottom, i = this.table.columnManager.renderer.leftCol, s = this.table.columnManager.renderer.rightCol, o, n, a, r, h, d, u, c, g, b;
+    this.table.options.renderHorizontal === "virtual" && this.rangeManager.rowHeader && (s += 1), e == null && (e = 0), t == null && (t = 1 / 0), i == null && (i = 0), s == null && (s = 1 / 0), this.overlaps(i, e, s, t) && (o = Math.max(this.top, e), n = Math.min(this.bottom, t), a = Math.max(this.left, i), r = Math.min(this.right, s), h = this.rangeManager.getCell(o, a), d = this.rangeManager.getCell(n, r), u = h.getElement(), c = d.getElement(), g = h.row.getElement(), b = d.row.getElement(), this.element.classList.add("tabulator-range-active"), this.table.rtl ? (this.element.style.right = g.offsetWidth - u.offsetLeft - u.offsetWidth + "px", this.element.style.width = u.offsetLeft + u.offsetWidth - c.offsetLeft + "px") : (this.element.style.left = g.offsetLeft + u.offsetLeft + "px", this.element.style.width = c.offsetLeft + c.offsetWidth - u.offsetLeft + "px"), this.element.style.top = g.offsetTop + "px", this.element.style.height = b.offsetTop + b.offsetHeight - g.offsetTop + "px");
   }
   atTopLeft(e) {
     return e.row.position - 1 === this.top && e.column.getPosition() - 1 === this.left;
@@ -7582,21 +7582,21 @@ class In extends de {
     var e = [], t = this.getRows(), i = this.getColumns();
     return t.forEach((s) => {
       var o = s.getData(), n = {};
-      i.forEach((r) => {
-        n[r.field] = o[r.field];
+      i.forEach((a) => {
+        n[a.field] = o[a.field];
       }), e.push(n);
     }), e;
   }
   getCells(e, t) {
     var i = [], s = this.getRows(), o = this.getColumns();
     return e ? i = s.map((n) => {
-      var r = [];
-      return n.getCells().forEach((a) => {
-        o.includes(a.column) && r.push(t ? a.getComponent() : a);
-      }), r;
+      var a = [];
+      return n.getCells().forEach((r) => {
+        o.includes(r.column) && a.push(t ? r.getComponent() : r);
+      }), a;
     }) : s.forEach((n) => {
-      n.getCells().forEach((r) => {
-        o.includes(r.column) && i.push(t ? r.getComponent() : r);
+      n.getCells().forEach((a) => {
+        o.includes(a.column) && i.push(t ? a.getComponent() : a);
       });
     }), i;
   }
@@ -7623,7 +7623,7 @@ class In extends de {
     return t.length ? (i.start = t[0], i.end = t[t.length - 1]) : console.warn("No bounds defined on range"), i;
   }
   getComponent() {
-    return this.component || (this.component = new Vn(this)), this.component;
+    return this.component || (this.component = new $n(this)), this.component;
   }
   destroy(e) {
     this.destroyed = !0, this.element.remove(), e && this.rangeManager.rangeRemoved(this), this.initialized && this.dispatchExternal("rangeRemoved", this.getComponent());
@@ -7632,7 +7632,7 @@ class In extends de {
     return this.destroyed && console.warn("You cannot call the " + e + " function on a destroyed range"), !this.destroyed;
   }
 }
-var $n = {
+var In = {
   rangeJumpUp: ["ctrl + 38", "meta + 38"],
   rangeJumpDown: ["ctrl + 40", "meta + 40"],
   rangeJumpLeft: ["ctrl + 37", "meta + 37"],
@@ -7684,21 +7684,21 @@ var $n = {
   }
 }, Gn = {
   range: function(l) {
-    var e = [], t = this.table.modules.selectRange.activeRange, i = !1, s, o, n, r, a;
-    return a = l.length, t && (s = t.getBounds(), o = s.start, s.start === s.end && (i = !0), o && (e = this.table.rowManager.activeRows.slice(), n = e.indexOf(o.row), i ? r = l.length : r = e.indexOf(s.end.row) - n + 1, n > -1 && (this.table.blockRedraw(), e = e.slice(n, n + r), e.forEach((h, d) => {
-      h.updateData(l[d % a]);
+    var e = [], t = this.table.modules.selectRange.activeRange, i = !1, s, o, n, a, r;
+    return r = l.length, t && (s = t.getBounds(), o = s.start, s.start === s.end && (i = !0), o && (e = this.table.rowManager.activeRows.slice(), n = e.indexOf(o.row), i ? a = l.length : a = e.indexOf(s.end.row) - n + 1, n > -1 && (this.table.blockRedraw(), e = e.slice(n, n + a), e.forEach((h, d) => {
+      h.updateData(l[d % r]);
     }), this.table.restoreRedraw()))), e;
   }
 }, jn = {
   range: function(l) {
-    var e = [], t = [], i = this.table.modules.selectRange.activeRange, s = !1, o, n, r, a, h;
+    var e = [], t = [], i = this.table.modules.selectRange.activeRange, s = !1, o, n, a, r, h;
     return i && (o = i.getBounds(), n = o.start, o.start === o.end && (s = !0), n && (l = l.split(`
 `), l.forEach(function(d) {
       e.push(d.split("	"));
-    }), e.length && (a = this.table.columnManager.getVisibleColumnsByIndex(), h = a.indexOf(n.column), h > -1))) ? (s ? r = e[0].length : r = a.indexOf(o.end.column) - h + 1, a = a.slice(h, h + r), e.forEach((d) => {
+    }), e.length && (r = this.table.columnManager.getVisibleColumnsByIndex(), h = r.indexOf(n.column), h > -1))) ? (s ? a = e[0].length : a = r.indexOf(o.end.column) - h + 1, r = r.slice(h, h + a), e.forEach((d) => {
       var u = {}, c = d.length;
-      a.forEach(function(m, b) {
-        u[m.field] = d[b % c];
+      r.forEach(function(g, b) {
+        u[g.field] = d[b % c];
       }), t.push(u);
     }), t) : !1;
   }
@@ -7713,7 +7713,7 @@ var $n = {
   }
 }, Kn = {
   keybindings: {
-    bindings: $n,
+    bindings: In,
     actions: Wn
   },
   clipboard: {
@@ -7725,7 +7725,7 @@ var $n = {
     rowLookups: qn
   }
 };
-class Nt extends j {
+class $t extends G {
   constructor(e) {
     super(e), this.selecting = "cell", this.mousedown = !1, this.ranges = [], this.overlay = null, this.rowHeader = null, this.layoutChangeTimeout = null, this.columnSelection = !1, this.rowSelection = !1, this.maxRanges = 0, this.activeRange = !1, this.blockKeydown = !1, this.keyDownEvent = this._handleKeyDown.bind(this), this.mouseUpEvent = this._handleMouseUp.bind(this), this.registerTableOption("selectableRange", !1), this.registerTableOption("selectableRangeColumns", !1), this.registerTableOption("selectableRangeRows", !1), this.registerTableOption("selectableRangeClearCells", !1), this.registerTableOption("selectableRangeClearCellsValue", void 0), this.registerTableOption("selectableRangeAutoFocus", !0), this.registerTableFunction("getRangesData", this.getRangesData.bind(this)), this.registerTableFunction("getRanges", this.getRanges.bind(this)), this.registerTableFunction("addRange", this.addRangeFromComponent.bind(this)), this.registerComponentFunction("cell", "getRanges", this.cellGetRanges.bind(this)), this.registerComponentFunction("row", "getRanges", this.rowGetRanges.bind(this)), this.registerComponentFunction("column", "getRanges", this.colGetRanges.bind(this));
   }
@@ -7860,15 +7860,15 @@ class Nt extends j {
     this.navigate(i, s, t), e.preventDefault();
   }
   navigate(e, t, i) {
-    var s = !1, o, n, r, a, h, d, u, c, m, b, E;
+    var s = !1, o, n, a, r, h, d, u, c, g, b, E;
     if (this.table.modules.edit && this.table.modules.edit.currentCell)
       return !1;
-    if (this.ranges.length > 1 && (this.ranges = this.ranges.filter((y) => y === this.activeRange ? (y.setEnd(y.start.row, y.start.col), !0) : (y.destroy(), !1))), o = this.activeRange, r = {
+    if (this.ranges.length > 1 && (this.ranges = this.ranges.filter((y) => y === this.activeRange ? (y.setEnd(y.start.row, y.start.col), !0) : (y.destroy(), !1))), o = this.activeRange, a = {
       top: o.top,
       bottom: o.bottom,
       left: o.left,
       right: o.right
-    }, n = t ? o.end : o.start, a = n.row, h = n.col, e)
+    }, n = t ? o.end : o.start, r = n.row, h = n.col, e)
       switch (i) {
         case "left":
           h = this.findJumpCellLeft(o.start.row, n.col);
@@ -7877,10 +7877,10 @@ class Nt extends j {
           h = this.findJumpCellRight(o.start.row, n.col);
           break;
         case "up":
-          a = this.findJumpCellUp(n.row, o.start.col);
+          r = this.findJumpCellUp(n.row, o.start.col);
           break;
         case "down":
-          a = this.findJumpCellDown(n.row, o.start.col);
+          r = this.findJumpCellDown(n.row, o.start.col);
           break;
       }
     else {
@@ -7894,15 +7894,15 @@ class Nt extends j {
           h = Math.min(h + 1, this.getTableColumns().length - 1);
           break;
         case "up":
-          a = Math.max(a - 1, 0);
+          r = Math.max(r - 1, 0);
           break;
         case "down":
-          a = Math.min(a + 1, this.getTableRows().length - 1);
+          r = Math.min(r + 1, this.getTableRows().length - 1);
           break;
       }
     }
-    if (this.rowHeader && h === 0 && (h = 1), t || o.setStart(a, h), o.setEnd(a, h), t || (this.selecting = "cell"), s = r.top !== o.top || r.bottom !== o.bottom || r.left !== o.left || r.right !== o.right, s)
-      return d = this.getRowByRangePos(o.end.row), u = this.getColumnByRangePos(o.end.col), c = d.getElement().getBoundingClientRect(), b = u.getElement().getBoundingClientRect(), m = this.table.rowManager.getElement().getBoundingClientRect(), E = this.table.columnManager.getElement().getBoundingClientRect(), c.top >= m.top && c.bottom <= m.bottom || (d.getElement().parentNode && u.getElement().parentNode ? this.autoScroll(o, d.getElement(), u.getElement()) : d.getComponent().scrollTo(void 0, !1)), b.left >= E.left + this.getRowHeaderWidth() && b.right <= E.right || (d.getElement().parentNode && u.getElement().parentNode ? this.autoScroll(o, d.getElement(), u.getElement()) : u.getComponent().scrollTo(void 0, !1)), this.layoutElement(), !0;
+    if (this.rowHeader && h === 0 && (h = 1), t || o.setStart(r, h), o.setEnd(r, h), t || (this.selecting = "cell"), s = a.top !== o.top || a.bottom !== o.bottom || a.left !== o.left || a.right !== o.right, s)
+      return d = this.getRowByRangePos(o.end.row), u = this.getColumnByRangePos(o.end.col), c = d.getElement().getBoundingClientRect(), b = u.getElement().getBoundingClientRect(), g = this.table.rowManager.getElement().getBoundingClientRect(), E = this.table.columnManager.getElement().getBoundingClientRect(), c.top >= g.top && c.bottom <= g.bottom || (d.getElement().parentNode && u.getElement().parentNode ? this.autoScroll(o, d.getElement(), u.getElement()) : d.getComponent().scrollTo(void 0, !1)), b.left >= E.left + this.getRowHeaderWidth() && b.right <= E.right || (d.getElement().parentNode && u.getElement().parentNode ? this.autoScroll(o, d.getElement(), u.getElement()) : u.getComponent().scrollTo(void 0, !1)), this.layoutElement(), !0;
   }
   rangeRemoved(e) {
     this.ranges = this.ranges.filter((t) => t !== e), this.activeRange === e && (this.ranges.length ? this.activeRange = this.ranges[this.ranges.length - 1] : this.addRange()), this.layoutElement();
@@ -7920,14 +7920,14 @@ class Nt extends j {
   findJumpItem(e, t, i, s) {
     var o;
     for (let n of i) {
-      let r = s(n);
+      let a = s(n);
       if (e) {
-        if (o = n, r)
+        if (o = n, a)
           break;
       } else if (t) {
-        if (o = n, r)
+        if (o = n, a)
           break;
-      } else if (r)
+      } else if (a)
         o = n;
       else
         break;
@@ -7935,20 +7935,20 @@ class Nt extends j {
     return o;
   }
   findJumpCellLeft(e, t) {
-    var i = this.getRowByRangePos(e), s = this.getTableColumns(), o = this.isEmpty(i.getData()[s[t].getField()]), n = s[t - 1] ? this.isEmpty(i.getData()[s[t - 1].getField()]) : !1, r = this.rowHeader ? s.slice(1, t) : s.slice(0, t), a = this.findJumpCol(i, r, !0, o, n);
-    return a ? a.getPosition() - 1 : t;
-  }
-  findJumpCellRight(e, t) {
-    var i = this.getRowByRangePos(e), s = this.getTableColumns(), o = this.isEmpty(i.getData()[s[t].getField()]), n = s[t + 1] ? this.isEmpty(i.getData()[s[t + 1].getField()]) : !1, r = this.findJumpCol(i, s.slice(t + 1, s.length), !1, o, n);
+    var i = this.getRowByRangePos(e), s = this.getTableColumns(), o = this.isEmpty(i.getData()[s[t].getField()]), n = s[t - 1] ? this.isEmpty(i.getData()[s[t - 1].getField()]) : !1, a = this.rowHeader ? s.slice(1, t) : s.slice(0, t), r = this.findJumpCol(i, a, !0, o, n);
     return r ? r.getPosition() - 1 : t;
   }
+  findJumpCellRight(e, t) {
+    var i = this.getRowByRangePos(e), s = this.getTableColumns(), o = this.isEmpty(i.getData()[s[t].getField()]), n = s[t + 1] ? this.isEmpty(i.getData()[s[t + 1].getField()]) : !1, a = this.findJumpCol(i, s.slice(t + 1, s.length), !1, o, n);
+    return a ? a.getPosition() - 1 : t;
+  }
   findJumpCellUp(e, t) {
-    var i = this.getColumnByRangePos(t), s = this.getTableRows(), o = this.isEmpty(s[e].getData()[i.getField()]), n = s[e - 1] ? this.isEmpty(s[e - 1].getData()[i.getField()]) : !1, r = this.findJumpRow(i, s.slice(0, e), !0, o, n);
-    return r ? r.position - 1 : e;
+    var i = this.getColumnByRangePos(t), s = this.getTableRows(), o = this.isEmpty(s[e].getData()[i.getField()]), n = s[e - 1] ? this.isEmpty(s[e - 1].getData()[i.getField()]) : !1, a = this.findJumpRow(i, s.slice(0, e), !0, o, n);
+    return a ? a.position - 1 : e;
   }
   findJumpCellDown(e, t) {
-    var i = this.getColumnByRangePos(t), s = this.getTableRows(), o = this.isEmpty(s[e].getData()[i.getField()]), n = s[e + 1] ? this.isEmpty(s[e + 1].getData()[i.getField()]) : !1, r = this.findJumpRow(i, s.slice(e + 1, s.length), !1, o, n);
-    return r ? r.position - 1 : e;
+    var i = this.getColumnByRangePos(t), s = this.getTableRows(), o = this.isEmpty(s[e].getData()[i.getField()]), n = s[e + 1] ? this.isEmpty(s[e + 1].getData()[i.getField()]) : !1, a = this.findJumpRow(i, s.slice(e + 1, s.length), !1, o, n);
+    return a ? a.position - 1 : e;
   }
   ///////////////////////////////////
   ///////      Selection      ///////
@@ -7969,7 +7969,7 @@ class Nt extends j {
     e.shiftKey ? this.activeRange.setBounds(!1, t) : e.ctrlKey ? this.addRange().setBounds(t) : this.resetRanges().setBounds(t);
   }
   autoScroll(e, t, i) {
-    var s = this.table.rowManager.element, o, n, r, a;
+    var s = this.table.rowManager.element, o, n, a, r;
     typeof t > "u" && (t = this.getRowByRangePos(e.end.row).getElement()), typeof i > "u" && (i = this.getColumnByRangePos(e.end.col).getElement()), o = {
       left: i.offsetLeft,
       right: i.offsetLeft + i.offsetWidth,
@@ -7980,7 +7980,7 @@ class Nt extends j {
       right: Math.ceil(s.scrollLeft + s.clientWidth),
       top: s.scrollTop,
       bottom: s.scrollTop + s.offsetHeight - this.table.rowManager.scrollbarWidth
-    }, r = n.left < o.left && o.left < n.right && n.left < o.right && o.right < n.right, a = n.top < o.top && o.top < n.bottom && n.top < o.bottom && o.bottom < n.bottom, r || (o.left < n.left ? s.scrollLeft = o.left - this.getRowHeaderWidth() : o.right > n.right && (s.scrollLeft = Math.min(o.right - s.clientWidth, o.left - this.getRowHeaderWidth()))), a || (o.top < n.top ? s.scrollTop = o.top : o.bottom > n.bottom && (s.scrollTop = o.bottom - s.clientHeight));
+    }, a = n.left < o.left && o.left < n.right && n.left < o.right && o.right < n.right, r = n.top < o.top && o.top < n.bottom && n.top < o.bottom && o.bottom < n.bottom, a || (o.left < n.left ? s.scrollLeft = o.left - this.getRowHeaderWidth() : o.right > n.right && (s.scrollLeft = Math.min(o.right - s.clientWidth, o.left - this.getRowHeaderWidth()))), r || (o.top < n.top ? s.scrollTop = o.top : o.bottom > n.bottom && (s.scrollTop = o.bottom - s.clientHeight));
   }
   ///////////////////////////////////
   ///////       Layout        ///////
@@ -8035,7 +8035,7 @@ class Nt extends j {
   }
   addRange(e, t) {
     var i;
-    return this.maxRanges !== !0 && this.ranges.length >= this.maxRanges && this.ranges.shift().destroy(), i = new In(this.table, this, e, t), this.activeRange = i, this.ranges.push(i), this.rangeContainer.appendChild(i.element), i;
+    return this.maxRanges !== !0 && this.ranges.length >= this.maxRanges && this.ranges.shift().destroy(), i = new Vn(this.table, this, e, t), this.activeRange = i, this.ranges.push(i), this.rangeContainer.appendChild(i.element), i;
   }
   resetRanges() {
     var e, t, i;
@@ -8057,23 +8057,23 @@ class Nt extends j {
     return e == null || e === "";
   }
 }
-M(Nt, "moduleName", "selectRange"), M(Nt, "moduleInitOrder", 1), M(Nt, "moduleExtensions", Kn);
+S($t, "moduleName", "selectRange"), S($t, "moduleInitOrder", 1), S($t, "moduleExtensions", Kn);
 function Xn(l, e, t, i, s, o, n) {
-  var r = n.alignEmptyValues, a = n.decimalSeparator, h = n.thousandSeparator, d = 0;
-  if (l = String(l), e = String(e), h && (l = l.split(h).join(""), e = e.split(h).join("")), a && (l = l.split(a).join("."), e = e.split(a).join(".")), l = parseFloat(l), e = parseFloat(e), isNaN(l))
+  var a = n.alignEmptyValues, r = n.decimalSeparator, h = n.thousandSeparator, d = 0;
+  if (l = String(l), e = String(e), h && (l = l.split(h).join(""), e = e.split(h).join("")), r && (l = l.split(r).join("."), e = e.split(r).join(".")), l = parseFloat(l), e = parseFloat(e), isNaN(l))
     d = isNaN(e) ? 0 : -1;
   else if (isNaN(e))
     d = 1;
   else
     return l - e;
-  return (r === "top" && o === "desc" || r === "bottom" && o === "asc") && (d *= -1), d;
+  return (a === "top" && o === "desc" || a === "bottom" && o === "asc") && (d *= -1), d;
 }
 function Jn(l, e, t, i, s, o, n) {
-  var r = n.alignEmptyValues, a = 0, h;
+  var a = n.alignEmptyValues, r = 0, h;
   if (!l)
-    a = e ? -1 : 0;
+    r = e ? -1 : 0;
   else if (!e)
-    a = 1;
+    r = 1;
   else {
     switch (typeof n.locale) {
       case "boolean":
@@ -8085,12 +8085,12 @@ function Jn(l, e, t, i, s, o, n) {
     }
     return String(l).toLowerCase().localeCompare(String(e).toLowerCase(), h);
   }
-  return (r === "top" && o === "desc" || r === "bottom" && o === "asc") && (a *= -1), a;
+  return (a === "top" && o === "desc" || a === "bottom" && o === "asc") && (r *= -1), r;
 }
 function Ai(l, e, t, i, s, o, n) {
-  var r = this.table.dependencyRegistry.lookup(["luxon", "DateTime"], "DateTime"), a = n.format || "dd/MM/yyyy HH:mm:ss", h = n.alignEmptyValues, d = 0;
-  if (typeof r < "u") {
-    if (r.isDateTime(l) || (a === "iso" ? l = r.fromISO(String(l)) : l = r.fromFormat(String(l), a)), r.isDateTime(e) || (a === "iso" ? e = r.fromISO(String(e)) : e = r.fromFormat(String(e), a)), !l.isValid)
+  var a = this.table.dependencyRegistry.lookup(["luxon", "DateTime"], "DateTime"), r = n.format || "dd/MM/yyyy HH:mm:ss", h = n.alignEmptyValues, d = 0;
+  if (typeof a < "u") {
+    if (a.isDateTime(l) || (r === "iso" ? l = a.fromISO(String(l)) : l = a.fromFormat(String(l), r)), a.isDateTime(e) || (r === "iso" ? e = a.fromISO(String(e)) : e = a.fromFormat(String(e), r)), !l.isValid)
       d = e.isValid ? -1 : 0;
     else if (!e.isValid)
       d = 1;
@@ -8107,38 +8107,38 @@ function Yn(l, e, t, i, s, o, n) {
   return n.format || (n.format = "HH:mm"), Ai.call(this, l, e, t, i, s, o, n);
 }
 function Zn(l, e, t, i, s, o, n) {
-  var r = l === !0 || l === "true" || l === "True" || l === 1 ? 1 : 0, a = e === !0 || e === "true" || e === "True" || e === 1 ? 1 : 0;
-  return r - a;
+  var a = l === !0 || l === "true" || l === "True" || l === 1 ? 1 : 0, r = e === !0 || e === "true" || e === "True" || e === 1 ? 1 : 0;
+  return a - r;
 }
-function er(l, e, t, i, s, o, n) {
-  var r = n.type || "length", a = n.alignEmptyValues, h = 0, d = this.table, u;
-  n.valueMap && (typeof n.valueMap == "string" ? u = function(m) {
-    return m.map((b) => Y.retrieveNestedData(d.options.nestedFieldSeparator, n.valueMap, b));
+function ea(l, e, t, i, s, o, n) {
+  var a = n.type || "length", r = n.alignEmptyValues, h = 0, d = this.table, u;
+  n.valueMap && (typeof n.valueMap == "string" ? u = function(g) {
+    return g.map((b) => Y.retrieveNestedData(d.options.nestedFieldSeparator, n.valueMap, b));
   } : u = n.valueMap);
-  function c(m) {
+  function c(g) {
     var b;
-    switch (u && (m = u(m)), r) {
+    switch (u && (g = u(g)), a) {
       case "length":
-        b = m.length;
+        b = g.length;
         break;
       case "sum":
-        b = m.reduce(function(E, y) {
+        b = g.reduce(function(E, y) {
           return E + y;
         });
         break;
       case "max":
-        b = Math.max.apply(null, m);
+        b = Math.max.apply(null, g);
         break;
       case "min":
-        b = Math.min.apply(null, m);
+        b = Math.min.apply(null, g);
         break;
       case "avg":
-        b = m.reduce(function(E, y) {
+        b = g.reduce(function(E, y) {
           return E + y;
-        }) / m.length;
+        }) / g.length;
         break;
       case "string":
-        b = m.join("");
+        b = g.join("");
         break;
     }
     return b;
@@ -8148,42 +8148,42 @@ function er(l, e, t, i, s, o, n) {
   else if (!Array.isArray(e))
     h = 1;
   else
-    return r === "string" ? String(c(l)).toLowerCase().localeCompare(String(c(e)).toLowerCase()) : c(e) - c(l);
-  return (a === "top" && o === "desc" || a === "bottom" && o === "asc") && (h *= -1), h;
+    return a === "string" ? String(c(l)).toLowerCase().localeCompare(String(c(e)).toLowerCase()) : c(e) - c(l);
+  return (r === "top" && o === "desc" || r === "bottom" && o === "asc") && (h *= -1), h;
 }
-function tr(l, e, t, i, s, o, n) {
-  var r = typeof l > "u" ? 0 : 1, a = typeof e > "u" ? 0 : 1;
-  return r - a;
+function ta(l, e, t, i, s, o, n) {
+  var a = typeof l > "u" ? 0 : 1, r = typeof e > "u" ? 0 : 1;
+  return a - r;
 }
-function ir(l, e, t, i, s, o, n) {
-  var r, a, h, d, u = 0, c, m = /(\d+)|(\D+)/g, b = /\d/, E = n.alignEmptyValues, y = 0;
+function ia(l, e, t, i, s, o, n) {
+  var a, r, h, d, u = 0, c, g = /(\d+)|(\D+)/g, b = /\d/, E = n.alignEmptyValues, y = 0;
   if (!l && l !== 0)
     y = !e && e !== 0 ? 0 : -1;
   else if (!e && e !== 0)
     y = 1;
   else {
     if (isFinite(l) && isFinite(e)) return l - e;
-    if (r = String(l).toLowerCase(), a = String(e).toLowerCase(), r === a) return 0;
-    if (!(b.test(r) && b.test(a))) return r > a ? 1 : -1;
-    for (r = r.match(m), a = a.match(m), c = r.length > a.length ? a.length : r.length; u < c; )
-      if (h = r[u], d = a[u++], h !== d)
+    if (a = String(l).toLowerCase(), r = String(e).toLowerCase(), a === r) return 0;
+    if (!(b.test(a) && b.test(r))) return a > r ? 1 : -1;
+    for (a = a.match(g), r = r.match(g), c = a.length > r.length ? r.length : a.length; u < c; )
+      if (h = a[u], d = r[u++], h !== d)
         return isFinite(h) && isFinite(d) ? (h.charAt(0) === "0" && (h = "." + h), d.charAt(0) === "0" && (d = "." + d), h - d) : h > d ? 1 : -1;
-    return r.length > a.length;
+    return a.length > r.length;
   }
   return (E === "top" && o === "desc" || E === "bottom" && o === "asc") && (y *= -1), y;
 }
-var sr = {
+var sa = {
   number: Xn,
   string: Jn,
   date: Qn,
   time: Yn,
   datetime: Ai,
   boolean: Zn,
-  array: er,
-  exists: tr,
-  alphanum: ir
+  array: ea,
+  exists: ta,
+  alphanum: ia
 };
-const rt = class rt extends j {
+const dt = class dt extends G {
   constructor(e) {
     super(e), this.sortList = [], this.changed = !1, this.registerTableOption("sortMode", "local"), this.registerTableOption("initialSort", !1), this.registerTableOption("columnHeaderSortMulti", !0), this.registerTableOption("sortOrderReverse", !1), this.registerTableOption("headerSortElement", "<div class='tabulator-arrow'></div>"), this.registerTableOption("headerSortClickElement", "header"), this.registerColumnOption("sorter"), this.registerColumnOption("sorterParams"), this.registerColumnOption("headerSort", !0), this.registerColumnOption("headerSortStartingDir"), this.registerColumnOption("headerSortTristate");
   }
@@ -8216,7 +8216,7 @@ const rt = class rt extends j {
     var t = !1, i, s;
     switch (typeof e.definition.sorter) {
       case "string":
-        rt.sorters[e.definition.sorter] ? t = rt.sorters[e.definition.sorter] : console.warn("Sort Error - No such sorter found: ", e.definition.sorter);
+        dt.sorters[e.definition.sorter] ? t = dt.sorters[e.definition.sorter] : console.warn("Sort Error - No such sorter found: ", e.definition.sorter);
         break;
       case "function":
         t = e.definition.sorter;
@@ -8252,7 +8252,7 @@ const rt = class rt extends j {
       e.titleHolderElement.appendChild(s), e.modules.sort.element = s, this.setColumnHeaderSortIcon(e, "none"), this.table.options.headerSortClickElement === "icon" && s.addEventListener("mousedown", (o) => {
         o.stopPropagation();
       }), (this.table.options.headerSortClickElement === "icon" ? s : i).addEventListener("click", (o) => {
-        var n = "", r = [], a = !1;
+        var n = "", a = [], r = !1;
         if (e.modules.sort) {
           if (e.modules.sort.tristate)
             e.modules.sort.dir == "none" ? n = e.modules.sort.startingDir : e.modules.sort.dir == e.modules.sort.startingDir ? n = e.modules.sort.dir == "asc" ? "desc" : "asc" : n = "none";
@@ -8267,7 +8267,7 @@ const rt = class rt extends j {
               default:
                 n = e.modules.sort.startingDir;
             }
-          this.table.options.columnHeaderSortMulti && (o.shiftKey || o.ctrlKey) ? (r = this.getSort(), a = r.findIndex((h) => h.field === e.getField()), a > -1 ? (r[a].dir = n, a = r.splice(a, 1)[0], n != "none" && r.push(a)) : n != "none" && r.push({ column: e, dir: n }), this.setSort(r)) : n == "none" ? this.clear() : this.setSort(e, n), this.refreshSort();
+          this.table.options.columnHeaderSortMulti && (o.shiftKey || o.ctrlKey) ? (a = this.getSort(), r = a.findIndex((h) => h.field === e.getField()), r > -1 ? (a[r].dir = n, r = a.splice(r, 1)[0], n != "none" && a.push(r)) : n != "none" && a.push({ column: e, dir: n }), this.setSort(a)) : n == "none" ? this.clear() : this.setSort(e, n), this.refreshSort();
         }
       });
     }
@@ -8314,18 +8314,18 @@ const rt = class rt extends j {
           !isNaN(o) && o !== "" ? i = "number" : o.match(/((^[0-9]+[a-z]+)|(^[a-z]+[0-9]+))+$/i) && (i = "alphanum");
           break;
       }
-    return rt.sorters[i];
+    return dt.sorters[i];
   }
   //work through sort list sorting data
   sort(e, t) {
     var i = this, s = this.table.options.sortOrderReverse ? i.sortList.slice().reverse() : i.sortList, o = [], n = [];
-    return this.subscribedExternal("dataSorting") && this.dispatchExternal("dataSorting", i.getSort()), t || i.clearColumnHeaders(), this.table.options.sortMode !== "remote" ? (s.forEach(function(r, a) {
+    return this.subscribedExternal("dataSorting") && this.dispatchExternal("dataSorting", i.getSort()), t || i.clearColumnHeaders(), this.table.options.sortMode !== "remote" ? (s.forEach(function(a, r) {
       var h;
-      r.column && (h = r.column.modules.sort, h && (h.sorter || (h.sorter = i.findSorter(r.column)), r.params = typeof h.params == "function" ? h.params(r.column.getComponent(), r.dir) : h.params, o.push(r)), t || i.setColumnHeader(r.column, r.dir));
-    }), o.length && i._sortItems(e, o)) : t || s.forEach(function(r, a) {
-      i.setColumnHeader(r.column, r.dir);
-    }), this.subscribedExternal("dataSorted") && (e.forEach((r) => {
-      n.push(r.getComponent());
+      a.column && (h = a.column.modules.sort, h && (h.sorter || (h.sorter = i.findSorter(a.column)), a.params = typeof h.params == "function" ? h.params(a.column.getComponent(), a.dir) : h.params, o.push(a)), t || i.setColumnHeader(a.column, a.dir));
+    }), o.length && i._sortItems(e, o)) : t || s.forEach(function(a, r) {
+      i.setColumnHeader(a.column, a.dir);
+    }), this.subscribedExternal("dataSorted") && (e.forEach((a) => {
+      n.push(a.getComponent());
     }), this.dispatchExternal("dataSorted", i.getSort(), n)), e;
   }
   //clear sort arrows on columns
@@ -8349,9 +8349,9 @@ const rt = class rt extends j {
   _sortItems(e, t) {
     var i = t.length - 1;
     e.sort((s, o) => {
-      for (var n, r = i; r >= 0; r--) {
-        let a = t[r];
-        if (n = this._sortRow(s, o, a.column, a.dir, a.params), n !== 0)
+      for (var n, a = i; a >= 0; a--) {
+        let r = t[a];
+        if (n = this._sortRow(s, o, r.column, r.dir, r.params), n !== 0)
           break;
       }
       return n;
@@ -8359,14 +8359,14 @@ const rt = class rt extends j {
   }
   //process individual rows for a sort function on active data
   _sortRow(e, t, i, s, o) {
-    var n, r, a = s == "asc" ? e : t, h = s == "asc" ? t : e;
-    return e = i.getFieldValue(a.getData()), t = i.getFieldValue(h.getData()), e = typeof e < "u" ? e : "", t = typeof t < "u" ? t : "", n = a.getComponent(), r = h.getComponent(), i.modules.sort.sorter.call(this, e, t, n, r, i.getComponent(), s, o);
+    var n, a, r = s == "asc" ? e : t, h = s == "asc" ? t : e;
+    return e = i.getFieldValue(r.getData()), t = i.getFieldValue(h.getData()), e = typeof e < "u" ? e : "", t = typeof t < "u" ? t : "", n = r.getComponent(), a = h.getComponent(), i.modules.sort.sorter.call(this, e, t, n, a, i.getComponent(), s, o);
   }
 };
-M(rt, "moduleName", "sort"), //load defaults
-M(rt, "sorters", sr);
-let xi = rt;
-class or {
+S(dt, "moduleName", "sort"), //load defaults
+S(dt, "sorters", sa);
+let xi = dt;
+class oa {
   constructor(e, t) {
     this.columnCount = e, this.rowCount = t, this.columnString = [], this.columns = [], this.rows = [];
   }
@@ -8437,9 +8437,9 @@ class bs {
     return this._sheet.setColumns(e);
   }
 }
-class qi extends de {
+class qi extends be {
   constructor(e, t) {
-    super(e.table), this.spreadsheetManager = e, this.definition = t, this.title = this.definition.title || "", this.key = this.definition.key || this.definition.title, this.rowCount = this.definition.rows, this.columnCount = this.definition.columns, this.data = this.definition.data || [], this.element = null, this.isActive = !1, this.grid = new or(this.columnCount, this.rowCount), this.defaultColumnDefinition = { width: 100, headerHozAlign: "center", headerSort: !1 }, this.columnDefinition = Object.assign(this.defaultColumnDefinition, this.options("spreadsheetColumnDefinition")), this.columnDefs = [], this.rowDefs = [], this.columnFields = [], this.columns = [], this.rows = [], this.scrollTop = null, this.scrollLeft = null, this.initialize(), this.dispatchExternal("sheetAdded", this.getComponent());
+    super(e.table), this.spreadsheetManager = e, this.definition = t, this.title = this.definition.title || "", this.key = this.definition.key || this.definition.title, this.rowCount = this.definition.rows, this.columnCount = this.definition.columns, this.data = this.definition.data || [], this.element = null, this.isActive = !1, this.grid = new oa(this.columnCount, this.rowCount), this.defaultColumnDefinition = { width: 100, headerHozAlign: "center", headerSort: !1 }, this.columnDefinition = Object.assign(this.defaultColumnDefinition, this.options("spreadsheetColumnDefinition")), this.columnDefs = [], this.rowDefs = [], this.columnFields = [], this.columns = [], this.rows = [], this.scrollTop = null, this.scrollLeft = null, this.initialize(), this.dispatchExternal("sheetAdded", this.getComponent());
   }
   ///////////////////////////////////
   ///////// Initialization //////////
@@ -8465,9 +8465,9 @@ class qi extends de {
     var e;
     this.grid.setRowCount(this.rowCount), e = this.grid.genRows(this.data), this.rowDefs = [], e.forEach((t, i) => {
       var s = { _id: t }, o = this.data[i];
-      o && o.forEach((n, r) => {
-        var a = this.columnFields[r];
-        a && (s[a] = n);
+      o && o.forEach((n, a) => {
+        var r = this.columnFields[a];
+        r && (s[r] = n);
       }), this.rowDefs.push(s);
     });
   }
@@ -8496,11 +8496,11 @@ class qi extends de {
   getData(e) {
     var t = [], i, s, o;
     return this.rowDefs.forEach((n) => {
-      var r = [];
-      this.columnFields.forEach((a) => {
-        r.push(n[a]);
-      }), t.push(r);
-    }), !e && !this.options("spreadsheetOutputFull") && (i = t.map((n) => n.findLastIndex((r) => typeof r < "u") + 1), s = Math.max(...i), o = i.findLastIndex((n) => n > 0) + 1, t = t.slice(0, o), t = t.map((n) => n.slice(0, s))), t;
+      var a = [];
+      this.columnFields.forEach((r) => {
+        a.push(n[r]);
+      }), t.push(a);
+    }), !e && !this.options("spreadsheetOutputFull") && (i = t.map((n) => n.findLastIndex((a) => typeof a < "u") + 1), s = Math.max(...i), o = i.findLastIndex((n) => n > 0) + 1, t = t.slice(0, o), t = t.map((n) => n.slice(0, s))), t;
   }
   setData(e) {
     this.data = e, this.reinitialize(), this.dispatchExternal("sheetUpdated", this.getComponent()), this.isActive && this.load();
@@ -8527,7 +8527,7 @@ class qi extends de {
     this.spreadsheetManager.loadSheet(this);
   }
 }
-class vs extends j {
+class vs extends G {
   constructor(e) {
     super(e), this.sheets = [], this.element = null, this.registerTableOption("spreadsheet", !1), this.registerTableOption("spreadsheetRows", 50), this.registerTableOption("spreadsheetColumns", 50), this.registerTableOption("spreadsheetColumnDefinition", {}), this.registerTableOption("spreadsheetOutputFull", !1), this.registerTableOption("spreadsheetData", !1), this.registerTableOption("spreadsheetSheets", !1), this.registerTableOption("spreadsheetSheetTabs", !1), this.registerTableOption("spreadsheetSheetTabsElement", !1), this.registerTableFunction("setSheets", this.setSheets.bind(this)), this.registerTableFunction("addSheet", this.addSheet.bind(this)), this.registerTableFunction("getSheets", this.getSheets.bind(this)), this.registerTableFunction("getSheetDefinitions", this.getSheetDefinitions.bind(this)), this.registerTableFunction("setSheetData", this.setSheetData.bind(this)), this.registerTableFunction("getSheet", this.getSheet.bind(this)), this.registerTableFunction("getSheetData", this.getSheetData.bind(this)), this.registerTableFunction("clearSheet", this.clearSheet.bind(this)), this.registerTableFunction("removeSheet", this.removeSheetFunc.bind(this)), this.registerTableFunction("activeSheet", this.activeSheetFunc.bind(this));
   }
@@ -8631,8 +8631,8 @@ Data:     `, e), !1;
     return t ? this.loadSheet(t) : !1;
   }
 }
-M(vs, "moduleName", "spreadsheet");
-class ws extends j {
+S(vs, "moduleName", "spreadsheet");
+class ws extends G {
   constructor(e) {
     super(e), this.tooltipSubscriber = null, this.headerSubscriber = null, this.timeout = null, this.popupInstance = null, this.registerTableOption("tooltipDelay", 300), this.registerColumnOption("tooltip"), this.registerColumnOption("headerTooltip");
   }
@@ -8656,18 +8656,18 @@ class ws extends j {
   }
   loadTooltip(e, t, i) {
     var s, o, n;
-    function r(a) {
-      o = a;
+    function a(r) {
+      o = r;
     }
-    typeof i == "function" && (i = i(e, t.getComponent(), r)), i instanceof HTMLElement ? s = i : (s = document.createElement("div"), i === !0 && (t instanceof Pt ? i = t.value : t.definition.field ? this.langBind("columns|" + t.definition.field, (a) => {
-      s.innerHTML = i = a || t.definition.title;
-    }) : i = t.definition.title), s.innerHTML = i), (i || i === 0 || i === !1) && (s.classList.add("tabulator-tooltip"), s.addEventListener("mousemove", (a) => a.preventDefault()), this.popupInstance = this.popup(s), typeof o == "function" && this.popupInstance.renderCallback(o), n = this.popupInstance.containerEventCoords(e), this.popupInstance.show(n.x + 15, n.y + 15).hideOnBlur(() => {
+    typeof i == "function" && (i = i(e, t.getComponent(), a)), i instanceof HTMLElement ? s = i : (s = document.createElement("div"), i === !0 && (t instanceof zt ? i = t.value : t.definition.field ? this.langBind("columns|" + t.definition.field, (r) => {
+      s.innerHTML = i = r || t.definition.title;
+    }) : i = t.definition.title), s.innerHTML = i), (i || i === 0 || i === !1) && (s.classList.add("tabulator-tooltip"), s.addEventListener("mousemove", (r) => r.preventDefault()), this.popupInstance = this.popup(s), typeof o == "function" && this.popupInstance.renderCallback(o), n = this.popupInstance.containerEventCoords(e), this.popupInstance.show(n.x + 15, n.y + 15).hideOnBlur(() => {
       this.dispatchExternal("TooltipClosed", t.getComponent()), this.popupInstance = null;
     }), this.dispatchExternal("TooltipOpened", t.getComponent()));
   }
 }
-M(ws, "moduleName", "tooltip");
-var nr = {
+S(ws, "moduleName", "tooltip");
+var na = {
   //is integer
   integer: function(l, e, t) {
     return e === "" || e === null || typeof e > "u" ? !0 : (e = Number(e), !isNaN(e) && isFinite(e) && Math.floor(e) === e);
@@ -8732,8 +8732,8 @@ var nr = {
       return !0;
     var i = !0, s = l.getData(), o = l.getColumn()._getSelf();
     return this.table.rowManager.rows.forEach(function(n) {
-      var r = n.getData();
-      r !== s && e == o.getFieldValue(r) && (i = !1);
+      var a = n.getData();
+      a !== s && e == o.getFieldValue(a) && (i = !1);
     }), i;
   },
   //must have a value
@@ -8741,7 +8741,7 @@ var nr = {
     return e !== "" && e !== null && typeof e < "u";
   }
 };
-const Ft = class Ft extends j {
+const _t = class _t extends G {
   constructor(e) {
     super(e), this.invalidCells = [], this.registerTableOption("validationMode", "blocking"), this.registerColumnOption("validator"), this.registerTableFunction("getInvalidCells", this.getInvalidCells.bind(this)), this.registerTableFunction("clearCellValidation", this.userClearCellValidation.bind(this)), this.registerTableFunction("validate", this.userValidate.bind(this)), this.registerComponentFunction("cell", "isValid", this.cellIsValid.bind(this)), this.registerComponentFunction("cell", "clearValidation", this.clearValidation.bind(this)), this.registerComponentFunction("cell", "validate", this.cellValidate.bind(this)), this.registerComponentFunction("column", "validate", this.columnValidate.bind(this)), this.registerComponentFunction("row", "validate", this.rowValidate.bind(this));
   }
@@ -8831,7 +8831,7 @@ const Ft = class Ft extends j {
     }
   }
   _buildValidator(e, t) {
-    var i = typeof e == "function" ? e : Ft.validators[e];
+    var i = typeof e == "function" ? e : _t.validators[e];
     return i ? {
       type: typeof e == "function" ? "function" : e,
       func: i,
@@ -8840,10 +8840,10 @@ const Ft = class Ft extends j {
   }
   validate(e, t, i) {
     var s = this, o = [], n = this.invalidCells.indexOf(t);
-    return e && e.forEach((r) => {
-      r.func.call(s, t.getComponent(), i, r.params) || o.push({
-        type: r.type,
-        parameters: r.params
+    return e && e.forEach((a) => {
+      a.func.call(s, t.getComponent(), i, a.params) || o.push({
+        type: a.type,
+        parameters: a.params
       });
     }), t.modules.validate || (t.modules.validate = {}), o.length ? (t.modules.validate.invalid = o, this.table.options.validationMode !== "manual" && t.getElement().classList.add("tabulator-validation-fail"), n == -1 && this.invalidCells.push(t)) : (t.modules.validate.invalid = !1, t.getElement().classList.remove("tabulator-validation-fail"), n > -1 && this.invalidCells.splice(n, 1)), o.length ? o : !0;
   }
@@ -8858,13 +8858,13 @@ const Ft = class Ft extends j {
     e.modules.validate && e.modules.validate.invalid && (e.getElement().classList.remove("tabulator-validation-fail"), e.modules.validate.invalid = !1, t = this.invalidCells.indexOf(e), t > -1 && this.invalidCells.splice(t, 1));
   }
 };
-M(Ft, "moduleName", "validate"), //load defaults
-M(Ft, "validators", nr);
-let ki = Ft;
+S(_t, "moduleName", "validate"), //load defaults
+S(_t, "validators", na);
+let ki = _t;
 var si = /* @__PURE__ */ Object.freeze({
   __proto__: null,
   AccessorModule: oi,
-  AjaxModule: ai,
+  AjaxModule: ri,
   ClipboardModule: li,
   ColumnCalcsModule: hi,
   DataTreeModule: ss,
@@ -8875,9 +8875,9 @@ var si = /* @__PURE__ */ Object.freeze({
   FormatModule: pi,
   FrozenColumnsModule: os,
   FrozenRowsModule: ns,
-  GroupRowsModule: rs,
+  GroupRowsModule: as,
   HistoryModule: mi,
-  HtmlTableImportModule: as,
+  HtmlTableImportModule: rs,
   ImportModule: gi,
   InteractionModule: ls,
   KeybindingsModule: bi,
@@ -8894,13 +8894,13 @@ var si = /* @__PURE__ */ Object.freeze({
   ResizeRowsModule: ms,
   ResizeTableModule: gs,
   ResponsiveLayoutModule: Ei,
-  SelectRangeModule: Nt,
+  SelectRangeModule: $t,
   SelectRowModule: Ri,
   SortModule: xi,
   SpreadsheetModule: vs,
   TooltipModule: ws,
   ValidateModule: ki
-}), rr = {
+}), aa = {
   debugEventsExternal: !1,
   //flag to console log events
   debugEventsInternal: !1,
@@ -8982,7 +8982,7 @@ class Cs {
     return i;
   }
 }
-class Gt extends de {
+class jt extends be {
   constructor(e) {
     super(e), this.elementVertical = e.rowManager.element, this.elementHorizontal = e.columnManager.element, this.tableElement = e.rowManager.tableElement, this.verticalFillMode = "fit";
   }
@@ -9048,10 +9048,10 @@ class Gt extends de {
   }
   scrollToRowPosition(e, t, i) {
     var s = this.rows().indexOf(e), o = e.getElement(), n = 0;
-    return new Promise((r, a) => {
+    return new Promise((a, r) => {
       if (s > -1) {
         if (typeof i > "u" && (i = this.table.options.scrollToRowIfVisible), !i && Y.elVisible(o) && (n = Y.elOffset(o).top - Y.elOffset(this.elementVertical).top, n > 0 && n < this.elementVertical.clientHeight - o.offsetHeight))
-          return r(), !1;
+          return a(), !1;
         switch (typeof t > "u" && (t = this.table.options.scrollToRowPosition), t === "nearest" && (t = this.scrollToRowNearestTop(e) ? "top" : "bottom"), this.scrollToRow(e), t) {
           case "middle":
           case "center":
@@ -9064,13 +9064,13 @@ class Gt extends de {
             this.elementVertical.scrollTop = o.offsetTop;
             break;
         }
-        r();
+        a();
       } else
-        console.warn("Scroll Error - Row not visible"), a("Scroll Error - Row not visible");
+        console.warn("Scroll Error - Row not visible"), r("Scroll Error - Row not visible");
     });
   }
 }
-class ar extends Gt {
+class ra extends jt {
   constructor(e) {
     super(e);
   }
@@ -9088,7 +9088,7 @@ class ar extends Gt {
     });
   }
 }
-class lr extends Gt {
+class la extends jt {
   constructor(e) {
     super(e), this.leftCol = 0, this.rightCol = 0, this.scrollLeft = 0, this.vDomScrollPosLeft = 0, this.vDomScrollPosRight = 0, this.vDomPadLeft = 0, this.vDomPadRight = 0, this.fitDataColAvg = 0, this.windowBuffer = 200, this.visibleRows = null, this.initialized = !1, this.isFitData = !1, this.columns = [];
   }
@@ -9132,8 +9132,8 @@ class lr extends Gt {
       rightCol: this.rightCol
     }, s = 0;
     e && !this.initialized || (this.clear(), this.calcWindowBuffer(), this.scrollLeft = this.elementVertical.scrollLeft, this.vDomScrollPosLeft = this.scrollLeft - this.windowBuffer, this.vDomScrollPosRight = this.scrollLeft + this.elementVertical.clientWidth + this.windowBuffer, this.table.columnManager.columnsByIndex.forEach((o) => {
-      var n = {}, r;
-      o.visible && (o.modules.frozen || (r = o.getWidth(), n.leftPos = s, n.rightPos = s + r, n.width = r, this.isFitData && (n.fitDataCheck = o.modules.vdomHoz ? o.modules.vdomHoz.fitDataCheck : !0), s + r > this.vDomScrollPosLeft && s < this.vDomScrollPosRight ? (this.leftCol == -1 && (this.leftCol = this.columns.length, this.vDomPadLeft = s), this.rightCol = this.columns.length) : this.leftCol !== -1 && (this.vDomPadRight += r), this.columns.push(o), o.modules.vdomHoz = n, s += r));
+      var n = {}, a;
+      o.visible && (o.modules.frozen || (a = o.getWidth(), n.leftPos = s, n.rightPos = s + a, n.width = a, this.isFitData && (n.fitDataCheck = o.modules.vdomHoz ? o.modules.vdomHoz.fitDataCheck : !0), s + a > this.vDomScrollPosLeft && s < this.vDomScrollPosRight ? (this.leftCol == -1 && (this.leftCol = this.columns.length, this.vDomPadLeft = s), this.rightCol = this.columns.length) : this.leftCol !== -1 && (this.vDomPadRight += a), this.columns.push(o), o.modules.vdomHoz = n, s += a));
     }), this.tableElement.style.paddingLeft = this.vDomPadLeft + "px", this.tableElement.style.paddingRight = this.vDomPadRight + "px", this.initialized = !0, t || (!e || this.reinitChanged(i)) && this.reinitializeRows(), this.elementVertical.scrollLeft = this.scrollLeft);
   }
   renderRowCells(e) {
@@ -9312,7 +9312,7 @@ class lr extends Gt {
     }
   }
 }
-class hr extends de {
+class ha extends be {
   constructor(e) {
     super(e), this.blockHozScrollEvent = !1, this.headersElement = null, this.contentsElement = null, this.rowHeader = null, this.element = null, this.columns = [], this.columnsByIndex = [], this.columnsByField = {}, this.scrollLeft = 0, this.optionsList = new Cs(this.table, "column definition", is), this.redrawBlock = !1, this.redrawBlockUpdate = null, this.renderer = null;
   }
@@ -9325,8 +9325,8 @@ class hr extends de {
   }
   initializeRenderer() {
     var e, t = {
-      virtual: lr,
-      basic: ar
+      virtual: la,
+      basic: ra
     };
     typeof this.table.options.renderHorizontal == "string" ? e = t[this.table.options.renderHorizontal] : e = this.table.options.renderHorizontal, e ? (this.renderer = new e(this.table, this.element, this.tableElement), this.renderer.initialize()) : console.error("Unable to find matching renderer:", this.table.options.renderHorizontal);
   }
@@ -9369,13 +9369,13 @@ class hr extends de {
     var t = [], i = {}, s = this.table.options.autoColumns === "full" ? e : [e[0]], o = this.table.options.autoColumnsDefinitions;
     if (e && e.length) {
       if (s.forEach((n) => {
-        Object.keys(n).forEach((r, a) => {
-          let h = n[r], d;
-          i[r] ? i[r] !== !0 && typeof h < "u" && (i[r].sorter = this.calculateSorterFromValue(h), i[r] = !0) : (d = {
-            field: r,
-            title: r,
+        Object.keys(n).forEach((a, r) => {
+          let h = n[a], d;
+          i[a] ? i[a] !== !0 && typeof h < "u" && (i[a].sorter = this.calculateSorterFromValue(h), i[a] = !0) : (d = {
+            field: a,
+            title: a,
             sorter: this.calculateSorterFromValue(h)
-          }, t.splice(a, 0, d), i[r] = typeof h > "u" ? d : !0);
+          }, t.splice(r, 0, d), i[a] = typeof h > "u" ? d : !0);
         });
       }), o)
         switch (typeof o) {
@@ -9384,8 +9384,8 @@ class hr extends de {
             break;
           case "object":
             Array.isArray(o) ? t.forEach((n) => {
-              var r = o.find((a) => a.field === n.field);
-              r && Object.assign(n, r);
+              var a = o.find((r) => r.field === n.field);
+              a && Object.assign(n, a);
             }) : t.forEach((n) => {
               o[n.field] && Object.assign(n, o[n.field]);
             }), this.table.options.columns = t;
@@ -9419,15 +9419,15 @@ class hr extends de {
   }
   setColumns(e, t) {
     for (; this.headersElement.firstChild; ) this.headersElement.removeChild(this.headersElement.firstChild);
-    this.columns = [], this.columnsByIndex = [], this.columnsByField = {}, this.dispatch("columns-loading"), this.dispatchExternal("columnsLoading"), this.table.options.rowHeader && (this.rowHeader = new at(this.table.options.rowHeader === !0 ? {} : this.table.options.rowHeader, this, !0), this.columns.push(this.rowHeader), this.headersElement.appendChild(this.rowHeader.getElement()), this.rowHeader.columnRendered()), e.forEach((i, s) => {
+    this.columns = [], this.columnsByIndex = [], this.columnsByField = {}, this.dispatch("columns-loading"), this.dispatchExternal("columnsLoading"), this.table.options.rowHeader && (this.rowHeader = new ut(this.table.options.rowHeader === !0 ? {} : this.table.options.rowHeader, this, !0), this.columns.push(this.rowHeader), this.headersElement.appendChild(this.rowHeader.getElement()), this.rowHeader.columnRendered()), e.forEach((i, s) => {
       this._addColumn(i);
     }), this._reIndexColumns(), this.dispatch("columns-loaded"), this.subscribedExternal("columnsLoaded") && this.dispatchExternal("columnsLoaded", this.getComponents()), this.rerenderColumns(!1, !0), this.redraw(!0);
   }
   _addColumn(e, t, i) {
-    var s = new at(e, this), o = s.getElement(), n = i && this.findColumnIndex(i);
+    var s = new ut(e, this), o = s.getElement(), n = i && this.findColumnIndex(i);
     if (t && this.rowHeader && (!i || i === this.rowHeader) && (t = !1, i = this.rowHeader, n = 0), i && n > -1) {
-      var r = i.getTopColumn(), a = this.columns.indexOf(r), h = r.getElement();
-      t ? (this.columns.splice(a, 0, s), h.parentNode.insertBefore(o, h)) : (this.columns.splice(a + 1, 0, s), h.parentNode.insertBefore(o, h.nextSibling));
+      var a = i.getTopColumn(), r = this.columns.indexOf(a), h = a.getElement();
+      t ? (this.columns.splice(r, 0, s), h.parentNode.insertBefore(o, h)) : (this.columns.splice(r + 1, 0, s), h.parentNode.insertBefore(o, h.nextSibling));
     } else
       t ? (this.columns.unshift(s), this.headersElement.insertBefore(s.getElement(), this.headersElement.firstChild)) : (this.columns.push(s), this.headersElement.appendChild(s.getElement()));
     return s.columnRendered(), s;
@@ -9459,7 +9459,7 @@ class hr extends de {
   findColumn(e) {
     var t;
     if (typeof e == "object") {
-      if (e instanceof at)
+      if (e instanceof ut)
         return e;
       if (e instanceof ts)
         return e._getSelf() || !1;
@@ -9540,17 +9540,17 @@ class hr extends de {
     e.parent.isGroup ? this._moveColumnInArray(e.parent.columns, e, t, i) : this._moveColumnInArray(this.columns, e, t, i), this._moveColumnInArray(this.columnsByIndex, e, t, i, !0), this.rerenderColumns(!0), this.dispatch("column-moved", e, t, i), this.subscribedExternal("columnMoved") && this.dispatchExternal("columnMoved", e.getComponent(), this.table.columnManager.getComponents());
   }
   _moveColumnInArray(e, t, i, s, o) {
-    var n = e.indexOf(t), r, a = [];
-    n > -1 && (e.splice(n, 1), r = e.indexOf(i), r > -1 ? s && (r = r + 1) : r = n, e.splice(r, 0, t), o && (a = this.chain("column-moving-rows", [t, i, s], null, []) || [], a = a.concat(this.table.rowManager.rows), a.forEach(function(h) {
+    var n = e.indexOf(t), a, r = [];
+    n > -1 && (e.splice(n, 1), a = e.indexOf(i), a > -1 ? s && (a = a + 1) : a = n, e.splice(a, 0, t), o && (r = this.chain("column-moving-rows", [t, i, s], null, []) || [], r = r.concat(this.table.rowManager.rows), r.forEach(function(h) {
       if (h.cells.length) {
         var d = h.cells.splice(n, 1)[0];
-        h.cells.splice(r, 0, d);
+        h.cells.splice(a, 0, d);
       }
     })));
   }
   scrollToColumn(e, t, i) {
-    var s = 0, o = e.getLeftOffset(), n = 0, r = e.getElement();
-    return new Promise((a, h) => {
+    var s = 0, o = e.getLeftOffset(), n = 0, a = e.getElement();
+    return new Promise((r, h) => {
       if (typeof t > "u" && (t = this.table.options.scrollToColumnPosition), typeof i > "u" && (i = this.table.options.scrollToColumnIfVisible), e.visible) {
         switch (t) {
           case "middle":
@@ -9558,12 +9558,12 @@ class hr extends de {
             n = -this.element.clientWidth / 2;
             break;
           case "right":
-            n = r.clientWidth - this.headersElement.clientWidth;
+            n = a.clientWidth - this.headersElement.clientWidth;
             break;
         }
-        if (!i && o > 0 && o + r.offsetWidth < this.element.clientWidth)
+        if (!i && o > 0 && o + a.offsetWidth < this.element.clientWidth)
           return !1;
-        s = o + n, s = Math.max(Math.min(s, this.table.rowManager.element.scrollWidth - this.table.rowManager.element.clientWidth), 0), this.table.rowManager.scrollHorizontal(s), this.scrollHorizontal(s), a();
+        s = o + n, s = Math.max(Math.min(s, this.table.rowManager.element.scrollWidth - this.table.rowManager.element.clientWidth), 0), this.table.rowManager.scrollHorizontal(s), this.scrollHorizontal(s), r();
       } else
         console.warn("Scroll Error - Column not visible"), h("Scroll Error - Column not visible");
     });
@@ -9608,7 +9608,7 @@ class hr extends de {
     Y.elVisible(this.element) && this.verticalAlignHeaders(), e && (this.table.rowManager.resetScroll(), this.table.rowManager.reinitialize()), this.confirm("table-redrawing", e) || this.layoutRefresh(e), this.dispatch("table-redraw", e), this.table.footerManager.redraw();
   }
 }
-class dr extends Gt {
+class da extends jt {
   constructor(e) {
     super(e), this.verticalFillMode = "fill", this.scrollTop = 0, this.scrollLeft = 0, this.scrollTop = 0, this.scrollLeft = 0;
   }
@@ -9641,7 +9641,7 @@ class dr extends Gt {
     return this.rows();
   }
 }
-class ur extends Gt {
+class ua extends jt {
   constructor(e) {
     super(e), this.verticalFillMode = "fill", this.scrollTop = 0, this.scrollLeft = 0, this.vDomRowHeight = 20, this.vDomTop = 0, this.vDomBottom = 0, this.vDomScrollPosTop = 0, this.vDomScrollPosBottom = 0, this.vDomTopPad = 0, this.vDomBottomPad = 0, this.vDomMaxRenderChain = 90, this.vDomWindowBuffer = 0, this.vDomWindowMinTotalRows = 20, this.vDomWindowMinMarginRows = 5, this.vDomTopNewRows = [], this.vDomBottomNewRows = [];
   }
@@ -9656,11 +9656,11 @@ class ur extends Gt {
     this._virtualRenderFill();
   }
   rerenderRows(e) {
-    for (var t = this.elementVertical.scrollTop, i = !1, s = !1, o = this.table.rowManager.scrollLeft, n = this.rows(), r = this.vDomTop; r <= this.vDomBottom; r++)
-      if (n[r]) {
-        var a = t - n[r].getElement().offsetTop;
-        if (s === !1 || Math.abs(a) < s)
-          s = a, i = r;
+    for (var t = this.elementVertical.scrollTop, i = !1, s = !1, o = this.table.rowManager.scrollLeft, n = this.rows(), a = this.vDomTop; a <= this.vDomBottom; a++)
+      if (n[a]) {
+        var r = t - n[a].getElement().offsetTop;
+        if (s === !1 || Math.abs(r) < s)
+          s = r, i = a;
         else
           break;
       }
@@ -9674,8 +9674,8 @@ class ur extends Gt {
   scrollRows(e, t) {
     var i = e - this.vDomScrollPosTop, s = e - this.vDomScrollPosBottom, o = this.vDomWindowBuffer * 2, n = this.rows();
     if (this.scrollTop = e, -i > o || s > o) {
-      var r = this.table.rowManager.scrollLeft;
-      this._virtualRenderFill(Math.floor(this.elementVertical.scrollTop / this.elementVertical.scrollHeight * n.length)), this.scrollColumns(r);
+      var a = this.table.rowManager.scrollLeft;
+      this._virtualRenderFill(Math.floor(this.elementVertical.scrollTop / this.elementVertical.scrollHeight * n.length)), this.scrollColumns(a);
     } else
       t ? (i < 0 && this._addTopRow(n, -i), s < 0 && (this.vDomScrollHeight - this.scrollTop > this.vDomWindowBuffer ? this._removeBottomRow(n, -s) : this.vDomScrollPosBottom = this.scrollTop)) : (s >= 0 && this._addBottomRow(n, s), i >= 0 && (this.scrollTop > this.vDomWindowBuffer ? this._removeTopRow(n, i) : this.vDomScrollPosTop = this.scrollTop));
   }
@@ -9691,40 +9691,40 @@ class ur extends Gt {
     t > -1 && this._virtualRenderFill(t, !0);
   }
   visibleRows(e) {
-    var t = this.elementVertical.scrollTop, i = this.elementVertical.clientHeight + t, s = !1, o = 0, n = 0, r = this.rows();
+    var t = this.elementVertical.scrollTop, i = this.elementVertical.clientHeight + t, s = !1, o = 0, n = 0, a = this.rows();
     if (e)
       o = this.vDomTop, n = this.vDomBottom;
     else
-      for (var a = this.vDomTop; a <= this.vDomBottom; a++)
-        if (r[a])
+      for (var r = this.vDomTop; r <= this.vDomBottom; r++)
+        if (a[r])
           if (s)
-            if (i - r[a].getElement().offsetTop >= 0)
-              n = a;
+            if (i - a[r].getElement().offsetTop >= 0)
+              n = r;
             else
               break;
-          else if (t - r[a].getElement().offsetTop >= 0)
-            o = a;
-          else if (s = !0, i - r[a].getElement().offsetTop >= 0)
-            n = a;
+          else if (t - a[r].getElement().offsetTop >= 0)
+            o = r;
+          else if (s = !0, i - a[r].getElement().offsetTop >= 0)
+            n = r;
           else
             break;
-    return r.slice(o, n + 1);
+    return a.slice(o, n + 1);
   }
   //////////////////////////////////////
   //////// Internal Rendering //////////
   //////////////////////////////////////
   //full virtual render
   _virtualRenderFill(e, t, i) {
-    var s = this.tableElement, o = this.elementVertical, n = 0, r = 0, a = 0, h = 0, d = 0, u = 0, c = this.rows(), m = c.length, b = 0, E, y, C = [], T = 0, A = 0, F = this.table.rowManager.fixedHeight, D = this.elementVertical.clientHeight, L = this.table.options.rowHeight, q = !0;
+    var s = this.tableElement, o = this.elementVertical, n = 0, a = 0, r = 0, h = 0, d = 0, u = 0, c = this.rows(), g = c.length, b = 0, E, y, C = [], T = 0, H = 0, _ = this.table.rowManager.fixedHeight, F = this.elementVertical.clientHeight, L = this.table.options.rowHeight, K = !0;
     if (e = e || 0, i = i || 0, !e)
       this.clear();
     else {
       for (; s.firstChild; ) s.removeChild(s.firstChild);
-      h = (m - e + 1) * this.vDomRowHeight, h < D && (e -= Math.ceil((D - h) / this.vDomRowHeight), e < 0 && (e = 0)), n = Math.min(Math.max(Math.floor(this.vDomWindowBuffer / this.vDomRowHeight), this.vDomWindowMinMarginRows), e), e -= n;
+      h = (g - e + 1) * this.vDomRowHeight, h < F && (e -= Math.ceil((F - h) / this.vDomRowHeight), e < 0 && (e = 0)), n = Math.min(Math.max(Math.floor(this.vDomWindowBuffer / this.vDomRowHeight), this.vDomWindowMinMarginRows), e), e -= n;
     }
-    if (m && Y.elVisible(this.elementVertical)) {
-      for (this.vDomTop = e, this.vDomBottom = e - 1, F || this.table.options.maxHeight ? (L && (A = D / L + this.vDomWindowBuffer / L), A = Math.max(this.vDomWindowMinTotalRows, Math.ceil(A))) : A = m; (A == m || r <= D + this.vDomWindowBuffer || T < this.vDomWindowMinTotalRows) && this.vDomBottom < m - 1; ) {
-        for (C = [], y = document.createDocumentFragment(), u = 0; u < A && this.vDomBottom < m - 1; )
+    if (g && Y.elVisible(this.elementVertical)) {
+      for (this.vDomTop = e, this.vDomBottom = e - 1, _ || this.table.options.maxHeight ? (L && (H = F / L + this.vDomWindowBuffer / L), H = Math.max(this.vDomWindowMinTotalRows, Math.ceil(H))) : H = g; (H == g || a <= F + this.vDomWindowBuffer || T < this.vDomWindowMinTotalRows) && this.vDomBottom < g - 1; ) {
+        for (C = [], y = document.createDocumentFragment(), u = 0; u < H && this.vDomBottom < g - 1; )
           b = this.vDomBottom + 1, E = c[b], this.styleRow(E, b), E.initialize(!1, !0), !E.heightInitialized && !this.table.options.rowHeight && E.clearCellHeight(), y.appendChild(E.getElement()), C.push(E), this.vDomBottom++, u++;
         if (!C.length)
           break;
@@ -9733,38 +9733,38 @@ class ur extends Gt {
         }), C.forEach((O) => {
           O.heightInitialized || O.setCellHeight();
         }), C.forEach((O) => {
-          a = O.getHeight(), T < n ? d += a : r += a, a > this.vDomWindowBuffer && (this.vDomWindowBuffer = a * 2), T++;
-        }), q = this.table.rowManager.adjustTableSize(), D = this.elementVertical.clientHeight, q && (F || this.table.options.maxHeight) && (L = r / T, A = Math.max(this.vDomWindowMinTotalRows, Math.ceil(D / L + this.vDomWindowBuffer / L)));
+          r = O.getHeight(), T < n ? d += r : a += r, r > this.vDomWindowBuffer && (this.vDomWindowBuffer = r * 2), T++;
+        }), K = this.table.rowManager.adjustTableSize(), F = this.elementVertical.clientHeight, K && (_ || this.table.options.maxHeight) && (L = a / T, H = Math.max(this.vDomWindowMinTotalRows, Math.ceil(F / L + this.vDomWindowBuffer / L)));
       }
-      e ? (this.vDomTopPad = t ? this.vDomRowHeight * this.vDomTop + i : this.scrollTop - d, this.vDomBottomPad = this.vDomBottom == m - 1 ? 0 : Math.max(this.vDomScrollHeight - this.vDomTopPad - r - d, 0)) : (this.vDomTopPad = 0, this.vDomRowHeight = Math.floor((r + d) / T), this.vDomBottomPad = this.vDomRowHeight * (m - this.vDomBottom - 1), this.vDomScrollHeight = d + r + this.vDomBottomPad - D), s.style.paddingTop = this.vDomTopPad + "px", s.style.paddingBottom = this.vDomBottomPad + "px", t && (this.scrollTop = this.vDomTopPad + d + i - (this.elementVertical.scrollWidth > this.elementVertical.clientWidth ? this.elementVertical.offsetHeight - D : 0)), this.scrollTop = Math.min(this.scrollTop, this.elementVertical.scrollHeight - D), this.elementVertical.scrollWidth > this.elementVertical.clientWidth && t && (this.scrollTop += this.elementVertical.offsetHeight - D), this.vDomScrollPosTop = this.scrollTop, this.vDomScrollPosBottom = this.scrollTop, o.scrollTop = this.scrollTop, this.dispatch("render-virtual-fill");
+      e ? (this.vDomTopPad = t ? this.vDomRowHeight * this.vDomTop + i : this.scrollTop - d, this.vDomBottomPad = this.vDomBottom == g - 1 ? 0 : Math.max(this.vDomScrollHeight - this.vDomTopPad - a - d, 0)) : (this.vDomTopPad = 0, this.vDomRowHeight = Math.floor((a + d) / T), this.vDomBottomPad = this.vDomRowHeight * (g - this.vDomBottom - 1), this.vDomScrollHeight = d + a + this.vDomBottomPad - F), s.style.paddingTop = this.vDomTopPad + "px", s.style.paddingBottom = this.vDomBottomPad + "px", t && (this.scrollTop = this.vDomTopPad + d + i - (this.elementVertical.scrollWidth > this.elementVertical.clientWidth ? this.elementVertical.offsetHeight - F : 0)), this.scrollTop = Math.min(this.scrollTop, this.elementVertical.scrollHeight - F), this.elementVertical.scrollWidth > this.elementVertical.clientWidth && t && (this.scrollTop += this.elementVertical.offsetHeight - F), this.vDomScrollPosTop = this.scrollTop, this.vDomScrollPosBottom = this.scrollTop, o.scrollTop = this.scrollTop, this.dispatch("render-virtual-fill");
     }
   }
   _addTopRow(e, t) {
-    for (var i = this.tableElement, s = [], o = 0, n = this.vDomTop - 1, r = 0, a = !0; a; )
+    for (var i = this.tableElement, s = [], o = 0, n = this.vDomTop - 1, a = 0, r = !0; r; )
       if (this.vDomTop) {
         let h = e[n], d, u;
-        h && r < this.vDomMaxRenderChain ? (d = h.getHeight() || this.vDomRowHeight, u = h.initialized, t >= d ? (this.styleRow(h, n), i.insertBefore(h.getElement(), i.firstChild), (!h.initialized || !h.heightInitialized) && s.push(h), h.initialize(), u || (d = h.getElement().offsetHeight, d > this.vDomWindowBuffer && (this.vDomWindowBuffer = d * 2)), t -= d, o += d, this.vDomTop--, n--, r++) : a = !1) : a = !1;
+        h && a < this.vDomMaxRenderChain ? (d = h.getHeight() || this.vDomRowHeight, u = h.initialized, t >= d ? (this.styleRow(h, n), i.insertBefore(h.getElement(), i.firstChild), (!h.initialized || !h.heightInitialized) && s.push(h), h.initialize(), u || (d = h.getElement().offsetHeight, d > this.vDomWindowBuffer && (this.vDomWindowBuffer = d * 2)), t -= d, o += d, this.vDomTop--, n--, a++) : r = !1) : r = !1;
       } else
-        a = !1;
+        r = !1;
     for (let h of s)
       h.clearCellHeight();
     this._quickNormalizeRowHeight(s), o && (this.vDomTopPad -= o, this.vDomTopPad < 0 && (this.vDomTopPad = n * this.vDomRowHeight), n < 1 && (this.vDomTopPad = 0), i.style.paddingTop = this.vDomTopPad + "px", this.vDomScrollPosTop -= o);
   }
   _removeTopRow(e, t) {
     for (var i = [], s = 0, o = 0, n = !0; n; ) {
-      let r = e[this.vDomTop], a;
-      r && o < this.vDomMaxRenderChain ? (a = r.getHeight() || this.vDomRowHeight, t >= a ? (this.vDomTop++, t -= a, s += a, i.push(r), o++) : n = !1) : n = !1;
+      let a = e[this.vDomTop], r;
+      a && o < this.vDomMaxRenderChain ? (r = a.getHeight() || this.vDomRowHeight, t >= r ? (this.vDomTop++, t -= r, s += r, i.push(a), o++) : n = !1) : n = !1;
     }
-    for (let r of i) {
-      let a = r.getElement();
-      a.parentNode && a.parentNode.removeChild(a);
+    for (let a of i) {
+      let r = a.getElement();
+      r.parentNode && r.parentNode.removeChild(r);
     }
     s && (this.vDomTopPad += s, this.tableElement.style.paddingTop = this.vDomTopPad + "px", this.vDomScrollPosTop += this.vDomTop ? s : s + this.vDomWindowBuffer);
   }
   _addBottomRow(e, t) {
-    for (var i = this.tableElement, s = [], o = 0, n = this.vDomBottom + 1, r = 0, a = !0; a; ) {
+    for (var i = this.tableElement, s = [], o = 0, n = this.vDomBottom + 1, a = 0, r = !0; r; ) {
       let h = e[n], d, u;
-      h && r < this.vDomMaxRenderChain ? (d = h.getHeight() || this.vDomRowHeight, u = h.initialized, t >= d ? (this.styleRow(h, n), i.appendChild(h.getElement()), (!h.initialized || !h.heightInitialized) && s.push(h), h.initialize(), u || (d = h.getElement().offsetHeight, d > this.vDomWindowBuffer && (this.vDomWindowBuffer = d * 2)), t -= d, o += d, this.vDomBottom++, n++, r++) : a = !1) : a = !1;
+      h && a < this.vDomMaxRenderChain ? (d = h.getHeight() || this.vDomRowHeight, u = h.initialized, t >= d ? (this.styleRow(h, n), i.appendChild(h.getElement()), (!h.initialized || !h.heightInitialized) && s.push(h), h.initialize(), u || (d = h.getElement().offsetHeight, d > this.vDomWindowBuffer && (this.vDomWindowBuffer = d * 2)), t -= d, o += d, this.vDomBottom++, n++, a++) : r = !1) : r = !1;
     }
     for (let h of s)
       h.clearCellHeight();
@@ -9772,12 +9772,12 @@ class ur extends Gt {
   }
   _removeBottomRow(e, t) {
     for (var i = [], s = 0, o = 0, n = !0; n; ) {
-      let r = e[this.vDomBottom], a;
-      r && o < this.vDomMaxRenderChain ? (a = r.getHeight() || this.vDomRowHeight, t >= a ? (this.vDomBottom--, t -= a, s += a, i.push(r), o++) : n = !1) : n = !1;
+      let a = e[this.vDomBottom], r;
+      a && o < this.vDomMaxRenderChain ? (r = a.getHeight() || this.vDomRowHeight, t >= r ? (this.vDomBottom--, t -= r, s += r, i.push(a), o++) : n = !1) : n = !1;
     }
-    for (let r of i) {
-      let a = r.getElement();
-      a.parentNode && a.parentNode.removeChild(a);
+    for (let a of i) {
+      let r = a.getElement();
+      r.parentNode && r.parentNode.removeChild(r);
     }
     s && (this.vDomBottomPad += s, this.vDomBottomPad < 0 && (this.vDomBottomPad = 0), this.tableElement.style.paddingBottom = this.vDomBottomPad + "px", this.vDomScrollPosBottom -= s);
   }
@@ -9788,7 +9788,7 @@ class ur extends Gt {
       t.setCellHeight();
   }
 }
-class cr extends de {
+class ca extends be {
   constructor(e) {
     super(e), this.element = this.createHolderElement(), this.tableElement = this.createTableElement(), this.heightFixer = this.createTableElement(), this.placeholder = null, this.placeholderContents = null, this.firstRender = !1, this.renderMode = "virtual", this.fixedHeight = !1, this.rows = [], this.activeRowsPipeline = [], this.activeRows = [], this.activeRowsCount = 0, this.displayRows = [], this.displayRowsCount = 0, this.scrollTop = 0, this.scrollLeft = 0, this.redrawBlock = !1, this.redrawBlockRestoreConfig = !1, this.redrawBlockRenderInPosition = !1, this.dataPipeline = [], this.displayPipeline = [], this.scrollbarWidth = 0, this.renderer = null;
   }
@@ -9829,9 +9829,9 @@ class cr extends de {
   ////////////////// Row Manipulation //////////////////
   findRow(e) {
     if (typeof e == "object") {
-      if (e instanceof pe)
+      if (e instanceof ve)
         return e;
-      if (e instanceof $t)
+      if (e instanceof Wt)
         return e._getSelf() || !1;
       if (typeof HTMLElement < "u" && e instanceof HTMLElement)
         return this.rows.find((i) => i.getElement() === e) || !1;
@@ -9861,7 +9861,7 @@ class cr extends de {
   _setDataActual(e, t) {
     this.dispatchExternal("dataProcessing", e), this._wipeElements(), Array.isArray(e) ? (this.dispatch("data-processing", e), e.forEach((i, s) => {
       if (i && typeof i == "object") {
-        var o = new pe(i, this);
+        var o = new ve(i, this);
         this.rows.push(o);
       } else
         console.warn("Data Loading Warning - Invalid row data detected and ignored, expecting object but received:", i);
@@ -9892,10 +9892,10 @@ Data:     `, e);
   //add multiple rows
   addRows(e, t, i, s) {
     var o = [];
-    return new Promise((n, r) => {
-      t = this.findAddRowPos(t), Array.isArray(e) || (e = [e]), (typeof i > "u" && t || typeof i < "u" && !t) && e.reverse(), e.forEach((a, h) => {
-        var d = this.addRow(a, t, i, !0);
-        o.push(d), this.dispatch("row-added", d, a, t, i);
+    return new Promise((n, a) => {
+      t = this.findAddRowPos(t), Array.isArray(e) || (e = [e]), (typeof i > "u" && t || typeof i < "u" && !t) && e.reverse(), e.forEach((r, h) => {
+        var d = this.addRow(r, t, i, !0);
+        o.push(d), this.dispatch("row-added", d, r, t, i);
       }), this.refreshActiveData(s ? "displayPipeline" : !1, !1, !0), this.regenerateRowPositions(), this.displayRowsCount && this._clearPlaceholder(), n(o);
     });
   }
@@ -9903,11 +9903,11 @@ Data:     `, e);
     return typeof e > "u" && (e = this.table.options.addRowPos), e === "pos" && (e = !0), e === "bottom" && (e = !1), e;
   }
   addRowActual(e, t, i, s) {
-    var o = e instanceof pe ? e : new pe(e || {}, this), n = this.findAddRowPos(t), r = -1, a, h;
-    return i || (h = this.chain("row-adding-position", [o, n], null, { index: i, top: n }), i = h.index, n = h.top), typeof i < "u" && (i = this.findRow(i)), i = this.chain("row-adding-index", [o, i, n], null, i), i && (r = this.rows.indexOf(i)), i && r > -1 ? (a = this.activeRows.indexOf(i), this.displayRowIterator(function(d) {
+    var o = e instanceof ve ? e : new ve(e || {}, this), n = this.findAddRowPos(t), a = -1, r, h;
+    return i || (h = this.chain("row-adding-position", [o, n], null, { index: i, top: n }), i = h.index, n = h.top), typeof i < "u" && (i = this.findRow(i)), i = this.chain("row-adding-index", [o, i, n], null, i), i && (a = this.rows.indexOf(i)), i && a > -1 ? (r = this.activeRows.indexOf(i), this.displayRowIterator(function(d) {
       var u = d.indexOf(i);
       u > -1 && d.splice(n ? u : u + 1, 0, o);
-    }), a > -1 && this.activeRows.splice(n ? a : a + 1, 0, o), this.rows.splice(n ? r : r + 1, 0, o)) : n ? (this.displayRowIterator(function(d) {
+    }), r > -1 && this.activeRows.splice(n ? r : r + 1, 0, o), this.rows.splice(n ? a : a + 1, 0, o)) : n ? (this.displayRowIterator(function(d) {
       d.unshift(o);
     }), this.activeRows.unshift(o), this.rows.unshift(o)) : (this.displayRowIterator(function(d) {
       d.push(o);
@@ -9922,10 +9922,10 @@ Data:     `, e);
     }), this.dispatch("row-moving", e, t, i);
   }
   moveRowInArray(e, t, i, s) {
-    var o, n, r, a;
+    var o, n, a, r;
     if (t !== i && (o = e.indexOf(t), o > -1 && (e.splice(o, 1), n = e.indexOf(i), n > -1 ? s ? e.splice(n + 1, 0, t) : e.splice(n, 0, t) : e.splice(o, 0, t)), e === this.getDisplayRows())) {
-      r = o < n ? o : n, a = n > o ? n : o + 1;
-      for (let h = r; h <= a; h++)
+      a = o < n ? o : n, r = n > o ? n : o + 1;
+      for (let h = a; h <= r; h++)
         e[h] && this.styleRow(e[h], h);
     }
   }
@@ -9941,11 +9941,11 @@ Data:     `, e);
   }
   nextDisplayRow(e, t) {
     var i = this.getDisplayRowIndex(e), s = !1;
-    return i !== !1 && i < this.displayRowsCount - 1 && (s = this.getDisplayRows()[i + 1]), s && (!(s instanceof pe) || s.type != "row") ? this.nextDisplayRow(s, t) : s;
+    return i !== !1 && i < this.displayRowsCount - 1 && (s = this.getDisplayRows()[i + 1]), s && (!(s instanceof ve) || s.type != "row") ? this.nextDisplayRow(s, t) : s;
   }
   prevDisplayRow(e, t) {
     var i = this.getDisplayRowIndex(e), s = !1;
-    return i && (s = this.getDisplayRows()[i - 1]), t && s && (!(s instanceof pe) || s.type != "row") ? this.prevDisplayRow(s, t) : s;
+    return i && (s = this.getDisplayRows()[i - 1]), t && s && (!(s instanceof ve) || s.type != "row") ? this.prevDisplayRow(s, t) : s;
   }
   findRowIndex(e, t) {
     var i;
@@ -9978,12 +9978,12 @@ Data:     `, e);
   }
   //set active data set
   refreshActiveData(e, t, i) {
-    var s = this.table, o = "", n = 0, r = ["all", "dataPipeline", "display", "displayPipeline", "end"];
+    var s = this.table, o = "", n = 0, a = ["all", "dataPipeline", "display", "displayPipeline", "end"];
     if (!this.table.destroyed) {
       if (typeof e == "function")
-        if (n = this.dataPipeline.findIndex((a) => a.handler === e), n > -1)
+        if (n = this.dataPipeline.findIndex((r) => r.handler === e), n > -1)
           o = "dataPipeline", t && (n == this.dataPipeline.length - 1 ? o = "display" : n++);
-        else if (n = this.displayPipeline.findIndex((a) => a.handler === e), n > -1)
+        else if (n = this.displayPipeline.findIndex((r) => r.handler === e), n > -1)
           o = "displayPipeline", t && (n == this.displayPipeline.length - 1 ? o = "end" : n++);
         else {
           console.error("Unable to refresh data, invalid handler provided", e);
@@ -9992,7 +9992,7 @@ Data:     `, e);
       else
         o = e || "all", n = 0;
       if (this.redrawBlock) {
-        (!this.redrawBlockRestoreConfig || this.redrawBlockRestoreConfig && (this.redrawBlockRestoreConfig.stage === o && n < this.redrawBlockRestoreConfig.index || r.indexOf(o) < r.indexOf(this.redrawBlockRestoreConfig.stage))) && (this.redrawBlockRestoreConfig = {
+        (!this.redrawBlockRestoreConfig || this.redrawBlockRestoreConfig && (this.redrawBlockRestoreConfig.stage === o && n < this.redrawBlockRestoreConfig.index || a.indexOf(o) < a.indexOf(this.redrawBlockRestoreConfig.stage))) && (this.redrawBlockRestoreConfig = {
           handler: e,
           skipStage: t,
           renderInPosition: i,
@@ -10083,8 +10083,8 @@ Data:     `, e);
   }
   initializeRenderer() {
     var e, t = {
-      virtual: ur,
-      basic: dr
+      virtual: ua,
+      basic: da
     };
     typeof this.table.options.renderVertical == "string" ? e = t[this.table.options.renderVertical] : e = this.table.options.renderVertical, e ? (this.renderMode = this.table.options.renderVertical, this.renderer = new e(this.table, this.element, this.tableElement), this.renderer.initialize(), (this.table.element.clientHeight || this.table.options.height) && !(this.table.options.minHeight && this.table.options.maxHeight) ? this.fixedHeight = !0 : this.fixedHeight = !1) : console.error("Unable to find matching renderer:", this.table.options.renderVertical);
   }
@@ -10167,7 +10167,7 @@ Data:     `, e);
       this.element.dispatchEvent(new Event("scroll"));
   }
 }
-class fr extends de {
+class fa extends be {
   constructor(e) {
     super(e), this.active = !1, this.element = this.createElement(), this.containerElement = this.createContainerElement(), this.external = !1;
   }
@@ -10215,7 +10215,7 @@ class fr extends de {
     this.dispatch("footer-redraw");
   }
 }
-class pr extends de {
+class pa extends be {
   constructor(e) {
     super(e), this.el = null, this.abortClasses = ["tabulator-headers", "tabulator-table"], this.previousTargets = {}, this.listeners = [
       "click",
@@ -10315,41 +10315,41 @@ class pr extends de {
     let i = Object.keys(this.componentMap);
     for (let s of e) {
       let o = s.classList ? [...s.classList] : [];
-      if (o.filter((a) => this.abortClasses.includes(a)).length)
+      if (o.filter((r) => this.abortClasses.includes(r)).length)
         break;
-      let r = o.filter((a) => i.includes(a));
-      for (let a of r)
-        t[this.componentMap[a]] || (t[this.componentMap[a]] = s);
+      let a = o.filter((r) => i.includes(r));
+      for (let r of a)
+        t[this.componentMap[r]] || (t[this.componentMap[r]] = s);
     }
     return t.group && t.group === t.row && delete t.row, t;
   }
   bindComponents(e, t) {
-    var i = Object.keys(t).reverse(), s = this.listeners[e], o = {}, n = {}, r = {};
-    for (let a of i) {
-      let h, d = t[a], u = this.previousTargets[a];
+    var i = Object.keys(t).reverse(), s = this.listeners[e], o = {}, n = {}, a = {};
+    for (let r of i) {
+      let h, d = t[r], u = this.previousTargets[r];
       if (u && u.target === d)
         h = u.component;
       else
-        switch (a) {
+        switch (r) {
           case "row":
           case "group":
-            (s.components.includes("row") || s.components.includes("cell") || s.components.includes("group")) && (h = this.table.rowManager.getVisibleRows(!0).find((m) => m.getElement() === d), t.row && t.row.parentNode && t.row.parentNode.closest(".tabulator-row") && (t[a] = !1));
+            (s.components.includes("row") || s.components.includes("cell") || s.components.includes("group")) && (h = this.table.rowManager.getVisibleRows(!0).find((g) => g.getElement() === d), t.row && t.row.parentNode && t.row.parentNode.closest(".tabulator-row") && (t[r] = !1));
             break;
           case "column":
             s.components.includes("column") && (h = this.table.columnManager.findColumn(d));
             break;
           case "cell":
-            s.components.includes("cell") && (o.row instanceof pe ? h = o.row.findCell(d) : t.row && console.warn("Event Target Lookup Error - The row this cell is attached to cannot be found, has the table been reinitialized without being destroyed first?"));
+            s.components.includes("cell") && (o.row instanceof ve ? h = o.row.findCell(d) : t.row && console.warn("Event Target Lookup Error - The row this cell is attached to cannot be found, has the table been reinitialized without being destroyed first?"));
             break;
         }
-      h && (o[a] = h, r[a] = {
+      h && (o[r] = h, a[r] = {
         target: d,
         component: h
       });
     }
-    return this.previousTargets = r, Object.keys(t).forEach((a) => {
-      let h = o[a];
-      n[a] = h;
+    return this.previousTargets = a, Object.keys(t).forEach((r) => {
+      let h = o[r];
+      n[r] = h;
     }), n;
   }
   triggerEvents(e, t, i) {
@@ -10364,7 +10364,7 @@ class pr extends de {
     }
   }
 }
-class mr {
+class ma {
   constructor(e) {
     this.table = e, this.bindings = {};
   }
@@ -10377,26 +10377,26 @@ class mr {
     i !== "then" && typeof i == "string" && !i.startsWith("_") && this.table.options.debugInvalidComponentFuncs && console.error("The " + e + " component does not have a " + i + " function, have you checked that you have the correct Tabulator module installed?");
   }
 }
-class gr extends de {
+class ga extends be {
   constructor(e) {
     super(e), this.requestOrder = 0, this.loading = !1;
   }
   initialize() {
   }
   load(e, t, i, s, o, n) {
-    var r = ++this.requestOrder;
+    var a = ++this.requestOrder;
     if (this.table.destroyed)
       return Promise.resolve();
     if (this.dispatchExternal("dataLoading", e), e && (e.indexOf("{") == 0 || e.indexOf("[") == 0) && (e = JSON.parse(e)), this.confirm("data-loading", [e, t, i, o])) {
       this.loading = !0, o || this.alertLoader(), t = this.chain("data-params", [e, i, o], t || {}, t || {}), t = this.mapParams(t, this.table.options.dataSendParams);
-      var a = this.chain("data-load", [e, t, i, o], !1, Promise.resolve([]));
-      return a.then((h) => {
+      var r = this.chain("data-load", [e, t, i, o], !1, Promise.resolve([]));
+      return r.then((h) => {
         if (this.table.destroyed)
           console.warn("Data Load Response Blocked - Table has been destroyed");
         else {
           !Array.isArray(h) && typeof h == "object" && (h = this.mapParams(h, this.objectInvert(this.table.options.dataReceiveParams)));
           var d = this.chain("data-loaded", [h], null, h);
-          r == this.requestOrder ? (this.clearAlert(), d !== !1 && (this.dispatchExternal("dataLoaded", d), this.table.rowManager.setData(d, s, typeof n > "u" ? !s : n))) : console.warn("Data Load Response Blocked - An active data load request was blocked by an attempt to change table data while the request was being made");
+          a == this.requestOrder ? (this.clearAlert(), d !== !1 && (this.dispatchExternal("dataLoaded", d), this.table.rowManager.setData(d, s, typeof n > "u" ? !s : n))) : console.warn("Data Load Response Blocked - An active data load request was blocked by an attempt to change table data while the request was being made");
         }
       }).catch((h) => {
         console.error("Data Load Error: ", h), this.dispatchExternal("dataLoadError", h), o || this.alertError(), setTimeout(() => {
@@ -10434,7 +10434,7 @@ class gr extends de {
     this.table.alertManager.clear();
   }
 }
-class br {
+class ba {
   constructor(e, t, i) {
     this.table = e, this.events = {}, this.optionsList = t || {}, this.subscriptionNotifiers = {}, this.dispatch = i ? this._debugDispatch.bind(this) : this._dispatch.bind(this), this.debug = i;
   }
@@ -10483,7 +10483,7 @@ class br {
     return e[0] = "ExternalEvent:" + e[0], (this.debug === !0 || this.debug.includes(t)) && console.log(...e), this._dispatch(...arguments);
   }
 }
-class vr {
+class va {
   constructor(e) {
     this.events = {}, this.subscriptionNotifiers = {}, this.dispatch = e ? this._debugDispatch.bind(this) : this._dispatch.bind(this), this.chain = e ? this._debugChain.bind(this) : this._chain.bind(this), this.confirm = e ? this._debugConfirm.bind(this) : this._confirm.bind(this), this.debug = e;
   }
@@ -10514,7 +10514,7 @@ class vr {
   }
   _chain(e, t, i, s) {
     var o = i;
-    return Array.isArray(t) || (t = [t]), this.subscribed(e) ? (this.events[e].forEach((n, r) => {
+    return Array.isArray(t) || (t = [t]), this.subscribed(e) ? (this.events[e].forEach((n, a) => {
       o = n.callback.apply(this, t.concat([o]));
     }), o) : typeof s == "function" ? s() : s;
   }
@@ -10549,7 +10549,7 @@ class vr {
     return e[0] = "InternalEvent:" + t, (this.debug === !0 || this.debug.includes(t)) && console.log(...e), this._confirm(...arguments);
   }
 }
-class wr extends de {
+class wa extends be {
   constructor(e) {
     super(e);
   }
@@ -10567,7 +10567,7 @@ class wr extends de {
     this._warnUser(e);
   }
 }
-class Cr extends de {
+class Ca extends be {
   constructor(e) {
     super(e), this.deps = {}, this.props = {};
   }
@@ -10602,7 +10602,7 @@ class Cr extends de {
     console.error("Unable to find dependency", e, "Please check documentation and ensure you have imported the required library into your project");
   }
 }
-function yr(l, e) {
+function ya(l, e) {
   e && this.table.columnManager.renderer.reinitializeColumnWidths(l), this.table.options.responsiveLayout && this.table.modExists("responsiveLayout", !0) && this.table.modules.responsiveLayout.update();
 }
 function Ki(l, e) {
@@ -10610,67 +10610,67 @@ function Ki(l, e) {
     t.reinitializeWidth();
   }), this.table.options.responsiveLayout && this.table.modExists("responsiveLayout", !0) && this.table.modules.responsiveLayout.update();
 }
-function Er(l, e) {
+function Ea(l, e) {
   var t = 0, i = this.table.rowManager.element.clientWidth, s = 0, o = !1;
-  l.forEach((n, r) => {
+  l.forEach((n, a) => {
     n.widthFixed || n.reinitializeWidth(), (this.table.options.responsiveLayout ? n.modules.responsive.visible : n.visible) && (o = n), n.visible && (t += n.getWidth());
   }), o ? (s = i - t + o.getWidth(), this.table.options.responsiveLayout && this.table.modExists("responsiveLayout", !0) && (o.setWidth(0), this.table.modules.responsiveLayout.update()), s > 0 ? o.setWidth(s) : o.reinitializeWidth()) : this.table.options.responsiveLayout && this.table.modExists("responsiveLayout", !0) && this.table.modules.responsiveLayout.update();
 }
-function Rr(l, e) {
-  var t = this.table.rowManager.element.getBoundingClientRect().width, i = 0, s = 0, o = 0, n = 0, r = [], a = [], h = 0, d = 0, u = 0;
+function Ra(l, e) {
+  var t = this.table.rowManager.element.getBoundingClientRect().width, i = 0, s = 0, o = 0, n = 0, a = [], r = [], h = 0, d = 0, u = 0;
   function c(b) {
     var E;
     return typeof b == "string" ? b.indexOf("%") > -1 ? E = t / 100 * parseInt(b) : E = parseInt(b) : E = b, E;
   }
-  function m(b, E, y, C) {
-    var T = [], A = 0, F = 0, D = 0, L = o, q = 0, O = 0, G = [];
-    function K($) {
-      return y * ($.column.definition.widthGrow || 1);
+  function g(b, E, y, C) {
+    var T = [], H = 0, _ = 0, F = 0, L = o, K = 0, O = 0, W = [];
+    function J(I) {
+      return y * (I.column.definition.widthGrow || 1);
     }
-    function oe($) {
-      return c($.width) - y * ($.column.definition.widthShrink || 0);
+    function se(I) {
+      return c(I.width) - y * (I.column.definition.widthShrink || 0);
     }
-    return b.forEach(function($, B) {
-      var W = C ? oe($) : K($);
-      $.column.minWidth >= W ? T.push($) : $.column.maxWidth && $.column.maxWidth < W ? ($.width = $.column.maxWidth, E -= $.column.maxWidth, L -= C ? $.column.definition.widthShrink || 1 : $.column.definition.widthGrow || 1, L && (y = Math.floor(E / L))) : (G.push($), O += C ? $.column.definition.widthShrink || 1 : $.column.definition.widthGrow || 1);
-    }), T.length ? (T.forEach(function($) {
-      A += C ? $.width - $.column.minWidth : $.column.minWidth, $.width = $.column.minWidth;
-    }), F = E - A, D = O ? Math.floor(F / O) : F, q = m(G, F, D, C)) : (q = O ? E - Math.floor(E / O) * O : E, G.forEach(function($) {
-      $.width = C ? oe($) : K($);
-    })), q;
+    return b.forEach(function(I, B) {
+      var j = C ? se(I) : J(I);
+      I.column.minWidth >= j ? T.push(I) : I.column.maxWidth && I.column.maxWidth < j ? (I.width = I.column.maxWidth, E -= I.column.maxWidth, L -= C ? I.column.definition.widthShrink || 1 : I.column.definition.widthGrow || 1, L && (y = Math.floor(E / L))) : (W.push(I), O += C ? I.column.definition.widthShrink || 1 : I.column.definition.widthGrow || 1);
+    }), T.length ? (T.forEach(function(I) {
+      H += C ? I.width - I.column.minWidth : I.column.minWidth, I.width = I.column.minWidth;
+    }), _ = E - H, F = O ? Math.floor(_ / O) : _, K = g(W, _, F, C)) : (K = O ? E - Math.floor(E / O) * O : E, W.forEach(function(I) {
+      I.width = C ? se(I) : J(I);
+    })), K;
   }
   this.table.options.responsiveLayout && this.table.modExists("responsiveLayout", !0) && this.table.modules.responsiveLayout.update(), this.table.rowManager.element.scrollHeight > this.table.rowManager.element.clientHeight && (t -= this.table.rowManager.element.offsetWidth - this.table.rowManager.element.clientWidth), l.forEach(function(b) {
     var E, y, C;
-    b.visible && (E = b.definition.width, y = parseInt(b.minWidth), E ? (C = c(E), i += C > y ? C : y, b.definition.widthShrink && (a.push({
+    b.visible && (E = b.definition.width, y = parseInt(b.minWidth), E ? (C = c(E), i += C > y ? C : y, b.definition.widthShrink && (r.push({
       column: b,
       width: C > y ? C : y
-    }), h += b.definition.widthShrink)) : (r.push({
+    }), h += b.definition.widthShrink)) : (a.push({
       column: b,
       width: 0
     }), o += b.definition.widthGrow || 1));
-  }), s = t - i, n = Math.floor(s / o), u = m(r, s, n, !1), r.length && u > 0 && (r[r.length - 1].width += u), r.forEach(function(b) {
+  }), s = t - i, n = Math.floor(s / o), u = g(a, s, n, !1), a.length && u > 0 && (a[a.length - 1].width += u), a.forEach(function(b) {
     s -= b.width;
-  }), d = Math.abs(u) + s, d > 0 && h && (u = m(a, d, Math.floor(d / h), !0)), u && a.length && (a[a.length - 1].width -= u), r.forEach(function(b) {
+  }), d = Math.abs(u) + s, d > 0 && h && (u = g(r, d, Math.floor(d / h), !0)), u && r.length && (r[r.length - 1].width -= u), a.forEach(function(b) {
     b.column.setWidth(b.width);
-  }), a.forEach(function(b) {
+  }), r.forEach(function(b) {
     b.column.setWidth(b.width);
   });
 }
-var xr = {
-  fitData: yr,
+var xa = {
+  fitData: ya,
   fitDataFill: Ki,
   fitDataTable: Ki,
-  fitDataStretch: Er,
-  fitColumns: Rr
+  fitDataStretch: Ea,
+  fitColumns: Ra
 };
-const gt = class gt extends j {
+const vt = class vt extends G {
   constructor(e) {
     super(e, "layout"), this.mode = null, this.registerTableOption("layout", "fitData"), this.registerTableOption("layoutColumnsOnNewData", !1), this.registerColumnOption("widthGrow"), this.registerColumnOption("widthShrink");
   }
   //initialize layout system
   initialize() {
     var e = this.table.options.layout;
-    gt.modes[e] ? this.mode = e : (console.warn("Layout Error - invalid mode set, defaulting to 'fitData' : " + e), this.mode = "fitData"), this.table.element.setAttribute("tabulator-layout", this.mode), this.subscribe("column-init", this.initializeColumn.bind(this));
+    vt.modes[e] ? this.mode = e : (console.warn("Layout Error - invalid mode set, defaulting to 'fitData' : " + e), this.mode = "fitData"), this.table.element.setAttribute("tabulator-layout", this.mode), this.subscribe("column-init", this.initializeColumn.bind(this));
   }
   initializeColumn(e) {
     e.definition.widthGrow && (e.definition.widthGrow = Number(e.definition.widthGrow)), e.definition.widthShrink && (e.definition.widthShrink = Number(e.definition.widthShrink));
@@ -10681,13 +10681,13 @@ const gt = class gt extends j {
   //trigger table layout
   layout(e) {
     var t = this.table.columnManager.columnsByIndex.find((i) => i.definition.variableHeight || i.definition.formatter === "textarea");
-    this.dispatch("layout-refreshing"), gt.modes[this.mode].call(this, this.table.columnManager.columnsByIndex, e), t && this.table.rowManager.normalizeHeight(!0), this.dispatch("layout-refreshed");
+    this.dispatch("layout-refreshing"), vt.modes[this.mode].call(this, this.table.columnManager.columnsByIndex, e), t && this.table.rowManager.normalizeHeight(!0), this.dispatch("layout-refreshed");
   }
 };
-M(gt, "moduleName", "layout"), //load defaults
-M(gt, "modes", xr);
-let Ti = gt;
-var kr = {
+S(vt, "moduleName", "layout"), //load defaults
+S(vt, "modes", xa);
+let Ti = vt;
+var ka = {
   default: {
     //hold default locale text
     groups: {
@@ -10724,12 +10724,12 @@ var kr = {
     }
   }
 };
-const _t = class _t extends j {
+const Pt = class Pt extends G {
   constructor(e) {
     super(e), this.locale = "default", this.lang = !1, this.bindings = {}, this.langList = {}, this.registerTableOption("locale", !1), this.registerTableOption("langs", {});
   }
   initialize() {
-    this.langList = Y.deepClone(_t.langs), this.table.options.columnDefaults.headerFilterPlaceholder !== !1 && this.setHeaderFilterPlaceholder(this.table.options.columnDefaults.headerFilterPlaceholder);
+    this.langList = Y.deepClone(Pt.langs), this.table.options.columnDefaults.headerFilterPlaceholder !== !1 && this.setHeaderFilterPlaceholder(this.table.options.columnDefaults.headerFilterPlaceholder);
     for (let e in this.table.options.langs)
       this.installLang(e, this.table.options.langs[e]);
     this.setLocale(this.table.options.locale), this.registerTableFunction("setLocale", this.setLocale.bind(this)), this.registerTableFunction("getLocale", this.getLocale.bind(this)), this.registerTableFunction("getLang", this.getLang.bind(this));
@@ -10792,10 +10792,10 @@ const _t = class _t extends j {
       });
   }
 };
-M(_t, "moduleName", "localize"), //load defaults
-M(_t, "langs", kr);
-let Mi = _t;
-class ys extends j {
+S(Pt, "moduleName", "localize"), //load defaults
+S(Pt, "langs", ka);
+let Si = Pt;
+class ys extends G {
   constructor(e) {
     super(e);
   }
@@ -10820,56 +10820,56 @@ class ys extends j {
     console.warn("Inter-table Comms Error - no such module:", t);
   }
 }
-M(ys, "moduleName", "comms");
-var Tr = /* @__PURE__ */ Object.freeze({
+S(ys, "moduleName", "comms");
+var Ta = /* @__PURE__ */ Object.freeze({
   __proto__: null,
   CommsModule: ys,
   LayoutModule: Ti,
-  LocalizeModule: Mi
+  LocalizeModule: Si
 });
-const Ce = class Ce {
+const Te = class Te {
   static findTable(e) {
-    var t = Ce.registry.lookupTable(e, !0);
+    var t = Te.registry.lookupTable(e, !0);
     return Array.isArray(t) && !t.length ? !1 : t;
   }
 };
-M(Ce, "registry", {
+S(Te, "registry", {
   tables: [],
   register(e) {
-    Ce.registry.tables.push(e);
+    Te.registry.tables.push(e);
   },
   deregister(e) {
-    var t = Ce.registry.tables.indexOf(e);
-    t > -1 && Ce.registry.tables.splice(t, 1);
+    var t = Te.registry.tables.indexOf(e);
+    t > -1 && Te.registry.tables.splice(t, 1);
   },
   lookupTable(e, t) {
     var i = [], s, o;
     if (typeof e == "string") {
       if (s = document.querySelectorAll(e), s.length)
         for (var n = 0; n < s.length; n++)
-          o = Ce.registry.matchElement(s[n]), o && i.push(o);
-    } else typeof HTMLElement < "u" && e instanceof HTMLElement || e instanceof Ce ? (o = Ce.registry.matchElement(e), o && i.push(o)) : Array.isArray(e) ? e.forEach(function(r) {
-      i = i.concat(Ce.registry.lookupTable(r));
+          o = Te.registry.matchElement(s[n]), o && i.push(o);
+    } else typeof HTMLElement < "u" && e instanceof HTMLElement || e instanceof Te ? (o = Te.registry.matchElement(e), o && i.push(o)) : Array.isArray(e) ? e.forEach(function(a) {
+      i = i.concat(Te.registry.lookupTable(a));
     }) : t || console.warn("Table Connection Error - Invalid Selector", e);
     return i;
   },
   matchElement(e) {
-    return Ce.registry.tables.find(function(t) {
-      return e instanceof Ce ? t === e : t.element === e;
+    return Te.registry.tables.find(function(t) {
+      return e instanceof Te ? t === e : t.element === e;
     });
   }
 });
-let Li = Ce;
-const J = class J extends Li {
+let Li = Te;
+const Q = class Q extends Li {
   constructor() {
     super();
   }
   static initializeModuleBinder(e) {
-    J.modulesRegistered || (J.modulesRegistered = !0, J._registerModules(Tr, !0), e && J._registerModules(e));
+    Q.modulesRegistered || (Q.modulesRegistered = !0, Q._registerModules(Ta, !0), e && Q._registerModules(e));
   }
   static _extendModule(e, t, i) {
-    if (J.moduleBindings[e]) {
-      var s = J.moduleBindings[e][t];
+    if (Q.moduleBindings[e]) {
+      var s = Q.moduleBindings[e][t];
       if (s)
         if (typeof i == "object")
           for (let o in i)
@@ -10885,52 +10885,52 @@ const J = class J extends Li {
     var i = Object.values(e);
     t && i.forEach((s) => {
       s.prototype.moduleCore = !0;
-    }), J._registerModule(i);
+    }), Q._registerModule(i);
   }
   static _registerModule(e) {
     Array.isArray(e) || (e = [e]), e.forEach((t) => {
-      J._registerModuleBinding(t), J._registerModuleExtensions(t);
+      Q._registerModuleBinding(t), Q._registerModuleExtensions(t);
     });
   }
   static _registerModuleBinding(e) {
-    e.moduleName ? J.moduleBindings[e.moduleName] = e : console.error("Unable to bind module, no moduleName defined", e.moduleName);
+    e.moduleName ? Q.moduleBindings[e.moduleName] = e : console.error("Unable to bind module, no moduleName defined", e.moduleName);
   }
   static _registerModuleExtensions(e) {
     var t = e.moduleExtensions;
     if (e.moduleExtensions)
       for (let i in t) {
         let s = t[i];
-        if (J.moduleBindings[i])
+        if (Q.moduleBindings[i])
           for (let o in s)
-            J._extendModule(i, o, s[o]);
+            Q._extendModule(i, o, s[o]);
         else {
-          J.moduleExtensions[i] || (J.moduleExtensions[i] = {});
+          Q.moduleExtensions[i] || (Q.moduleExtensions[i] = {});
           for (let o in s)
-            J.moduleExtensions[i][o] || (J.moduleExtensions[i][o] = {}), Object.assign(J.moduleExtensions[i][o], s[o]);
+            Q.moduleExtensions[i][o] || (Q.moduleExtensions[i][o] = {}), Object.assign(Q.moduleExtensions[i][o], s[o]);
         }
       }
-    J._extendModuleFromQueue(e);
+    Q._extendModuleFromQueue(e);
   }
   static _extendModuleFromQueue(e) {
-    var t = J.moduleExtensions[e.moduleName];
+    var t = Q.moduleExtensions[e.moduleName];
     if (t)
       for (let i in t)
-        J._extendModule(e.moduleName, i, t[i]);
+        Q._extendModule(e.moduleName, i, t[i]);
   }
   //ensure that module are bound to instantiated function
   _bindModules() {
     var e = [], t = [], i = [];
     this.modules = {};
-    for (var s in J.moduleBindings) {
-      let o = J.moduleBindings[s], n = new o(this);
+    for (var s in Q.moduleBindings) {
+      let o = Q.moduleBindings[s], n = new o(this);
       this.modules[s] = n, o.prototype.moduleCore ? this.modulesCore.push(n) : o.moduleInitOrder ? o.moduleInitOrder < 0 ? e.push(n) : t.push(n) : i.push(n);
     }
     e.sort((o, n) => o.moduleInitOrder > n.moduleInitOrder ? 1 : -1), t.sort((o, n) => o.moduleInitOrder > n.moduleInitOrder ? 1 : -1), this.modulesRegular = e.concat(i.concat(t));
   }
 };
-M(J, "moduleBindings", {}), M(J, "moduleExtensions", {}), M(J, "modulesRegistered", !1), M(J, "defaultModules", !1);
-let Si = J;
-class Mr extends de {
+S(Q, "moduleBindings", {}), S(Q, "moduleExtensions", {}), S(Q, "modulesRegistered", !1), S(Q, "defaultModules", !1);
+let Mi = Q;
+class Sa extends be {
   constructor(e) {
     super(e), this.element = this._createAlertElement(), this.msgElement = this._createMsgElement(), this.type = null, this.element.appendChild(this.msgElement);
   }
@@ -10955,15 +10955,15 @@ class Mr extends de {
     this.dispatch("alert-hide", this.type), this.element.parentNode && this.element.parentNode.removeChild(this.element), this.msgElement.classList.remove(this._typeClass());
   }
 }
-const Ge = class Ge extends Si {
+const Ke = class Ke extends Mi {
   static extendModule() {
-    Ge.initializeModuleBinder(), Ge._extendModule(...arguments);
+    Ke.initializeModuleBinder(), Ke._extendModule(...arguments);
   }
   static registerModule() {
-    Ge.initializeModuleBinder(), Ge._registerModule(...arguments);
+    Ke.initializeModuleBinder(), Ke._registerModule(...arguments);
   }
   constructor(e, t, i) {
-    super(), Ge.initializeModuleBinder(i), this.options = {}, this.columnManager = null, this.rowManager = null, this.footerManager = null, this.alertManager = null, this.vdomHoz = null, this.externalEvents = null, this.eventBus = null, this.interactionMonitor = !1, this.browser = "", this.browserSlow = !1, this.browserMobile = !1, this.rtl = !1, this.originalElement = null, this.componentFunctionBinder = new mr(this), this.dataLoader = !1, this.modules = {}, this.modulesCore = [], this.modulesRegular = [], this.deprecationAdvisor = new wr(this), this.optionsList = new Cs(this, "table constructor"), this.dependencyRegistry = new Cr(this), this.initialized = !1, this.destroyed = !1, this.initializeElement(e) && (this.initializeCoreSystems(t), setTimeout(() => {
+    super(), Ke.initializeModuleBinder(i), this.options = {}, this.columnManager = null, this.rowManager = null, this.footerManager = null, this.alertManager = null, this.vdomHoz = null, this.externalEvents = null, this.eventBus = null, this.interactionMonitor = !1, this.browser = "", this.browserSlow = !1, this.browserMobile = !1, this.rtl = !1, this.originalElement = null, this.componentFunctionBinder = new ma(this), this.dataLoader = !1, this.modules = {}, this.modulesCore = [], this.modulesRegular = [], this.deprecationAdvisor = new wa(this), this.optionsList = new Cs(this, "table constructor"), this.dependencyRegistry = new Ca(this), this.initialized = !1, this.destroyed = !1, this.initializeElement(e) && (this.initializeCoreSystems(t), setTimeout(() => {
       this._create();
     })), this.constructor.registry.register(this);
   }
@@ -10971,7 +10971,7 @@ const Ge = class Ge extends Si {
     return typeof HTMLElement < "u" && e instanceof HTMLElement ? (this.element = e, !0) : typeof e == "string" ? (this.element = document.querySelector(e), this.element ? !0 : (console.error("Tabulator Creation Error - no element found matching selector: ", e), !1)) : (console.error("Tabulator Creation Error - Invalid element provided:", e), !1);
   }
   initializeCoreSystems(e) {
-    this.columnManager = new hr(this), this.rowManager = new cr(this), this.footerManager = new fr(this), this.dataLoader = new gr(this), this.alertManager = new Mr(this), this._bindModules(), this.options = this.optionsList.generate(Ge.defaultOptions, e), this._clearObjectPointers(), this._mapDeprecatedFunctionality(), this.externalEvents = new br(this, this.options, this.options.debugEventsExternal), this.eventBus = new vr(this.options.debugEventsInternal), this.interactionMonitor = new pr(this), this.dataLoader.initialize(), this.footerManager.initialize(), this.dependencyRegistry.initialize();
+    this.columnManager = new ha(this), this.rowManager = new ca(this), this.footerManager = new fa(this), this.dataLoader = new ga(this), this.alertManager = new Sa(this), this._bindModules(), this.options = this.optionsList.generate(Ke.defaultOptions, e), this._clearObjectPointers(), this._mapDeprecatedFunctionality(), this.externalEvents = new ba(this, this.options, this.options.debugEventsExternal), this.eventBus = new va(this.options.debugEventsInternal), this.interactionMonitor = new pa(this), this.dataLoader.initialize(), this.footerManager.initialize(), this.dependencyRegistry.initialize();
   }
   //convert deprecated functionality to new functions
   _mapDeprecatedFunctionality() {
@@ -11083,8 +11083,8 @@ const Ge = class Ge extends Si {
         var n = this.rowManager.findRow(o[this.options.index]);
         n ? (t++, n.updateData(o).then(() => {
           t--, t || i();
-        }).catch((r) => {
-          s("Update Error - Unable to update row", o, r);
+        }).catch((a) => {
+          s("Update Error - Unable to update row", o, a);
         })) : s("Update Error - Unable to find row", o);
       }) : (console.warn("Update Error - No data provided"), s("Update Error - No data provided"));
     });
@@ -11092,10 +11092,10 @@ const Ge = class Ge extends Si {
   addData(e, t, i) {
     return this.initGuard(), new Promise((s, o) => {
       this.dataLoader.blockActiveLoad(), typeof e == "string" && (e = JSON.parse(e)), e ? this.rowManager.addRows(e, t, i).then((n) => {
-        var r = [];
-        n.forEach(function(a) {
-          r.push(a.getComponent());
-        }), s(r);
+        var a = [];
+        n.forEach(function(r) {
+          a.push(r.getComponent());
+        }), s(a);
       }) : (console.warn("Update Error - No data provided"), o("Update Error - No data provided"));
     });
   }
@@ -11104,11 +11104,11 @@ const Ge = class Ge extends Si {
     var t = [], i = 0;
     return this.initGuard(), new Promise((s, o) => {
       this.dataLoader.blockActiveLoad(), typeof e == "string" && (e = JSON.parse(e)), e && e.length > 0 ? e.forEach((n) => {
-        var r = this.rowManager.findRow(n[this.options.index]);
-        i++, r ? r.updateData(n).then(() => {
-          i--, t.push(r.getComponent()), i || s(t);
-        }) : this.rowManager.addRows(n).then((a) => {
-          i--, t.push(a[0].getComponent()), i || s(t);
+        var a = this.rowManager.findRow(n[this.options.index]);
+        i++, a ? a.updateData(n).then(() => {
+          i--, t.push(a.getComponent()), i || s(t);
+        }) : this.rowManager.addRows(n).then((r) => {
+          i--, t.push(r[0].getComponent()), i || s(t);
         });
       }) : (console.warn("Update Error - No data provided"), o("Update Error - No data provided"));
     });
@@ -11263,23 +11263,23 @@ const Ge = class Ge extends Si {
   }
 };
 //default setup options
-M(Ge, "defaultOptions", rr);
-let Di = Ge;
-var Mt = Di;
-class Lr extends Mt {
+S(Ke, "defaultOptions", aa);
+let Di = Ke;
+var Lt = Di;
+class La extends Lt {
   static extendModule() {
-    Mt.initializeModuleBinder(si), Mt._extendModule(...arguments);
+    Lt.initializeModuleBinder(si), Lt._extendModule(...arguments);
   }
   static registerModule() {
-    Mt.initializeModuleBinder(si), Mt._registerModule(...arguments);
+    Lt.initializeModuleBinder(si), Lt._registerModule(...arguments);
   }
   constructor(e, t, i) {
     super(e, t, si);
   }
 }
-var Vt = Lr;
-function Sr(l) {
-  const e = z(null), t = z(null), i = z(!1), s = z(!1);
+var Vt = La;
+function Ma(l) {
+  const e = A(null), t = A(null), i = A(!1), s = A(!1);
   function o() {
     if (!e.value || !l.data.value) {
       console.log("⚠️ Cannot initialize: tableDiv or data missing");
@@ -11317,18 +11317,18 @@ function Sr(l) {
       console.error("❌ Error creating Tabulator:", n);
     }
   }
-  return Fe([() => l.isSuccess.value, e], async ([n, r]) => {
-    var a;
-    console.log("👀 Watch triggered - isSuccess:", n, "divRef:", !!r, "isTableInitialized:", s.value), n && r && !s.value && (await It(), r.offsetParent !== null ? (console.log("🎯 Conditions met, initializing table with", (a = l.data.value) == null ? void 0 : a.length, "rows"), o()) : (console.log("⏸️ Element not visible yet, will retry"), setTimeout(() => {
-      r.offsetParent !== null && !s.value && (console.log("🚀 Initializing after visibility check"), o());
+  return Ae([() => l.isSuccess.value, e], async ([n, a]) => {
+    var r;
+    console.log("👀 Watch triggered - isSuccess:", n, "divRef:", !!a, "isTableInitialized:", s.value), n && a && !s.value && (await It(), a.offsetParent !== null ? (console.log("🎯 Conditions met, initializing table with", (r = l.data.value) == null ? void 0 : r.length, "rows"), o()) : (console.log("⏸️ Element not visible yet, will retry"), setTimeout(() => {
+      a.offsetParent !== null && !s.value && (console.log("🚀 Initializing after visibility check"), o());
     }, 100)));
-  }, { immediate: !0 }), Fe(() => l.data.value, async (n) => {
+  }, { immediate: !0 }), Ae(() => l.data.value, async (n) => {
     if (!(!t.value || !n)) {
       console.log("🔄 Data changed, updating table with", n.length, "rows");
       try {
         await It(), t.value.setData(n);
-      } catch (r) {
-        console.warn("Error updating table data:", r), o();
+      } catch (a) {
+        console.warn("Error updating table data:", a), o();
       }
     }
   }, { deep: !0 }), Xi(() => {
@@ -11341,13 +11341,13 @@ function Sr(l) {
     initializeTabulator: o
   };
 }
-function Dr(l, e) {
-  const t = yt(), i = z(null), s = z(!1), o = z(null), n = async (a) => {
+function Da(l, e) {
+  const t = Rt(), i = A(null), s = A(!1), o = A(null), n = async (r) => {
     s.value = !0, o.value = null;
     try {
       let h = t.schema("hf").from("market_price").select("symbol, conid, market_price, week_52_high, week_52_low, pe_ratio, eps, market_cap, computed_peg_ratio, last_fetched_at");
-      if (a && a > 0)
-        console.log(`🔍 Fetching market price for conid: ${a}`), h = h.eq("conid", a);
+      if (r && r > 0)
+        console.log(`🔍 Fetching market price for conid: ${r}`), h = h.eq("conid", r);
       else if (e)
         console.log(`🔍 Fetching market price for symbol: ${e}`), h = h.eq("symbol", e);
       else {
@@ -11361,7 +11361,7 @@ function Dr(l, e) {
         i.value = d, console.log(`✅ Market price fetched: $${d.market_price} for ${d.symbol}`);
       else {
         i.value = null;
-        const c = a ? `conid: ${a}` : `symbol: ${e}`;
+        const c = r ? `conid: ${r}` : `symbol: ${e}`;
         console.log(`⚠️ No market price found for ${c}`);
       }
     } catch (h) {
@@ -11370,10 +11370,10 @@ function Dr(l, e) {
       s.value = !1;
     }
   };
-  return Fe(
+  return Ae(
     l,
-    (a) => {
-      a && a > 0 ? (console.log(`🎯 Conid changed to: ${a}, fetching price...`), n(a)) : e ? (console.log(`🎯 No conid available, using symbolRoot: ${e}`), n(null)) : (console.log("⚠️ No valid conid or symbolRoot available"), i.value = null, o.value = null);
+    (r) => {
+      r && r > 0 ? (console.log(`🎯 Conid changed to: ${r}, fetching price...`), n(r)) : e ? (console.log(`🎯 No conid available, using symbolRoot: ${e}`), n(null)) : (console.log("⚠️ No valid conid or symbolRoot available"), i.value = null, o.value = null);
     },
     { immediate: !0 }
   ), {
@@ -11385,13 +11385,13 @@ function Dr(l, e) {
     }
   };
 }
-function Fr(l, e) {
-  const t = yt(), i = z(null), s = z(!1), o = z(null), n = async (a) => {
+function Fa(l, e) {
+  const t = Rt(), i = A(null), s = A(!1), o = A(null), n = async (r) => {
     s.value = !0, o.value = null;
     try {
       let h = t.schema("hf").from("financial_data").select("symbol, conid, week_52_high, week_52_low, pe_ratio, eps, market_cap, computed_peg_ratio, last_updated_at");
-      if (a && a > 0)
-        h = h.eq("conid", a);
+      if (r && r > 0)
+        h = h.eq("conid", r);
       else if (e)
         console.log(`🔍 Fetching financial data for symbol: ${e}`), h = h.eq("symbol", e);
       else {
@@ -11405,7 +11405,7 @@ function Fr(l, e) {
         i.value = d, console.log(`✅ Financial data fetched for ${d.symbol}`);
       else {
         i.value = null;
-        const c = a ? `conid: ${a}` : `symbol: ${e}`;
+        const c = r ? `conid: ${r}` : `symbol: ${e}`;
         console.log(`⚠️ No financial data found for ${c}`);
       }
     } catch (h) {
@@ -11414,10 +11414,10 @@ function Fr(l, e) {
       s.value = !1;
     }
   };
-  return Fe(
+  return Ae(
     l,
-    (a) => {
-      a && a > 0 ? (console.log(`🎯 Conid changed to: ${a}, fetching price...`), n(a)) : e ? (console.log(`🎯 No conid available, using symbolRoot: ${e}`), n(null)) : (console.log("⚠️ No valid conid or symbolRoot available"), i.value = null, o.value = null);
+    (r) => {
+      r && r > 0 ? (console.log(`🎯 Conid changed to: ${r}, fetching price...`), n(r)) : e ? (console.log(`🎯 No conid available, using symbolRoot: ${e}`), n(null)) : (console.log("⚠️ No valid conid or symbolRoot available"), i.value = null, o.value = null);
     },
     { immediate: !0 }
   ), {
@@ -11429,8 +11429,8 @@ function Fr(l, e) {
     }
   };
 }
-function _r(l, e) {
-  const t = yt(), i = z(null), s = z(0), o = z(0), n = z(0), r = z(0), a = z([]), h = z([]), d = z(!1), u = z(null), c = z([]), m = ie(() => {
+function _a(l, e) {
+  const t = Rt(), i = A(null), s = A(0), o = A(0), n = A(0), a = A(0), r = A([]), h = A([]), d = A(!1), u = A(null), c = A([]), g = ee(() => {
     if (h.value.length === 0) return null;
     const E = h.value.reduce((C, T) => C + T.netCostExcludingPuts, 0), y = h.value.reduce((C, T) => C + T.mainPosition.quantity, 0);
     return console.log(`🔢 Calculating overall adjusted average: Total Net Cost = $${E}, Total Main Qty = ${y}`), y > 0 ? E / y : null;
@@ -11443,7 +11443,7 @@ function _r(l, e) {
     try {
       console.log("📊 Calculating average cost price for positions:", l.value.length);
       const E = l.value.map(
-        (B) => Ct({
+        (B) => Et({
           internal_account_id: B.internal_account_id,
           symbol: B.symbol,
           contract_quantity: B.contract_quantity ?? B.qty,
@@ -11456,90 +11456,90 @@ function _r(l, e) {
       if (C)
         throw new Error(`Failed to fetch position mappings: ${C.message}`);
       c.value = y || [], console.log("🔗 Found mappings:", c.value.length);
-      const T = c.value.map((B) => B.attached_position_key), A = /* @__PURE__ */ new Map();
+      const T = c.value.map((B) => B.attached_position_key), H = /* @__PURE__ */ new Map();
       c.value.forEach((B) => {
-        A.has(B.mapping_key) || A.set(B.mapping_key, []), A.get(B.mapping_key).push(B.attached_position_key);
+        H.has(B.mapping_key) || H.set(B.mapping_key, []), H.get(B.mapping_key).push(B.attached_position_key);
       });
-      let F = [];
+      let _ = [];
       if (T.length > 0) {
-        const W = T.map((X) => {
-          const [re, ee, ye, Re, H] = X.split("|");
-          return { internal_account_id: re, symbol: ee, contract_quantity: parseFloat(ye), asset_class: Re, conid: H };
+        const j = T.map((X) => {
+          const [re, ne, ye, xe, ke] = X.split("|");
+          return { internal_account_id: re, symbol: ne, contract_quantity: parseFloat(ye), asset_class: xe, conid: ke };
         }).map(async (X) => {
-          const { data: re, error: ee } = await t.schema("hf").from("positions").select("*").eq("internal_account_id", X.internal_account_id).eq("symbol", X.symbol).eq("asset_class", X.asset_class).eq("conid", X.conid).order("fetched_at", { ascending: !1 }).limit(1).single();
-          return ee ? (console.warn(`⚠️ Failed to fetch attached position for ${X.symbol}:`, ee.message), null) : re;
+          const { data: re, error: ne } = await t.schema("hf").from("positions").select("*").eq("internal_account_id", X.internal_account_id).eq("symbol", X.symbol).eq("asset_class", X.asset_class).eq("conid", X.conid).order("fetched_at", { ascending: !1 }).limit(1).single();
+          return ne ? (console.warn(`⚠️ Failed to fetch attached position for ${X.symbol}:`, ne.message), null) : re;
         });
-        F = (await Promise.all(W)).filter((X) => X !== null), console.log("📦 Fetched attached positions:", F.length);
+        _ = (await Promise.all(j)).filter((X) => X !== null), console.log("📦 Fetched attached positions:", _.length);
       }
-      let D = 0, L = 0;
-      const q = [], O = [], G = /* @__PURE__ */ new Map();
+      let F = 0, L = 0;
+      const K = [], O = [], W = /* @__PURE__ */ new Map();
       c.value.forEach((B) => {
-        const W = F.find((Z) => Ct({
-          internal_account_id: Z.internal_account_id,
-          symbol: Z.symbol,
-          contract_quantity: Z.contract_quantity ?? Z.qty,
-          asset_class: Z.asset_class,
-          conid: Z.conid
+        const j = _.find((ie) => Et({
+          internal_account_id: ie.internal_account_id,
+          symbol: ie.symbol,
+          contract_quantity: ie.contract_quantity ?? ie.qty,
+          asset_class: ie.asset_class,
+          conid: ie.conid
         }) === B.attached_position_key);
-        W && (G.has(B.mapping_key) || G.set(B.mapping_key, []), G.get(B.mapping_key).push(W));
+        j && (W.has(B.mapping_key) || W.set(B.mapping_key, []), W.get(B.mapping_key).push(j));
       }), n.value = l.value.length, l.value.forEach((B) => {
-        const W = B.accounting_quantity ?? B.qty, Z = B.avgPrice ?? 0, X = Z * W, re = Ct({
+        const j = B.accounting_quantity ?? B.qty, ie = B.avgPrice ?? 0, X = ie * j, re = Et({
           internal_account_id: B.internal_account_id,
           symbol: B.symbol,
           contract_quantity: B.contract_quantity ?? B.qty,
           asset_class: B.asset_class,
           conid: B.conid
         });
-        D += X, L += W;
-        const ee = {
+        F += X, L += j;
+        const ne = {
           symbol: B.symbol,
-          avgPrice: Z,
-          quantity: W,
+          avgPrice: ie,
+          quantity: j,
           totalCost: X,
           isAttached: !1,
           mappingKey: re,
           account: B.legal_entity || B.internal_account_id
         };
-        q.push(ee), console.log(`📍 Main position: ${B.symbol} @ ${Z} × ${W} = ${X}`);
-        const ye = G.get(re) || [], Re = [], H = [], we = [];
-        let Ee = X, Ue = W, et = 0;
-        ye.forEach((be) => {
-          const xe = be.accounting_quantity ?? be.qty, ue = be.avgPrice ?? 0, Ae = ue * xe;
-          D += Ae, L += xe, Ee += Ae, Ue += xe;
-          const ht = {
-            symbol: be.symbol,
-            avgPrice: ue,
-            quantity: xe,
-            totalCost: Ae,
+        K.push(ne), console.log(`📍 Main position: ${B.symbol} @ ${ie} × ${j} = ${X}`);
+        const ye = W.get(re) || [], xe = [], ke = [], Je = [];
+        let Qe = X, Ye = j, Se = 0;
+        ye.forEach((fe) => {
+          const Ee = fe.accounting_quantity ?? fe.qty, he = fe.avgPrice ?? 0, M = he * Ee;
+          F += M, L += Ee, Qe += M, Ye += Ee;
+          const le = {
+            symbol: fe.symbol,
+            avgPrice: he,
+            quantity: Ee,
+            totalCost: M,
             isAttached: !0,
-            account: be.legal_entity || be.internal_account_id
+            account: fe.legal_entity || fe.internal_account_id
           };
-          Re.push(ht), q.push(ht);
-          const qe = be.symbol.toUpperCase(), jt = qe.includes(" C ") || qe.includes("C00") || /\sC\b/.test(qe), Ut = qe.includes(" P ") || qe.includes("P00") || /\sP\b/.test(qe);
-          jt ? (H.push(ht), et += Ae, console.log(`📞 Call position: ${be.symbol} @ ${ue} × ${xe} = ${Ae}`)) : Ut ? (we.push(ht), console.log(`� Put position: ${be.symbol} @ ${ue} × ${xe} = ${Ae}`)) : console.log(`�🔗 Attached position: ${be.symbol} @ ${ue} × ${xe} = ${Ae}`);
+          xe.push(le), K.push(le);
+          const oe = fe.symbol.toUpperCase(), He = oe.includes(" C ") || oe.includes("C00") || /\sC\b/.test(oe), Ut = oe.includes(" P ") || oe.includes("P00") || /\sP\b/.test(oe);
+          He ? (ke.push(le), Se += M, console.log(`📞 Call position: ${fe.symbol} @ ${he} × ${Ee} = ${M}`)) : Ut ? (Je.push(le), console.log(`� Put position: ${fe.symbol} @ ${he} × ${Ee} = ${M}`)) : console.log(`�🔗 Attached position: ${fe.symbol} @ ${he} × ${Ee} = ${M}`);
         });
-        const Et = X - Math.abs(et), lt = W > 0 ? Et / W : 0;
-        console.log(`📊 Client: ${ee.account}`), console.log(`   Main Cost: $${X.toFixed(2)}`), console.log(`   Call Costs: $${et.toFixed(2)} (absolute: $${Math.abs(et).toFixed(2)})`), console.log(`   Net Cost (excl. puts): $${Et.toFixed(2)}`), console.log(`   Adjusted Avg Price: $${lt.toFixed(2)} per share`), O.push({
-          mainPosition: ee,
-          attachedPositions: Re,
-          callPositions: H,
-          putPositions: we,
-          groupTotalCost: Ee,
-          groupTotalQuantity: Ue,
-          callPositionsTotalCost: et,
-          netCostExcludingPuts: Et,
-          adjustedAvgPricePerShare: lt
+        const ce = X - Math.abs(Se), Le = j > 0 ? ce / j : 0;
+        console.log(`📊 Client: ${ne.account}`), console.log(`   Main Cost: $${X.toFixed(2)}`), console.log(`   Call Costs: $${Se.toFixed(2)} (absolute: $${Math.abs(Se).toFixed(2)})`), console.log(`   Net Cost (excl. puts): $${ce.toFixed(2)}`), console.log(`   Adjusted Avg Price: $${Le.toFixed(2)} per share`), O.push({
+          mainPosition: ne,
+          attachedPositions: xe,
+          callPositions: ke,
+          putPositions: Je,
+          groupTotalCost: Qe,
+          groupTotalQuantity: Ye,
+          callPositionsTotalCost: Se,
+          netCostExcludingPuts: ce,
+          adjustedAvgPricePerShare: Le
         });
-      }), a.value = q, h.value = O, r.value = F.length, s.value = D, o.value = L, L > 0 ? (i.value = D / L, console.log(`✅ Standard Average Cost Price: $${i.value.toFixed(2)} (Total: $${D} / Qty: ${L})`)) : (i.value = null, console.log("⚠️ Total quantity is 0, cannot calculate average"));
-      const K = O.reduce((B, W) => B + W.netCostExcludingPuts, 0), oe = O.reduce((B, W) => B + W.mainPosition.quantity, 0), $ = oe > 0 ? K / oe : null;
-      $ !== null && console.log(`🎯 Overall Adjusted Average: $${$.toFixed(2)} per share (Net: $${K.toFixed(2)} / Main Qty: ${oe})`);
+      }), r.value = K, h.value = O, a.value = _.length, s.value = F, o.value = L, L > 0 ? (i.value = F / L, console.log(`✅ Standard Average Cost Price: $${i.value.toFixed(2)} (Total: $${F} / Qty: ${L})`)) : (i.value = null, console.log("⚠️ Total quantity is 0, cannot calculate average"));
+      const J = O.reduce((B, j) => B + j.netCostExcludingPuts, 0), se = O.reduce((B, j) => B + j.mainPosition.quantity, 0), I = se > 0 ? J / se : null;
+      I !== null && console.log(`🎯 Overall Adjusted Average: $${I.toFixed(2)} per share (Net: $${J.toFixed(2)} / Main Qty: ${se})`);
     } catch (E) {
       u.value = E instanceof Error ? E.message : "Failed to calculate average cost price", console.error("❌ Error calculating average cost price:", E), i.value = null;
     } finally {
       d.value = !1;
     }
   };
-  return Fe(
+  return Ae(
     () => l.value,
     () => {
       l.value && l.value.length > 0 && e ? b() : i.value = null;
@@ -11547,33 +11547,33 @@ function _r(l, e) {
     { immediate: !0, deep: !0 }
   ), {
     averageCostPrice: i,
-    overallAdjustedAvgPrice: m,
+    overallAdjustedAvgPrice: g,
     totalCost: s,
     totalQuantity: o,
     mainPositionsCount: n,
-    attachedPositionsCount: r,
-    positionBreakdown: a,
+    attachedPositionsCount: a,
+    positionBreakdown: r,
     positionGroups: h,
     isLoading: d,
     error: u,
     refetch: b
   };
 }
-function Pr(l, e) {
-  const t = yt(), i = z(null), s = z(0), o = z(0), n = z([]), r = z(!1), a = z(null), h = ie(() => {
+function Pa(l, e) {
+  const t = Rt(), i = A(null), s = A(0), o = A(0), n = A([]), a = A(!1), r = A(null), h = ee(() => {
     if (n.value.length === 0) return null;
-    const u = n.value.reduce((m, b) => m + b.netCost, 0), c = n.value.reduce((m, b) => m + b.totalShares, 0);
+    const u = n.value.reduce((g, b) => g + b.netCost, 0), c = n.value.reduce((g, b) => g + b.totalShares, 0);
     return console.log(`🔢 Calculating overall adjusted average from orders: Total Net Cost = $${u}, Total Shares = ${c}`), c > 0 ? u / c : null;
   }), d = async () => {
     if (!l.value || l.value.length === 0 || !e) {
       i.value = null;
       return;
     }
-    r.value = !0, a.value = null;
+    a.value = !0, r.value = null;
     try {
       console.log("📊 Calculating average cost price from orders for positions:", l.value.length);
       const u = l.value.map(
-        (L) => Ct({
+        (L) => Et({
           internal_account_id: L.internal_account_id,
           symbol: L.symbol,
           contract_quantity: L.contract_quantity ?? L.qty,
@@ -11582,31 +11582,31 @@ function Pr(l, e) {
         })
       );
       console.log("🔑 Generated mapping keys:", u);
-      const { data: c, error: m } = await t.schema("hf").from("position_order_mappings").select("mapping_key, order_id").eq("user_id", e).in("mapping_key", u);
-      if (m)
-        throw new Error(`Failed to fetch order mappings: ${m.message}`);
+      const { data: c, error: g } = await t.schema("hf").from("position_order_mappings").select("mapping_key, order_id").eq("user_id", e).in("mapping_key", u);
+      if (g)
+        throw new Error(`Failed to fetch order mappings: ${g.message}`);
       const b = c || [];
       console.log("🔗 Found order mappings:", b.length);
       const E = [...new Set(b.map((L) => L.order_id))];
       let y = [];
       if (E.length > 0) {
         console.log("📦 Fetching orders with IDs:", E);
-        const { data: L, error: q } = await t.schema("hf").from("orders").select("*").in("ibOrderID", E);
-        if (q)
-          throw new Error(`Failed to fetch orders: ${q.message}`);
+        const { data: L, error: K } = await t.schema("hf").from("orders").select("*").in("ibOrderID", E);
+        if (K)
+          throw new Error(`Failed to fetch orders: ${K.message}`);
         y = (L || []).map((O) => {
-          const G = parseFloat(O.quantity) || 0, K = O.assetCategory === "OPT" ? 100 : 1, oe = G * K;
+          const W = parseFloat(O.quantity) || 0, J = O.assetCategory === "OPT" ? 100 : 1, se = W * J;
           return {
             ibOrderID: O.ibOrderID,
             symbol: O.symbol,
             side: O.buySell,
             // Use buySell from database
-            totalQuantity: oe,
+            totalQuantity: se,
             avgFillPrice: parseFloat(O.tradePrice) || 0,
-            totalCost: parseFloat(O.tradePrice || 0) * oe,
+            totalCost: parseFloat(O.tradePrice || 0) * se,
             orderType: O.orderType,
             secType: O.assetCategory,
-            multiplier: K,
+            multiplier: J,
             right: O.putCall,
             // Use putCall from database
             strike: O.strike ? parseFloat(O.strike) : void 0,
@@ -11622,78 +11622,85 @@ function Pr(l, e) {
       });
       const T = [];
       l.value.forEach((L) => {
-        const q = Ct({
+        const K = Et({
           internal_account_id: L.internal_account_id,
           symbol: L.symbol,
           contract_quantity: L.contract_quantity ?? L.qty,
           asset_class: L.asset_class,
           conid: L.conid
-        }), O = C.get(q) || [], G = y.filter((H) => O.includes(H.ibOrderID));
-        console.log(`📍 Processing position: ${L.symbol} (${L.legal_entity || L.internal_account_id})`), console.log(`   Attached orders: ${G.length}`);
-        const K = [], oe = [], $ = [];
-        let B = 0, W = 0, Z = 0;
-        G.forEach((H) => {
-          const we = H.totalQuantity, Ee = H.avgFillPrice * we, Ue = {
-            symbol: H.symbol,
-            side: H.side,
-            quantity: we,
-            avgPrice: H.avgFillPrice,
-            totalCost: Ee,
-            secType: H.secType,
-            right: H.right,
-            strike: H.strike,
-            account: H.account,
-            orderDate: H.orderDate
+        }), O = C.get(K) || [], W = y.filter((M) => O.includes(M.ibOrderID));
+        console.log(`📍 Processing position: ${L.symbol} (${L.legal_entity || L.internal_account_id})`), console.log(`   Attached orders: ${W.length}`);
+        const J = [], se = [], I = [], B = [], j = [], ie = [];
+        let X = 0, re = 0, ne = 0, ye = 0, xe = 0, ke = 0;
+        W.forEach((M) => {
+          const le = M.totalQuantity, oe = M.avgFillPrice * le, He = {
+            symbol: M.symbol,
+            side: M.side,
+            quantity: le,
+            avgPrice: M.avgFillPrice,
+            totalCost: oe,
+            secType: M.secType,
+            right: M.right,
+            strike: M.strike,
+            account: M.account,
+            orderDate: M.orderDate
           };
-          H.secType === "STK" && H.side === "BUY" ? (K.push(Ue), B += Ee, console.log(`   📈 Stock purchase: ${H.symbol} ${H.side} ${we} @ $${H.avgFillPrice} = $${Ee.toFixed(2)}`)) : H.secType === "OPT" && H.right === "P" && H.side === "SELL" ? (oe.push(Ue), W += Math.abs(Ee), console.log(`   📉 Put sale: ${H.symbol} SELL PUT @ $${H.strike} ${H.side} ${we} @ $${H.avgFillPrice} = +$${Math.abs(Ee).toFixed(2)} (premium)`)) : H.secType === "OPT" && H.right === "C" && H.side === "SELL" ? ($.push(Ue), Z += Math.abs(Ee), console.log(`   📞 Call sale: ${H.symbol} SELL CALL @ $${H.strike} ${H.side} ${we} @ $${H.avgFillPrice} = +$${Math.abs(Ee).toFixed(2)} (premium)`)) : console.log(`   ❓ Other order: ${H.symbol} ${H.secType} ${H.side} ${we} @ $${H.avgFillPrice}`);
+          M.secType === "STK" && M.side === "BUY" ? (J.push(He), X += Math.abs(oe), console.log(`   📈 Stock purchase: ${M.symbol} ${M.side} ${le} @ $${M.avgFillPrice} = $${Math.abs(oe).toFixed(2)}`)) : M.secType === "STK" && M.side === "SELL" ? (se.push(He), re += Math.abs(oe), console.log(`   💰 Stock sale: ${M.symbol} ${M.side} ${le} @ $${M.avgFillPrice} = $${Math.abs(oe).toFixed(2)} (proceeds)`)) : M.secType === "OPT" && M.right === "P" && M.side === "SELL" ? (I.push(He), ne += Math.abs(oe), console.log(`   📉 Put sale: ${M.symbol} SELL PUT @ $${M.strike} ${M.side} ${le} @ $${M.avgFillPrice} = +$${Math.abs(oe).toFixed(2)} (premium)`)) : M.secType === "OPT" && M.right === "P" && M.side === "BUY" ? (B.push(He), ye += Math.abs(oe), console.log(`   🔙 Put buyback: ${M.symbol} BUY PUT @ $${M.strike} ${M.side} ${le} @ $${M.avgFillPrice} = -$${Math.abs(oe).toFixed(2)} (close cost)`)) : M.secType === "OPT" && M.right === "C" && M.side === "SELL" ? (j.push(He), xe += Math.abs(oe), console.log(`   📞 Call sale: ${M.symbol} SELL CALL @ $${M.strike} ${M.side} ${le} @ $${M.avgFillPrice} = +$${Math.abs(oe).toFixed(2)} (premium)`)) : M.secType === "OPT" && M.right === "C" && M.side === "BUY" ? (ie.push(He), ke += Math.abs(oe), console.log(`   🔙 Call buyback: ${M.symbol} BUY CALL @ $${M.strike} ${M.side} ${le} @ $${M.avgFillPrice} = -$${Math.abs(oe).toFixed(2)} (close cost)`)) : console.log(`   ❓ Other order: ${M.symbol} ${M.secType} ${M.side} ${le} @ $${M.avgFillPrice}`);
         });
-        const X = W + Z, re = B - X;
-        let ee = 0;
-        const ye = K.reduce((H, we) => H + we.quantity, 0);
-        ye > 0 ? (ee = ye, console.log(`   ✅ Using shares from attached stock orders: ${ee}`)) : (ee = L.accounting_quantity ?? L.qty, console.log(`   ℹ️ No stock orders found, using position quantity: ${ee}`));
-        const Re = ee > 0 ? re / ee : 0;
-        console.log(`📊 Position Summary for ${L.legal_entity || L.internal_account_id}:`), console.log(`   Stock Purchase Cost: -$${B.toFixed(2)}`), console.log(`   Put Premium Received: +$${W.toFixed(2)}`), console.log(`   Call Premium Received: +$${Z.toFixed(2)}`), console.log(`   Total Premium Received: +$${X.toFixed(2)}`), console.log(`   Net Cost: $${re.toFixed(2)} (Stock - Put Premium - Call Premium)`), console.log(`   Position Shares: ${ee}`), console.log(`   Adjusted Avg Price: $${Re.toFixed(2)} per share`), T.push({
+        const Je = X - re, Qe = ne - ye, Ye = xe - ke, Se = Je - Qe - Ye;
+        let ce = 0;
+        const Le = J.reduce((M, le) => M + Math.abs(le.quantity), 0), fe = se.reduce((M, le) => M + Math.abs(le.quantity), 0), Ee = Le - fe;
+        Ee > 0 ? (ce = Ee, console.log(`   ✅ Using shares from stock orders: ${Le} purchased - ${fe} sold = ${ce}`)) : Le > 0 ? (ce = Le, console.log(`   ✅ Using shares from stock purchases: ${ce}`)) : (ce = L.accounting_quantity ?? L.qty, console.log(`   ℹ️ No stock orders found, using position quantity: ${ce}`));
+        const he = ce > 0 ? Se / ce : 0;
+        console.log(`📊 Position Summary for ${L.legal_entity || L.internal_account_id}:`), console.log(`   Stock Purchase Cost: $${X.toFixed(2)}`), console.log(`   Stock Sale Proceeds: -$${re.toFixed(2)}`), console.log(`   Net Stock Cost: $${Je.toFixed(2)}`), console.log(`   Put Premium Received: +$${ne.toFixed(2)}`), console.log(`   Put Buyback Cost: -$${ye.toFixed(2)}`), console.log(`   Net Put Cash Flow: $${Qe.toFixed(2)}`), console.log(`   Call Premium Received: +$${xe.toFixed(2)}`), console.log(`   Call Buyback Cost: -$${ke.toFixed(2)}`), console.log(`   Net Call Cash Flow: $${Ye.toFixed(2)}`), console.log(`   Total Net Cost: $${Se.toFixed(2)} (Net Stock - Net Put - Net Call)`), console.log(`   Position Shares: ${ce}`), console.log(`   Adjusted Avg Price: $${he.toFixed(2)} per share`), T.push({
           mainPosition: {
             symbol: L.symbol,
             account: L.legal_entity || L.internal_account_id,
-            quantity: ee
+            quantity: ce
           },
-          orders: G.map((H) => ({
-            symbol: H.symbol,
-            side: H.side,
-            quantity: H.totalQuantity,
+          orders: W.map((M) => ({
+            symbol: M.symbol,
+            side: M.side,
+            quantity: M.totalQuantity,
             // Already includes multiplier
-            avgPrice: H.avgFillPrice,
-            totalCost: H.totalCost,
+            avgPrice: M.avgFillPrice,
+            totalCost: M.totalCost,
             // Already calculated with multiplier
-            secType: H.secType,
-            right: H.right,
-            strike: H.strike,
-            account: H.account,
-            orderDate: H.orderDate
+            secType: M.secType,
+            right: M.right,
+            strike: M.strike,
+            account: M.account,
+            orderDate: M.orderDate
           })),
-          stockPurchases: K,
-          stockPurchaseCost: B,
-          putSales: oe,
-          putPremiumReceived: W,
-          callSales: $,
-          callPremiumReceived: Z,
-          totalStockCost: B,
-          totalPremiumReceived: X,
-          netCost: re,
-          totalShares: ee,
-          adjustedAvgPricePerShare: Re
+          stockPurchases: J,
+          stockPurchaseCost: X,
+          stockSales: se,
+          stockSaleProceeds: re,
+          putSales: I,
+          putPremiumReceived: ne,
+          putBuybacks: B,
+          putBuybackCost: ye,
+          callSales: j,
+          callPremiumReceived: xe,
+          callBuybacks: ie,
+          callBuybackCost: ke,
+          totalStockCost: Je,
+          netPutCashFlow: Qe,
+          netCallCashFlow: Ye,
+          netCost: Se,
+          totalShares: ce,
+          adjustedAvgPricePerShare: he
         });
       }), n.value = T;
-      const A = T.reduce((L, q) => L + q.netCost, 0), F = T.reduce((L, q) => L + q.totalShares, 0), D = F > 0 ? A / F : null;
-      s.value = A, o.value = F, i.value = D, D !== null && (console.log(`🎯 Overall Adjusted Average from Orders: $${D.toFixed(2)} per share`), console.log(`   Total Net Cost: $${A.toFixed(2)}`), console.log(`   Total Shares: ${F}`));
+      const H = T.reduce((L, K) => L + K.netCost, 0), _ = T.reduce((L, K) => L + K.totalShares, 0), F = _ > 0 ? H / _ : null;
+      s.value = H, o.value = _, i.value = F, F !== null && (console.log(`🎯 Overall Adjusted Average from Orders: $${F.toFixed(2)} per share`), console.log(`   Total Net Cost: $${H.toFixed(2)}`), console.log(`   Total Shares: ${_}`));
     } catch (u) {
-      a.value = u instanceof Error ? u.message : "Failed to calculate average cost price from orders", console.error("❌ Error calculating average cost price from orders:", u), i.value = null;
+      r.value = u instanceof Error ? u.message : "Failed to calculate average cost price from orders", console.error("❌ Error calculating average cost price from orders:", u), i.value = null;
     } finally {
-      r.value = !1;
+      a.value = !1;
     }
   };
-  return Fe(
+  return Ae(
     () => l.value,
     () => {
       l.value && l.value.length > 0 && e ? d() : i.value = null;
@@ -11705,13 +11712,13 @@ function Pr(l, e) {
     totalNetCost: s,
     totalShares: o,
     orderGroups: n,
-    isLoading: r,
-    error: a,
+    isLoading: a,
+    error: r,
     refetch: d
   };
 }
-function zr(l, e, t, i = z(void 0), s = z(void 0)) {
-  const o = z(null), n = z(null), r = z(null), a = z(null), h = z(!1), d = z(!1), u = z(null), c = () => {
+function za(l, e, t, i = A(void 0), s = A(void 0)) {
+  const o = A(null), n = A(null), a = A(null), r = A(null), h = A(!1), d = A(!1), u = A(null), c = () => {
     const b = [
       ...i.value || [],
       ...s.value || []
@@ -11720,124 +11727,124 @@ function zr(l, e, t, i = z(void 0), s = z(void 0)) {
       return console.log("⚠️ No options positions available for P&L calculation"), null;
     console.log("📊 Calculating options P&L for positions:", b.length);
     let E = 0, y = 0, C = 0, T = 0;
-    const A = [], F = /* @__PURE__ */ new Set(), D = /* @__PURE__ */ new Set();
-    b.forEach((G) => {
-      const K = G.accounting_quantity ?? G.qty, oe = G.legal_entity || G.internal_account_id;
-      let $ = null, B = null, W = "UNKNOWN";
-      const Z = G.symbol.match(/(\d{4}-\d{2}-\d{2})\s+(\d+(?:\.\d+)?)\s+([CP])/);
-      if (Z)
-        B = Z[1], $ = parseFloat(Z[2]), W = Z[3] === "C" ? "CALL" : "PUT";
+    const H = [], _ = /* @__PURE__ */ new Set(), F = /* @__PURE__ */ new Set();
+    b.forEach((W) => {
+      const J = W.accounting_quantity ?? W.qty, se = W.legal_entity || W.internal_account_id;
+      let I = null, B = null, j = "UNKNOWN";
+      const ie = W.symbol.match(/(\d{4}-\d{2}-\d{2})\s+(\d+(?:\.\d+)?)\s+([CP])/);
+      if (ie)
+        B = ie[1], I = parseFloat(ie[2]), j = ie[3] === "C" ? "CALL" : "PUT";
       else {
-        const ye = G.symbol.match(/([CP])(\d{8})/);
+        const ye = W.symbol.match(/([CP])(\d{8})/);
         if (ye) {
-          W = ye[1] === "C" ? "CALL" : "PUT";
-          const Re = ye[2];
-          $ = parseFloat(Re) / 1e3;
+          j = ye[1] === "C" ? "CALL" : "PUT";
+          const xe = ye[2];
+          I = parseFloat(xe) / 1e3;
         }
       }
-      F.add(W), D.add(K < 0 ? "SHORT" : "LONG");
-      const X = Math.abs(G.computed_cash_flow_on_entry || 0), re = Math.abs(G.market_value || 0), ee = G.unrealized_pnl || 0;
-      E += Math.abs(K), y += X, C += re, T += ee, A.push({
-        account: oe,
-        strike: $,
+      _.add(j), F.add(J < 0 ? "SHORT" : "LONG");
+      const X = Math.abs(W.computed_cash_flow_on_entry || 0), re = Math.abs(W.market_value || 0), ne = W.unrealized_pnl || 0;
+      E += Math.abs(J), y += X, C += re, T += ne, H.push({
+        account: se,
+        strike: I,
         expiry: B,
-        quantity: K,
+        quantity: J,
         premiumReceived: X,
         currentValue: re,
-        positionPnL: ee,
-        symbol: G.symbol
-      }), console.log(`📍 Position: ${G.symbol} (${oe})`), console.log(`   Quantity: ${K}`), console.log(`   Premium Received: $${X.toFixed(2)}`), console.log(`   Current Value: $${re.toFixed(2)}`), console.log(`   P&L: $${ee.toFixed(2)}`);
+        positionPnL: ne,
+        symbol: W.symbol
+      }), console.log(`📍 Position: ${W.symbol} (${se})`), console.log(`   Quantity: ${J}`), console.log(`   Premium Received: $${X.toFixed(2)}`), console.log(`   Current Value: $${re.toFixed(2)}`), console.log(`   P&L: $${ne.toFixed(2)}`);
     });
-    const L = F.size === 1 ? Array.from(F)[0] : "MIXED", q = D.size === 1 ? Array.from(D)[0] : "MIXED", O = y > 0 ? T / y * 100 : 0;
+    const L = _.size === 1 ? Array.from(_)[0] : "MIXED", K = F.size === 1 ? Array.from(F)[0] : "MIXED", O = y > 0 ? T / y * 100 : 0;
     return console.log("💰 Options P&L Summary:"), console.log(`   Total Contracts: ${E}`), console.log(`   Total Premium Received: $${y.toFixed(2)}`), console.log(`   Current Market Liability: $${C.toFixed(2)}`), console.log(`   Unrealized P&L: $${T.toFixed(2)}`), console.log(`   P&L Percentage: ${O.toFixed(2)}%`), {
       totalContracts: E,
       optionType: L,
-      positionType: q,
+      positionType: K,
       totalPremiumReceived: y,
       currentMarketLiability: C,
       unrealizedPnL: T,
       pnlPercentage: O,
-      positions: A
+      positions: H
     };
-  }, m = ie(() => {
+  }, g = ee(() => {
     if (e.value > 0 && l.value !== null && t.value !== null) {
       console.log("📈 Calculating STOCK P&L");
-      const b = e.value, E = l.value, y = t.value, C = b * E, T = b * y, A = T - C, F = C !== 0 ? A / C * 100 : 0;
+      const b = e.value, E = l.value, y = t.value, C = b * E, T = b * y, H = T - C, _ = C !== 0 ? H / C * 100 : 0;
       return {
         totalShares: b,
         avgCostPerShare: E,
         totalCostBasis: C,
         currentPricePerShare: y,
         currentMarketValue: T,
-        unrealizedPnL: A,
-        pnlPercentage: F
+        unrealizedPnL: H,
+        pnlPercentage: _
       };
     } else
       return console.log("📊 No stock positions, calculating OPTIONS P&L"), c();
   });
-  return Fe(
-    m,
+  return Ae(
+    g,
     (b) => {
-      b ? "totalShares" in b ? (o.value = b.totalCostBasis, n.value = b.currentMarketValue, r.value = b.unrealizedPnL, a.value = b.pnlPercentage, h.value = b.unrealizedPnL >= 0, console.log("💰 STOCK P&L Calculation:"), console.log(`   Total Shares: ${b.totalShares.toLocaleString()}`), console.log(`   Avg Cost per Share: $${b.avgCostPerShare.toFixed(2)}`), console.log(`   Total Cost Basis: $${b.totalCostBasis.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`), console.log(`   Current Price per Share: $${b.currentPricePerShare.toFixed(2)}`), console.log(`   Current Market Value: $${b.currentMarketValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`), console.log(`   Unrealized P&L: ${b.unrealizedPnL >= 0 ? "+" : ""}$${b.unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`), console.log(`   P&L Percentage: ${b.pnlPercentage.toFixed(2)}%`)) : (o.value = b.totalPremiumReceived, n.value = b.currentMarketLiability, r.value = b.unrealizedPnL, a.value = b.pnlPercentage, h.value = b.unrealizedPnL >= 0, console.log("💰 OPTIONS P&L Updated:"), console.log(`   Total Contracts: ${b.totalContracts}`), console.log(`   ${b.positionType} ${b.optionType}`), console.log(`   Premium Received: $${b.totalPremiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`), console.log(`   Current Liability: $${b.currentMarketLiability.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`), console.log(`   Unrealized P&L: ${b.unrealizedPnL >= 0 ? "+" : ""}$${b.unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`), console.log(`   P&L Percentage: ${b.pnlPercentage.toFixed(2)}%`)) : (o.value = null, n.value = null, r.value = null, a.value = null, h.value = !1, console.log("⚠️ P&L Calculation: Missing required data"));
+      b ? "totalShares" in b ? (o.value = b.totalCostBasis, n.value = b.currentMarketValue, a.value = b.unrealizedPnL, r.value = b.pnlPercentage, h.value = b.unrealizedPnL >= 0, console.log("💰 STOCK P&L Calculation:"), console.log(`   Total Shares: ${b.totalShares.toLocaleString()}`), console.log(`   Avg Cost per Share: $${b.avgCostPerShare.toFixed(2)}`), console.log(`   Total Cost Basis: $${b.totalCostBasis.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`), console.log(`   Current Price per Share: $${b.currentPricePerShare.toFixed(2)}`), console.log(`   Current Market Value: $${b.currentMarketValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`), console.log(`   Unrealized P&L: ${b.unrealizedPnL >= 0 ? "+" : ""}$${b.unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`), console.log(`   P&L Percentage: ${b.pnlPercentage.toFixed(2)}%`)) : (o.value = b.totalPremiumReceived, n.value = b.currentMarketLiability, a.value = b.unrealizedPnL, r.value = b.pnlPercentage, h.value = b.unrealizedPnL >= 0, console.log("💰 OPTIONS P&L Updated:"), console.log(`   Total Contracts: ${b.totalContracts}`), console.log(`   ${b.positionType} ${b.optionType}`), console.log(`   Premium Received: $${b.totalPremiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`), console.log(`   Current Liability: $${b.currentMarketLiability.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`), console.log(`   Unrealized P&L: ${b.unrealizedPnL >= 0 ? "+" : ""}$${b.unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`), console.log(`   P&L Percentage: ${b.pnlPercentage.toFixed(2)}%`)) : (o.value = null, n.value = null, a.value = null, r.value = null, h.value = !1, console.log("⚠️ P&L Calculation: Missing required data"));
     },
     { immediate: !0 }
   ), {
     totalCostBasis: o,
     currentMarketValue: n,
-    unrealizedPnL: r,
-    pnlPercentage: a,
+    unrealizedPnL: a,
+    pnlPercentage: r,
     isProfitable: h,
-    calculationBreakdown: m,
+    calculationBreakdown: g,
     isLoading: d,
     error: u
   };
 }
-function Ar(l, e, t, i, s, o) {
+function Aa(l, e, t, i, s, o) {
   console.log("🏦 useCapitalUsed initialized");
-  const n = ie(() => !1), r = ie(() => null), a = ie(() => {
+  const n = ee(() => !1), a = ee(() => null), r = ee(() => {
     const d = l.value;
     if (console.log("🏦 Calculating capital breakdown for asset type:", d), d === "STK") {
       const u = e.value, c = t.value;
       if (c === null || u === 0)
         return console.log("⚠️ Cannot calculate stock capital: missing price or quantity"), null;
-      const m = u * c;
+      const g = u * c;
       return console.log("📊 Stock capital breakdown:", {
         totalShares: u,
         pricePerShare: c,
-        totalCapital: m
+        totalCapital: g
       }), {
         assetType: "STK",
         totalShares: u,
         pricePerShare: c,
-        totalCapital: m
+        totalCapital: g
       };
     }
     return d === "OPT" ? (console.log("⚠️ Options capital calculation not implemented yet"), null) : (console.log("⚠️ Unknown or null asset type, cannot calculate capital"), null);
-  }), h = ie(() => {
-    const d = a.value;
+  }), h = ee(() => {
+    const d = r.value;
     return d && d.assetType === "STK" ? d.totalCapital : null;
   });
   return console.log("🏦 useCapitalUsed ready"), {
     totalCapitalUsed: h,
-    calculationBreakdown: a,
+    calculationBreakdown: r,
     isLoading: n,
-    error: r
+    error: a
   };
 }
-function Hr(l) {
-  const e = yt(), t = Ks(l), i = Xs(l), s = Js(l), o = ie(() => {
+function Ha(l) {
+  const e = Rt(), t = Ks(l), i = Xs(l), s = Js(l), o = ee(() => {
     const T = t.data.value;
     return T || /* @__PURE__ */ new Map();
-  }), n = ie(() => {
+  }), n = ee(() => {
     const T = i.data.value;
     return T || /* @__PURE__ */ new Map();
-  }), r = ie(() => {
+  }), a = ee(() => {
     const T = s.data.value;
     return T || /* @__PURE__ */ new Map();
-  }), a = z(/* @__PURE__ */ new Map()), h = z(/* @__PURE__ */ new Map());
-  z(/* @__PURE__ */ new Map());
+  }), r = A(/* @__PURE__ */ new Map()), h = A(/* @__PURE__ */ new Map());
+  A(/* @__PURE__ */ new Map());
   function d(T) {
-    return Ct({
+    return Et({
       internal_account_id: T.internal_account_id,
       symbol: T.symbol,
       contract_quantity: T.contract_quantity,
@@ -11847,97 +11854,97 @@ function Hr(l) {
   }
   function u(T) {
     if (!T) return null;
-    const A = T.match(/^([A-Z]+)\b/);
-    return (A == null ? void 0 : A[1]) || null;
+    const H = T.match(/^([A-Z]+)\b/);
+    return (H == null ? void 0 : H[1]) || null;
   }
-  async function c(T, A) {
+  async function c(T, H) {
     if (!l) return [];
     if (h.value.has(T))
       return h.value.get(T) || [];
     try {
       console.log("🔍 Fetching trades for symbol root:", T);
-      const { data: F, error: D } = await e.schema("hf").from("trades").select("*").ilike("symbol", `${T}%`);
-      if (D)
-        throw console.error("❌ Error fetching trades:", D), D;
-      const L = (F || []).sort((O, G) => {
-        const K = (B) => {
+      const { data: _, error: F } = await e.schema("hf").from("trades").select("*").ilike("symbol", `${T}%`);
+      if (F)
+        throw console.error("❌ Error fetching trades:", F), F;
+      const L = (_ || []).sort((O, W) => {
+        const J = (B) => {
           if (!B) return 0;
-          const W = B.split("/");
-          return W.length !== 3 ? 0 : new Date(parseInt(W[2]), parseInt(W[1]) - 1, parseInt(W[0])).getTime();
-        }, oe = K(O.tradeDate);
-        return K(G.tradeDate) - oe;
+          const j = B.split("/");
+          return j.length !== 3 ? 0 : new Date(parseInt(j[2]), parseInt(j[1]) - 1, parseInt(j[0])).getTime();
+        }, se = J(O.tradeDate);
+        return J(W.tradeDate) - se;
       });
       console.log(`✅ Fetched ${(L == null ? void 0 : L.length) || 0} trades for ${T}`);
-      const q = L || [];
-      return h.value.set(T, q), q;
-    } catch (F) {
-      return console.error("❌ Error fetching trades:", F), [];
+      const K = L || [];
+      return h.value.set(T, K), K;
+    } catch (_) {
+      return console.error("❌ Error fetching trades:", _), [];
     }
   }
-  async function m(T, A) {
+  async function g(T, H) {
     if (!l) return [];
     try {
-      const { data: F, error: D } = await e.schema("hf").from("orders").select("*").ilike("symbol", `${T}%`).eq("internal_account_id", A);
-      if (D) throw D;
-      const L = (F || []).sort((O, G) => {
-        const K = (B) => {
+      const { data: _, error: F } = await e.schema("hf").from("orders").select("*").ilike("symbol", `${T}%`).eq("internal_account_id", H);
+      if (F) throw F;
+      const L = (_ || []).sort((O, W) => {
+        const J = (B) => {
           if (!B) return 0;
-          const W = B.split("/");
-          return W.length !== 3 ? 0 : new Date(parseInt(W[2]), parseInt(W[1]) - 1, parseInt(W[0])).getTime();
-        }, oe = K(O.settleDateTarget);
-        return K(G.settleDateTarget) - oe;
+          const j = B.split("/");
+          return j.length !== 3 ? 0 : new Date(parseInt(j[2]), parseInt(j[1]) - 1, parseInt(j[0])).getTime();
+        }, se = J(O.settleDateTarget);
+        return J(W.settleDateTarget) - se;
       });
-      return F || [];
-    } catch (F) {
-      return console.error("❌ Error fetching orders:", F), [];
+      return _ || [];
+    } catch (_) {
+      return console.error("❌ Error fetching orders:", _), [];
     }
   }
   async function b(T) {
-    const A = d(T), F = o.value.get(A);
-    if (console.log("🔍 Getting attached trades for key:", A), console.log("🔍 Trade IDs from map:", F ? Array.from(F) : "none"), !F || F.size === 0)
+    const H = d(T), _ = o.value.get(H);
+    if (console.log("🔍 Getting attached trades for key:", H), console.log("🔍 Trade IDs from map:", _ ? Array.from(_) : "none"), !_ || _.size === 0)
       return [];
-    const D = u(T.symbol);
-    if (!D) return [];
-    const L = await c(D, T.internal_account_id);
+    const F = u(T.symbol);
+    if (!F) return [];
+    const L = await c(F, T.internal_account_id);
     console.log(`📊 Total trades fetched: ${L.length}`), console.log("📊 Sample trade IDs:", L.slice(0, 3).map((O) => O.tradeID));
-    const q = L.filter((O) => {
-      const G = O.tradeID;
-      return G && F.has(String(G));
+    const K = L.filter((O) => {
+      const W = O.tradeID;
+      return W && _.has(String(W));
     });
-    return console.log(`✅ Found ${q.length} attached trades`), q;
+    return console.log(`✅ Found ${K.length} attached trades`), K;
   }
   async function E(T) {
-    const A = d(T), F = r.value.get(A);
-    if (!F || F.size === 0) return [];
-    const D = u(T.symbol);
-    return D ? (await m(D, T.internal_account_id)).filter((q) => q.id && F.has(String(q.id))) : [];
+    const H = d(T), _ = a.value.get(H);
+    if (!_ || _.size === 0) return [];
+    const F = u(T.symbol);
+    return F ? (await g(F, T.internal_account_id)).filter((K) => K.id && _.has(String(K.id))) : [];
   }
-  async function y(T, A) {
+  async function y(T, H) {
     try {
-      const F = d(T);
-      if (a.value.has(F))
-        return a.value.get(F) || [];
-      const D = u(T.symbol), L = T.internal_account_id || T.legal_entity;
-      if (!D || !L || !l) return [];
+      const _ = d(T);
+      if (r.value.has(_))
+        return r.value.get(_) || [];
+      const F = u(T.symbol), L = T.internal_account_id || T.legal_entity;
+      if (!F || !L || !l) return [];
       const O = (await Qi(
         e,
-        D,
+        F,
         l,
         L
-      )).filter((G) => {
-        const K = d(G);
-        return A.has(K);
+      )).filter((W) => {
+        const J = d(W);
+        return H.has(J);
       });
-      return O.length > 0 && a.value.set(F, O), O;
-    } catch (F) {
-      return console.error("❌ Error fetching attached positions:", F), [];
+      return O.length > 0 && r.value.set(_, O), O;
+    } catch (_) {
+      return console.error("❌ Error fetching attached positions:", _), [];
     }
   }
-  const C = ie(() => t.isSuccess.value && i.isSuccess.value);
+  const C = ee(() => t.isSuccess.value && i.isSuccess.value);
   return {
     positionTradesMap: o,
     positionPositionsMap: n,
-    positionOrdersMap: r,
+    positionOrdersMap: a,
     getPositionKey: d,
     getAttachedTrades: b,
     getAttachedOrders: E,
@@ -11950,21 +11957,21 @@ function Hr(l) {
       await t.refetch(), await i.refetch();
     },
     fetchTradesForSymbol: c,
-    fetchOrdersForSymbol: m,
+    fetchOrdersForSymbol: g,
     savePositionOrderMappings: Qs
   };
 }
-function Or() {
-  const l = z(/* @__PURE__ */ new Set()), e = z(/* @__PURE__ */ new Set());
+function Oa() {
+  const l = A(/* @__PURE__ */ new Set()), e = A(/* @__PURE__ */ new Set());
   function t(i, s) {
     e.value.delete(i), l.value.has(i) ? l.value.delete(i) : l.value.add(i);
     const o = (s == null ? void 0 : s.value) || s;
     if (o && typeof o.getRows == "function") {
       const n = o.getRows();
-      for (const r of n) {
-        const a = r.getData();
-        if (a && `${a.internal_account_id || a.legal_entity}|${a.symbol}|${a.accounting_quantity || a.contract_quantity}|${a.asset_class || "OPT"}|${a.conid || ""}` === i) {
-          r.reformat();
+      for (const a of n) {
+        const r = a.getData();
+        if (r && `${r.internal_account_id || r.legal_entity}|${r.symbol}|${r.accounting_quantity || r.contract_quantity}|${r.asset_class || "OPT"}|${r.conid || ""}` === i) {
+          a.reformat();
           break;
         }
       }
@@ -11976,49 +11983,83 @@ function Or() {
     togglePositionExpansion: t
   };
 }
-const Br = { class: "calculation-details" }, Nr = { class: "calculation-tabs" }, Vr = { key: 0 }, Ir = ["onClick"], $r = { class: "toggle-icon" }, Wr = { class: "group-content" }, Gr = { class: "position-line main-position" }, jr = { class: "position-symbol" }, Ur = { class: "position-calc" }, qr = {
+const Ba = { class: "calculation-details" }, Na = { class: "calculation-tabs" }, $a = { key: 0 }, Va = ["onClick"], Ia = { class: "toggle-icon" }, Wa = { class: "group-content" }, Ga = { class: "position-line main-position" }, ja = { class: "position-symbol" }, Ua = { class: "position-calc" }, qa = {
   key: 0,
   class: "call-positions-wrapper"
-}, Kr = { class: "position-symbol" }, Xr = { class: "position-calc" }, Jr = { class: "call-subtotal" }, Qr = {
+}, Ka = { class: "position-symbol" }, Xa = { class: "position-calc" }, Ja = { class: "call-subtotal" }, Qa = {
   key: 1,
   class: "put-positions-wrapper"
-}, Yr = { class: "position-symbol" }, Zr = { class: "position-calc" }, ea = { class: "group-calculation" }, ta = { class: "calc-line indent" }, ia = { class: "calc-line indent" }, sa = {
+}, Ya = { class: "position-symbol" }, Za = { class: "position-calc" }, er = { class: "group-calculation" }, tr = { class: "calc-line indent" }, ir = { class: "calc-line indent" }, sr = {
   key: 0,
   class: "overall-adjusted-section"
-}, oa = { class: "overall-adjusted-header" }, na = { class: "overall-calculation-breakdown" }, ra = { class: "breakdown-line" }, aa = { class: "breakdown-line" }, la = { class: "breakdown-line" }, ha = { key: 1 }, da = {
+}, or = { class: "overall-adjusted-header" }, nr = { class: "overall-calculation-breakdown" }, ar = { class: "breakdown-line" }, rr = { class: "breakdown-line" }, lr = { class: "breakdown-line" }, hr = { key: 1 }, dr = {
   key: 0,
   class: "loading-message"
-}, ua = {
+}, ur = {
   key: 1,
   class: "error-message"
-}, ca = {
+}, cr = {
   key: 2,
   class: "no-data-message"
-}, fa = { key: 3 }, pa = ["onClick"], ma = { class: "toggle-icon" }, ga = { class: "group-content" }, ba = {
+}, fr = { key: 3 }, pr = ["onClick"], mr = { class: "toggle-icon" }, gr = { class: "group-content" }, br = {
   key: 0,
   class: "order-section order-stock-section"
-}, va = { class: "order-header" }, wa = { class: "order-symbol" }, Ca = { class: "order-calc" }, ya = {
+}, vr = { class: "order-header" }, wr = { class: "order-symbol" }, Cr = { class: "order-calc" }, yr = {
   key: 1,
   class: "order-section no-orders"
-}, Ea = {
+}, Er = {
   key: 2,
-  class: "order-section order-put-section"
-}, Ra = { class: "order-symbol" }, xa = { class: "order-calc" }, ka = { class: "put-subtotal" }, Ta = {
+  class: "order-section order-stock-section"
+}, Rr = { class: "order-symbol" }, xr = { class: "order-calc" }, kr = { class: "put-subtotal" }, Tr = {
   key: 3,
+  class: "order-section",
+  style: { "background-color": "#f8f9fa", "border-left": "3px solid #28a745" }
+}, Sr = {
+  class: "put-subtotal",
+  style: { "font-weight": "600", color: "#28a745" }
+}, Lr = {
+  key: 4,
+  class: "order-section order-put-section"
+}, Mr = { class: "order-symbol" }, Dr = { class: "order-calc" }, Fr = { class: "put-subtotal" }, _r = {
+  key: 5,
+  class: "order-section order-put-section"
+}, Pr = { class: "order-symbol" }, zr = { class: "order-calc" }, Ar = { class: "put-subtotal" }, Hr = {
+  key: 6,
   class: "order-section order-call-section"
-}, Ma = { class: "order-symbol" }, La = { class: "order-calc" }, Sa = { class: "call-subtotal" }, Da = { class: "group-calculation" }, Fa = { class: "calc-line indent" }, _a = {
+}, Or = { class: "order-symbol" }, Br = { class: "order-calc" }, Nr = { class: "call-subtotal" }, $r = {
+  key: 7,
+  class: "order-section order-call-section"
+}, Vr = { class: "order-symbol" }, Ir = { class: "order-calc" }, Wr = { class: "call-subtotal" }, Gr = { class: "group-calculation" }, jr = { class: "calc-line indent" }, Ur = {
   key: 0,
   class: "calc-line indent"
-}, Pa = {
+}, qr = {
   key: 1,
   class: "calc-line indent"
-}, za = {
+}, Kr = {
+  key: 2,
+  class: "calc-line indent"
+}, Xr = {
+  key: 3,
+  class: "calc-line indent"
+}, Jr = {
+  key: 4,
+  class: "calc-line indent"
+}, Qr = {
+  key: 5,
+  class: "calc-line indent"
+}, Yr = {
+  key: 6,
+  class: "calc-line indent"
+}, Zr = {
+  key: 7,
+  class: "calc-line indent"
+}, el = {
   class: "calc-line indent",
   style: { "border-top": "1px solid #dee2e6", "margin-top": "0.5rem", "padding-top": "0.5rem" }
-}, Aa = { class: "calc-line indent" }, Ha = {
+}, tl = { class: "calc-line indent" }, il = {
   key: 0,
   class: "overall-adjusted-section"
-}, Oa = { class: "overall-adjusted-header" }, Ba = { class: "overall-calculation-breakdown" }, Na = { class: "breakdown-line" }, Va = { class: "breakdown-line" }, Ia = { class: "breakdown-line" }, $a = /* @__PURE__ */ Ji({
+}, sl = { class: "overall-adjusted-header" }, ol = { class: "overall-calculation-breakdown" }, nl = { class: "breakdown-line" }, al = { class: "breakdown-line" }, rl = { class: "breakdown-line" }, ll = /* @__PURE__ */ Ji({
   __name: "CalculationDetails",
   props: {
     showCalculationDetails: { type: Boolean },
@@ -12036,35 +12077,35 @@ const Br = { class: "calculation-details" }, Nr = { class: "calculation-tabs" },
   },
   emits: ["update:avgPriceCalculationTab"],
   setup(l, { emit: e }) {
-    const t = e, i = z(/* @__PURE__ */ new Set());
+    const t = e, i = A(/* @__PURE__ */ new Set());
     function s(n) {
       i.value.has(n) ? i.value.delete(n) : i.value.add(n), i.value = new Set(i.value);
     }
     function o(n) {
       if (!n) return "";
-      const r = String(n).trim(), a = r.match(/^([A-Z]+)\s+(\d{6})([CP])(\d{8})$/);
-      if (a) {
-        const h = a[1], d = a[2], u = a[3], c = a[4], m = d.substring(0, 2), b = d.substring(2, 4), E = d.substring(4, 6), y = `20${m}-${b}-${E}`, C = (parseInt(c, 10) / 1e3).toString();
+      const a = String(n).trim(), r = a.match(/^([A-Z]+)\s+(\d{6})([CP])(\d{8})$/);
+      if (r) {
+        const h = r[1], d = r[2], u = r[3], c = r[4], g = d.substring(0, 2), b = d.substring(2, 4), E = d.substring(4, 6), y = `20${g}-${b}-${E}`, C = (parseInt(c, 10) / 1e3).toString();
         return `${h} ${y} ${C} ${u}`;
       }
-      return r;
+      return a;
     }
-    return (n, r) => (R(), Us(bt, { name: "slide-fade" }, {
-      default: vt(() => [
-        je(f("div", Br, [
-          r[14] || (r[14] = f("h2", null, "Average Price calculation details :", -1)),
-          f("div", Nr, [
+    return (n, a) => (R(), Us(wt, { name: "slide-fade" }, {
+      default: Ct(() => [
+        Xe(f("div", Ba, [
+          a[18] || (a[18] = f("h2", null, "Average Price calculation details :", -1)),
+          f("div", Na, [
             f("button", {
-              class: ge(["tab-button", { active: l.avgPriceCalculationTab === "positions" }]),
-              onClick: r[0] || (r[0] = (a) => t("update:avgPriceCalculationTab", "positions"))
-            }, " Calculation from Positions ", 2),
+              class: Ce(["tab-button", { active: l.avgPriceCalculationTab === "orders" }]),
+              onClick: a[0] || (a[0] = (r) => t("update:avgPriceCalculationTab", "orders"))
+            }, " Calculation from Orders ", 2),
             f("button", {
-              class: ge(["tab-button", { active: l.avgPriceCalculationTab === "orders" }]),
-              onClick: r[1] || (r[1] = (a) => t("update:avgPriceCalculationTab", "orders"))
-            }, " Calculation from Orders ", 2)
+              class: Ce(["tab-button", { active: l.avgPriceCalculationTab === "positions" }]),
+              onClick: a[1] || (a[1] = (r) => t("update:avgPriceCalculationTab", "positions"))
+            }, " Calculation from Positions ", 2)
           ]),
-          l.avgPriceCalculationTab === "positions" ? (R(), x("div", Vr, [
-            (R(!0), x(ce, null, fe(l.positionGroups, (a, h) => (R(), x("div", {
+          l.avgPriceCalculationTab === "positions" ? (R(), x("div", $a, [
+            (R(!0), x(de, null, ue(l.positionGroups, (r, h) => (R(), x("div", {
               key: `group-${h}`,
               class: "position-group"
             }, [
@@ -12072,75 +12113,75 @@ const Br = { class: "calculation-details" }, Nr = { class: "calculation-tabs" },
                 class: "group-header clickable",
                 onClick: (d) => s(h)
               }, [
-                f("span", $r, g(i.value.has(h) ? "▼" : "▶"), 1),
-                ne(" Client " + g(h + 1) + ": " + g(a.mainPosition.account), 1)
-              ], 8, Ir),
-              ut(bt, { name: "slide-fade" }, {
-                default: vt(() => [
-                  je(f("div", Wr, [
-                    f("div", Gr, [
-                      r[2] || (r[2] = f("span", { class: "position-icon" }, "📍", -1)),
-                      f("span", jr, g(a.mainPosition.symbol), 1),
-                      f("span", Ur, "@ $" + g(a.mainPosition.avgPrice.toFixed(2)) + " × " + g(a.mainPosition.quantity.toLocaleString()) + " = $" + g(a.mainPosition.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                f("span", Ia, m(i.value.has(h) ? "▼" : "▶"), 1),
+                ae(" Client " + m(h + 1) + ": " + m(r.mainPosition.account), 1)
+              ], 8, Va),
+              ft(wt, { name: "slide-fade" }, {
+                default: Ct(() => [
+                  Xe(f("div", Wa, [
+                    f("div", Ga, [
+                      a[2] || (a[2] = f("span", { class: "position-icon" }, "📍", -1)),
+                      f("span", ja, m(r.mainPosition.symbol), 1),
+                      f("span", Ua, "@ $" + m(r.mainPosition.avgPrice.toFixed(2)) + " × " + m(r.mainPosition.quantity.toLocaleString()) + " = $" + m(r.mainPosition.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                     ]),
-                    a.callPositions.length > 0 ? (R(), x("div", qr, [
-                      r[4] || (r[4] = f("div", { class: "call-header" }, "📞 Call Positions (subtract from cost)", -1)),
-                      (R(!0), x(ce, null, fe(a.callPositions, (d, u) => (R(), x("div", {
+                    r.callPositions.length > 0 ? (R(), x("div", qa, [
+                      a[4] || (a[4] = f("div", { class: "call-header" }, "📞 Call Positions (subtract from cost)", -1)),
+                      (R(!0), x(de, null, ue(r.callPositions, (d, u) => (R(), x("div", {
                         key: `call-${h}-${u}`,
                         class: "position-line call-position"
                       }, [
-                        r[3] || (r[3] = f("span", { class: "position-icon" }, null, -1)),
-                        f("span", Kr, g(d.symbol), 1),
-                        f("span", Xr, "@ $" + g(d.avgPrice.toFixed(2)) + " × " + g(d.quantity.toLocaleString()) + " = $" + g(d.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                        a[3] || (a[3] = f("span", { class: "position-icon" }, null, -1)),
+                        f("span", Ka, m(d.symbol), 1),
+                        f("span", Xa, "@ $" + m(d.avgPrice.toFixed(2)) + " × " + m(d.quantity.toLocaleString()) + " = $" + m(d.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                       ]))), 128)),
-                      f("div", Jr, " Subtotal Calls: $" + g(Math.abs(a.callPositionsTotalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
-                    ])) : Q("", !0),
-                    a.putPositions.length > 0 ? (R(), x("div", Qr, [
-                      r[6] || (r[6] = f("div", { class: "put-header" }, "📉 Put Positions (display only, not in calculation)", -1)),
-                      (R(!0), x(ce, null, fe(a.putPositions, (d, u) => (R(), x("div", {
+                      f("div", Ja, " Subtotal Calls: $" + m(Math.abs(r.callPositionsTotalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                    ])) : U("", !0),
+                    r.putPositions.length > 0 ? (R(), x("div", Qa, [
+                      a[6] || (a[6] = f("div", { class: "put-header" }, "📉 Put Positions (display only, not in calculation)", -1)),
+                      (R(!0), x(de, null, ue(r.putPositions, (d, u) => (R(), x("div", {
                         key: `put-${h}-${u}`,
                         class: "position-line put-position"
                       }, [
-                        r[5] || (r[5] = f("span", { class: "position-icon" }, "📉", -1)),
-                        f("span", Yr, g(d.symbol), 1),
-                        f("span", Zr, "@ $" + g(d.avgPrice.toFixed(2)) + " × " + g(d.quantity.toLocaleString()) + " = $" + g(d.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                        a[5] || (a[5] = f("span", { class: "position-icon" }, "📉", -1)),
+                        f("span", Ya, m(d.symbol), 1),
+                        f("span", Za, "@ $" + m(d.avgPrice.toFixed(2)) + " × " + m(d.quantity.toLocaleString()) + " = $" + m(d.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                       ]))), 128))
-                    ])) : Q("", !0),
-                    f("div", ea, [
-                      r[7] || (r[7] = f("div", { class: "calc-line" }, [
-                        ne("📊 "),
+                    ])) : U("", !0),
+                    f("div", er, [
+                      a[7] || (a[7] = f("div", { class: "calc-line" }, [
+                        ae("📊 "),
                         f("strong", null, "Calculation:")
                       ], -1)),
-                      f("div", ta, "Net Cost = $" + g(a.mainPosition.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + g(Math.abs(a.callPositionsTotalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " = $" + g(a.netCostExcludingPuts.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
-                      f("div", ia, [
-                        f("strong", null, "Adjusted Avg Price = $" + g(a.netCostExcludingPuts.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ÷ " + g(a.mainPosition.quantity.toLocaleString()) + " = $" + g(a.adjustedAvgPricePerShare.toFixed(2)) + " per share", 1)
+                      f("div", tr, "Net Cost = $" + m(r.mainPosition.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + m(Math.abs(r.callPositionsTotalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " = $" + m(r.netCostExcludingPuts.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
+                      f("div", ir, [
+                        f("strong", null, "Adjusted Avg Price = $" + m(r.netCostExcludingPuts.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ÷ " + m(r.mainPosition.quantity.toLocaleString()) + " = $" + m(r.adjustedAvgPricePerShare.toFixed(2)) + " per share", 1)
                       ])
                     ])
                   ], 512), [
-                    [wt, i.value.has(h)]
+                    [yt, i.value.has(h)]
                   ])
                 ]),
                 _: 2
               }, 1024)
             ]))), 128)),
-            l.overallAdjustedAvgPrice !== null ? (R(), x("div", sa, [
-              f("div", oa, " 🎯 Overall Adjusted Average: $" + g(l.overallAdjustedAvgPrice.toFixed(2)) + " per share ", 1),
-              f("div", na, [
-                f("div", ra, "Total Net Cost = " + g(l.positionGroups.map((a) => `$${a.netCostExcludingPuts.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")) + " = $" + g(l.totalNetCostAllClients.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
-                f("div", aa, "Total Main Qty = " + g(l.positionGroups.map((a) => a.mainPosition.quantity.toLocaleString()).join(" + ")) + " = " + g(l.totalMainQuantityAllClients.toLocaleString()), 1),
-                f("div", la, [
-                  f("strong", null, "Overall Adjusted Average = $" + g(l.totalNetCostAllClients.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ÷ " + g(l.totalMainQuantityAllClients.toLocaleString()) + " = $" + g(l.overallAdjustedAvgPrice.toFixed(2)), 1)
+            l.overallAdjustedAvgPrice !== null ? (R(), x("div", sr, [
+              f("div", or, " 🎯 Overall Adjusted Average: $" + m(l.overallAdjustedAvgPrice.toFixed(2)) + " per share ", 1),
+              f("div", nr, [
+                f("div", ar, "Total Net Cost = " + m(l.positionGroups.map((r) => `$${r.netCostExcludingPuts.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")) + " = $" + m(l.totalNetCostAllClients.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
+                f("div", rr, "Total Main Qty = " + m(l.positionGroups.map((r) => r.mainPosition.quantity.toLocaleString()).join(" + ")) + " = " + m(l.totalMainQuantityAllClients.toLocaleString()), 1),
+                f("div", lr, [
+                  f("strong", null, "Overall Adjusted Average = $" + m(l.totalNetCostAllClients.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ÷ " + m(l.totalMainQuantityAllClients.toLocaleString()) + " = $" + m(l.overallAdjustedAvgPrice.toFixed(2)), 1)
                 ])
               ])
-            ])) : Q("", !0)
-          ])) : l.avgPriceCalculationTab === "orders" ? (R(), x("div", ha, [
-            l.isAvgPriceFromOrdersLoading ? (R(), x("div", da, [...r[8] || (r[8] = [
+            ])) : U("", !0)
+          ])) : l.avgPriceCalculationTab === "orders" ? (R(), x("div", hr, [
+            l.isAvgPriceFromOrdersLoading ? (R(), x("div", dr, [...a[8] || (a[8] = [
               f("span", { class: "loading-spinner" }, "⏳", -1),
-              ne(" Loading order data... ", -1)
-            ])])) : l.avgPriceFromOrdersError ? (R(), x("div", ua, " ❌ Error loading orders: " + g(l.avgPriceFromOrdersError), 1)) : !l.orderGroups || l.orderGroups.length === 0 ? (R(), x("div", ca, [...r[9] || (r[9] = [
+              ae(" Loading order data... ", -1)
+            ])])) : l.avgPriceFromOrdersError ? (R(), x("div", ur, " ❌ Error loading orders: " + m(l.avgPriceFromOrdersError), 1)) : !l.orderGroups || l.orderGroups.length === 0 ? (R(), x("div", cr, [...a[9] || (a[9] = [
               f("p", null, "No order data found for these positions.", -1)
-            ])])) : (R(), x("div", fa, [
-              (R(!0), x(ce, null, fe(l.orderGroups, (a, h) => (R(), x("div", {
+            ])])) : (R(), x("div", fr, [
+              (R(!0), x(de, null, ue(l.orderGroups, (r, h) => (R(), x("div", {
                 key: `order-group-${h}`,
                 class: "position-group"
               }, [
@@ -12148,81 +12189,133 @@ const Br = { class: "calculation-details" }, Nr = { class: "calculation-tabs" },
                   class: "group-header clickable",
                   onClick: (d) => s(h)
                 }, [
-                  f("span", ma, g(i.value.has(h) ? "▼" : "▶"), 1),
-                  ne(" Client " + g(h + 1) + ": " + g(a.mainPosition.account), 1)
-                ], 8, pa),
-                ut(bt, { name: "slide-fade" }, {
-                  default: vt(() => [
-                    je(f("div", ga, [
-                      a.stockPurchases && a.stockPurchases.length > 0 ? (R(), x("div", ba, [
-                        f("div", va, "📍 Stock Purchases (" + g(a.stockPurchases.length) + ")", 1),
-                        (R(!0), x(ce, null, fe(a.stockPurchases, (d, u) => (R(), x("div", {
+                  f("span", mr, m(i.value.has(h) ? "▼" : "▶"), 1),
+                  ae(" Client " + m(h + 1) + ": " + m(r.mainPosition.account), 1)
+                ], 8, pr),
+                ft(wt, { name: "slide-fade" }, {
+                  default: Ct(() => [
+                    Xe(f("div", gr, [
+                      r.stockPurchases && r.stockPurchases.length > 0 ? (R(), x("div", br, [
+                        f("div", vr, "📍 Stock Purchases (" + m(r.stockPurchases.length) + ")", 1),
+                        (R(!0), x(de, null, ue(r.stockPurchases, (d, u) => (R(), x("div", {
                           key: `stock-${h}-${u}`,
                           class: "order-line main-order"
                         }, [
-                          r[10] || (r[10] = f("span", { class: "position-icon" }, "📍", -1)),
-                          f("span", wa, g(d.symbol), 1),
-                          f("span", Ca, "@ $" + g(Number(d.avgPrice).toFixed(2)) + " × " + g(d.quantity.toLocaleString()) + " = $" + g(Number(d.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                          a[10] || (a[10] = f("span", { class: "position-icon" }, "📍", -1)),
+                          f("span", wr, m(d.symbol), 1),
+                          f("span", Cr, "@ $" + m(Number(d.avgPrice).toFixed(2)) + " × " + m(d.quantity.toLocaleString()) + " = $" + m(Number(d.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ]))), 128))
-                      ])) : (R(), x("div", ya, "No stock purchases found")),
-                      a.putSales && a.putSales.length > 0 ? (R(), x("div", Ea, [
-                        r[11] || (r[11] = f("div", { class: "order-header" }, "📉 Put Premium Received (subtract from cost)", -1)),
-                        (R(!0), x(ce, null, fe(a.putSales, (d, u) => (R(), x("div", {
+                      ])) : (R(), x("div", yr, "No stock purchases found")),
+                      r.stockSales && r.stockSales.length > 0 ? (R(), x("div", Er, [
+                        a[12] || (a[12] = f("div", { class: "order-header" }, "💰 Stock Sales (subtract from cost)", -1)),
+                        (R(!0), x(de, null, ue(r.stockSales, (d, u) => (R(), x("div", {
+                          key: `stock-sale-${h}-${u}`,
+                          class: "order-line main-order"
+                        }, [
+                          a[11] || (a[11] = f("span", { class: "position-icon" }, "💰", -1)),
+                          f("span", Rr, m(d.symbol), 1),
+                          f("span", xr, "@ $" + m(Number(d.avgPrice).toFixed(2)) + " × " + m(d.quantity.toLocaleString()) + " = $" + m(Number(d.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                        ]))), 128)),
+                        f("div", kr, " Subtotal Stock Sale Proceeds: $" + m(Math.abs(r.stockSaleProceeds).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                      ])) : U("", !0),
+                      r.netStockCost !== void 0 || r.totalShares ? (R(), x("div", Tr, [
+                        f("div", Sr, [
+                          f("div", null, "Net Stock Cost: $" + m((r.netStockCost || r.totalStockCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
+                          f("div", null, "Current Shares: " + m(r.totalShares.toLocaleString()) + " (purchases - sales)", 1)
+                        ])
+                      ])) : U("", !0),
+                      r.putSales && r.putSales.length > 0 ? (R(), x("div", Lr, [
+                        a[13] || (a[13] = f("div", { class: "order-header" }, "📉 Put Premium Received (subtract from cost)", -1)),
+                        (R(!0), x(de, null, ue(r.putSales, (d, u) => (R(), x("div", {
                           key: `put-${h}-${u}`,
                           class: "order-line put-order"
                         }, [
-                          f("span", Ra, g(o(d.symbol)), 1),
-                          f("span", xa, "@ $" + g(Number(d.avgPrice).toFixed(2)) + " × " + g(d.quantity.toLocaleString()) + " = $" + g(Number(d.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                          f("span", Mr, m(o(d.symbol)), 1),
+                          f("span", Dr, "@ $" + m(Number(d.avgPrice).toFixed(2)) + " × " + m(d.quantity.toLocaleString()) + " = $" + m(Number(d.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ]))), 128)),
-                        f("div", ka, " Subtotal Put Premium: $" + g(Math.abs(a.putPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
-                      ])) : Q("", !0),
-                      a.callSales && a.callSales.length > 0 ? (R(), x("div", Ta, [
-                        r[12] || (r[12] = f("div", { class: "order-header" }, "📞 Call Premiums Received (subtract from cost)", -1)),
-                        (R(!0), x(ce, null, fe(a.callSales, (d, u) => (R(), x("div", {
+                        f("div", Fr, " Subtotal Put Premium: $" + m(Math.abs(r.putPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                      ])) : U("", !0),
+                      r.putBuybacks && r.putBuybacks.length > 0 ? (R(), x("div", _r, [
+                        a[14] || (a[14] = f("div", { class: "order-header" }, "🔄 Put Buybacks (add to cost - closing positions)", -1)),
+                        (R(!0), x(de, null, ue(r.putBuybacks, (d, u) => (R(), x("div", {
+                          key: `put-buyback-${h}-${u}`,
+                          class: "order-line put-order"
+                        }, [
+                          f("span", Pr, m(o(d.symbol)), 1),
+                          f("span", zr, "@ $" + m(Number(d.avgPrice).toFixed(2)) + " × " + m(d.quantity.toLocaleString()) + " = $" + m(Number(d.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                        ]))), 128)),
+                        f("div", Ar, " Subtotal Put Buyback Cost: $" + m(Math.abs(r.putBuybackCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                      ])) : U("", !0),
+                      r.callSales && r.callSales.length > 0 ? (R(), x("div", Hr, [
+                        a[15] || (a[15] = f("div", { class: "order-header" }, "📞 Call Premiums Received (subtract from cost)", -1)),
+                        (R(!0), x(de, null, ue(r.callSales, (d, u) => (R(), x("div", {
                           key: `call-${h}-${u}`,
                           class: "order-line call-order"
                         }, [
-                          f("span", Ma, g(o(d.symbol)), 1),
-                          f("span", La, "@ $" + g(Number(d.avgPrice).toFixed(2)) + " × " + g(d.quantity.toLocaleString()) + " = $" + g(Number(d.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                          f("span", Or, m(o(d.symbol)), 1),
+                          f("span", Br, "@ $" + m(Number(d.avgPrice).toFixed(2)) + " × " + m(d.quantity.toLocaleString()) + " = $" + m(Number(d.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ]))), 128)),
-                        f("div", Sa, " Subtotal Call Premium: $" + g(Math.abs(a.callPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
-                      ])) : Q("", !0),
-                      f("div", Da, [
-                        r[13] || (r[13] = f("div", { class: "calc-line" }, [
-                          ne("📊 "),
+                        f("div", Nr, " Subtotal Call Premium: $" + m(Math.abs(r.callPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                      ])) : U("", !0),
+                      r.callBuybacks && r.callBuybacks.length > 0 ? (R(), x("div", $r, [
+                        a[16] || (a[16] = f("div", { class: "order-header" }, "🔄 Call Buybacks (add to cost - closing positions)", -1)),
+                        (R(!0), x(de, null, ue(r.callBuybacks, (d, u) => (R(), x("div", {
+                          key: `call-buyback-${h}-${u}`,
+                          class: "order-line call-order"
+                        }, [
+                          f("span", Vr, m(o(d.symbol)), 1),
+                          f("span", Ir, "@ $" + m(Number(d.avgPrice).toFixed(2)) + " × " + m(d.quantity.toLocaleString()) + " = $" + m(Number(d.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                        ]))), 128)),
+                        f("div", Wr, " Subtotal Call Buyback Cost: $" + m(Math.abs(r.callBuybackCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                      ])) : U("", !0),
+                      f("div", Gr, [
+                        a[17] || (a[17] = f("div", { class: "calc-line" }, [
+                          ae("📊 "),
                           f("strong", null, "Calculation:")
                         ], -1)),
-                        f("div", Fa, "Stock Purchase Cost: -$" + g(a.totalStockCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
-                        a.putPremiumReceived > 0 ? (R(), x("div", _a, "Put Premium Received: +$" + g(Math.abs(a.putPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)) : Q("", !0),
-                        a.callPremiumReceived > 0 ? (R(), x("div", Pa, "Call Premium Received: +$" + g(Math.abs(a.callPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)) : Q("", !0),
-                        f("div", za, [
-                          f("strong", null, "Net Cost = $" + g(a.totalStockCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + g(Math.abs(a.putPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + g(Math.abs(a.callPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " = $" + g(a.netCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                        f("div", jr, "Stock Purchases: -$" + m(r.totalStockCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
+                        r.stockSaleProceeds && r.stockSaleProceeds > 0 ? (R(), x("div", Ur, "Stock Sales: +$" + m(Math.abs(r.stockSaleProceeds).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)) : U("", !0),
+                        r.netStockCost !== void 0 && r.netStockCost !== r.totalStockCost ? (R(), x("div", qr, [
+                          f("strong", null, "Net Stock Cost: $" + m(r.netStockCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                        ])) : U("", !0),
+                        r.putPremiumReceived > 0 ? (R(), x("div", Kr, "Put Premium Received: +$" + m(Math.abs(r.putPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)) : U("", !0),
+                        r.putBuybackCost && r.putBuybackCost > 0 ? (R(), x("div", Xr, "Put Buyback Cost: -$" + m(Math.abs(r.putBuybackCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)) : U("", !0),
+                        r.netPutCashFlow !== void 0 && r.netPutCashFlow !== r.putPremiumReceived ? (R(), x("div", Jr, [
+                          f("strong", null, "Net Put Cash Flow: $" + m(r.netPutCashFlow.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                        ])) : U("", !0),
+                        r.callPremiumReceived > 0 ? (R(), x("div", Qr, "Call Premium Received: +$" + m(Math.abs(r.callPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)) : U("", !0),
+                        r.callBuybackCost && r.callBuybackCost > 0 ? (R(), x("div", Yr, "Call Buyback Cost: -$" + m(Math.abs(r.callBuybackCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)) : U("", !0),
+                        r.netCallCashFlow !== void 0 && r.netCallCashFlow !== r.callPremiumReceived ? (R(), x("div", Zr, [
+                          f("strong", null, "Net Call Cash Flow: $" + m(r.netCallCashFlow.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                        ])) : U("", !0),
+                        f("div", el, [
+                          f("strong", null, "Total Net Cost = $" + m((r.netStockCost || r.totalStockCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + m(Math.abs(r.netPutCashFlow || r.putPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + m(Math.abs(r.netCallCashFlow || r.callPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " = $" + m(r.netCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ]),
-                        f("div", Aa, [
-                          f("strong", null, "Adjusted Avg Price = $" + g(a.netCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ÷ " + g(a.totalShares.toLocaleString()) + " = $" + g(a.adjustedAvgPricePerShare.toFixed(2)) + " per share", 1)
+                        f("div", tl, [
+                          f("strong", null, "Adjusted Avg Price = $" + m(r.netCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ÷ " + m(r.totalShares.toLocaleString()) + " = $" + m(r.adjustedAvgPricePerShare.toFixed(2)) + " per share", 1)
                         ])
                       ])
                     ], 512), [
-                      [wt, i.value.has(h)]
+                      [yt, i.value.has(h)]
                     ])
                   ]),
                   _: 2
                 }, 1024)
               ]))), 128)),
-              l.overallAdjustedAvgPriceFromOrders !== null ? (R(), x("div", Ha, [
-                f("div", Oa, " 🎯 Overall Adjusted Average: $" + g(l.overallAdjustedAvgPriceFromOrders.toFixed(2)) + " per share ", 1),
-                f("div", Ba, [
-                  f("div", Na, "Total Net Cost = " + g(l.orderGroups.map((a) => `$${a.netCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")) + " = $" + g(l.totalNetCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
-                  f("div", Va, "Total Main Qty = " + g(l.orderGroups.map((a) => a.totalShares.toLocaleString()).join(" + ")) + " = " + g(l.totalShares.toLocaleString()), 1),
-                  f("div", Ia, [
-                    f("strong", null, "Overall Adjusted Average = $" + g(l.totalNetCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ÷ " + g(l.totalShares.toLocaleString()) + " = $" + g(l.overallAdjustedAvgPriceFromOrders.toFixed(2)), 1)
+              l.overallAdjustedAvgPriceFromOrders !== null ? (R(), x("div", il, [
+                f("div", sl, " 🎯 Overall Adjusted Average: $" + m(l.overallAdjustedAvgPriceFromOrders.toFixed(2)) + " per share ", 1),
+                f("div", ol, [
+                  f("div", nl, "Total Net Cost = " + m(l.orderGroups.map((r) => `$${r.netCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")) + " = $" + m(l.totalNetCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
+                  f("div", al, "Total Main Qty = " + m(l.orderGroups.map((r) => r.totalShares.toLocaleString()).join(" + ")) + " = " + m(l.totalShares.toLocaleString()), 1),
+                  f("div", rl, [
+                    f("strong", null, "Overall Adjusted Average = $" + m(l.totalNetCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ÷ " + m(l.totalShares.toLocaleString()) + " = $" + m(l.overallAdjustedAvgPriceFromOrders.toFixed(2)), 1)
                   ])
                 ])
-              ])) : Q("", !0)
+              ])) : U("", !0)
             ]))
-          ])) : Q("", !0)
+          ])) : U("", !0)
         ], 512), [
-          [wt, l.showCalculationDetails]
+          [yt, l.showCalculationDetails]
         ])
       ]),
       _: 1
@@ -12233,34 +12326,16 @@ const Br = { class: "calculation-details" }, Nr = { class: "calculation-tabs" },
   for (const [i, s] of e)
     t[i] = s;
   return t;
-}, Wa = /* @__PURE__ */ Es($a, [["__scopeId", "data-v-2916a66f"]]), Ga = { class: "current-positions-for-single-instrument-view" }, ja = { class: "positions-table-container" }, Ua = { class: "header-section" }, qa = {
+}, hl = /* @__PURE__ */ Es(ll, [["__scopeId", "data-v-6ed4707f"]]), dl = { class: "current-positions-for-single-instrument-view" }, ul = { class: "positions-table-container" }, cl = { class: "header-section" }, fl = {
   key: 0,
   class: "loading-state"
-}, Ka = {
+}, pl = {
   key: 1,
   class: "error-state"
-}, Xa = {
+}, ml = {
   key: 2,
   class: "summary-section"
-}, Ja = { class: "summary-cards" }, Qa = { class: "summary-card card-cyan" }, Ya = {
-  key: 0,
-  class: "summary-value"
-}, Za = {
-  key: 1,
-  class: "summary-value error"
-}, el = {
-  key: 2,
-  class: "summary-value-container-vertical"
-}, tl = { key: 0 }, il = { key: 1 }, sl = { class: "toggle-icon" }, ol = { class: "summary-card card-blue" }, nl = {
-  key: 0,
-  class: "summary-value"
-}, rl = {
-  key: 1,
-  class: "summary-value error"
-}, al = {
-  key: 2,
-  class: "summary-value-container-vertical"
-}, ll = { key: 0 }, hl = { class: "pnl-percentage" }, dl = { key: 1 }, ul = { class: "toggle-icon" }, cl = { class: "summary-card highlight-1 card-green" }, fl = { class: "summary-value-container" }, pl = { class: "summary-value" }, ml = { class: "accounts-count" }, gl = { class: "toggle-icon" }, bl = { class: "summary-card card-purple" }, vl = {
+}, gl = { class: "summary-cards" }, bl = { class: "summary-card card-cyan" }, vl = {
   key: 0,
   class: "summary-value"
 }, wl = {
@@ -12269,144 +12344,162 @@ const Br = { class: "calculation-details" }, Nr = { class: "calculation-tabs" },
 }, Cl = {
   key: 2,
   class: "summary-value-container-vertical"
-}, yl = { class: "summary-value" }, El = {
+}, yl = { key: 0 }, El = { key: 1 }, Rl = { class: "toggle-icon" }, xl = { class: "summary-card card-blue" }, kl = {
   key: 0,
-  class: "52-week-range"
-}, Rl = { class: "blue_color" }, xl = { class: "blue_color" }, kl = {
-  key: 1,
-  class: "52-week-range"
+  class: "summary-value"
 }, Tl = {
-  key: 2,
-  class: "timestamp-info"
-}, Ml = {
-  key: 3,
-  class: "summary-value"
-}, Ll = { class: "summary-card card-orange" }, Sl = {
-  key: 0,
-  class: "summary-value"
-}, Dl = {
   key: 1,
   class: "summary-value error"
-}, Fl = { class: "summary-value-container-vertical" }, _l = { key: 0 }, Pl = { key: 1 }, zl = { key: 2 }, Al = { class: "toggle-icon" }, Hl = { class: "summary-card card-teal" }, Ol = {
-  key: 0,
-  class: "summary-value"
-}, Bl = {
-  key: 1,
-  class: "summary-value error"
-}, Nl = {
+}, Sl = {
   key: 2,
   class: "summary-value-container-vertical"
-}, Vl = {
+}, Ll = { key: 0 }, Ml = { class: "pnl-percentage" }, Dl = { key: 1 }, Fl = { class: "toggle-icon" }, _l = { class: "summary-card highlight-1 card-green" }, Pl = { class: "summary-value-container" }, zl = { class: "summary-value" }, Al = { class: "accounts-count" }, Hl = { class: "toggle-icon" }, Ol = { class: "summary-card card-purple" }, Bl = {
+  key: 0,
+  class: "summary-value"
+}, Nl = {
+  key: 1,
+  class: "summary-value error"
+}, $l = {
+  key: 2,
+  class: "summary-value-container-vertical"
+}, Vl = { class: "summary-value" }, Il = {
+  key: 0,
+  class: "52-week-range"
+}, Wl = { class: "blue_color" }, Gl = { class: "blue_color" }, jl = {
+  key: 1,
+  class: "52-week-range"
+}, Ul = {
+  key: 2,
+  class: "timestamp-info"
+}, ql = {
+  key: 3,
+  class: "summary-value"
+}, Kl = { class: "summary-card card-orange" }, Xl = {
+  key: 0,
+  class: "summary-value"
+}, Jl = {
+  key: 1,
+  class: "summary-value error"
+}, Ql = { class: "summary-value-container-vertical" }, Yl = { key: 0 }, Zl = { key: 1 }, eh = { key: 2 }, th = { class: "toggle-icon" }, ih = { class: "summary-card card-teal" }, sh = {
+  key: 0,
+  class: "summary-value"
+}, oh = {
+  key: 1,
+  class: "summary-value error"
+}, nh = {
+  key: 2,
+  class: "summary-value-container-vertical"
+}, ah = {
   key: 0,
   class: "subtitle-info",
   style: { "font-size": "0.85rem", color: "#6c757d", "margin-top": "0.25rem" }
-}, Il = { class: "blue_color" }, $l = {
+}, rh = { class: "blue_color" }, lh = {
   key: 1,
   class: "subtitle-info",
   style: { "font-size": "0.85rem", color: "#6c757d", "margin-top": "0.25rem" }
-}, Wl = { class: "blue_color" }, Gl = {
+}, hh = { class: "blue_color" }, dh = {
   key: 2,
   class: "subtitle-info",
   style: { "font-size": "0.85rem", color: "#6c757d", "margin-top": "0.25rem" }
-}, jl = { class: "blue_color" }, Ul = { class: "table-wrapper" }, ql = { class: "pnl-details" }, Kl = {
+}, uh = { class: "blue_color" }, ch = { class: "table-wrapper" }, fh = { class: "pnl-details" }, ph = {
   key: 0,
   class: "pnl-breakdown"
-}, Xl = { class: "pnl-section" }, Jl = { class: "calc-line" }, Ql = { class: "calc-line" }, Yl = { class: "calc-line calculation-result" }, Zl = { class: "pnl-section" }, eh = { class: "calc-line" }, th = { class: "calc-line calculation-result" }, ih = { class: "pnl-section highlight-section" }, sh = { class: "calc-line" }, oh = { class: "calc-line" }, nh = {
+}, mh = { class: "pnl-section" }, gh = { class: "calc-line" }, bh = { class: "calc-line" }, vh = { class: "calc-line calculation-result" }, wh = { class: "pnl-section" }, Ch = { class: "calc-line" }, yh = { class: "calc-line calculation-result" }, Eh = { class: "pnl-section highlight-section" }, Rh = { class: "calc-line" }, xh = { class: "calc-line" }, kh = {
   key: 1,
   class: "pnl-breakdown"
-}, rh = { class: "pnl-section" }, ah = { class: "pnl-section-title" }, lh = { class: "calc-line" }, hh = { class: "calc-line" }, dh = { class: "pnl-section-title" }, uh = { class: "calc-line" }, ch = { class: "calc-line" }, fh = { class: "calc-line" }, ph = { class: "calc-line calculation-result" }, mh = { class: "pnl-section highlight-section" }, gh = { class: "calc-line" }, bh = { class: "calc-line calculation-result" }, vh = {
+}, Th = { class: "pnl-section" }, Sh = { class: "pnl-section-title" }, Lh = { class: "calc-line" }, Mh = { class: "calc-line" }, Dh = { class: "pnl-section-title" }, Fh = { class: "calc-line" }, _h = { class: "calc-line" }, Ph = { class: "calc-line" }, zh = { class: "calc-line calculation-result" }, Ah = { class: "pnl-section highlight-section" }, Hh = { class: "calc-line" }, Oh = { class: "calc-line calculation-result" }, Bh = {
   class: "calc-line",
   style: { "margin-top": "1rem" }
-}, wh = { class: "calc-line calculation-result" }, Ch = {
+}, Nh = { class: "calc-line calculation-result" }, $h = {
   class: "calc-line",
   style: { "margin-top": "1rem" }
-}, yh = { class: "calc-line" }, Eh = {
+}, Vh = { class: "calc-line" }, Ih = {
   key: 0,
   class: "calc-line",
   style: { "margin-top": "1rem", color: "#dc3545", "font-weight": "bold" }
-}, Rh = { class: "capital-details" }, xh = {
+}, Wh = { class: "capital-details" }, Gh = {
   key: 0,
   class: "no-data-message"
-}, kh = {
+}, jh = {
   key: 1,
   class: "capital-breakdown"
-}, Th = { class: "capital-section" }, Mh = { class: "calc-line" }, Lh = { class: "calc-line" }, Sh = { class: "calc-line calculation-result" }, Dh = {
+}, Uh = { class: "capital-section" }, qh = { class: "calc-line" }, Kh = { class: "calc-line" }, Xh = { class: "calc-line calculation-result" }, Jh = {
   key: 2,
   class: "capital-breakdown"
-}, Fh = { class: "capital-section-title" }, _h = { class: "calc-line" }, Ph = { class: "calc-line" }, zh = { class: "calc-line" }, Ah = { class: "calc-line calculation-result" }, Hh = { class: "capital-section highlight-section" }, Oh = { class: "calc-line" }, Bh = { class: "calc-line calculation-result" }, Nh = { class: "modal-header" }, Vh = { class: "modal-body" }, Ih = {
+}, Qh = { class: "capital-section-title" }, Yh = { class: "calc-line" }, Zh = { class: "calc-line" }, ed = { class: "calc-line" }, td = { class: "calc-line calculation-result" }, id = { class: "capital-section highlight-section" }, sd = { class: "calc-line" }, od = { class: "calc-line calculation-result" }, nd = { class: "modal-header" }, ad = { class: "modal-body" }, rd = {
   key: 0,
   class: "position-info"
-}, $h = { class: "attachment-tabs" }, Wh = { key: 1 }, Gh = { class: "trade-search" }, jh = {
+}, ld = { class: "attachment-tabs" }, hd = { key: 1 }, dd = { class: "trade-search" }, ud = {
   key: 0,
   style: { padding: "1rem", "text-align": "center", color: "#6c757d" }
-}, Uh = {
+}, cd = {
   key: 1,
   class: "trades-list"
-}, qh = ["onClick"], Kh = ["checked", "onClick"], Xh = { class: "trade-details" }, Jh = { class: "trade-primary" }, Qh = { style: { color: "#6c757d" } }, Yh = { style: { color: "#6c757d" } }, Zh = { class: "trade-secondary" }, ed = { key: 0 }, td = { key: 1 }, id = { style: { color: "#6c757d", "margin-left": "6px" } }, sd = {
+}, fd = ["onClick"], pd = ["checked", "onClick"], md = { class: "trade-details" }, gd = { class: "trade-primary" }, bd = { style: { color: "#6c757d" } }, vd = { style: { color: "#6c757d" } }, wd = { class: "trade-secondary" }, Cd = { key: 0 }, yd = { key: 1 }, Ed = { style: { color: "#6c757d", "margin-left": "6px" } }, Rd = {
   key: 0,
   style: { padding: "1.5rem", "text-align": "center", color: "#6c757d" }
-}, od = { key: 2 }, nd = { class: "trade-search" }, rd = {
+}, xd = { key: 2 }, kd = { class: "trade-search" }, Td = {
   key: 0,
   style: { padding: "1rem", "text-align": "center", color: "#6c757d" }
-}, ad = {
+}, Sd = {
   key: 1,
   class: "trades-list"
-}, ld = ["onClick"], hd = ["checked", "onClick"], dd = { class: "trade-details" }, ud = { class: "trade-primary" }, cd = { style: { color: "#6c757d" } }, fd = { style: { color: "#6c757d" } }, pd = {
+}, Ld = ["onClick"], Md = ["checked", "onClick"], Dd = { class: "trade-details" }, Fd = { class: "trade-primary" }, _d = { style: { color: "#6c757d" } }, Pd = { style: { color: "#6c757d" } }, zd = {
   key: 0,
   class: "expired-badge"
-}, md = { class: "trade-secondary" }, gd = { key: 0 }, bd = {
+}, Ad = { class: "trade-secondary" }, Hd = { key: 0 }, Od = {
   key: 0,
   style: { padding: "1.5rem", "text-align": "center", color: "#6c757d" }
-}, vd = { key: 3 }, wd = { class: "trade-search" }, Cd = {
+}, Bd = { key: 3 }, Nd = { class: "trade-search" }, $d = {
   key: 0,
   style: { padding: "1rem", "text-align": "center", color: "#6c757d" }
-}, yd = {
+}, Vd = {
   key: 1,
   class: "trades-list"
-}, Ed = ["onClick"], Rd = ["checked", "onClick"], xd = { class: "trade-details" }, kd = { class: "trade-primary" }, Td = { style: { color: "#6c757d" } }, Md = { style: { color: "#6c757d" } }, Ld = { class: "trade-secondary" }, Sd = { key: 0 }, Dd = {
+}, Id = ["onClick"], Wd = ["checked", "onClick"], Gd = { class: "trade-details" }, jd = { class: "trade-primary" }, Ud = { style: { color: "#6c757d" } }, qd = { style: { color: "#6c757d" } }, Kd = { class: "trade-secondary" }, Xd = { key: 0 }, Jd = {
   key: 0,
   style: { padding: "1.5rem", "text-align": "center", color: "#6c757d" }
-}, Fd = { class: "modal-footer" }, _d = ["disabled"], Pd = /* @__PURE__ */ Ji({
+}, Qd = { class: "modal-footer" }, Yd = ["disabled"], Zd = /* @__PURE__ */ Ji({
   __name: "CurrentPositions",
   props: {
-    symbolRoot: { default: "MSFT" },
+    symbolRoot: { default: "META" },
     userId: { default: "4fbec15d-2316-4805-b2a4-5cd2115a5ac8" }
   },
   emits: ["capitalUsedChanged"],
   setup(l, { emit: e }) {
-    const t = l, i = z(!1), s = z(!1), o = z(!1), n = z(!1), r = z("positions"), a = e, h = yt();
-    z(/* @__PURE__ */ new Set());
-    const { data: d, isLoading: u, isError: c, error: m, isSuccess: b, _cleanup: E } = io(
+    const t = l, i = A(!1), s = A(!1), o = A(!1), n = A(!1), a = A("orders"), r = e, h = Rt();
+    A(/* @__PURE__ */ new Set());
+    const { data: d, isLoading: u, isError: c, error: g, isSuccess: b, _cleanup: E } = io(
       t.userId,
       t.symbolRoot
-    ), { data: y } = oo(t.symbolRoot, t.userId), { data: C } = ro(t.symbolRoot, t.userId), T = ie(() => {
-      var p, S;
-      const v = (S = (p = d.value) == null ? void 0 : p[0]) == null ? void 0 : S.conid;
+    ), { data: y } = oo(t.symbolRoot, t.userId), { data: C } = ao(t.symbolRoot, t.userId), T = ee(() => {
+      var p, D;
+      const v = (D = (p = d.value) == null ? void 0 : p[0]) == null ? void 0 : D.conid;
       return v ? parseInt(v, 10) : null;
-    }), { marketData: A, isLoading: F, error: D } = Dr(T, t.symbolRoot), { financialData: L, isLoading: q, error: O } = Fr(T, t.symbolRoot), G = ie(() => {
+    }), { marketData: H, isLoading: _, error: F } = Da(T, t.symbolRoot), { financialData: L, isLoading: K, error: O } = Fa(T, t.symbolRoot), W = ee(() => {
       var v;
-      return ((v = A.value) == null ? void 0 : v.market_price) ?? null;
-    }), K = ie(() => {
+      return ((v = H.value) == null ? void 0 : v.market_price) ?? null;
+    }), J = ee(() => {
       var v;
       return ((v = L.value) == null ? void 0 : v.week_52_high) ?? null;
-    }), oe = ie(() => {
+    }), se = ee(() => {
       var v;
       return ((v = L.value) == null ? void 0 : v.week_52_low) ?? null;
-    }), $ = ie(() => {
+    }), I = ee(() => {
       var v;
       return ((v = L.value) == null ? void 0 : v.pe_ratio) ?? null;
-    }), B = ie(() => {
+    }), B = ee(() => {
       var v;
       return ((v = L.value) == null ? void 0 : v.market_cap) ?? null;
-    }), W = ie(() => {
+    }), j = ee(() => {
       var v;
       return ((v = L.value) == null ? void 0 : v.computed_peg_ratio) ?? null;
-    }), Z = ie(() => {
+    }), ie = ee(() => {
       var v;
-      return ((v = A.value) == null ? void 0 : v.last_fetched_at) ?? null;
-    }), X = ie(() => {
-      if (!Z.value) return null;
-      const v = new Date(Z.value), S = {
+      return ((v = H.value) == null ? void 0 : v.last_fetched_at) ?? null;
+    }), X = ee(() => {
+      if (!ie.value) return null;
+      const v = new Date(ie.value), D = {
         year: "numeric",
         month: "short",
         day: "numeric",
@@ -12417,125 +12510,125 @@ const Br = { class: "calculation-details" }, Nr = { class: "calculation-tabs" },
         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         timeZoneName: "short"
       };
-      let P = v.toLocaleString("en-US", S).replace(/,(\s+\d)/, " $1");
-      return P = P.replace("GMT+5:30", "IST"), P = P.replace("GMT+530", "IST"), P;
+      let z = v.toLocaleString("en-US", D).replace(/,(\s+\d)/, " $1");
+      return z = z.replace("GMT+5:30", "IST"), z = z.replace("GMT+530", "IST"), z;
     }), {
       overallAdjustedAvgPrice: re,
-      positionGroups: ee,
+      positionGroups: ne,
       isLoading: ye,
-      error: Re
-    } = _r(
+      error: xe
+    } = _a(
       d,
       t.userId
     ), {
-      overallAdjustedAvgPriceFromOrders: H,
-      totalNetCost: we,
-      totalShares: Ee,
-      orderGroups: Ue,
-      isLoading: et,
-      error: Et
-    } = Pr(
+      overallAdjustedAvgPriceFromOrders: ke,
+      totalNetCost: Je,
+      totalShares: Qe,
+      orderGroups: Ye,
+      isLoading: Se,
+      error: ce
+    } = Pa(
       d,
       t.userId
     ), {
-      positionTradesMap: lt,
-      positionPositionsMap: be,
-      positionOrdersMap: xe,
-      getPositionKey: ue,
-      getAttachedTrades: Ae,
-      fetchAttachedPositionsForDisplay: ht,
-      fetchTradesForSymbol: qe,
-      fetchOrdersForSymbol: jt,
+      positionTradesMap: Le,
+      positionPositionsMap: fe,
+      positionOrdersMap: Ee,
+      getPositionKey: he,
+      getAttachedTrades: M,
+      fetchAttachedPositionsForDisplay: le,
+      fetchTradesForSymbol: oe,
+      fetchOrdersForSymbol: He,
       getAttachedOrders: Ut,
       savePositionOrderMappings: Rs,
       isReady: qt,
-      refetchMappings: dt
-    } = Hr(t.userId), {
-      expandedPositions: tt,
-      processingPositions: zt
-    } = Or(), Kt = ie(() => {
-      var S, _, P, w, N;
+      refetchMappings: ct
+    } = Ha(t.userId), {
+      expandedPositions: nt,
+      processingPositions: At
+    } = Oa(), Kt = ee(() => {
+      var D, P, z, w, N;
       if (d.value && d.value.length > 0) {
-        const le = (S = d.value[0]) == null ? void 0 : S.asset_class;
-        return console.log("👀 Asset type from positions:", le), le || null;
+        const me = (D = d.value[0]) == null ? void 0 : D.asset_class;
+        return console.log("👀 Asset type from positions:", me), me || null;
       }
       const v = y.value && y.value.length > 0, p = C.value && C.value.length > 0;
       if (v || p) {
-        const le = ((P = (_ = y.value) == null ? void 0 : _[0]) == null ? void 0 : P.asset_class) || ((N = (w = C.value) == null ? void 0 : w[0]) == null ? void 0 : N.asset_class);
-        return console.log("👀 Asset type from options:", le), le || "OPT";
+        const me = ((z = (P = y.value) == null ? void 0 : P[0]) == null ? void 0 : z.asset_class) || ((N = (w = C.value) == null ? void 0 : w[0]) == null ? void 0 : N.asset_class);
+        return console.log("👀 Asset type from options:", me), me || "OPT";
       }
       return console.log("👀 Asset type: null (no positions)"), null;
     });
     console.log("👀 Asset type detected:", Kt.value);
-    const Hi = ie(() => !d.value || d.value.length === 0 ? 0 : d.value.reduce((v, p) => v + (p.contract_quantity || 0), 0));
-    ie(() => {
-      var p, S;
+    const Hi = ee(() => !d.value || d.value.length === 0 ? 0 : d.value.reduce((v, p) => v + (p.contract_quantity || 0), 0));
+    ee(() => {
+      var p, D;
       if (Kt.value === "OPT") {
-        const _ = ((p = y.value) == null ? void 0 : p.reduce((w, N) => w + (N.unrealized_pnl || 0), 0)) || 0, P = ((S = C.value) == null ? void 0 : S.reduce((w, N) => w + (N.unrealized_pnl || 0), 0)) || 0;
-        return console.log("📊 Options Unrealized P&L - PUT:", _, "CALL:", P, "Total:", _ + P), _ + P;
+        const P = ((p = y.value) == null ? void 0 : p.reduce((w, N) => w + (N.unrealized_pnl || 0), 0)) || 0, z = ((D = C.value) == null ? void 0 : D.reduce((w, N) => w + (N.unrealized_pnl || 0), 0)) || 0;
+        return console.log("📊 Options Unrealized P&L - PUT:", P, "CALL:", z, "Total:", P + z), P + z;
       }
       if (!d.value || d.value.length === 0) return 0;
-      const v = d.value.reduce((_, P) => _ + (P.unrealized_pnl || 0), 0);
+      const v = d.value.reduce((P, z) => P + (z.unrealized_pnl || 0), 0);
       return console.log("📊 Stock Unrealized P&L:", v), v;
     });
-    const xs = ie(() => ee.value.reduce((v, p) => v + p.netCostExcludingPuts, 0)), Oi = ie(() => ee.value.reduce((v, p) => v + p.mainPosition.quantity, 0)), {
-      unrealizedPnL: ke,
+    const xs = ee(() => ne.value.reduce((v, p) => v + p.netCostExcludingPuts, 0)), Oi = ee(() => ne.value.reduce((v, p) => v + p.mainPosition.quantity, 0)), {
+      unrealizedPnL: Me,
       pnlPercentage: ks,
-      isProfitable: _e,
-      calculationBreakdown: U,
+      isProfitable: Oe,
+      calculationBreakdown: q,
       isLoading: Ts,
-      error: Ms
-    } = zr(
+      error: Ss
+    } = za(
       re,
       Oi,
-      G,
+      W,
       y,
       C
     ), {
       totalCapitalUsed: Xt,
-      calculationBreakdown: Te,
+      calculationBreakdown: De,
       isLoading: Ls,
-      error: Ss
-    } = Ar(
+      error: Ms
+    } = Aa(
       Kt,
-      ie(() => Hi.value),
-      G
+      ee(() => Hi.value),
+      W
     );
-    function it(v) {
+    function at(v) {
       if (!v) return [];
-      const p = String(v), S = p.match(/^([A-Z]+)\b/), _ = (S == null ? void 0 : S[1]) ?? "", P = p.match(/\s([CP])\b/), w = (P == null ? void 0 : P[1]) ?? "", N = p.match(/\s(\d+(?:\.\d+)?)\s+[CP]\b/), le = (N == null ? void 0 : N[1]) ?? "", te = p.match(/\b(\d{6})[CP]/), Se = te ? Bi(te[1]) : "";
-      return [_, Se, le, w].filter(Boolean);
+      const p = String(v), D = p.match(/^([A-Z]+)\b/), P = (D == null ? void 0 : D[1]) ?? "", z = p.match(/\s([CP])\b/), w = (z == null ? void 0 : z[1]) ?? "", N = p.match(/\s(\d+(?:\.\d+)?)\s+[CP]\b/), me = (N == null ? void 0 : N[1]) ?? "", Z = p.match(/\b(\d{6})[CP]/), Pe = Z ? Bi(Z[1]) : "";
+      return [P, Pe, me, w].filter(Boolean);
     }
-    function At(v) {
-      var Se;
+    function Ht(v) {
+      var Pe;
       if (!v) return [];
-      const p = String(v).trim(), S = p.match(/^([A-Z]+)\s*/), _ = (S == null ? void 0 : S[1]) ?? "", P = p.slice(((Se = S == null ? void 0 : S[0]) == null ? void 0 : Se.length) || 0), w = P.match(/(\d{6})([CP])/);
-      let N = "", le = "", te = "";
+      const p = String(v).trim(), D = p.match(/^([A-Z]+)\s*/), P = (D == null ? void 0 : D[1]) ?? "", z = p.slice(((Pe = D == null ? void 0 : D[0]) == null ? void 0 : Pe.length) || 0), w = z.match(/(\d{6})([CP])/);
+      let N = "", me = "", Z = "";
       if (w) {
-        N = Bi(w[1]), le = w[2] === "C" ? "Call" : "Put";
-        const he = P.slice(w[0].length).match(/(\d+)/);
-        he && (te = (parseInt(he[1], 10) / 1e3).toString());
+        N = Bi(w[1]), me = w[2] === "C" ? "Call" : "Put";
+        const ge = z.slice(w[0].length).match(/(\d+)/);
+        ge && (Z = (parseInt(ge[1], 10) / 1e3).toString());
       }
-      return [_, N, te, le].filter(Boolean);
+      return [P, N, Z, me].filter(Boolean);
     }
     function Bi(v) {
       if (!v || v.length !== 6) return "";
-      const p = v.substring(0, 2), S = v.substring(2, 4), _ = v.substring(4, 6);
-      return `20${p}-${S}-${_}`;
+      const p = v.substring(0, 2), D = v.substring(2, 4), P = v.substring(4, 6);
+      return `20${p}-${D}-${P}`;
     }
-    function Pe(v) {
+    function Be(v) {
       if (!v) return "";
       const p = /^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/.exec(String(v).trim());
-      let S;
+      let D;
       if (p) {
-        const N = parseInt(p[1]), le = parseInt(p[2]) - 1;
-        let te = parseInt(p[3]);
-        te < 100 && (te = 2e3 + te), S = new Date(te, le, N);
-      } else if (S = new Date(v), isNaN(S.getTime())) return String(v);
-      const _ = S.getFullYear(), P = (S.getMonth() + 1).toString().padStart(2, "0"), w = S.getDate().toString().padStart(2, "0");
-      return `${_}-${P}-${w}`;
+        const N = parseInt(p[1]), me = parseInt(p[2]) - 1;
+        let Z = parseInt(p[3]);
+        Z < 100 && (Z = 2e3 + Z), D = new Date(Z, me, N);
+      } else if (D = new Date(v), isNaN(D.getTime())) return String(v);
+      const P = D.getFullYear(), z = (D.getMonth() + 1).toString().padStart(2, "0"), w = D.getDate().toString().padStart(2, "0");
+      return `${P}-${z}-${w}`;
     }
-    function Me(v) {
+    function Fe(v) {
       return new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
@@ -12550,15 +12643,15 @@ const Br = { class: "calculation-details" }, Nr = { class: "calculation-tabs" },
       }).format(v);
     }
     function Ds(v) {
-      if (console.log("🔄 Toggle expansion for key:", v), console.log("📊 Before toggle - expanded positions:", Array.from(tt.value)), tt.value.has(v) ? (tt.value.delete(v), console.log("➖ Removed from expanded")) : (tt.value.add(v), console.log("➕ Added to expanded")), console.log("📊 After toggle - expanded positions:", Array.from(tt.value)), console.log("🎯 Tabulator exists?", !!Le.value), Le.value) {
-        const p = Le.value.getRows();
+      if (console.log("🔄 Toggle expansion for key:", v), console.log("📊 Before toggle - expanded positions:", Array.from(nt.value)), nt.value.has(v) ? (nt.value.delete(v), console.log("➖ Removed from expanded")) : (nt.value.add(v), console.log("➕ Added to expanded")), console.log("📊 After toggle - expanded positions:", Array.from(nt.value)), console.log("🎯 Tabulator exists?", !!_e.value), _e.value) {
+        const p = _e.value.getRows();
         console.log("📋 Total rows:", p.length);
-        for (const S of p) {
-          const _ = S.getData();
-          if (_) {
-            const P = Jt(_);
-            if (console.log("🔍 Checking row key:", P, "matches?", P === v), P === v) {
-              console.log("✅ Found matching row, reformatting..."), S.reformat();
+        for (const D of p) {
+          const P = D.getData();
+          if (P) {
+            const z = Jt(P);
+            if (console.log("🔍 Checking row key:", z, "matches?", z === v), z === v) {
+              console.log("✅ Found matching row, reformatting..."), D.reformat();
               break;
             }
           }
@@ -12566,7 +12659,7 @@ const Br = { class: "calculation-details" }, Nr = { class: "calculation-tabs" },
       }
     }
     function Jt(v) {
-      return ue(v);
+      return he(v);
     }
     const Fs = [
       {
@@ -12575,45 +12668,45 @@ const Br = { class: "calculation-details" }, Nr = { class: "calculation-tabs" },
         minWidth: 150,
         headerHozAlign: "left",
         formatter: (v) => {
-          const p = v.getRow().getData(), S = v.getValue() || p.internal_account_id;
+          const p = v.getRow().getData(), D = v.getValue() || p.internal_account_id;
           if (!qt.value)
             return console.log("⏳ Formatter called but mappings not ready yet"), `<div style="display: flex; align-items: center; gap: 6px;">
           <span class="expand-arrow">&nbsp;</span>
-          <span>${S}</span>
+          <span>${D}</span>
         </div>`;
-          const _ = Jt(p), P = lt.value.get(_), w = be.value.get(_), N = xe.value.get(_);
-          console.log("🎨 Formatter for", _, {
-            attachedTradeIds: (P == null ? void 0 : P.size) || 0,
+          const P = Jt(p), z = Le.value.get(P), w = fe.value.get(P), N = Ee.value.get(P);
+          console.log("🎨 Formatter for", P, {
+            attachedTradeIds: (z == null ? void 0 : z.size) || 0,
             attachedPositionKeys: (w == null ? void 0 : w.size) || 0,
             attachedOrderIds: (N == null ? void 0 : N.size) || 0,
             isReady: qt.value
           });
-          const le = P && P.size > 0 || w && w.size > 0 || N && N.size > 0, te = tt.value.has(_), Se = le ? `<span class="expand-arrow ${te ? "expanded" : ""}" data-position-key="${_}" title="${te ? "Collapse" : "Expand"} attachments">
-            ${te ? "▼" : "▶"}
-          </span>` : '<span class="expand-arrow">&nbsp;</span>', me = ((P == null ? void 0 : P.size) || 0) + ((w == null ? void 0 : w.size) || 0) + ((N == null ? void 0 : N.size) || 0), he = me > 0 ? `<span class="trade-count">(${me})</span>` : "";
+          const me = z && z.size > 0 || w && w.size > 0 || N && N.size > 0, Z = nt.value.has(P), Pe = me ? `<span class="expand-arrow ${Z ? "expanded" : ""}" data-position-key="${P}" title="${Z ? "Collapse" : "Expand"} attachments">
+            ${Z ? "▼" : "▶"}
+          </span>` : '<span class="expand-arrow">&nbsp;</span>', we = ((z == null ? void 0 : z.size) || 0) + ((w == null ? void 0 : w.size) || 0) + ((N == null ? void 0 : N.size) || 0), ge = we > 0 ? `<span class="trade-count">(${we})</span>` : "";
           return `
         <div style="display: flex; align-items: center; gap: 6px;">
-          ${Se} 
+          ${Pe} 
           <button class="attach-trades-btn" title="Attach trades or positions" style="border:none;background:transparent;cursor:pointer;padding:0;margin-right:4px;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;">
           <line x1="12" y1="5" x2="12" y2="19"></line>
           <line x1="5" y1="12" x2="19" y2="12"></line>
         </svg>
       </button> 
-          <span>${S}</span>
-          ${he}
+          <span>${D}</span>
+          ${ge}
         </div>
       `;
         },
         cellClick: (v, p) => {
-          const S = v.target, _ = S.closest(".expand-arrow");
-          if (_) {
+          const D = v.target, P = D.closest(".expand-arrow");
+          if (P) {
             v.stopPropagation();
-            const w = _.getAttribute("data-position-key");
+            const w = P.getAttribute("data-position-key");
             w && Ds(w);
             return;
           }
-          if (S.closest(".attach-trades-btn")) {
+          if (D.closest(".attach-trades-btn")) {
             v.stopPropagation();
             const w = p.getRow().getData();
             w && Ps(w, "trades");
@@ -12711,84 +12804,84 @@ const Br = { class: "calculation-details" }, Nr = { class: "calculation-tabs" },
           return `<span style="color:${p < 0 ? "#dc3545" : p > 0 ? "#28a745" : "#000"}">$${Number(p).toLocaleString(void 0, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</span>`;
         }
       }
-    ], { tableDiv: _s, initializeTabulator: Vi, isTableInitialized: Qt, tabulator: Le } = Sr({
+    ], { tableDiv: _s, initializeTabulator: $i, isTableInitialized: Qt, tabulator: _e } = Ma({
       data: d,
       columns: Fs,
       isSuccess: b,
       placeholder: "No positions found for this symbol",
       rowFormatter: async (v) => {
         try {
-          const p = v.getData(), S = v.getElement();
+          const p = v.getData(), D = v.getElement();
           if (!p) return;
-          const _ = Jt(p), P = lt.value.get(_), w = be.value.get(_), N = tt.value.has(_);
-          console.log("🎨 Row formatter running for:", _, {
+          const P = Jt(p), z = Le.value.get(P), w = fe.value.get(P), N = nt.value.has(P);
+          console.log("🎨 Row formatter running for:", P, {
             isExpanded: N,
-            attachedTradeIds: (P == null ? void 0 : P.size) || 0,
+            attachedTradeIds: (z == null ? void 0 : z.size) || 0,
             attachedPositionKeys: (w == null ? void 0 : w.size) || 0,
-            processing: zt.value.has(_)
+            processing: At.value.has(P)
           });
-          const le = S.querySelector(".nested-tables-container");
-          if (le && (console.log("🗑️ Removing existing nested container"), le.remove()), zt.value.has(_)) {
+          const me = D.querySelector(".nested-tables-container");
+          if (me && (console.log("🗑️ Removing existing nested container"), me.remove()), At.value.has(P)) {
             console.log("⏸️ Position is being processed, skipping");
             return;
           }
-          if (N && (P && P.size > 0 || w && w.size > 0)) {
-            console.log("📦 Creating nested tables for:", _), zt.value.add(_);
+          if (N && (z && z.size > 0 || w && w.size > 0)) {
+            console.log("📦 Creating nested tables for:", P), At.value.add(P);
             try {
-              const te = document.createElement("div");
-              if (te.className = "nested-tables-container", te.style.cssText = "padding: 1rem; background: #f8f9fa; border-top: 1px solid #dee2e6;", P && P.size > 0) {
+              const Z = document.createElement("div");
+              if (Z.className = "nested-tables-container", Z.style.cssText = "padding: 1rem; background: #f8f9fa; border-top: 1px solid #dee2e6;", z && z.size > 0) {
                 console.log("📊 Adding trades section");
-                const me = document.createElement("h4");
-                me.textContent = `Attached Trades (${P.size})`, me.style.cssText = "margin: 0 0 0.5rem 0; font-size: 0.9rem; color: #495057;", te.appendChild(me);
-                const he = document.createElement("div");
-                he.className = "nested-trades-table", he.style.cssText = "margin-bottom: 1rem;", te.appendChild(he);
-                const ze = await Ae(p);
-                console.log("✅ Got trades data:", ze.length), new Vt(he, {
-                  data: ze,
+                const we = document.createElement("h4");
+                we.textContent = `Attached Trades (${z.size})`, we.style.cssText = "margin: 0 0 0.5rem 0; font-size: 0.9rem; color: #495057;", Z.appendChild(we);
+                const ge = document.createElement("div");
+                ge.className = "nested-trades-table", ge.style.cssText = "margin-bottom: 1rem;", Z.appendChild(ge);
+                const Ne = await M(p);
+                console.log("✅ Got trades data:", Ne.length), new Vt(ge, {
+                  data: Ne,
                   layout: "fitColumns",
                   columns: [
                     {
                       title: "Financial instruments",
                       field: "symbol",
                       widthGrow: 1.8,
-                      formatter: (V) => At(V.getValue()).map((se) => `<span class="fi-tag">${se}</span>`).join(" ")
+                      formatter: ($) => Ht($.getValue()).map((te) => `<span class="fi-tag">${te}</span>`).join(" ")
                     },
                     {
                       title: "Side",
                       field: "buySell",
                       widthGrow: 1,
-                      formatter: (V) => {
-                        const I = V.getValue();
-                        return `<span class="trade-side-badge ${I === "BUY" ? "trade-buy" : "trade-sell"}">${I}</span>`;
+                      formatter: ($) => {
+                        const V = $.getValue();
+                        return `<span class="trade-side-badge ${V === "BUY" ? "trade-buy" : "trade-sell"}">${V}</span>`;
                       }
                     },
                     {
                       title: "Open/Close",
                       field: "openCloseIndicator",
                       widthGrow: 1,
-                      formatter: (V) => {
-                        const I = V.getValue();
-                        return I === "O" ? '<span style="color: #17a2b8; font-weight: bold;">OPEN</span>' : I === "C" ? '<span style="color: #6f42c1; font-weight: bold;">CLOSE</span>' : I;
+                      formatter: ($) => {
+                        const V = $.getValue();
+                        return V === "O" ? '<span style="color: #17a2b8; font-weight: bold;">OPEN</span>' : V === "C" ? '<span style="color: #6f42c1; font-weight: bold;">CLOSE</span>' : V;
                       }
                     },
                     {
                       title: "Trade Date",
                       field: "tradeDate",
                       widthGrow: 1,
-                      formatter: (V) => Pe(V.getValue()),
-                      sorter: (V, I) => {
-                        const se = new Date(Pe(V)), st = new Date(Pe(I));
-                        return se.getTime() - st.getTime();
+                      formatter: ($) => Be($.getValue()),
+                      sorter: ($, V) => {
+                        const te = new Date(Be($)), rt = new Date(Be(V));
+                        return te.getTime() - rt.getTime();
                       }
                     },
                     {
                       title: "Settlement Date",
                       field: "settleDateTarget",
                       widthGrow: 1,
-                      formatter: (V) => Pe(V.getValue()),
-                      sorter: (V, I) => {
-                        const se = new Date(Pe(V)), st = new Date(Pe(I));
-                        return se.getTime() - st.getTime();
+                      formatter: ($) => Be($.getValue()),
+                      sorter: ($, V) => {
+                        const te = new Date(Be($)), rt = new Date(Be(V));
+                        return te.getTime() - rt.getTime();
                       }
                     },
                     {
@@ -12796,9 +12889,9 @@ const Br = { class: "calculation-details" }, Nr = { class: "calculation-tabs" },
                       field: "quantity",
                       widthGrow: 1,
                       hozAlign: "right",
-                      formatter: (V) => {
-                        const I = V.getRow().getData(), se = parseFloat((I == null ? void 0 : I.quantity) || 0) || 0, st = parseFloat((I == null ? void 0 : I.multiplier) || 1) || 1, $s = se * st;
-                        return Ni($s);
+                      formatter: ($) => {
+                        const V = $.getRow().getData(), te = parseFloat((V == null ? void 0 : V.quantity) || 0) || 0, rt = parseFloat((V == null ? void 0 : V.multiplier) || 1) || 1, Is = te * rt;
+                        return Ni(Is);
                       }
                     },
                     {
@@ -12806,55 +12899,55 @@ const Br = { class: "calculation-details" }, Nr = { class: "calculation-tabs" },
                       field: "tradePrice",
                       widthGrow: 1,
                       hozAlign: "right",
-                      formatter: (V) => Me(parseFloat(V.getValue()) || 0)
+                      formatter: ($) => Fe(parseFloat($.getValue()) || 0)
                     },
                     {
                       title: "Total Premium",
                       field: "tradeMoney",
                       widthGrow: 1,
                       hozAlign: "right",
-                      formatter: (V) => Me(parseFloat(V.getValue()) || 0)
+                      formatter: ($) => Fe(parseFloat($.getValue()) || 0)
                     },
                     {
                       title: "Net Cash",
                       field: "netCash",
                       widthGrow: 1,
                       hozAlign: "right",
-                      formatter: (V) => Me(parseFloat(V.getValue()) || 0)
+                      formatter: ($) => Fe(parseFloat($.getValue()) || 0)
                     },
                     {
                       title: "MTM PnL",
                       field: "mtmPnl",
                       widthGrow: 1,
                       hozAlign: "right",
-                      formatter: (V) => Me(parseFloat(V.getValue()) || 0)
+                      formatter: ($) => Fe(parseFloat($.getValue()) || 0)
                     },
                     {
                       title: "Close Price",
                       field: "closePrice",
                       widthGrow: 1,
                       hozAlign: "right",
-                      formatter: (V) => Me(parseFloat(V.getValue()) || 0)
+                      formatter: ($) => Fe(parseFloat($.getValue()) || 0)
                     }
                   ]
                 });
               }
               if (w && w.size > 0) {
                 console.log("📊 Adding positions section");
-                const me = document.createElement("h4");
-                me.textContent = `Attached Positions (${w.size})`, me.style.cssText = "margin: 1rem 0 0.5rem 0; font-size: 0.9rem; color: #495057;", te.appendChild(me);
-                const he = document.createElement("div");
-                he.className = "nested-positions-table", te.appendChild(he);
-                const ze = await ht(p, w);
-                console.log("✅ Got positions data:", ze.length), new Vt(he, {
-                  data: ze,
+                const we = document.createElement("h4");
+                we.textContent = `Attached Positions (${w.size})`, we.style.cssText = "margin: 1rem 0 0.5rem 0; font-size: 0.9rem; color: #495057;", Z.appendChild(we);
+                const ge = document.createElement("div");
+                ge.className = "nested-positions-table", Z.appendChild(ge);
+                const Ne = await le(p, w);
+                console.log("✅ Got positions data:", Ne.length), new Vt(ge, {
+                  data: Ne,
                   layout: "fitColumns",
                   columns: [
                     {
                       title: "Financial instruments",
                       field: "symbol",
                       widthGrow: 1.8,
-                      formatter: (V) => it(V.getValue()).map((se) => `<span class="fi-tag">${se}</span>`).join(" ")
+                      formatter: ($) => at($.getValue()).map((te) => `<span class="fi-tag">${te}</span>`).join(" ")
                     },
                     {
                       title: "Accounting Qty",
@@ -12873,9 +12966,9 @@ const Br = { class: "calculation-details" }, Nr = { class: "calculation-tabs" },
                       field: "avgPrice",
                       widthGrow: 1,
                       hozAlign: "right",
-                      formatter: (V) => {
-                        const I = V.getValue();
-                        return I == null ? "" : `<span style="color:${I < 0 ? "#dc3545" : I > 0 ? "#28a745" : "#000"}">$${Number(I).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
+                      formatter: ($) => {
+                        const V = $.getValue();
+                        return V == null ? "" : `<span style="color:${V < 0 ? "#dc3545" : V > 0 ? "#28a745" : "#000"}">$${Number(V).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
                       }
                     },
                     {
@@ -12883,9 +12976,9 @@ const Br = { class: "calculation-details" }, Nr = { class: "calculation-tabs" },
                       field: "market_value",
                       widthGrow: 1.5,
                       hozAlign: "right",
-                      formatter: (V) => {
-                        const I = V.getValue();
-                        return I == null ? "" : `<span style="color:${I < 0 ? "#dc3545" : I > 0 ? "#28a745" : "#000"}">$${Number(I).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
+                      formatter: ($) => {
+                        const V = $.getValue();
+                        return V == null ? "" : `<span style="color:${V < 0 ? "#dc3545" : V > 0 ? "#28a745" : "#000"}">$${Number(V).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
                       }
                     },
                     {
@@ -12893,9 +12986,9 @@ const Br = { class: "calculation-details" }, Nr = { class: "calculation-tabs" },
                       field: "unrealized_pnl",
                       widthGrow: 1.5,
                       hozAlign: "right",
-                      formatter: (V) => {
-                        const I = V.getValue();
-                        return I == null ? "" : `<span style="color:${I < 0 ? "#dc3545" : I > 0 ? "#28a745" : "#000"}">$${Number(I).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
+                      formatter: ($) => {
+                        const V = $.getValue();
+                        return V == null ? "" : `<span style="color:${V < 0 ? "#dc3545" : V > 0 ? "#28a745" : "#000"}">$${Number(V).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
                       }
                     },
                     {
@@ -12903,49 +12996,49 @@ const Br = { class: "calculation-details" }, Nr = { class: "calculation-tabs" },
                       field: "computed_cash_flow_on_entry",
                       widthGrow: 1,
                       hozAlign: "right",
-                      formatter: (V) => {
-                        const I = V.getValue();
-                        return I == null ? "" : `<span style="color:${I < 0 ? "#dc3545" : I > 0 ? "#28a745" : "#000"}">$${Number(I).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
+                      formatter: ($) => {
+                        const V = $.getValue();
+                        return V == null ? "" : `<span style="color:${V < 0 ? "#dc3545" : V > 0 ? "#28a745" : "#000"}">$${Number(V).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`;
                       }
                     }
                   ]
                 });
               }
-              const Se = xe.value.get(_);
-              if (console.log("👀 Attached order IDs for", _, Se), N && Se && Se.size > 0) {
-                console.log("📦 Adding orders section for:", _);
-                const me = document.createElement("h4");
-                me.textContent = `Attached Orders (${Se.size})`, me.style.cssText = "margin: 1rem 0 0.5rem 0; font-size: 0.9rem; color: #495057;", te.appendChild(me);
-                const he = document.createElement("div");
-                he.className = "nested-orders-table", te.appendChild(he);
-                const ze = await Ut(p);
-                console.log("✅ Got orders data:", ze.length), new Vt(he, {
-                  data: ze,
+              const Pe = Ee.value.get(P);
+              if (console.log("👀 Attached order IDs for", P, Pe), N && Pe && Pe.size > 0) {
+                console.log("📦 Adding orders section for:", P);
+                const we = document.createElement("h4");
+                we.textContent = `Attached Orders (${Pe.size})`, we.style.cssText = "margin: 1rem 0 0.5rem 0; font-size: 0.9rem; color: #495057;", Z.appendChild(we);
+                const ge = document.createElement("div");
+                ge.className = "nested-orders-table", Z.appendChild(ge);
+                const Ne = await Ut(p);
+                console.log("✅ Got orders data:", Ne.length), new Vt(ge, {
+                  data: Ne,
                   layout: "fitColumns",
                   columns: [
                     {
                       title: "Financial instruments",
                       field: "symbol",
                       widthGrow: 1.8,
-                      formatter: (V) => At(V.getValue()).map((se) => `<span class="fi-tag">${se}</span>`).join(" ")
+                      formatter: ($) => Ht($.getValue()).map((te) => `<span class="fi-tag">${te}</span>`).join(" ")
                     },
                     {
                       title: "Side",
                       field: "buySell",
                       widthGrow: 1,
-                      formatter: (V) => {
-                        const I = V.getValue();
-                        return `<span class="trade-side-badge ${I === "BUY" ? "trade-buy" : "trade-sell"}">${I}</span>`;
+                      formatter: ($) => {
+                        const V = $.getValue();
+                        return `<span class="trade-side-badge ${V === "BUY" ? "trade-buy" : "trade-sell"}">${V}</span>`;
                       }
                     },
                     {
                       title: "Order Date",
                       field: "dateTime",
                       widthGrow: 1,
-                      formatter: (V) => Pe(V.getValue()),
-                      sorter: (V, I) => {
-                        const se = new Date(Pe(V)), st = new Date(Pe(I));
-                        return se.getTime() - st.getTime();
+                      formatter: ($) => Be($.getValue()),
+                      sorter: ($, V) => {
+                        const te = new Date(Be($)), rt = new Date(Be(V));
+                        return te.getTime() - rt.getTime();
                       }
                     },
                     {
@@ -12954,11 +13047,11 @@ const Br = { class: "calculation-details" }, Nr = { class: "calculation-tabs" },
                       widthGrow: 1,
                       hozAlign: "right",
                       //formatter: (cell: any) => formatNumber(parseFloat(cell.getValue()) || 0)
-                      formatter: (V) => {
-                        const I = V.getValue();
-                        if (I == null) return "-";
-                        const se = V.getData();
-                        return se.assetCategory === "OPT" ? se.quantity * 100 : se.assetCategory === "STK" ? se.quantity * 1 : Ni(se.quantity);
+                      formatter: ($) => {
+                        const V = $.getValue();
+                        if (V == null) return "-";
+                        const te = $.getData();
+                        return te.assetCategory === "OPT" ? te.quantity * 100 : te.assetCategory === "STK" ? te.quantity * 1 : Ni(te.quantity);
                       }
                     },
                     {
@@ -12966,30 +13059,30 @@ const Br = { class: "calculation-details" }, Nr = { class: "calculation-tabs" },
                       field: "tradePrice",
                       widthGrow: 1,
                       hozAlign: "right",
-                      formatter: (V) => Me(parseFloat(V.getValue()) || 0)
+                      formatter: ($) => Fe(parseFloat($.getValue()) || 0)
                     },
                     {
                       title: "Trade Money",
                       field: "tradeMoney",
                       widthGrow: 1,
                       hozAlign: "right",
-                      formatter: (V) => Me(parseFloat(V.getValue()) || 0)
+                      formatter: ($) => Fe(parseFloat($.getValue()) || 0)
                     },
                     {
                       title: "Settlement Date",
                       field: "settleDateTarget",
                       widthGrow: 1,
-                      formatter: (V) => ji(V.getValue())
+                      formatter: ($) => ji($.getValue())
                     }
                   ]
                 });
               }
-              console.log("✅ Appending nested container to row"), S.appendChild(te);
-            } catch (te) {
-              console.error("❌ Error creating nested tables:", te);
+              console.log("✅ Appending nested container to row"), D.appendChild(Z);
+            } catch (Z) {
+              console.error("❌ Error creating nested tables:", Z);
             } finally {
               setTimeout(() => {
-                zt.value.delete(_), console.log("✅ Removed from processing");
+                At.value.delete(P), console.log("✅ Removed from processing");
               }, 100);
             }
           } else
@@ -12998,95 +13091,95 @@ const Br = { class: "calculation-details" }, Nr = { class: "calculation-tabs" },
           console.error("❌ Row formatter error:", p);
         }
       }
-    }), He = z(!1), ae = z("trades"), Oe = z(null), Be = z(null), Ne = z(/* @__PURE__ */ new Set()), Ht = z(""), Ot = z(""), Bt = z(""), Ve = z(/* @__PURE__ */ new Set()), Ie = z(/* @__PURE__ */ new Set()), $e = z(!1), Rt = z([]), xt = z([]), kt = z([]);
-    function Ii(v) {
-      Ve.value.has(v) ? Ve.value.delete(v) : Ve.value.add(v);
+    }), $e = A(!1), pe = A("trades"), Ve = A(null), Ie = A(null), We = A(/* @__PURE__ */ new Set()), Ot = A(""), Bt = A(""), Nt = A(""), Ge = A(/* @__PURE__ */ new Set()), je = A(/* @__PURE__ */ new Set()), Ue = A(!1), xt = A([]), kt = A([]), Tt = A([]);
+    function Vi(v) {
+      Ge.value.has(v) ? Ge.value.delete(v) : Ge.value.add(v);
     }
-    function $i(v) {
-      Ie.value.has(v) ? Ie.value.delete(v) : Ie.value.add(v);
+    function Ii(v) {
+      je.value.has(v) ? je.value.delete(v) : je.value.add(v);
     }
     function Wi(v) {
-      Ne.value.has(v) ? Ne.value.delete(v) : Ne.value.add(v);
+      We.value.has(v) ? We.value.delete(v) : We.value.add(v);
     }
     async function Yt(v) {
-      $e.value = !0, Rt.value = [];
+      Ue.value = !0, xt.value = [];
       try {
-        const p = it(v.symbol)[0] || "";
+        const p = at(v.symbol)[0] || "";
         if (!p) return;
-        const S = await qe(p, v.internal_account_id), _ = Ht.value.trim().toLowerCase();
-        Rt.value = _ ? S.filter((P) => (P.symbol || "").toLowerCase().includes(_) || String(P.tradeID || "").toLowerCase().includes(_)) : S;
+        const D = await oe(p, v.internal_account_id), P = Ot.value.trim().toLowerCase();
+        xt.value = P ? D.filter((z) => (z.symbol || "").toLowerCase().includes(P) || String(z.tradeID || "").toLowerCase().includes(P)) : D;
       } catch (p) {
-        console.error("❌ loadAttachableTradesForPosition error:", p), Rt.value = [];
+        console.error("❌ loadAttachableTradesForPosition error:", p), xt.value = [];
       } finally {
-        $e.value = !1;
+        Ue.value = !1;
       }
     }
     async function Zt(v) {
-      $e.value = !0, xt.value = [];
+      Ue.value = !0, kt.value = [];
       try {
-        const p = it(v.symbol)[0] || "";
+        const p = at(v.symbol)[0] || "";
         if (!p) return;
-        const S = v.internal_account_id || v.legal_entity, _ = await Qi(h, p, t.userId, S), P = Ot.value.trim().toLowerCase();
-        xt.value = P ? _.filter((w) => (w.symbol || "").toLowerCase().includes(P)) : _;
+        const D = v.internal_account_id || v.legal_entity, P = await Qi(h, p, t.userId, D), z = Bt.value.trim().toLowerCase();
+        kt.value = z ? P.filter((w) => (w.symbol || "").toLowerCase().includes(z)) : P;
       } catch (p) {
-        console.error("❌ loadAttachablePositionsForPosition error:", p), xt.value = [];
+        console.error("❌ loadAttachablePositionsForPosition error:", p), kt.value = [];
       } finally {
-        $e.value = !1;
+        Ue.value = !1;
       }
     }
     async function ei(v) {
-      $e.value = !0, kt.value = [];
+      Ue.value = !0, Tt.value = [];
       try {
-        const p = it(v.symbol)[0] || "";
+        const p = at(v.symbol)[0] || "";
         if (!p) return;
-        const S = await jt(p, v.internal_account_id), _ = Bt.value.trim().toLowerCase();
-        kt.value = _ ? S.filter((P) => (P.symbol || "").toLowerCase().includes(_) || String(P.orderID || "").toLowerCase().includes(_)) : S;
+        const D = await He(p, v.internal_account_id), P = Nt.value.trim().toLowerCase();
+        Tt.value = P ? D.filter((z) => (z.symbol || "").toLowerCase().includes(P) || String(z.orderID || "").toLowerCase().includes(P)) : D;
       } catch (p) {
-        console.error("❌ loadAttachableOrdersForPosition error:", p), kt.value = [];
+        console.error("❌ loadAttachableOrdersForPosition error:", p), Tt.value = [];
       } finally {
-        $e.value = !1;
+        Ue.value = !1;
       }
     }
     async function Ps(v, p = "trades") {
-      Oe.value = v, Be.value = v, ae.value = p, Ht.value = "", Ot.value = "", Bt.value = "";
-      const S = ue(v);
-      Ve.value = new Set(lt.value.get(S) || []), Ie.value = new Set(be.value.get(S) || []), Ne.value = new Set(xe.value.get(S) || []), He.value = !0, p === "trades" ? await Yt(v) : p === "positions" ? await Zt(v) : await ei(v);
+      Ve.value = v, Ie.value = v, pe.value = p, Ot.value = "", Bt.value = "", Nt.value = "";
+      const D = he(v);
+      Ge.value = new Set(Le.value.get(D) || []), je.value = new Set(fe.value.get(D) || []), We.value = new Set(Ee.value.get(D) || []), $e.value = !0, p === "trades" ? await Yt(v) : p === "positions" ? await Zt(v) : await ei(v);
     }
     async function zs() {
-      if (!Oe.value || !t.userId) return;
-      const v = ue(Oe.value);
+      if (!Ve.value || !t.userId) return;
+      const v = he(Ve.value);
       try {
-        await Ys(h, t.userId, v, Ve.value), dt && await dt(), He.value = !1, Le.value && Le.value.redraw(!0), console.log("✅ Trades attached");
+        await Ys(h, t.userId, v, Ge.value), ct && await ct(), $e.value = !1, _e.value && _e.value.redraw(!0), console.log("✅ Trades attached");
       } catch (p) {
         console.error("❌ Error saving attached trades:", p);
       }
     }
     async function As() {
-      if (!Be.value || !t.userId) return;
-      const v = ue(Be.value);
+      if (!Ie.value || !t.userId) return;
+      const v = he(Ie.value);
       try {
-        await Zs(h, t.userId, v, Ie.value), dt && await dt(), He.value = !1, Le.value && Le.value.redraw(!0), console.log("✅ Positions attached");
+        await Zs(h, t.userId, v, je.value), ct && await ct(), $e.value = !1, _e.value && _e.value.redraw(!0), console.log("✅ Positions attached");
       } catch (p) {
         console.error("❌ Error saving attached positions:", p);
       }
     }
     async function Hs() {
-      if (!Oe.value || !t.userId) return;
-      const v = ue(Oe.value);
+      if (!Ve.value || !t.userId) return;
+      const v = he(Ve.value);
       try {
-        await Rs(h, t.userId, v, Ne.value), dt && await dt(), He.value = !1, Le.value && Le.value.redraw(!0), console.log("✅ Orders attached");
+        await Rs(h, t.userId, v, We.value), ct && await ct(), $e.value = !1, _e.value && _e.value.redraw(!0), console.log("✅ Orders attached");
       } catch (p) {
         console.error("❌ Error saving attached orders:", p);
       }
     }
     function Gi(v) {
       if (v.asset_class !== "OPT") return !1;
-      const S = it(v.symbol)[1];
-      if (!S) return !1;
-      const _ = new Date(S), P = /* @__PURE__ */ new Date();
-      return P.setHours(0, 0, 0, 0), _ < P;
+      const D = at(v.symbol)[1];
+      if (!D) return !1;
+      const P = new Date(D), z = /* @__PURE__ */ new Date();
+      return z.setHours(0, 0, 0, 0), P < z;
     }
-    Fe(He, (v) => {
+    Ae($e, (v) => {
       try {
         v ? document.body.classList.add("modal-open") : document.body.classList.remove("modal-open");
       } catch {
@@ -13094,7 +13187,7 @@ const Br = { class: "calculation-details" }, Nr = { class: "calculation-tabs" },
     });
     function Os() {
       i.value = !i.value, i.value && !Qt.value && d.value && d.value.length > 0 && (console.log("📊 Details shown, initializing table..."), It(() => {
-        Vi();
+        $i();
       }));
     }
     function Bs() {
@@ -13103,10 +13196,10 @@ const Br = { class: "calculation-details" }, Nr = { class: "calculation-tabs" },
     function Ns() {
       o.value = !o.value;
     }
-    function Vs() {
+    function $s() {
       n.value = !n.value;
     }
-    function Is(v) {
+    function Vs(v) {
       if (!v) return "";
       const p = new Date(v);
       return new Intl.DateTimeFormat("en-US", {
@@ -13123,50 +13216,50 @@ const Br = { class: "calculation-details" }, Nr = { class: "calculation-tabs" },
     function ji(v) {
       const p = v;
       if (!p) return "";
-      const S = /^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/.exec(String(p).trim());
-      let _;
-      if (S) {
-        const P = Number(S[1]), w = Number(S[2]) - 1;
-        let N = Number(S[3]);
-        N < 100 && (N += 2e3), _ = new Date(N, w, P);
-      } else if (_ = new Date(p), isNaN(_.getTime())) return String(p);
-      return _.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+      const D = /^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/.exec(String(p).trim());
+      let P;
+      if (D) {
+        const z = Number(D[1]), w = Number(D[2]) - 1;
+        let N = Number(D[3]);
+        N < 100 && (N += 2e3), P = new Date(N, w, z);
+      } else if (P = new Date(p), isNaN(P.getTime())) return String(p);
+      return P.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
     }
-    return Fe(qt, async (v) => {
-      console.log("👀 Mappings ready state changed:", v), v && Le.value && Qt.value && (console.log("🔄 Redrawing table with mappings"), Le.value.redraw(!0));
-    }, { immediate: !0 }), Fe(i, async (v) => {
-      v && !Qt.value && d.value && d.value.length > 0 && (console.log("📊 Details shown via watch, initializing table..."), await It(), Vi());
-    }), Fe(() => Xt.value, (v) => {
-      a("capitalUsedChanged", v);
+    return Ae(qt, async (v) => {
+      console.log("👀 Mappings ready state changed:", v), v && _e.value && Qt.value && (console.log("🔄 Redrawing table with mappings"), _e.value.redraw(!0));
+    }, { immediate: !0 }), Ae(i, async (v) => {
+      v && !Qt.value && d.value && d.value.length > 0 && (console.log("📊 Details shown via watch, initializing table..."), await It(), $i());
+    }), Ae(() => Xt.value, (v) => {
+      r("capitalUsedChanged", v);
     }), qs(() => {
       console.log("📊 CurrentPositions component mounted");
     }), Xi(() => {
       console.log("🧹 Cleaning up CurrentPositions component"), E();
     }), (v, p) => {
-      var S, _, P;
-      return R(), x("div", Ga, [
-        f("div", ja, [
-          f("div", Ua, [
-            f("h2", null, "Current Positions for " + g(t.symbolRoot) + " Across All Accounts", 1),
-            k(u) ? (R(), x("div", qa, [
+      var D, P, z;
+      return R(), x("div", dl, [
+        f("div", ul, [
+          f("div", cl, [
+            f("h2", null, "Current Positions for " + m(t.symbolRoot) + " Across All Accounts", 1),
+            k(u) ? (R(), x("div", fl, [
               p[15] || (p[15] = f("div", { class: "spinner" }, null, -1)),
-              f("p", null, "Loading positions for " + g(t.symbolRoot) + "...", 1)
-            ])) : k(c) ? (R(), x("div", Ka, [
-              f("p", null, "❌ Error loading positions: " + g((S = k(m)) == null ? void 0 : S.message), 1)
-            ])) : (R(), x("div", Xa, [
-              f("div", Ja, [
-                f("div", Qa, [
+              f("p", null, "Loading positions for " + m(t.symbolRoot) + "...", 1)
+            ])) : k(c) ? (R(), x("div", pl, [
+              f("p", null, "❌ Error loading positions: " + m((D = k(g)) == null ? void 0 : D.message), 1)
+            ])) : (R(), x("div", ml, [
+              f("div", gl, [
+                f("div", bl, [
                   p[18] || (p[18] = f("div", { class: "summary-label" }, "Capital/margin used", -1)),
-                  k(Ls) ? (R(), x("div", Ya, [...p[16] || (p[16] = [
+                  k(Ls) ? (R(), x("div", vl, [...p[16] || (p[16] = [
                     f("span", { class: "loading-spinner" }, "⏳", -1),
-                    ne(" Loading... ", -1)
-                  ])])) : k(Ss) ? (R(), x("div", Za, " ❌ Error ")) : (R(), x("div", el, [
+                    ae(" Loading... ", -1)
+                  ])])) : k(Ms) ? (R(), x("div", wl, " ❌ Error ")) : (R(), x("div", Cl, [
                     f("div", {
                       class: "summary-value clickable-price",
-                      onClick: Vs
+                      onClick: $s
                     }, [
-                      k(Xt) !== null ? (R(), x("span", tl, " $" + g(k(Xt).toLocaleString(void 0, { minimumFractionDigits: 0, maximumFractionDigits: 0 })), 1)) : (R(), x("span", il, "N/A")),
-                      f("span", sl, g(n.value ? "▼" : "▶"), 1)
+                      k(Xt) !== null ? (R(), x("span", yl, " $" + m(k(Xt).toLocaleString(void 0, { minimumFractionDigits: 0, maximumFractionDigits: 0 })), 1)) : (R(), x("span", El, "N/A")),
+                      f("span", Rl, m(n.value ? "▼" : "▶"), 1)
                     ]),
                     p[17] || (p[17] = f("div", {
                       class: "capital-subtitle",
@@ -13174,246 +13267,246 @@ const Br = { class: "calculation-details" }, Nr = { class: "calculation-tabs" },
                     }, " Margin: Coming soon... ", -1))
                   ]))
                 ]),
-                f("div", ol, [
+                f("div", xl, [
                   p[20] || (p[20] = f("div", { class: "summary-label" }, "Profit and Loss", -1)),
-                  k(Ts) ? (R(), x("div", nl, [...p[19] || (p[19] = [
+                  k(Ts) ? (R(), x("div", kl, [...p[19] || (p[19] = [
                     f("span", { class: "loading-spinner" }, "⏳", -1),
-                    ne(" Loading... ", -1)
-                  ])])) : k(Ms) ? (R(), x("div", rl, " ❌ Error ")) : (R(), x("div", al, [
+                    ae(" Loading... ", -1)
+                  ])])) : k(Ss) ? (R(), x("div", Tl, " ❌ Error ")) : (R(), x("div", Sl, [
                     f("div", {
-                      class: ge(["summary-value clickable-price pnl-value", { profit: k(_e), loss: !k(_e) }]),
+                      class: Ce(["summary-value clickable-price pnl-value", { profit: k(Oe), loss: !k(Oe) }]),
                       onClick: Ns
                     }, [
-                      k(ke) !== null ? (R(), x("span", ll, [
-                        ne(g(k(ke) >= 0 ? "+" : "") + "$" + g(k(ke).toLocaleString(void 0, { minimumFractionDigits: 0, maximumFractionDigits: 0 })) + " ", 1),
-                        f("span", hl, "(" + g((_ = k(ks)) == null ? void 0 : _.toFixed(2)) + "%)", 1)
-                      ])) : (R(), x("span", dl, "N/A")),
-                      f("span", ul, g(o.value ? "▼" : "▶"), 1)
+                      k(Me) !== null ? (R(), x("span", Ll, [
+                        ae(m(k(Me) >= 0 ? "+" : "") + "$" + m(k(Me).toLocaleString(void 0, { minimumFractionDigits: 0, maximumFractionDigits: 0 })) + " ", 1),
+                        f("span", Ml, "(" + m((P = k(ks)) == null ? void 0 : P.toFixed(2)) + "%)", 1)
+                      ])) : (R(), x("span", Dl, "N/A")),
+                      f("span", Fl, m(o.value ? "▼" : "▶"), 1)
                     ], 2)
                   ]))
                 ]),
-                f("div", cl, [
+                f("div", _l, [
                   p[21] || (p[21] = f("div", { class: "summary-label" }, "Total Contract Quantity", -1)),
-                  f("div", fl, [
-                    f("div", pl, g(Hi.value.toLocaleString()), 1),
-                    f("div", ml, [
+                  f("div", Pl, [
+                    f("div", zl, m(Hi.value.toLocaleString()), 1),
+                    f("div", Al, [
                       f("span", {
                         class: "clickable-accounts",
                         title: "Show positions table for all accounts",
-                        onClick: Tt(Os, ["stop"]),
+                        onClick: St(Os, ["stop"]),
                         style: { cursor: "pointer", color: "#0d6efd" }
                       }, [
-                        ne(" (" + g(((P = k(d)) == null ? void 0 : P.length) || 0) + ") ", 1),
-                        f("span", gl, g(i.value ? "▼" : "▶"), 1)
+                        ae(" (" + m(((z = k(d)) == null ? void 0 : z.length) || 0) + ") ", 1),
+                        f("span", Hl, m(i.value ? "▼" : "▶"), 1)
                       ])
                     ])
                   ])
                 ]),
-                f("div", bl, [
+                f("div", Ol, [
                   p[25] || (p[25] = f("div", { class: "summary-label" }, "Current market price", -1)),
-                  k(F) ? (R(), x("div", vl, [...p[22] || (p[22] = [
+                  k(_) ? (R(), x("div", Bl, [...p[22] || (p[22] = [
                     f("span", { class: "loading-spinner" }, "⏳", -1),
-                    ne(" Loading... ", -1)
-                  ])])) : k(D) ? (R(), x("div", wl, " ❌ Error ")) : G.value !== null ? (R(), x("div", Cl, [
-                    f("div", yl, " $" + g(G.value.toFixed(2)), 1),
-                    oe.value !== null && K.value !== null ? (R(), x("div", El, [
-                      p[23] || (p[23] = ne(" 52W Range: ", -1)),
-                      f("span", Rl, "$" + g(oe.value.toFixed(2)), 1),
-                      p[24] || (p[24] = ne(" - ", -1)),
-                      f("span", xl, "$" + g(K.value.toFixed(2)), 1)
-                    ])) : (R(), x("div", kl, " 52W Range: N/A ")),
-                    X.value ? (R(), x("div", Tl, " Updated: " + g(X.value), 1)) : Q("", !0)
-                  ])) : (R(), x("div", Ml, " N/A "))
+                    ae(" Loading... ", -1)
+                  ])])) : k(F) ? (R(), x("div", Nl, " ❌ Error ")) : W.value !== null ? (R(), x("div", $l, [
+                    f("div", Vl, " $" + m(W.value.toFixed(2)), 1),
+                    se.value !== null && J.value !== null ? (R(), x("div", Il, [
+                      p[23] || (p[23] = ae(" 52W Range: ", -1)),
+                      f("span", Wl, "$" + m(se.value.toFixed(2)), 1),
+                      p[24] || (p[24] = ae(" - ", -1)),
+                      f("span", Gl, "$" + m(J.value.toFixed(2)), 1)
+                    ])) : (R(), x("div", jl, " 52W Range: N/A ")),
+                    X.value ? (R(), x("div", Ul, " Updated: " + m(X.value), 1)) : U("", !0)
+                  ])) : (R(), x("div", ql, " N/A "))
                 ]),
-                f("div", Ll, [
+                f("div", Kl, [
                   p[27] || (p[27] = f("div", { class: "summary-label" }, "Average cost per share", -1)),
-                  k(ye) ? (R(), x("div", Sl, [...p[26] || (p[26] = [
+                  k(ye) ? (R(), x("div", Xl, [...p[26] || (p[26] = [
                     f("span", { class: "loading-spinner" }, "⏳", -1),
-                    ne(" Loading... ", -1)
-                  ])])) : k(Re) ? (R(), x("div", Dl, " ❌ Error ")) : Q("", !0),
-                  f("div", Fl, [
+                    ae(" Loading... ", -1)
+                  ])])) : k(xe) ? (R(), x("div", Jl, " ❌ Error ")) : U("", !0),
+                  f("div", Ql, [
                     f("div", {
                       class: "summary-value average-cost-price clickable-price",
                       onClick: Bs
                     }, [
-                      k(H) !== null ? (R(), x("span", _l, " $" + g(k(H).toFixed(2)), 1)) : k(re) !== null ? (R(), x("span", Pl, " $" + g(k(re).toFixed(2)), 1)) : (R(), x("span", zl, "N/A")),
-                      f("span", Al, g(s.value ? "▼" : "▶"), 1)
+                      k(ke) !== null ? (R(), x("span", Yl, " $" + m(k(ke).toFixed(2)), 1)) : k(re) !== null ? (R(), x("span", Zl, " $" + m(k(re).toFixed(2)), 1)) : (R(), x("span", eh, "N/A")),
+                      f("span", th, m(s.value ? "▼" : "▶"), 1)
                     ])
                   ])
                 ]),
-                f("div", Hl, [
-                  k(q) ? (R(), x("div", Ol, [...p[28] || (p[28] = [
+                f("div", ih, [
+                  k(K) ? (R(), x("div", sh, [...p[28] || (p[28] = [
                     f("span", { class: "loading-spinner" }, "⏳", -1),
-                    ne(" Loading... ", -1)
-                  ])])) : k(O) ? (R(), x("div", Bl, " ❌ Error ")) : (R(), x("div", Nl, [
-                    $.value !== null ? (R(), x("div", Vl, [
-                      p[29] || (p[29] = ne(" P/E Ratio: ", -1)),
-                      f("span", Il, g($.value.toFixed(2)), 1)
-                    ])) : Q("", !0),
-                    W.value !== null ? (R(), x("div", $l, [
-                      p[30] || (p[30] = ne(" PEG Ratio: ", -1)),
-                      f("span", Wl, g(W.value.toFixed(2)), 1)
-                    ])) : Q("", !0),
-                    B.value !== null ? (R(), x("div", Gl, [
-                      p[31] || (p[31] = ne(" Market Cap: ", -1)),
-                      f("span", jl, "$" + g((B.value / 1e9).toFixed(2)) + "B", 1)
-                    ])) : Q("", !0)
+                    ae(" Loading... ", -1)
+                  ])])) : k(O) ? (R(), x("div", oh, " ❌ Error ")) : (R(), x("div", nh, [
+                    I.value !== null ? (R(), x("div", ah, [
+                      p[29] || (p[29] = ae(" P/E Ratio: ", -1)),
+                      f("span", rh, m(I.value.toFixed(2)), 1)
+                    ])) : U("", !0),
+                    j.value !== null ? (R(), x("div", lh, [
+                      p[30] || (p[30] = ae(" PEG Ratio: ", -1)),
+                      f("span", hh, m(j.value.toFixed(2)), 1)
+                    ])) : U("", !0),
+                    B.value !== null ? (R(), x("div", dh, [
+                      p[31] || (p[31] = ae(" Market Cap: ", -1)),
+                      f("span", uh, "$" + m((B.value / 1e9).toFixed(2)) + "B", 1)
+                    ])) : U("", !0)
                   ]))
                 ])
               ]),
-              ut(bt, { name: "slide-fade" }, {
-                default: vt(() => [
-                  je(f("div", Ul, [
+              ft(wt, { name: "slide-fade" }, {
+                default: Ct(() => [
+                  Xe(f("div", ch, [
                     f("div", {
                       ref_key: "tableDiv",
                       ref: _s
                     }, null, 512)
                   ], 512), [
-                    [wt, i.value]
+                    [yt, i.value]
                   ])
                 ]),
                 _: 1
               }),
-              ut(Wa, {
+              ft(hl, {
                 "show-calculation-details": s.value,
-                "avg-price-calculation-tab": r.value,
-                "onUpdate:avgPriceCalculationTab": p[0] || (p[0] = (w) => r.value = w),
-                "position-groups": k(ee),
-                "order-groups": k(Ue),
+                "avg-price-calculation-tab": a.value,
+                "onUpdate:avgPriceCalculationTab": p[0] || (p[0] = (w) => a.value = w),
+                "position-groups": k(ne),
+                "order-groups": k(Ye),
                 "overall-adjusted-avg-price": k(re),
-                "overall-adjusted-avg-price-from-orders": k(H),
+                "overall-adjusted-avg-price-from-orders": k(ke),
                 "total-net-cost-all-clients": xs.value,
                 "total-main-quantity-all-clients": Oi.value,
-                "total-net-cost": k(we),
-                "total-shares": k(Ee),
-                "is-avg-price-from-orders-loading": k(et),
-                "avg-price-from-orders-error": k(Et)
+                "total-net-cost": k(Je),
+                "total-shares": k(Qe),
+                "is-avg-price-from-orders-loading": k(Se),
+                "avg-price-from-orders-error": k(ce)
               }, null, 8, ["show-calculation-details", "avg-price-calculation-tab", "position-groups", "order-groups", "overall-adjusted-avg-price", "overall-adjusted-avg-price-from-orders", "total-net-cost-all-clients", "total-main-quantity-all-clients", "total-net-cost", "total-shares", "is-avg-price-from-orders-loading", "avg-price-from-orders-error"]),
-              ut(bt, { name: "slide-fade" }, {
-                default: vt(() => [
-                  je(f("div", ql, [
+              ft(wt, { name: "slide-fade" }, {
+                default: Ct(() => [
+                  Xe(f("div", fh, [
                     p[36] || (p[36] = f("h2", null, "Profit & Loss Calculation Details:", -1)),
-                    k(U) && "totalShares" in k(U) && k(U).totalShares != null ? (R(), x("div", Kl, [
-                      f("div", Xl, [
+                    k(q) && "totalShares" in k(q) && k(q).totalShares != null ? (R(), x("div", ph, [
+                      f("div", mh, [
                         p[32] || (p[32] = f("div", { class: "pnl-section-title" }, "📊 Total Cost Basis", -1)),
-                        f("div", Jl, " Total Shares = " + g(k(U).totalShares.toLocaleString()), 1),
-                        f("div", Ql, " Average Cost per Share = $" + g(k(U).avgCostPerShare.toFixed(2)), 1),
-                        f("div", Yl, [
-                          f("strong", null, "Total Cost Basis = " + g(k(U).totalShares.toLocaleString()) + " × $" + g(k(U).avgCostPerShare.toFixed(2)) + " = $" + g(k(U).totalCostBasis.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                        f("div", gh, " Total Shares = " + m(k(q).totalShares.toLocaleString()), 1),
+                        f("div", bh, " Average Cost per Share = $" + m(k(q).avgCostPerShare.toFixed(2)), 1),
+                        f("div", vh, [
+                          f("strong", null, "Total Cost Basis = " + m(k(q).totalShares.toLocaleString()) + " × $" + m(k(q).avgCostPerShare.toFixed(2)) + " = $" + m(k(q).totalCostBasis.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ])
                       ]),
-                      f("div", Zl, [
+                      f("div", wh, [
                         p[33] || (p[33] = f("div", { class: "pnl-section-title" }, "💰 Current Market Value", -1)),
-                        f("div", eh, " Current Price per Share = $" + g(k(U).currentPricePerShare.toFixed(2)), 1),
-                        f("div", th, [
-                          f("strong", null, "Current Market Value = " + g(k(U).totalShares.toLocaleString()) + " × $" + g(k(U).currentPricePerShare.toFixed(2)) + " = $" + g(k(U).currentMarketValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                        f("div", Ch, " Current Price per Share = $" + m(k(q).currentPricePerShare.toFixed(2)), 1),
+                        f("div", yh, [
+                          f("strong", null, "Current Market Value = " + m(k(q).totalShares.toLocaleString()) + " × $" + m(k(q).currentPricePerShare.toFixed(2)) + " = $" + m(k(q).currentMarketValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ])
                       ]),
-                      f("div", ih, [
+                      f("div", Eh, [
                         p[34] || (p[34] = f("div", { class: "pnl-section-title" }, "🎯 Unrealized Profit & Loss", -1)),
-                        f("div", sh, [
+                        f("div", Rh, [
                           f("strong", {
-                            class: ge({ "profit-text": k(_e), "loss-text": !k(_e) })
-                          }, " Unrealized P&L = $" + g(k(U).currentMarketValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + g(k(U).totalCostBasis.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " = " + g(k(ke) && k(ke) >= 0 ? "+" : "") + "$" + g(k(U).unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 3)
+                            class: Ce({ "profit-text": k(Oe), "loss-text": !k(Oe) })
+                          }, " Unrealized P&L = $" + m(k(q).currentMarketValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + m(k(q).totalCostBasis.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " = " + m(k(Me) && k(Me) >= 0 ? "+" : "") + "$" + m(k(q).unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 3)
                         ]),
-                        f("div", oh, [
+                        f("div", xh, [
                           f("strong", {
-                            class: ge({ "profit-text": k(_e), "loss-text": !k(_e) })
-                          }, " P&L Percentage = (" + g(k(ke) && k(ke) >= 0 ? "+" : "") + "$" + g(k(U).unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ÷ $" + g(k(U).totalCostBasis.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + ") × 100 = " + g(k(U).pnlPercentage.toFixed(2)) + "% ", 3)
+                            class: Ce({ "profit-text": k(Oe), "loss-text": !k(Oe) })
+                          }, " P&L Percentage = (" + m(k(Me) && k(Me) >= 0 ? "+" : "") + "$" + m(k(q).unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ÷ $" + m(k(q).totalCostBasis.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + ") × 100 = " + m(k(q).pnlPercentage.toFixed(2)) + "% ", 3)
                         ])
                       ])
-                    ])) : Q("", !0),
-                    k(U) && "optionType" in k(U) && k(U).optionType != null ? (R(), x("div", nh, [
-                      f("div", rh, [
-                        f("div", ah, "📊 SHORT " + g(k(U).optionType) + " OPTIONS SUMMARY", 1),
-                        f("div", lh, " Total Contracts: " + g(k(U).totalContracts.toLocaleString()), 1),
-                        f("div", hh, " Position Type: " + g(k(U).positionType), 1)
+                    ])) : U("", !0),
+                    k(q) && "optionType" in k(q) && k(q).optionType != null ? (R(), x("div", kh, [
+                      f("div", Th, [
+                        f("div", Sh, "📊 SHORT " + m(k(q).optionType) + " OPTIONS SUMMARY", 1),
+                        f("div", Lh, " Total Contracts: " + m(k(q).totalContracts.toLocaleString()), 1),
+                        f("div", Mh, " Position Type: " + m(k(q).positionType), 1)
                       ]),
-                      (R(!0), x(ce, null, fe(k(U).positions, (w, N) => (R(), x("div", {
+                      (R(!0), x(de, null, ue(k(q).positions, (w, N) => (R(), x("div", {
                         key: `pos-${N}`,
                         class: "pnl-section"
                       }, [
-                        f("div", dh, "Position " + g(N + 1) + ": " + g(w.account) + " - $" + g(w.strike) + " Strike (" + g(w.expiry) + ")", 1),
-                        f("div", uh, " Contracts Sold: " + g(Math.abs(w.quantity).toLocaleString()), 1),
-                        f("div", ch, " Premium Received: $" + g(w.premiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
-                        f("div", fh, " Current Market Value: $" + g(w.currentValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
-                        f("div", ph, [
+                        f("div", Dh, "Position " + m(N + 1) + ": " + m(w.account) + " - $" + m(w.strike) + " Strike (" + m(w.expiry) + ")", 1),
+                        f("div", Fh, " Contracts Sold: " + m(Math.abs(w.quantity).toLocaleString()), 1),
+                        f("div", _h, " Premium Received: $" + m(w.premiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
+                        f("div", Ph, " Current Market Value: $" + m(w.currentValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
+                        f("div", zh, [
                           f("strong", {
-                            class: ge({ "profit-text": w.positionPnL >= 0, "loss-text": w.positionPnL < 0 })
-                          }, " P&L: " + g(w.positionPnL >= 0 ? "+" : "") + "$" + g(w.positionPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 3)
+                            class: Ce({ "profit-text": w.positionPnL >= 0, "loss-text": w.positionPnL < 0 })
+                          }, " P&L: " + m(w.positionPnL >= 0 ? "+" : "") + "$" + m(w.positionPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 3)
                         ])
                       ]))), 128)),
-                      f("div", mh, [
+                      f("div", Ah, [
                         p[35] || (p[35] = f("div", { class: "pnl-section-title" }, "💰 TOTAL CALCULATION", -1)),
-                        f("div", gh, " Total Premium Received = " + g(k(U).positions.map((w) => `$${w.premiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")), 1),
-                        f("div", bh, [
-                          f("strong", null, "= $" + g(k(U).totalPremiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                        f("div", Hh, " Total Premium Received = " + m(k(q).positions.map((w) => `$${w.premiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")), 1),
+                        f("div", Oh, [
+                          f("strong", null, "= $" + m(k(q).totalPremiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ]),
-                        f("div", vh, " Current Market Liability = " + g(k(U).positions.map((w) => `$${w.currentValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")), 1),
-                        f("div", wh, [
-                          f("strong", null, "= $" + g(k(U).currentMarketLiability.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                        f("div", Bh, " Current Market Liability = " + m(k(q).positions.map((w) => `$${w.currentValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")), 1),
+                        f("div", Nh, [
+                          f("strong", null, "= $" + m(k(q).currentMarketLiability.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ]),
-                        f("div", Ch, [
+                        f("div", $h, [
                           f("strong", {
-                            class: ge({ "profit-text": k(_e), "loss-text": !k(_e) })
-                          }, " Unrealized P&L = $" + g(k(U).totalPremiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + g(k(U).currentMarketLiability.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " = " + g(k(ke) && k(ke) >= 0 ? "+" : "") + "$" + g(k(U).unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 3)
+                            class: Ce({ "profit-text": k(Oe), "loss-text": !k(Oe) })
+                          }, " Unrealized P&L = $" + m(k(q).totalPremiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + m(k(q).currentMarketLiability.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " = " + m(k(Me) && k(Me) >= 0 ? "+" : "") + "$" + m(k(q).unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 3)
                         ]),
-                        f("div", yh, [
+                        f("div", Vh, [
                           f("strong", {
-                            class: ge({ "profit-text": k(_e), "loss-text": !k(_e) })
-                          }, " P&L % = (" + g(k(ke) && k(ke) >= 0 ? "+" : "") + "$" + g(k(U).unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ÷ $" + g(k(U).totalPremiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + ") × 100 = " + g(k(U).pnlPercentage.toFixed(2)) + "% ", 3)
+                            class: Ce({ "profit-text": k(Oe), "loss-text": !k(Oe) })
+                          }, " P&L % = (" + m(k(Me) && k(Me) >= 0 ? "+" : "") + "$" + m(k(q).unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ÷ $" + m(k(q).totalPremiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + ") × 100 = " + m(k(q).pnlPercentage.toFixed(2)) + "% ", 3)
                         ]),
-                        k(U).pnlPercentage < -50 ? (R(), x("div", Eh, " ⚠️ WARNING: Loss exceeds 50% of premium received! ")) : Q("", !0)
+                        k(q).pnlPercentage < -50 ? (R(), x("div", Ih, " ⚠️ WARNING: Loss exceeds 50% of premium received! ")) : U("", !0)
                       ])
-                    ])) : Q("", !0)
+                    ])) : U("", !0)
                   ], 512), [
-                    [wt, o.value]
+                    [yt, o.value]
                   ])
                 ]),
                 _: 1
               }),
-              ut(bt, { name: "slide-fade" }, {
-                default: vt(() => [
-                  je(f("div", Rh, [
+              ft(wt, { name: "slide-fade" }, {
+                default: Ct(() => [
+                  Xe(f("div", Wh, [
                     p[41] || (p[41] = f("h2", null, "Capital Used Calculation Details:", -1)),
-                    k(Te) ? k(Te).assetType === "STK" ? (R(), x("div", kh, [
-                      f("div", Th, [
+                    k(De) ? k(De).assetType === "STK" ? (R(), x("div", jh, [
+                      f("div", Uh, [
                         p[38] || (p[38] = f("div", { class: "capital-section-title" }, "📊 STOCK CAPITAL CALCULATION", -1)),
-                        f("div", Mh, " Total Shares = " + g(k(Te).totalShares.toLocaleString()), 1),
-                        f("div", Lh, " Current Price per Share = $" + g(k(Te).pricePerShare.toFixed(2)), 1),
-                        f("div", Sh, [
-                          f("strong", null, " Total Capital Used = " + g(k(Te).totalShares.toLocaleString()) + " × $" + g(k(Te).pricePerShare.toFixed(2)) + " = $" + g(k(Te).totalCapital.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                        f("div", qh, " Total Shares = " + m(k(De).totalShares.toLocaleString()), 1),
+                        f("div", Kh, " Current Price per Share = $" + m(k(De).pricePerShare.toFixed(2)), 1),
+                        f("div", Xh, [
+                          f("strong", null, " Total Capital Used = " + m(k(De).totalShares.toLocaleString()) + " × $" + m(k(De).pricePerShare.toFixed(2)) + " = $" + m(k(De).totalCapital.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ])
                       ])
-                    ])) : k(Te).assetType === "OPT" ? (R(), x("div", Dh, [
+                    ])) : k(De).assetType === "OPT" ? (R(), x("div", Jh, [
                       p[40] || (p[40] = f("div", { class: "capital-section" }, [
                         f("div", { class: "capital-section-title" }, "📊 OPTIONS CAPITAL CALCULATION"),
                         f("div", { class: "calc-line" }, " Capital = Sum of |Market Value| for all option positions ")
                       ], -1)),
-                      (R(!0), x(ce, null, fe(k(Te).positions, (w, N) => (R(), x("div", {
+                      (R(!0), x(de, null, ue(k(De).positions, (w, N) => (R(), x("div", {
                         key: `cap-${N}`,
                         class: "capital-section"
                       }, [
-                        f("div", Fh, " Position " + g(N + 1) + ": " + g(w.account) + " - " + g(w.optionType), 1),
-                        f("div", _h, " Symbol: " + g(w.symbol), 1),
-                        f("div", Ph, " Quantity: " + g(Math.abs(w.quantity).toLocaleString()) + " contracts ", 1),
-                        f("div", zh, " Market Price: $" + g(w.marketPrice.toFixed(2)) + " per contract ", 1),
-                        f("div", Ah, [
-                          f("strong", null, " Market Value = " + g(Math.abs(w.quantity).toLocaleString()) + " × $" + g(w.marketPrice.toFixed(2)) + " = $" + g(Math.abs(w.marketValue).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                        f("div", Qh, " Position " + m(N + 1) + ": " + m(w.account) + " - " + m(w.optionType), 1),
+                        f("div", Yh, " Symbol: " + m(w.symbol), 1),
+                        f("div", Zh, " Quantity: " + m(Math.abs(w.quantity).toLocaleString()) + " contracts ", 1),
+                        f("div", ed, " Market Price: $" + m(w.marketPrice.toFixed(2)) + " per contract ", 1),
+                        f("div", td, [
+                          f("strong", null, " Market Value = " + m(Math.abs(w.quantity).toLocaleString()) + " × $" + m(w.marketPrice.toFixed(2)) + " = $" + m(Math.abs(w.marketValue).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ])
                       ]))), 128)),
-                      f("div", Hh, [
+                      f("div", id, [
                         p[39] || (p[39] = f("div", { class: "capital-section-title" }, "💰 TOTAL CAPITAL USED", -1)),
-                        f("div", Oh, " Total = " + g(k(Te).positions.map((w) => `$${Math.abs(w.marketValue).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")), 1),
-                        f("div", Bh, [
-                          f("strong", null, " = $" + g(k(Te).totalOptionsCapital.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                        f("div", sd, " Total = " + m(k(De).positions.map((w) => `$${Math.abs(w.marketValue).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")), 1),
+                        f("div", od, [
+                          f("strong", null, " = $" + m(k(De).totalOptionsCapital.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ])
                       ])
-                    ])) : Q("", !0) : (R(), x("div", xh, [...p[37] || (p[37] = [
+                    ])) : U("", !0) : (R(), x("div", Gh, [...p[37] || (p[37] = [
                       f("p", null, "No capital data available", -1)
                     ])]))
                   ], 512), [
-                    [wt, n.value]
+                    [yt, n.value]
                   ])
                 ]),
                 _: 1
@@ -13421,222 +13514,222 @@ const Br = { class: "calculation-details" }, Nr = { class: "calculation-tabs" },
             ]))
           ])
         ]),
-        He.value ? (R(), x("div", {
+        $e.value ? (R(), x("div", {
           key: 0,
           class: "modal-overlay",
-          onClick: p[14] || (p[14] = (w) => He.value = !1)
+          onClick: p[14] || (p[14] = (w) => $e.value = !1)
         }, [
           f("div", {
             class: "modal-content trade-attach-modal",
-            onClick: p[13] || (p[13] = Tt(() => {
+            onClick: p[13] || (p[13] = St(() => {
             }, ["stop"]))
           }, [
-            f("div", Nh, [
+            f("div", nd, [
               p[42] || (p[42] = f("h3", null, "Attach to Position", -1)),
               f("button", {
                 class: "modal-close",
-                onClick: p[1] || (p[1] = (w) => He.value = !1)
+                onClick: p[1] || (p[1] = (w) => $e.value = !1)
               }, "×")
             ]),
-            f("div", Vh, [
-              Be.value ? (R(), x("div", Ih, [
+            f("div", ad, [
+              Ie.value ? (R(), x("div", rd, [
                 p[43] || (p[43] = f("strong", null, "Position:", -1)),
-                (R(!0), x(ce, null, fe(it(Be.value.symbol), (w) => (R(), x("span", {
+                (R(!0), x(de, null, ue(at(Ie.value.symbol), (w) => (R(), x("span", {
                   key: w,
                   class: "fi-tag position-tag"
-                }, g(w), 1))), 128)),
-                ne(" • (Contract Qty: " + g(Be.value.contract_quantity) + " · Avg price: $" + g(Be.value.avgPrice) + ") ", 1)
-              ])) : Q("", !0),
-              f("div", $h, [
+                }, m(w), 1))), 128)),
+                ae(" • (Contract Qty: " + m(Ie.value.contract_quantity) + " · Avg price: $" + m(Ie.value.avgPrice) + ") ", 1)
+              ])) : U("", !0),
+              f("div", ld, [
                 f("button", {
-                  class: ge(["tab-button", { active: ae.value === "trades" }]),
+                  class: Ce(["tab-button", { active: pe.value === "trades" }]),
                   onClick: p[2] || (p[2] = (w) => {
-                    ae.value = "trades", Yt(Oe.value);
+                    pe.value = "trades", Yt(Ve.value);
                   })
                 }, "Trades", 2),
                 f("button", {
-                  class: ge(["tab-button", { active: ae.value === "positions" }]),
+                  class: Ce(["tab-button", { active: pe.value === "positions" }]),
                   onClick: p[3] || (p[3] = (w) => {
-                    ae.value = "positions", Zt(Be.value);
+                    pe.value = "positions", Zt(Ie.value);
                   })
                 }, "Positions", 2),
                 f("button", {
-                  class: ge(["tab-button", { active: ae.value === "orders" }]),
+                  class: Ce(["tab-button", { active: pe.value === "orders" }]),
                   onClick: p[4] || (p[4] = (w) => {
-                    ae.value = "orders", ei(Oe.value);
+                    pe.value = "orders", ei(Ve.value);
                   })
                 }, "Orders", 2)
               ]),
-              ae.value === "trades" ? (R(), x("div", Wh, [
-                f("div", Gh, [
-                  je(f("input", {
-                    "onUpdate:modelValue": p[5] || (p[5] = (w) => Ht.value = w),
+              pe.value === "trades" ? (R(), x("div", hd, [
+                f("div", dd, [
+                  Xe(f("input", {
+                    "onUpdate:modelValue": p[5] || (p[5] = (w) => Ot.value = w),
                     type: "text",
                     class: "search-input",
                     placeholder: "Search trades (e.g., 'Put' or 'Call, 250')...",
-                    onInput: p[6] || (p[6] = (w) => Yt(Oe.value))
-                  }, null, 544), [
-                    [ti, Ht.value]
-                  ]),
-                  p[44] || (p[44] = f("div", { class: "search-hint" }, [
-                    ne("💡 "),
-                    f("em", null, "Use commas to search multiple terms (AND logic)")
-                  ], -1))
-                ]),
-                $e.value ? (R(), x("div", jh, "Loading trades...")) : (R(), x("div", Uh, [
-                  (R(!0), x(ce, null, fe(Rt.value, (w) => (R(), x("div", {
-                    key: w.tradeID,
-                    class: ge(["trade-item", { selected: Ve.value.has(String(w.tradeID)) }]),
-                    onClick: (N) => Ii(String(w.tradeID))
-                  }, [
-                    f("input", {
-                      type: "checkbox",
-                      checked: Ve.value.has(String(w.tradeID)),
-                      onClick: Tt((N) => Ii(String(w.tradeID)), ["stop"])
-                    }, null, 8, Kh),
-                    f("div", Xh, [
-                      f("div", Jh, [
-                        f("span", {
-                          class: ge(["trade-side", (w.buySell || "").toLowerCase()])
-                        }, g(w.buySell), 3),
-                        f("strong", null, [
-                          (R(!0), x(ce, null, fe(At(w.symbol), (N) => (R(), x("span", {
-                            key: N,
-                            class: "fi-tag position-tag"
-                          }, g(N), 1))), 128))
-                        ]),
-                        f("span", Qh, "Qty: " + g(w.quantity), 1),
-                        f("span", Yh, "· Price: " + g(w.tradePrice), 1)
-                      ]),
-                      f("div", Zh, [
-                        f("span", null, "Trade date: " + g(Pe(w.tradeDate)), 1),
-                        w.assetCategory ? (R(), x("span", ed, "• " + g(w.assetCategory), 1)) : Q("", !0),
-                        w.description ? (R(), x("span", td, "• " + g(w.description), 1)) : Q("", !0),
-                        f("span", id, "• ID: " + g(w.tradeID), 1)
-                      ])
-                    ])
-                  ], 10, qh))), 128)),
-                  Rt.value.length === 0 ? (R(), x("div", sd, " No trades found ")) : Q("", !0)
-                ]))
-              ])) : ae.value === "positions" ? (R(), x("div", od, [
-                f("div", nd, [
-                  je(f("input", {
-                    "onUpdate:modelValue": p[7] || (p[7] = (w) => Ot.value = w),
-                    type: "text",
-                    class: "search-input",
-                    placeholder: "Search positions (e.g., 'Put' or 'Call, 250')...",
-                    onInput: p[8] || (p[8] = (w) => Zt(Be.value))
+                    onInput: p[6] || (p[6] = (w) => Yt(Ve.value))
                   }, null, 544), [
                     [ti, Ot.value]
                   ]),
-                  p[45] || (p[45] = f("div", { class: "search-hint" }, [
-                    ne("💡 "),
-                    f("em", null, "Showing positions with same underlying symbol. Use commas to search multiple terms.")
+                  p[44] || (p[44] = f("div", { class: "search-hint" }, [
+                    ae("💡 "),
+                    f("em", null, "Use commas to search multiple terms (AND logic)")
                   ], -1))
                 ]),
-                $e.value ? (R(), x("div", rd, "Loading positions...")) : (R(), x("div", ad, [
-                  (R(!0), x(ce, null, fe(xt.value, (w) => (R(), x("div", {
-                    key: k(ue)(w),
-                    class: ge(["trade-item", { selected: Ie.value.has(k(ue)(w)), expired: w.asset_class === "OPT" && Gi(w) }]),
-                    onClick: (N) => $i(k(ue)(w))
+                Ue.value ? (R(), x("div", ud, "Loading trades...")) : (R(), x("div", cd, [
+                  (R(!0), x(de, null, ue(xt.value, (w) => (R(), x("div", {
+                    key: w.tradeID,
+                    class: Ce(["trade-item", { selected: Ge.value.has(String(w.tradeID)) }]),
+                    onClick: (N) => Vi(String(w.tradeID))
                   }, [
                     f("input", {
                       type: "checkbox",
-                      checked: Ie.value.has(k(ue)(w)),
-                      onClick: Tt((N) => $i(k(ue)(w)), ["stop"])
-                    }, null, 8, hd),
-                    f("div", dd, [
-                      f("div", ud, [
+                      checked: Ge.value.has(String(w.tradeID)),
+                      onClick: St((N) => Vi(String(w.tradeID)), ["stop"])
+                    }, null, 8, pd),
+                    f("div", md, [
+                      f("div", gd, [
+                        f("span", {
+                          class: Ce(["trade-side", (w.buySell || "").toLowerCase()])
+                        }, m(w.buySell), 3),
                         f("strong", null, [
-                          (R(!0), x(ce, null, fe(it(w.symbol), (N) => (R(), x("span", {
+                          (R(!0), x(de, null, ue(Ht(w.symbol), (N) => (R(), x("span", {
                             key: N,
                             class: "fi-tag position-tag"
-                          }, g(N), 1))), 128))
+                          }, m(N), 1))), 128))
                         ]),
-                        f("span", cd, "Qty: " + g(w.contract_quantity), 1),
-                        f("span", fd, "· Avg price: " + g(Me(w.avgPrice)), 1),
-                        Gi(w) ? (R(), x("span", pd, "EXPIRED")) : Q("", !0)
+                        f("span", bd, "Qty: " + m(w.quantity), 1),
+                        f("span", vd, "· Price: " + m(w.tradePrice), 1)
                       ]),
-                      f("div", md, [
-                        f("span", null, g(w.asset_class), 1),
-                        p[46] || (p[46] = f("span", null, "•", -1)),
-                        f("span", null, g(w.internal_account_id || w.legal_entity), 1),
-                        w.market_value ? (R(), x("span", gd, "• MV: " + g(Me(w.market_value)), 1)) : Q("", !0),
-                        p[47] || (p[47] = f("span", null, " • ", -1)),
-                        f("span", null, "Fetched at: " + g(Is(w.fetched_at)), 1)
+                      f("div", wd, [
+                        f("span", null, "Trade date: " + m(Be(w.tradeDate)), 1),
+                        w.assetCategory ? (R(), x("span", Cd, "• " + m(w.assetCategory), 1)) : U("", !0),
+                        w.description ? (R(), x("span", yd, "• " + m(w.description), 1)) : U("", !0),
+                        f("span", Ed, "• ID: " + m(w.tradeID), 1)
                       ])
                     ])
-                  ], 10, ld))), 128)),
-                  xt.value.length === 0 ? (R(), x("div", bd, " No positions found ")) : Q("", !0)
+                  ], 10, fd))), 128)),
+                  xt.value.length === 0 ? (R(), x("div", Rd, " No trades found ")) : U("", !0)
                 ]))
-              ])) : (R(), x("div", vd, [
-                f("div", wd, [
-                  je(f("input", {
-                    "onUpdate:modelValue": p[9] || (p[9] = (w) => Bt.value = w),
+              ])) : pe.value === "positions" ? (R(), x("div", xd, [
+                f("div", kd, [
+                  Xe(f("input", {
+                    "onUpdate:modelValue": p[7] || (p[7] = (w) => Bt.value = w),
                     type: "text",
                     class: "search-input",
-                    placeholder: "Search orders (e.g., 'Put' or 'Call, 250')...",
-                    onInput: p[10] || (p[10] = (w) => ei(Oe.value))
+                    placeholder: "Search positions (e.g., 'Put' or 'Call, 250')...",
+                    onInput: p[8] || (p[8] = (w) => Zt(Ie.value))
                   }, null, 544), [
                     [ti, Bt.value]
                   ]),
+                  p[45] || (p[45] = f("div", { class: "search-hint" }, [
+                    ae("💡 "),
+                    f("em", null, "Showing positions with same underlying symbol. Use commas to search multiple terms.")
+                  ], -1))
+                ]),
+                Ue.value ? (R(), x("div", Td, "Loading positions...")) : (R(), x("div", Sd, [
+                  (R(!0), x(de, null, ue(kt.value, (w) => (R(), x("div", {
+                    key: k(he)(w),
+                    class: Ce(["trade-item", { selected: je.value.has(k(he)(w)), expired: w.asset_class === "OPT" && Gi(w) }]),
+                    onClick: (N) => Ii(k(he)(w))
+                  }, [
+                    f("input", {
+                      type: "checkbox",
+                      checked: je.value.has(k(he)(w)),
+                      onClick: St((N) => Ii(k(he)(w)), ["stop"])
+                    }, null, 8, Md),
+                    f("div", Dd, [
+                      f("div", Fd, [
+                        f("strong", null, [
+                          (R(!0), x(de, null, ue(at(w.symbol), (N) => (R(), x("span", {
+                            key: N,
+                            class: "fi-tag position-tag"
+                          }, m(N), 1))), 128))
+                        ]),
+                        f("span", _d, "Qty: " + m(w.contract_quantity), 1),
+                        f("span", Pd, "· Avg price: " + m(Fe(w.avgPrice)), 1),
+                        Gi(w) ? (R(), x("span", zd, "EXPIRED")) : U("", !0)
+                      ]),
+                      f("div", Ad, [
+                        f("span", null, m(w.asset_class), 1),
+                        p[46] || (p[46] = f("span", null, "•", -1)),
+                        f("span", null, m(w.internal_account_id || w.legal_entity), 1),
+                        w.market_value ? (R(), x("span", Hd, "• MV: " + m(Fe(w.market_value)), 1)) : U("", !0),
+                        p[47] || (p[47] = f("span", null, " • ", -1)),
+                        f("span", null, "Fetched at: " + m(Vs(w.fetched_at)), 1)
+                      ])
+                    ])
+                  ], 10, Ld))), 128)),
+                  kt.value.length === 0 ? (R(), x("div", Od, " No positions found ")) : U("", !0)
+                ]))
+              ])) : (R(), x("div", Bd, [
+                f("div", Nd, [
+                  Xe(f("input", {
+                    "onUpdate:modelValue": p[9] || (p[9] = (w) => Nt.value = w),
+                    type: "text",
+                    class: "search-input",
+                    placeholder: "Search orders (e.g., 'Put' or 'Call, 250')...",
+                    onInput: p[10] || (p[10] = (w) => ei(Ve.value))
+                  }, null, 544), [
+                    [ti, Nt.value]
+                  ]),
                   p[48] || (p[48] = f("div", { class: "search-hint" }, [
-                    ne("💡 "),
+                    ae("💡 "),
                     f("em", null, "Showing orders with same underlying symbol. Use commas to search multiple terms.")
                   ], -1))
                 ]),
-                $e.value ? (R(), x("div", Cd, "Loading orders...")) : (R(), x("div", yd, [
-                  (R(!0), x(ce, null, fe(kt.value, (w) => (R(), x("div", {
+                Ue.value ? (R(), x("div", $d, "Loading orders...")) : (R(), x("div", Vd, [
+                  (R(!0), x(de, null, ue(Tt.value, (w) => (R(), x("div", {
                     key: w.id,
-                    class: ge(["trade-item", { selected: Ne.value.has(String(w.id)) }]),
+                    class: Ce(["trade-item", { selected: We.value.has(String(w.id)) }]),
                     onClick: (N) => Wi(String(w.id))
                   }, [
                     f("input", {
                       type: "checkbox",
-                      checked: Ne.value.has(String(w.id)),
-                      onClick: Tt((N) => Wi(String(w.id)), ["stop"])
-                    }, null, 8, Rd),
-                    f("div", xd, [
-                      f("div", kd, [
+                      checked: We.value.has(String(w.id)),
+                      onClick: St((N) => Wi(String(w.id)), ["stop"])
+                    }, null, 8, Wd),
+                    f("div", Gd, [
+                      f("div", jd, [
                         f("strong", null, [
-                          (R(!0), x(ce, null, fe(At(w.symbol), (N) => (R(), x("span", {
+                          (R(!0), x(de, null, ue(Ht(w.symbol), (N) => (R(), x("span", {
                             key: N,
                             class: "fi-tag position-tag"
-                          }, g(N), 1))), 128))
+                          }, m(N), 1))), 128))
                         ]),
-                        f("span", Td, "Qty: " + g(w.contract_quantity), 1),
-                        f("span", Md, "· Trade price: " + g(Me(w.tradePrice)), 1)
+                        f("span", Ud, "Qty: " + m(w.contract_quantity), 1),
+                        f("span", qd, "· Trade price: " + m(Fe(w.tradePrice)), 1)
                       ]),
-                      f("div", Ld, [
-                        f("span", null, g(w.assetCategory), 1),
-                        w.tradeMoney ? (R(), x("span", Sd, "• Trade money: " + g(Me(w.tradeMoney)), 1)) : Q("", !0),
+                      f("div", Kd, [
+                        f("span", null, m(w.assetCategory), 1),
+                        w.tradeMoney ? (R(), x("span", Xd, "• Trade money: " + m(Fe(w.tradeMoney)), 1)) : U("", !0),
                         p[49] || (p[49] = f("span", null, " • ", -1)),
-                        f("span", null, "Settlement Date: " + g(ji(w.settleDateTarget)), 1)
+                        f("span", null, "Settlement Date: " + m(ji(w.settleDateTarget)), 1)
                       ])
                     ])
-                  ], 10, Ed))), 128)),
-                  kt.value.length === 0 ? (R(), x("div", Dd, " No orders found ")) : Q("", !0)
+                  ], 10, Id))), 128)),
+                  Tt.value.length === 0 ? (R(), x("div", Jd, " No orders found ")) : U("", !0)
                 ]))
               ]))
             ]),
-            f("div", Fd, [
+            f("div", Qd, [
               f("button", {
                 class: "btn btn-secondary",
-                onClick: p[11] || (p[11] = (w) => He.value = !1)
+                onClick: p[11] || (p[11] = (w) => $e.value = !1)
               }, "Cancel"),
               f("button", {
                 class: "btn btn-primary",
-                disabled: ae.value === "trades" ? Ve.value.size === 0 : ae.value === "positions" ? Ie.value.size === 0 : Ne.value.size === 0,
-                onClick: p[12] || (p[12] = (w) => ae.value === "trades" ? zs() : ae.value === "positions" ? As() : Hs())
-              }, " Attach " + g(ae.value === "trades" ? Ve.value.size : ae.value === "positions" ? Ie.value.size : Ne.value.size) + " " + g(ae.value === "trades" ? "Trade(s)" : ae.value === "positions" ? "Position(s)" : "Order(s)"), 9, _d)
+                disabled: pe.value === "trades" ? Ge.value.size === 0 : pe.value === "positions" ? je.value.size === 0 : We.value.size === 0,
+                onClick: p[12] || (p[12] = (w) => pe.value === "trades" ? zs() : pe.value === "positions" ? As() : Hs())
+              }, " Attach " + m(pe.value === "trades" ? Ge.value.size : pe.value === "positions" ? je.value.size : We.value.size) + " " + m(pe.value === "trades" ? "Trade(s)" : pe.value === "positions" ? "Position(s)" : "Order(s)"), 9, Yd)
             ])
           ])
-        ])) : Q("", !0)
+        ])) : U("", !0)
       ]);
     };
   }
-}), Nd = /* @__PURE__ */ Es(Pd, [["__scopeId", "data-v-9bbccaff"]]);
+}), nu = /* @__PURE__ */ Es(Zd, [["__scopeId", "data-v-248ef636"]]);
 export {
-  Nd as currentPositions,
-  Nd as default
+  nu as currentPositions,
+  nu as default
 };

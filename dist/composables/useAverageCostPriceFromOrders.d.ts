@@ -21,12 +21,19 @@ interface PositionOrderGroup {
     orders: OrderCalculation[];
     stockPurchases: OrderCalculation[];
     stockPurchaseCost: number;
+    stockSales: OrderCalculation[];
+    stockSaleProceeds: number;
     putSales: OrderCalculation[];
     putPremiumReceived: number;
+    putBuybacks: OrderCalculation[];
+    putBuybackCost: number;
     callSales: OrderCalculation[];
     callPremiumReceived: number;
+    callBuybacks: OrderCalculation[];
+    callBuybackCost: number;
     totalStockCost: number;
-    totalPremiumReceived: number;
+    netPutCashFlow: number;
+    netCallCashFlow: number;
     netCost: number;
     totalShares: number;
     adjustedAvgPricePerShare: number;
@@ -67,6 +74,19 @@ export declare function useAverageCostPriceFromOrders(positions: Ref<Position[] 
             orderDate: string;
         }[];
         stockPurchaseCost: number;
+        stockSales: {
+            symbol: string;
+            side: string;
+            quantity: number;
+            avgPrice: number;
+            totalCost: number;
+            secType: string;
+            right?: string | undefined;
+            strike?: number | undefined;
+            account: string;
+            orderDate: string;
+        }[];
+        stockSaleProceeds: number;
         putSales: {
             symbol: string;
             side: string;
@@ -80,6 +100,19 @@ export declare function useAverageCostPriceFromOrders(positions: Ref<Position[] 
             orderDate: string;
         }[];
         putPremiumReceived: number;
+        putBuybacks: {
+            symbol: string;
+            side: string;
+            quantity: number;
+            avgPrice: number;
+            totalCost: number;
+            secType: string;
+            right?: string | undefined;
+            strike?: number | undefined;
+            account: string;
+            orderDate: string;
+        }[];
+        putBuybackCost: number;
         callSales: {
             symbol: string;
             side: string;
@@ -93,8 +126,22 @@ export declare function useAverageCostPriceFromOrders(positions: Ref<Position[] 
             orderDate: string;
         }[];
         callPremiumReceived: number;
+        callBuybacks: {
+            symbol: string;
+            side: string;
+            quantity: number;
+            avgPrice: number;
+            totalCost: number;
+            secType: string;
+            right?: string | undefined;
+            strike?: number | undefined;
+            account: string;
+            orderDate: string;
+        }[];
+        callBuybackCost: number;
         totalStockCost: number;
-        totalPremiumReceived: number;
+        netPutCashFlow: number;
+        netCallCashFlow: number;
         netCost: number;
         totalShares: number;
         adjustedAvgPricePerShare: number;
@@ -129,6 +176,19 @@ export declare function useAverageCostPriceFromOrders(positions: Ref<Position[] 
             orderDate: string;
         }[];
         stockPurchaseCost: number;
+        stockSales: {
+            symbol: string;
+            side: string;
+            quantity: number;
+            avgPrice: number;
+            totalCost: number;
+            secType: string;
+            right?: string | undefined;
+            strike?: number | undefined;
+            account: string;
+            orderDate: string;
+        }[];
+        stockSaleProceeds: number;
         putSales: {
             symbol: string;
             side: string;
@@ -142,6 +202,19 @@ export declare function useAverageCostPriceFromOrders(positions: Ref<Position[] 
             orderDate: string;
         }[];
         putPremiumReceived: number;
+        putBuybacks: {
+            symbol: string;
+            side: string;
+            quantity: number;
+            avgPrice: number;
+            totalCost: number;
+            secType: string;
+            right?: string | undefined;
+            strike?: number | undefined;
+            account: string;
+            orderDate: string;
+        }[];
+        putBuybackCost: number;
         callSales: {
             symbol: string;
             side: string;
@@ -155,8 +228,22 @@ export declare function useAverageCostPriceFromOrders(positions: Ref<Position[] 
             orderDate: string;
         }[];
         callPremiumReceived: number;
+        callBuybacks: {
+            symbol: string;
+            side: string;
+            quantity: number;
+            avgPrice: number;
+            totalCost: number;
+            secType: string;
+            right?: string | undefined;
+            strike?: number | undefined;
+            account: string;
+            orderDate: string;
+        }[];
+        callBuybackCost: number;
         totalStockCost: number;
-        totalPremiumReceived: number;
+        netPutCashFlow: number;
+        netCallCashFlow: number;
         netCost: number;
         totalShares: number;
         adjustedAvgPricePerShare: number;

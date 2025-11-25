@@ -47,18 +47,31 @@ interface PositionOrderGroup {
   stockPurchases: OrderCalculation[]
   stockPurchaseCost: number
   
+  // Stock sales (SELL STK - reduce cost basis)
+  stockSales: OrderCalculation[]
+  stockSaleProceeds: number
+  
   // Put sales (premium received)
   putSales: OrderCalculation[]
   putPremiumReceived: number
+  
+  // Put buybacks (BUY OPT P - closing positions, reduces premium)
+  putBuybacks: OrderCalculation[]
+  putBuybackCost: number
   
   // Call sales (covered calls - premium received)
   callSales: OrderCalculation[]
   callPremiumReceived: number
   
+  // Call buybacks (BUY OPT C - closing positions, reduces premium)
+  callBuybacks: OrderCalculation[]
+  callBuybackCost: number
+  
   // Net cost calculation
-  totalStockCost: number // Stock purchase cost
-  totalPremiumReceived: number // Put + Call premiums
-  netCost: number // Stock cost - total premiums
+  totalStockCost: number // Stock purchase cost - stock sale proceeds
+  netPutCashFlow: number // Put premiums received - put buyback cost
+  netCallCashFlow: number // Call premiums received - call buyback cost
+  netCost: number // Stock cost - net put cash flow - net call cash flow
   totalShares: number
   adjustedAvgPricePerShare: number
 }
@@ -195,12 +208,18 @@ export function useAverageCostPriceFromOrders(
 
         // Categorize orders
         const stockPurchases: OrderCalculation[] = []
+        const stockSales: OrderCalculation[] = []
         const putSales: OrderCalculation[] = []
+        const putBuybacks: OrderCalculation[] = []
         const callSales: OrderCalculation[] = []
+        const callBuybacks: OrderCalculation[] = []
 
         let stockPurchaseCost = 0
+        let stockSaleProceeds = 0
         let putPremiumReceived = 0
+        let putBuybackCost = 0
         let callPremiumReceived = 0
+        let callBuybackCost = 0
 
         ordersForPosition.forEach(order => {
           // totalQuantity already includes the multiplier from the mapping above
@@ -223,8 +242,14 @@ export function useAverageCostPriceFromOrders(
           // Stock purchases (BUY STK or PUT assignment)
           if (order.secType === 'STK' && order.side === 'BUY') {
             stockPurchases.push(orderCalc)
-            stockPurchaseCost += totalValue
-            console.log(`   📈 Stock purchase: ${order.symbol} ${order.side} ${effectiveQuantity} @ $${order.avgFillPrice} = $${totalValue.toFixed(2)}`)
+            stockPurchaseCost += Math.abs(totalValue)
+            console.log(`   📈 Stock purchase: ${order.symbol} ${order.side} ${effectiveQuantity} @ $${order.avgFillPrice} = $${Math.abs(totalValue).toFixed(2)}`)
+          }
+          // Stock sales (SELL STK - reduces cost basis)
+          else if (order.secType === 'STK' && order.side === 'SELL') {
+            stockSales.push(orderCalc)
+            stockSaleProceeds += Math.abs(totalValue)
+            console.log(`   💰 Stock sale: ${order.symbol} ${order.side} ${effectiveQuantity} @ $${order.avgFillPrice} = $${Math.abs(totalValue).toFixed(2)} (proceeds)`)
           }
           // Put sales (SELL PUT - premium received, usually negative cost)
           else if (order.secType === 'OPT' && order.right === 'P' && order.side === 'SELL') {
@@ -232,11 +257,23 @@ export function useAverageCostPriceFromOrders(
             putPremiumReceived += Math.abs(totalValue) // Premium received is positive
             console.log(`   📉 Put sale: ${order.symbol} SELL PUT @ $${order.strike} ${order.side} ${effectiveQuantity} @ $${order.avgFillPrice} = +$${Math.abs(totalValue).toFixed(2)} (premium)`)
           }
+          // Put buybacks (BUY PUT - closing position, reduces premium)
+          else if (order.secType === 'OPT' && order.right === 'P' && order.side === 'BUY') {
+            putBuybacks.push(orderCalc)
+            putBuybackCost += Math.abs(totalValue)
+            console.log(`   🔙 Put buyback: ${order.symbol} BUY PUT @ $${order.strike} ${order.side} ${effectiveQuantity} @ $${order.avgFillPrice} = -$${Math.abs(totalValue).toFixed(2)} (close cost)`)
+          }
           // Call sales (SELL CALL - covered call premium received)
           else if (order.secType === 'OPT' && order.right === 'C' && order.side === 'SELL') {
             callSales.push(orderCalc)
             callPremiumReceived += Math.abs(totalValue) // Premium received is positive
             console.log(`   📞 Call sale: ${order.symbol} SELL CALL @ $${order.strike} ${order.side} ${effectiveQuantity} @ $${order.avgFillPrice} = +$${Math.abs(totalValue).toFixed(2)} (premium)`)
+          }
+          // Call buybacks (BUY CALL - closing position, reduces premium)
+          else if (order.secType === 'OPT' && order.right === 'C' && order.side === 'BUY') {
+            callBuybacks.push(orderCalc)
+            callBuybackCost += Math.abs(totalValue)
+            console.log(`   🔙 Call buyback: ${order.symbol} BUY CALL @ $${order.strike} ${order.side} ${effectiveQuantity} @ $${order.avgFillPrice} = -$${Math.abs(totalValue).toFixed(2)} (close cost)`)
           }
           // Other orders (for logging)
           else {
@@ -244,20 +281,34 @@ export function useAverageCostPriceFromOrders(
           }
         })
 
-        // Calculate net cost for this position (stock cost minus all premiums received)
-        const totalPremiumReceived = putPremiumReceived + callPremiumReceived
-        const netCost = stockPurchaseCost - totalPremiumReceived
+        // Calculate net cost for this position
+        // Net Stock Cost = Purchases - Sales
+        const totalStockCost = stockPurchaseCost - stockSaleProceeds
         
-        // Determine total shares: use stock order quantities if available, otherwise use position quantity
+        // Net Put Cash Flow = Premium Received - Buyback Cost
+        const netPutCashFlow = putPremiumReceived - putBuybackCost
+        
+        // Net Call Cash Flow = Premium Received - Buyback Cost
+        const netCallCashFlow = callPremiumReceived - callBuybackCost
+        
+        // Total Net Cost = Stock Cost - Net Put Cash Flow - Net Call Cash Flow
+        const netCost = totalStockCost - netPutCashFlow - netCallCashFlow
+        
+        // Determine total shares: calculate from stock orders (purchases - sales)
         let positionShares = 0
         
-        // Check if we have stock purchase orders with valid quantities
-        const stockOrderQuantity = stockPurchases.reduce((sum, order) => sum + order.quantity, 0)
+        const stockPurchaseQuantity = stockPurchases.reduce((sum, order) => sum + Math.abs(order.quantity), 0)
+        const stockSaleQuantity = stockSales.reduce((sum, order) => sum + Math.abs(order.quantity), 0)
+        const netStockQuantity = stockPurchaseQuantity - stockSaleQuantity
         
-        if (stockOrderQuantity > 0) {
-          // Use quantity from attached stock orders
-          positionShares = stockOrderQuantity
-          console.log(`   ✅ Using shares from attached stock orders: ${positionShares}`)
+        if (netStockQuantity > 0) {
+          // Use net quantity from stock orders
+          positionShares = netStockQuantity
+          console.log(`   ✅ Using shares from stock orders: ${stockPurchaseQuantity} purchased - ${stockSaleQuantity} sold = ${positionShares}`)
+        } else if (stockPurchaseQuantity > 0) {
+          // Use purchase quantity only
+          positionShares = stockPurchaseQuantity
+          console.log(`   ✅ Using shares from stock purchases: ${positionShares}`)
         } else {
           // Fallback to position's accounting_quantity
           positionShares = pos.accounting_quantity ?? pos.qty
@@ -267,11 +318,16 @@ export function useAverageCostPriceFromOrders(
         const adjustedAvgPrice = positionShares > 0 ? netCost / positionShares : 0
 
         console.log(`📊 Position Summary for ${pos.legal_entity || pos.internal_account_id}:`)
-        console.log(`   Stock Purchase Cost: -$${stockPurchaseCost.toFixed(2)}`)
+        console.log(`   Stock Purchase Cost: $${stockPurchaseCost.toFixed(2)}`)
+        console.log(`   Stock Sale Proceeds: -$${stockSaleProceeds.toFixed(2)}`)
+        console.log(`   Net Stock Cost: $${totalStockCost.toFixed(2)}`)
         console.log(`   Put Premium Received: +$${putPremiumReceived.toFixed(2)}`)
+        console.log(`   Put Buyback Cost: -$${putBuybackCost.toFixed(2)}`)
+        console.log(`   Net Put Cash Flow: $${netPutCashFlow.toFixed(2)}`)
         console.log(`   Call Premium Received: +$${callPremiumReceived.toFixed(2)}`)
-        console.log(`   Total Premium Received: +$${totalPremiumReceived.toFixed(2)}`)
-        console.log(`   Net Cost: $${netCost.toFixed(2)} (Stock - Put Premium - Call Premium)`)
+        console.log(`   Call Buyback Cost: -$${callBuybackCost.toFixed(2)}`)
+        console.log(`   Net Call Cash Flow: $${netCallCashFlow.toFixed(2)}`)
+        console.log(`   Total Net Cost: $${netCost.toFixed(2)} (Net Stock - Net Put - Net Call)`)
         console.log(`   Position Shares: ${positionShares}`)
         console.log(`   Adjusted Avg Price: $${adjustedAvgPrice.toFixed(2)} per share`)
 
@@ -295,12 +351,19 @@ export function useAverageCostPriceFromOrders(
           })),
           stockPurchases,
           stockPurchaseCost,
+          stockSales,
+          stockSaleProceeds,
           putSales,
           putPremiumReceived,
+          putBuybacks,
+          putBuybackCost,
           callSales,
           callPremiumReceived,
-          totalStockCost: stockPurchaseCost,
-          totalPremiumReceived,
+          callBuybacks,
+          callBuybackCost,
+          totalStockCost,
+          netPutCashFlow,
+          netCallCashFlow,
           netCost,
           totalShares: positionShares,
           adjustedAvgPricePerShare: adjustedAvgPrice

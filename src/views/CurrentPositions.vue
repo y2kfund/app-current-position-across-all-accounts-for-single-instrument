@@ -23,7 +23,7 @@ interface currentPositionsProps {
 }
 
 const props = withDefaults(defineProps<currentPositionsProps>(), {
-  symbolRoot: 'MSFT',
+  symbolRoot: 'META',
   userId: '4fbec15d-2316-4805-b2a4-5cd2115a5ac8'
 })
 
@@ -34,7 +34,7 @@ const showPnLDetails = ref(false)
 const showCapitalDetails = ref(false)
 
 // State for average price calculation tabs
-const avgPriceCalculationTab = ref<'positions' | 'orders'>('positions')
+const avgPriceCalculationTab = ref<'positions' | 'orders'>('orders')
 const emit = defineEmits(['capitalUsedChanged'])
 
 const supabase = useSupabase()

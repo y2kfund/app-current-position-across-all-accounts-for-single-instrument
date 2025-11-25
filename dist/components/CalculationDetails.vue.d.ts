@@ -32,18 +32,27 @@ interface OrderGroup {
         quantity: number;
     };
     stockPurchases: OrderCalculation[];
+    stockSales: OrderCalculation[];
     putSales: OrderCalculation[];
+    putBuybacks: OrderCalculation[];
     callSales: OrderCalculation[];
+    callBuybacks: OrderCalculation[];
     totalStockCost: number;
+    stockSaleProceeds: number;
+    netStockCost: number;
     putPremiumReceived: number;
+    putBuybackCost: number;
+    netPutCashFlow: number;
     callPremiumReceived: number;
+    callBuybackCost: number;
+    netCallCashFlow: number;
     netCost: number;
     totalShares: number;
     adjustedAvgPricePerShare: number;
 }
 interface Props {
     showCalculationDetails: boolean;
-    avgPriceCalculationTab: 'positions' | 'orders';
+    avgPriceCalculationTab: 'orders' | 'positions';
     positionGroups: PositionGroup[];
     orderGroups: OrderGroup[];
     overallAdjustedAvgPrice: number | null;

@@ -38,11 +38,20 @@ interface OrderGroup {
     quantity: number
   }
   stockPurchases: OrderCalculation[]
+  stockSales: OrderCalculation[]
   putSales: OrderCalculation[]
+  putBuybacks: OrderCalculation[]
   callSales: OrderCalculation[]
+  callBuybacks: OrderCalculation[]
   totalStockCost: number
+  stockSaleProceeds: number
+  netStockCost: number
   putPremiumReceived: number
+  putBuybackCost: number
+  netPutCashFlow: number
   callPremiumReceived: number
+  callBuybackCost: number
+  netCallCashFlow: number
   netCost: number
   totalShares: number
   adjustedAvgPricePerShare: number
@@ -50,7 +59,7 @@ interface OrderGroup {
 
 interface Props {
   showCalculationDetails: boolean
-  avgPriceCalculationTab: 'positions' | 'orders'
+  avgPriceCalculationTab: 'orders' | 'positions'
   positionGroups: PositionGroup[]
   orderGroups: OrderGroup[]
   overallAdjustedAvgPrice: number | null
@@ -66,7 +75,7 @@ interface Props {
 const props = defineProps<Props>()
 
 const emit = defineEmits<{
-  'update:avgPriceCalculationTab': [value: 'positions' | 'orders']
+  'update:avgPriceCalculationTab': [value: 'orders' | 'positions']
 }>()
 
 // State for collapsing/expanding individual position groups
@@ -123,17 +132,17 @@ function parseOrderSymbol(symbolText: string): string {
       <div class="calculation-tabs">
         <button
           class="tab-button"
-          :class="{ active: avgPriceCalculationTab === 'positions' }"
-          @click="emit('update:avgPriceCalculationTab', 'positions')"
-        >
-          Calculation from Positions
-        </button>
-        <button
-          class="tab-button"
           :class="{ active: avgPriceCalculationTab === 'orders' }"
           @click="emit('update:avgPriceCalculationTab', 'orders')"
         >
           Calculation from Orders
+        </button>
+        <button
+          class="tab-button"
+          :class="{ active: avgPriceCalculationTab === 'positions' }"
+          @click="emit('update:avgPriceCalculationTab', 'positions')"
+        >
+          Calculation from Positions
         </button>
       </div>
 
@@ -241,6 +250,27 @@ function parseOrderSymbol(symbolText: string): string {
                 </div>
                 <div v-else class="order-section no-orders">No stock purchases found</div>
 
+                <!-- Stock Sales -->
+                <div v-if="group.stockSales && group.stockSales.length > 0" class="order-section order-stock-section">
+                  <div class="order-header">💰 Stock Sales (subtract from cost)</div>
+                  <div v-for="(order, orderIndex) in group.stockSales" :key="`stock-sale-${groupIndex}-${orderIndex}`" class="order-line main-order">
+                    <span class="position-icon">💰</span>
+                    <span class="order-symbol">{{ order.symbol }}</span>
+                    <span class="order-calc">@ ${{ Number(order.avgPrice).toFixed(2) }} × {{ order.quantity.toLocaleString() }} = ${{ Number(order.totalCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</span>
+                  </div>
+                  <div class="put-subtotal">
+                    Subtotal Stock Sale Proceeds: ${{ Math.abs(group.stockSaleProceeds).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+                  </div>
+                </div>
+
+                <!-- Net Stock Summary -->
+                <div v-if="group.netStockCost !== undefined || group.totalShares" class="order-section" style="background-color: #f8f9fa; border-left: 3px solid #28a745;">
+                  <div class="put-subtotal" style="font-weight: 600; color: #28a745;">
+                    <div>Net Stock Cost: ${{ (group.netStockCost || group.totalStockCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</div>
+                    <div>Current Shares: {{ group.totalShares.toLocaleString() }} (purchases - sales)</div>
+                  </div>
+                </div>
+
                 <!-- Put Premium Received -->
                 <div v-if="group.putSales && group.putSales.length > 0" class="order-section order-put-section">
                   <div class="order-header">📉 Put Premium Received (subtract from cost)</div>
@@ -250,6 +280,18 @@ function parseOrderSymbol(symbolText: string): string {
                   </div>
                   <div class="put-subtotal">
                     Subtotal Put Premium: ${{ Math.abs(group.putPremiumReceived).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+                  </div>
+                </div>
+
+                <!-- Put Buybacks (Closing Buys) -->
+                <div v-if="group.putBuybacks && group.putBuybacks.length > 0" class="order-section order-put-section">
+                  <div class="order-header">🔄 Put Buybacks (add to cost - closing positions)</div>
+                  <div v-for="(order, orderIndex) in group.putBuybacks" :key="`put-buyback-${groupIndex}-${orderIndex}`" class="order-line put-order">
+                    <span class="order-symbol">{{ parseOrderSymbol(order.symbol) }}</span>
+                    <span class="order-calc">@ ${{ Number(order.avgPrice).toFixed(2) }} × {{ order.quantity.toLocaleString() }} = ${{ Number(order.totalCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</span>
+                  </div>
+                  <div class="put-subtotal">
+                    Subtotal Put Buyback Cost: ${{ Math.abs(group.putBuybackCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
                   </div>
                 </div>
 
@@ -265,13 +307,31 @@ function parseOrderSymbol(symbolText: string): string {
                   </div>
                 </div>
 
+                <!-- Call Buybacks (Closing Buys) -->
+                <div v-if="group.callBuybacks && group.callBuybacks.length > 0" class="order-section order-call-section">
+                  <div class="order-header">🔄 Call Buybacks (add to cost - closing positions)</div>
+                  <div v-for="(order, orderIndex) in group.callBuybacks" :key="`call-buyback-${groupIndex}-${orderIndex}`" class="order-line call-order">
+                    <span class="order-symbol">{{ parseOrderSymbol(order.symbol) }}</span>
+                    <span class="order-calc">@ ${{ Number(order.avgPrice).toFixed(2) }} × {{ order.quantity.toLocaleString() }} = ${{ Number(order.totalCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</span>
+                  </div>
+                  <div class="call-subtotal">
+                    Subtotal Call Buyback Cost: ${{ Math.abs(group.callBuybackCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+                  </div>
+                </div>
+
                 <!-- Calculation summary for this client -->
                 <div class="group-calculation">
                   <div class="calc-line">📊 <strong>Calculation:</strong></div>
-                  <div class="calc-line indent">Stock Purchase Cost: -${{ group.totalStockCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</div>
+                  <div class="calc-line indent">Stock Purchases: -${{ group.totalStockCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</div>
+                  <div class="calc-line indent" v-if="group.stockSaleProceeds && group.stockSaleProceeds > 0">Stock Sales: +${{ Math.abs(group.stockSaleProceeds).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</div>
+                  <div class="calc-line indent" v-if="group.netStockCost !== undefined && group.netStockCost !== group.totalStockCost"><strong>Net Stock Cost: ${{ group.netStockCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></div>
                   <div class="calc-line indent" v-if="group.putPremiumReceived > 0">Put Premium Received: +${{ Math.abs(group.putPremiumReceived).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</div>
+                  <div class="calc-line indent" v-if="group.putBuybackCost && group.putBuybackCost > 0">Put Buyback Cost: -${{ Math.abs(group.putBuybackCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</div>
+                  <div class="calc-line indent" v-if="group.netPutCashFlow !== undefined && group.netPutCashFlow !== group.putPremiumReceived"><strong>Net Put Cash Flow: ${{ group.netPutCashFlow.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></div>
                   <div class="calc-line indent" v-if="group.callPremiumReceived > 0">Call Premium Received: +${{ Math.abs(group.callPremiumReceived).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</div>
-                  <div class="calc-line indent" style="border-top: 1px solid #dee2e6; margin-top: 0.5rem; padding-top: 0.5rem;"><strong>Net Cost = ${{ group.totalStockCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} - ${{ Math.abs(group.putPremiumReceived).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} - ${{ Math.abs(group.callPremiumReceived).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} = ${{ group.netCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></div>
+                  <div class="calc-line indent" v-if="group.callBuybackCost && group.callBuybackCost > 0">Call Buyback Cost: -${{ Math.abs(group.callBuybackCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</div>
+                  <div class="calc-line indent" v-if="group.netCallCashFlow !== undefined && group.netCallCashFlow !== group.callPremiumReceived"><strong>Net Call Cash Flow: ${{ group.netCallCashFlow.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></div>
+                  <div class="calc-line indent" style="border-top: 1px solid #dee2e6; margin-top: 0.5rem; padding-top: 0.5rem;"><strong>Total Net Cost = ${{ (group.netStockCost || group.totalStockCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} - ${{ Math.abs(group.netPutCashFlow || group.putPremiumReceived).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} - ${{ Math.abs(group.netCallCashFlow || group.callPremiumReceived).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} = ${{ group.netCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></div>
                   <div class="calc-line indent"><strong>Adjusted Avg Price = ${{ group.netCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} ÷ {{ group.totalShares.toLocaleString() }} = ${{ group.adjustedAvgPricePerShare.toFixed(2) }} per share</strong></div>
                 </div>
               </div>
