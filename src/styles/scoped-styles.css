@@ -315,6 +315,18 @@
   transition: transform 0.2s ease;
 }
 
+.orders-count-badge {
+  margin-left: auto;
+  padding: 0.25rem 0.75rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 .group-content {
   margin-top: 0.5rem;
 }
@@ -1139,4 +1151,178 @@ body.modal-open {
 .order-calc {
   color: #6b7280;
   flex: 1;
+}
+
+/* Stock purchases table */
+.stock-table-wrapper {
+  margin: 0.75rem 0;
+  overflow-x: auto;
+}
+
+.stock-purchases-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  background: white;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.stock-purchases-table thead {
+  background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+  color: white;
+}
+
+.stock-purchases-table th {
+  padding: 0.75rem 0.5rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stock-purchases-table tbody tr {
+  border-bottom: 1px solid #e9ecef;
+  transition: background-color 0.2s ease;
+}
+
+.stock-purchases-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.stock-purchases-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.stock-purchases-table td {
+  padding: 0.6rem 0.5rem;
+  color: #495057;
+}
+
+.stock-purchases-table .text-right {
+  text-align: right;
+}
+
+.stock-purchases-table tfoot {
+  background: #f8f9fa;
+  border-top: 2px solid #2196f3;
+}
+
+.stock-purchases-table tfoot td {
+  padding: 0.75rem 0.5rem;
+  font-weight: 600;
+  color: #1976d2;
+}
+
+.stock-purchases-table .total-row {
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+}
+
+/* Copy button */
+.copy-button {
+  padding: 0.4rem 0.8rem;
+  background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.copy-button:hover {
+  background: linear-gradient(135deg, #45a049 0%, #3d8b40 100%);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+.copy-button:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Stock sections side by side layout */
+.stock-sections-container {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.stock-section-half {
+  flex: 1;
+  min-width: 0; /* Allows flex items to shrink below their content size */
+}
+
+/* Responsive: stack on smaller screens */
+@media (max-width: 1024px) {
+  .stock-sections-container {
+    flex-direction: column;
+  }
+}
+
+/* Toast notification */
+.toast-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  font-size: 0.95rem;
+  font-weight: 500;
+  z-index: 10001;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 200px;
+  max-width: 400px;
+}
+
+/* Toast fade animation */
+.toast-fade-enter-active {
+  animation: toastSlideIn 0.3s ease-out;
+}
+
+.toast-fade-leave-active {
+  animation: toastSlideOut 0.3s ease-in;
+}
+
+@keyframes toastSlideIn {
+  from {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes toastSlideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+}
+
+/* Responsive toast on mobile */
+@media (max-width: 768px) {
+  .toast-notification {
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
 }
