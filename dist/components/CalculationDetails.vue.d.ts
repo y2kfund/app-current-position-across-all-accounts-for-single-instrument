@@ -37,6 +37,7 @@ interface OrderGroup {
     putBuybacks: OrderCalculation[];
     callSales: OrderCalculation[];
     callBuybacks: OrderCalculation[];
+    stockPurchaseCost: number;
     totalStockCost: number;
     stockSaleProceeds: number;
     netStockCost: number;

@@ -51,6 +51,9 @@ interface PositionOrderGroup {
   stockSales: OrderCalculation[]
   stockSaleProceeds: number
   
+  // Net stock cost (purchases - sales)
+  netStockCost: number
+  
   // Put sales (premium received)
   putSales: OrderCalculation[]
   putPremiumReceived: number
@@ -67,11 +70,13 @@ interface PositionOrderGroup {
   callBuybacks: OrderCalculation[]
   callBuybackCost: number
   
-  // Net cost calculation
-  totalStockCost: number // Stock purchase cost - stock sale proceeds
+  // Net cash flows
   netPutCashFlow: number // Put premiums received - put buyback cost
   netCallCashFlow: number // Call premiums received - call buyback cost
-  netCost: number // Stock cost - net put cash flow - net call cash flow
+  
+  // Final calculations
+  totalStockCost: number // DEPRECATED: same as netStockCost (for backward compatibility)
+  netCost: number // Net stock cost - net put cash flow - net call cash flow
   totalShares: number
   adjustedAvgPricePerShare: number
 }
@@ -353,6 +358,7 @@ export function useAverageCostPriceFromOrders(
           stockPurchaseCost,
           stockSales,
           stockSaleProceeds,
+          netStockCost: totalStockCost,
           putSales,
           putPremiumReceived,
           putBuybacks,

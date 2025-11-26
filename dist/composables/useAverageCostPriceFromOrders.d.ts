@@ -23,6 +23,7 @@ interface PositionOrderGroup {
     stockPurchaseCost: number;
     stockSales: OrderCalculation[];
     stockSaleProceeds: number;
+    netStockCost: number;
     putSales: OrderCalculation[];
     putPremiumReceived: number;
     putBuybacks: OrderCalculation[];
@@ -31,9 +32,9 @@ interface PositionOrderGroup {
     callPremiumReceived: number;
     callBuybacks: OrderCalculation[];
     callBuybackCost: number;
-    totalStockCost: number;
     netPutCashFlow: number;
     netCallCashFlow: number;
+    totalStockCost: number;
     netCost: number;
     totalShares: number;
     adjustedAvgPricePerShare: number;
@@ -87,6 +88,7 @@ export declare function useAverageCostPriceFromOrders(positions: Ref<Position[] 
             orderDate: string;
         }[];
         stockSaleProceeds: number;
+        netStockCost: number;
         putSales: {
             symbol: string;
             side: string;
@@ -139,9 +141,9 @@ export declare function useAverageCostPriceFromOrders(positions: Ref<Position[] 
             orderDate: string;
         }[];
         callBuybackCost: number;
-        totalStockCost: number;
         netPutCashFlow: number;
         netCallCashFlow: number;
+        totalStockCost: number;
         netCost: number;
         totalShares: number;
         adjustedAvgPricePerShare: number;
@@ -189,6 +191,7 @@ export declare function useAverageCostPriceFromOrders(positions: Ref<Position[] 
             orderDate: string;
         }[];
         stockSaleProceeds: number;
+        netStockCost: number;
         putSales: {
             symbol: string;
             side: string;
@@ -241,9 +244,9 @@ export declare function useAverageCostPriceFromOrders(positions: Ref<Position[] 
             orderDate: string;
         }[];
         callBuybackCost: number;
-        totalStockCost: number;
         netPutCashFlow: number;
         netCallCashFlow: number;
+        totalStockCost: number;
         netCost: number;
         totalShares: number;
         adjustedAvgPricePerShare: number;

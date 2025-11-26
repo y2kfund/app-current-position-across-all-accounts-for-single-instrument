@@ -1,7 +1,7 @@
 var Ws = Object.defineProperty;
 var Gs = (l, e, t) => e in l ? Ws(l, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : l[e] = t;
 var P = (l, e, t) => Gs(l, typeof e != "symbol" ? e + "" : e, t);
-import { inject as js, ref as V, watch as Ae, nextTick as It, onBeforeUnmount as Qi, computed as ie, defineComponent as Xi, createElementBlock as k, openBlock as T, Fragment as he, createVNode as nt, Transition as ut, withCtx as ft, createCommentVNode as X, toDisplayString as p, withDirectives as Qe, createElementVNode as d, normalizeClass as ye, renderList as ce, createTextVNode as ae, vShow as Ct, onMounted as Us, unref as D, withModifiers as St, vModelText as ti } from "vue";
+import { inject as js, ref as V, watch as Ae, nextTick as It, onBeforeUnmount as Qi, computed as ie, defineComponent as Xi, createElementBlock as k, openBlock as T, Fragment as he, createVNode as nt, Transition as ut, withCtx as ft, createCommentVNode as X, toDisplayString as p, withDirectives as Xe, createElementVNode as d, normalizeClass as ye, renderList as ce, createTextVNode as oe, vShow as Ct, onMounted as Us, unref as D, withModifiers as St, vModelText as ti } from "vue";
 import { useQueryClient as _i, useQuery as Fi } from "@tanstack/vue-query";
 import { useSupabase as Rt, generatePositionMappingKey as Et, usePositionTradeMappingsQuery as qs, usePositionPositionMappingsQuery as Ks, usePositionOrderMappingsQuery as Qs, savePositionOrderMappings as Xs, fetchPositionsBySymbolRoot as Ji, savePositionTradeMappings as Js, savePositionPositionMappings as Ys } from "@y2kfund/core";
 const Zs = Symbol.for("y2kfund.supabase");
@@ -3813,7 +3813,7 @@ var Wo = {
     return Array.isArray(l) ? l.length ? l.indexOf(e) > -1 : !0 : (console.warn("Filter Error - filter value is not an array:", l), !1);
   }
 };
-const qe = class qe extends K {
+const Ke = class Ke extends K {
   constructor(e) {
     super(e), this.filterList = [], this.headerFilters = {}, this.headerFilterColumns = [], this.prevHeaderFilterChangeCheck = "", this.prevHeaderFilterChangeCheck = "{}", this.changed = !1, this.tableInitialized = !1, this.registerTableOption("filterMode", "local"), this.registerTableOption("initialFilter", !1), this.registerTableOption("initialHeaderFilter", !1), this.registerTableOption("headerFilterLiveFilterDelay", 300), this.registerTableOption("placeholderHeaderFilter", !1), this.registerColumnOption("headerFilter"), this.registerColumnOption("headerFilterPlaceholder"), this.registerColumnOption("headerFilterParams"), this.registerColumnOption("headerFilterEmptyCheck"), this.registerColumnOption("headerFilterFunc"), this.registerColumnOption("headerFilterFuncParams"), this.registerColumnOption("headerFilterLiveFilter"), this.registerTableFunction("searchRows", this.searchRows.bind(this)), this.registerTableFunction("searchData", this.searchData.bind(this)), this.registerTableFunction("setFilter", this.userSetFilter.bind(this)), this.registerTableFunction("refreshFilter", this.userRefreshFilter.bind(this)), this.registerTableFunction("addFilter", this.userAddFilter.bind(this)), this.registerTableFunction("getFilters", this.getFilters.bind(this)), this.registerTableFunction("setHeaderFilterFocus", this.userSetHeaderFilterFocus.bind(this)), this.registerTableFunction("getHeaderFilterValue", this.userGetHeaderFilterValue.bind(this)), this.registerTableFunction("setHeaderFilterValue", this.userSetHeaderFilterValue.bind(this)), this.registerTableFunction("getHeaderFilters", this.getHeaderFilters.bind(this)), this.registerTableFunction("removeFilter", this.userRemoveFilter.bind(this)), this.registerTableFunction("clearFilter", this.userClearFilter.bind(this)), this.registerTableFunction("clearHeaderFilter", this.userClearHeaderFilter.bind(this)), this.registerComponentFunction("column", "headerFilterFocus", this.setHeaderFilterFocus.bind(this)), this.registerComponentFunction("column", "reloadHeaderFilter", this.reloadHeaderFilter.bind(this)), this.registerComponentFunction("column", "getHeaderFilterValue", this.getHeaderFilterValue.bind(this)), this.registerComponentFunction("column", "setHeaderFilterValue", this.setHeaderFilterValue.bind(this));
   }
@@ -3909,9 +3909,9 @@ const qe = class qe extends K {
         else {
           switch (e.modules.filter.value = n, typeof e.definition.headerFilterFunc) {
             case "string":
-              qe.filters[e.definition.headerFilterFunc] ? (r = e.definition.headerFilterFunc, c = function(u) {
+              Ke.filters[e.definition.headerFilterFunc] ? (r = e.definition.headerFilterFunc, c = function(u) {
                 var f = e.definition.headerFilterFuncParams || {}, v = e.getFieldValue(u);
-                return f = typeof f == "function" ? f(n, v, u) : f, qe.filters[e.definition.headerFilterFunc](n, v, u, f);
+                return f = typeof f == "function" ? f(n, v, u) : f, Ke.filters[e.definition.headerFilterFunc](n, v, u, f);
               }) : console.warn("Header Filter Error - Matching filter function not found: ", e.definition.headerFilterFunc);
               break;
             case "function":
@@ -4082,10 +4082,10 @@ const qe = class qe extends K {
     var i = !1;
     return typeof e.field == "function" ? i = function(s) {
       return e.field(s, e.type || {});
-    } : qe.filters[e.type] ? (t = this.table.columnManager.getColumnByField(e.field), t ? i = function(s) {
-      return qe.filters[e.type](e.value, t.getFieldValue(s), s, e.params || {});
+    } : Ke.filters[e.type] ? (t = this.table.columnManager.getColumnByField(e.field), t ? i = function(s) {
+      return Ke.filters[e.type](e.value, t.getFieldValue(s), s, e.params || {});
     } : i = function(s) {
-      return qe.filters[e.type](e.value, s[e.field], s, e.params || {});
+      return Ke.filters[e.type](e.value, s[e.field], s, e.params || {});
     }) : console.warn("Filter Error - No such filter type found, ignoring: ", e.type), e.func = i, e.func ? e : !1;
   }
   findSubFilters(e) {
@@ -4171,9 +4171,9 @@ const qe = class qe extends K {
     }) : i = e.func(t), i;
   }
 };
-P(qe, "moduleName", "filter"), //load defaults
-P(qe, "filters", Wo);
-let fi = qe;
+P(Ke, "moduleName", "filter"), //load defaults
+P(Ke, "filters", Wo);
+let fi = Ke;
 function Go(l, e, t) {
   return this.emptyToSpace(this.sanitizeHTML(l.getValue()));
 }
@@ -10955,15 +10955,15 @@ class Ta extends be {
     this.dispatch("alert-hide", this.type), this.element.parentNode && this.element.parentNode.removeChild(this.element), this.msgElement.classList.remove(this._typeClass());
   }
 }
-const Ke = class Ke extends Mi {
+const Qe = class Qe extends Mi {
   static extendModule() {
-    Ke.initializeModuleBinder(), Ke._extendModule(...arguments);
+    Qe.initializeModuleBinder(), Qe._extendModule(...arguments);
   }
   static registerModule() {
-    Ke.initializeModuleBinder(), Ke._registerModule(...arguments);
+    Qe.initializeModuleBinder(), Qe._registerModule(...arguments);
   }
   constructor(e, t, i) {
-    super(), Ke.initializeModuleBinder(i), this.options = {}, this.columnManager = null, this.rowManager = null, this.footerManager = null, this.alertManager = null, this.vdomHoz = null, this.externalEvents = null, this.eventBus = null, this.interactionMonitor = !1, this.browser = "", this.browserSlow = !1, this.browserMobile = !1, this.rtl = !1, this.originalElement = null, this.componentFunctionBinder = new pa(this), this.dataLoader = !1, this.modules = {}, this.modulesCore = [], this.modulesRegular = [], this.deprecationAdvisor = new va(this), this.optionsList = new ys(this, "table constructor"), this.dependencyRegistry = new wa(this), this.initialized = !1, this.destroyed = !1, this.initializeElement(e) && (this.initializeCoreSystems(t), setTimeout(() => {
+    super(), Qe.initializeModuleBinder(i), this.options = {}, this.columnManager = null, this.rowManager = null, this.footerManager = null, this.alertManager = null, this.vdomHoz = null, this.externalEvents = null, this.eventBus = null, this.interactionMonitor = !1, this.browser = "", this.browserSlow = !1, this.browserMobile = !1, this.rtl = !1, this.originalElement = null, this.componentFunctionBinder = new pa(this), this.dataLoader = !1, this.modules = {}, this.modulesCore = [], this.modulesRegular = [], this.deprecationAdvisor = new va(this), this.optionsList = new ys(this, "table constructor"), this.dependencyRegistry = new wa(this), this.initialized = !1, this.destroyed = !1, this.initializeElement(e) && (this.initializeCoreSystems(t), setTimeout(() => {
       this._create();
     })), this.constructor.registry.register(this);
   }
@@ -10971,7 +10971,7 @@ const Ke = class Ke extends Mi {
     return typeof HTMLElement < "u" && e instanceof HTMLElement ? (this.element = e, !0) : typeof e == "string" ? (this.element = document.querySelector(e), this.element ? !0 : (console.error("Tabulator Creation Error - no element found matching selector: ", e), !1)) : (console.error("Tabulator Creation Error - Invalid element provided:", e), !1);
   }
   initializeCoreSystems(e) {
-    this.columnManager = new la(this), this.rowManager = new ca(this), this.footerManager = new ua(this), this.dataLoader = new ma(this), this.alertManager = new Ta(this), this._bindModules(), this.options = this.optionsList.generate(Ke.defaultOptions, e), this._clearObjectPointers(), this._mapDeprecatedFunctionality(), this.externalEvents = new ga(this, this.options, this.options.debugEventsExternal), this.eventBus = new ba(this.options.debugEventsInternal), this.interactionMonitor = new fa(this), this.dataLoader.initialize(), this.footerManager.initialize(), this.dependencyRegistry.initialize();
+    this.columnManager = new la(this), this.rowManager = new ca(this), this.footerManager = new ua(this), this.dataLoader = new ma(this), this.alertManager = new Ta(this), this._bindModules(), this.options = this.optionsList.generate(Qe.defaultOptions, e), this._clearObjectPointers(), this._mapDeprecatedFunctionality(), this.externalEvents = new ga(this, this.options, this.options.debugEventsExternal), this.eventBus = new ba(this.options.debugEventsInternal), this.interactionMonitor = new fa(this), this.dataLoader.initialize(), this.footerManager.initialize(), this.dependencyRegistry.initialize();
   }
   //convert deprecated functionality to new functions
   _mapDeprecatedFunctionality() {
@@ -11263,8 +11263,8 @@ const Ke = class Ke extends Mi {
   }
 };
 //default setup options
-P(Ke, "defaultOptions", na);
-let Di = Ke;
+P(Qe, "defaultOptions", na);
+let Di = Qe;
 var Lt = Di;
 class Sa extends Lt {
   static extendModule() {
@@ -11463,11 +11463,11 @@ function _a(l, e) {
       let S = [];
       if (b.length > 0) {
         const U = b.map((Y) => {
-          const [re, ne, Ce, xe, ke] = Y.split("|");
-          return { internal_account_id: re, symbol: ne, contract_quantity: parseFloat(Ce), asset_class: xe, conid: ke };
+          const [re, ae, Ce, xe, ke] = Y.split("|");
+          return { internal_account_id: re, symbol: ae, contract_quantity: parseFloat(Ce), asset_class: xe, conid: ke };
         }).map(async (Y) => {
-          const { data: re, error: ne } = await t.schema("hf").from("positions").select("*").eq("internal_account_id", Y.internal_account_id).eq("symbol", Y.symbol).eq("asset_class", Y.asset_class).eq("conid", Y.conid).order("fetched_at", { ascending: !1 }).limit(1).single();
-          return ne ? (console.warn(`⚠️ Failed to fetch attached position for ${Y.symbol}:`, ne.message), null) : re;
+          const { data: re, error: ae } = await t.schema("hf").from("positions").select("*").eq("internal_account_id", Y.internal_account_id).eq("symbol", Y.symbol).eq("asset_class", Y.asset_class).eq("conid", Y.conid).order("fetched_at", { ascending: !1 }).limit(1).single();
+          return ae ? (console.warn(`⚠️ Failed to fetch attached position for ${Y.symbol}:`, ae.message), null) : re;
         });
         S = (await Promise.all(U)).filter((Y) => Y !== null), console.log("📦 Fetched attached positions:", S.length);
       }
@@ -11491,7 +11491,7 @@ function _a(l, e) {
           conid: $.conid
         });
         _ += Y, M += U;
-        const ne = {
+        const ae = {
           symbol: $.symbol,
           avgPrice: J,
           quantity: U,
@@ -11500,8 +11500,8 @@ function _a(l, e) {
           mappingKey: re,
           account: $.legal_entity || $.internal_account_id
         };
-        j.push(ne), console.log(`📍 Main position: ${$.symbol} @ ${J} × ${U} = ${Y}`);
-        const Ce = I.get(re) || [], xe = [], ke = [], Xe = [];
+        j.push(ae), console.log(`📍 Main position: ${$.symbol} @ ${J} × ${U} = ${Y}`);
+        const Ce = I.get(re) || [], xe = [], ke = [], Ne = [];
         let Je = Y, Ye = U, Se = 0;
         Ce.forEach((fe) => {
           const Ee = fe.accounting_quantity ?? fe.qty, de = fe.avgPrice ?? 0, A = de * Ee;
@@ -11515,15 +11515,15 @@ function _a(l, e) {
             account: fe.legal_entity || fe.internal_account_id
           };
           xe.push(le), j.push(le);
-          const oe = fe.symbol.toUpperCase(), He = oe.includes(" C ") || oe.includes("C00") || /\sC\b/.test(oe), Ut = oe.includes(" P ") || oe.includes("P00") || /\sP\b/.test(oe);
-          He ? (ke.push(le), Se += A, console.log(`📞 Call position: ${fe.symbol} @ ${de} × ${Ee} = ${A}`)) : Ut ? (Xe.push(le), console.log(`� Put position: ${fe.symbol} @ ${de} × ${Ee} = ${A}`)) : console.log(`�🔗 Attached position: ${fe.symbol} @ ${de} × ${Ee} = ${A}`);
+          const ne = fe.symbol.toUpperCase(), He = ne.includes(" C ") || ne.includes("C00") || /\sC\b/.test(ne), Ut = ne.includes(" P ") || ne.includes("P00") || /\sP\b/.test(ne);
+          He ? (ke.push(le), Se += A, console.log(`📞 Call position: ${fe.symbol} @ ${de} × ${Ee} = ${A}`)) : Ut ? (Ne.push(le), console.log(`� Put position: ${fe.symbol} @ ${de} × ${Ee} = ${A}`)) : console.log(`�🔗 Attached position: ${fe.symbol} @ ${de} × ${Ee} = ${A}`);
         });
         const ue = Y - Math.abs(Se), Le = U > 0 ? ue / U : 0;
-        console.log(`📊 Client: ${ne.account}`), console.log(`   Main Cost: $${Y.toFixed(2)}`), console.log(`   Call Costs: $${Se.toFixed(2)} (absolute: $${Math.abs(Se).toFixed(2)})`), console.log(`   Net Cost (excl. puts): $${ue.toFixed(2)}`), console.log(`   Adjusted Avg Price: $${Le.toFixed(2)} per share`), H.push({
-          mainPosition: ne,
+        console.log(`📊 Client: ${ae.account}`), console.log(`   Main Cost: $${Y.toFixed(2)}`), console.log(`   Call Costs: $${Se.toFixed(2)} (absolute: $${Math.abs(Se).toFixed(2)})`), console.log(`   Net Cost (excl. puts): $${ue.toFixed(2)}`), console.log(`   Adjusted Avg Price: $${Le.toFixed(2)} per share`), H.push({
+          mainPosition: ae,
           attachedPositions: xe,
           callPositions: ke,
-          putPositions: Xe,
+          putPositions: Ne,
           groupTotalCost: Je,
           groupTotalQuantity: Ye,
           callPositionsTotalCost: Se,
@@ -11631,28 +11631,28 @@ function Fa(l, e) {
         }), H = y.get(j) || [], I = x.filter((A) => H.includes(A.ibOrderID));
         console.log(`📍 Processing position: ${M.symbol} (${M.legal_entity || M.internal_account_id})`), console.log(`   Attached orders: ${I.length}`);
         const z = [], L = [], F = [], $ = [], U = [], J = [];
-        let Y = 0, re = 0, ne = 0, Ce = 0, xe = 0, ke = 0;
+        let Y = 0, re = 0, ae = 0, Ce = 0, xe = 0, ke = 0;
         I.forEach((A) => {
-          const le = A.totalQuantity, oe = A.avgFillPrice * le, He = {
+          const le = A.totalQuantity, ne = A.avgFillPrice * le, He = {
             symbol: A.symbol,
             side: A.side,
             quantity: le,
             avgPrice: A.avgFillPrice,
-            totalCost: oe,
+            totalCost: ne,
             secType: A.secType,
             right: A.right,
             strike: A.strike,
             account: A.account,
             orderDate: A.orderDate
           };
-          A.secType === "STK" && A.side === "BUY" ? (z.push(He), Y += Math.abs(oe), console.log(`   📈 Stock purchase: ${A.symbol} ${A.side} ${le} @ $${A.avgFillPrice} = $${Math.abs(oe).toFixed(2)}`)) : A.secType === "STK" && A.side === "SELL" ? (L.push(He), re += Math.abs(oe), console.log(`   💰 Stock sale: ${A.symbol} ${A.side} ${le} @ $${A.avgFillPrice} = $${Math.abs(oe).toFixed(2)} (proceeds)`)) : A.secType === "OPT" && A.right === "P" && A.side === "SELL" ? (F.push(He), ne += Math.abs(oe), console.log(`   📉 Put sale: ${A.symbol} SELL PUT @ $${A.strike} ${A.side} ${le} @ $${A.avgFillPrice} = +$${Math.abs(oe).toFixed(2)} (premium)`)) : A.secType === "OPT" && A.right === "P" && A.side === "BUY" ? ($.push(He), Ce += Math.abs(oe), console.log(`   🔙 Put buyback: ${A.symbol} BUY PUT @ $${A.strike} ${A.side} ${le} @ $${A.avgFillPrice} = -$${Math.abs(oe).toFixed(2)} (close cost)`)) : A.secType === "OPT" && A.right === "C" && A.side === "SELL" ? (U.push(He), xe += Math.abs(oe), console.log(`   📞 Call sale: ${A.symbol} SELL CALL @ $${A.strike} ${A.side} ${le} @ $${A.avgFillPrice} = +$${Math.abs(oe).toFixed(2)} (premium)`)) : A.secType === "OPT" && A.right === "C" && A.side === "BUY" ? (J.push(He), ke += Math.abs(oe), console.log(`   🔙 Call buyback: ${A.symbol} BUY CALL @ $${A.strike} ${A.side} ${le} @ $${A.avgFillPrice} = -$${Math.abs(oe).toFixed(2)} (close cost)`)) : console.log(`   ❓ Other order: ${A.symbol} ${A.secType} ${A.side} ${le} @ $${A.avgFillPrice}`);
+          A.secType === "STK" && A.side === "BUY" ? (z.push(He), Y += Math.abs(ne), console.log(`   📈 Stock purchase: ${A.symbol} ${A.side} ${le} @ $${A.avgFillPrice} = $${Math.abs(ne).toFixed(2)}`)) : A.secType === "STK" && A.side === "SELL" ? (L.push(He), re += Math.abs(ne), console.log(`   💰 Stock sale: ${A.symbol} ${A.side} ${le} @ $${A.avgFillPrice} = $${Math.abs(ne).toFixed(2)} (proceeds)`)) : A.secType === "OPT" && A.right === "P" && A.side === "SELL" ? (F.push(He), ae += Math.abs(ne), console.log(`   📉 Put sale: ${A.symbol} SELL PUT @ $${A.strike} ${A.side} ${le} @ $${A.avgFillPrice} = +$${Math.abs(ne).toFixed(2)} (premium)`)) : A.secType === "OPT" && A.right === "P" && A.side === "BUY" ? ($.push(He), Ce += Math.abs(ne), console.log(`   🔙 Put buyback: ${A.symbol} BUY PUT @ $${A.strike} ${A.side} ${le} @ $${A.avgFillPrice} = -$${Math.abs(ne).toFixed(2)} (close cost)`)) : A.secType === "OPT" && A.right === "C" && A.side === "SELL" ? (U.push(He), xe += Math.abs(ne), console.log(`   📞 Call sale: ${A.symbol} SELL CALL @ $${A.strike} ${A.side} ${le} @ $${A.avgFillPrice} = +$${Math.abs(ne).toFixed(2)} (premium)`)) : A.secType === "OPT" && A.right === "C" && A.side === "BUY" ? (J.push(He), ke += Math.abs(ne), console.log(`   🔙 Call buyback: ${A.symbol} BUY CALL @ $${A.strike} ${A.side} ${le} @ $${A.avgFillPrice} = -$${Math.abs(ne).toFixed(2)} (close cost)`)) : console.log(`   ❓ Other order: ${A.symbol} ${A.secType} ${A.side} ${le} @ $${A.avgFillPrice}`);
         });
-        const Xe = Y - re, Je = ne - Ce, Ye = xe - ke, Se = Xe - Je - Ye;
+        const Ne = Y - re, Je = ae - Ce, Ye = xe - ke, Se = Ne - Je - Ye;
         let ue = 0;
         const Le = z.reduce((A, le) => A + Math.abs(le.quantity), 0), fe = L.reduce((A, le) => A + Math.abs(le.quantity), 0), Ee = Le - fe;
         Ee > 0 ? (ue = Ee, console.log(`   ✅ Using shares from stock orders: ${Le} purchased - ${fe} sold = ${ue}`)) : Le > 0 ? (ue = Le, console.log(`   ✅ Using shares from stock purchases: ${ue}`)) : (ue = M.accounting_quantity ?? M.qty, console.log(`   ℹ️ No stock orders found, using position quantity: ${ue}`));
         const de = ue > 0 ? Se / ue : 0;
-        console.log(`📊 Position Summary for ${M.legal_entity || M.internal_account_id}:`), console.log(`   Stock Purchase Cost: $${Y.toFixed(2)}`), console.log(`   Stock Sale Proceeds: -$${re.toFixed(2)}`), console.log(`   Net Stock Cost: $${Xe.toFixed(2)}`), console.log(`   Put Premium Received: +$${ne.toFixed(2)}`), console.log(`   Put Buyback Cost: -$${Ce.toFixed(2)}`), console.log(`   Net Put Cash Flow: $${Je.toFixed(2)}`), console.log(`   Call Premium Received: +$${xe.toFixed(2)}`), console.log(`   Call Buyback Cost: -$${ke.toFixed(2)}`), console.log(`   Net Call Cash Flow: $${Ye.toFixed(2)}`), console.log(`   Total Net Cost: $${Se.toFixed(2)} (Net Stock - Net Put - Net Call)`), console.log(`   Position Shares: ${ue}`), console.log(`   Adjusted Avg Price: $${de.toFixed(2)} per share`), b.push({
+        console.log(`📊 Position Summary for ${M.legal_entity || M.internal_account_id}:`), console.log(`   Stock Purchase Cost: $${Y.toFixed(2)}`), console.log(`   Stock Sale Proceeds: -$${re.toFixed(2)}`), console.log(`   Net Stock Cost: $${Ne.toFixed(2)}`), console.log(`   Put Premium Received: +$${ae.toFixed(2)}`), console.log(`   Put Buyback Cost: -$${Ce.toFixed(2)}`), console.log(`   Net Put Cash Flow: $${Je.toFixed(2)}`), console.log(`   Call Premium Received: +$${xe.toFixed(2)}`), console.log(`   Call Buyback Cost: -$${ke.toFixed(2)}`), console.log(`   Net Call Cash Flow: $${Ye.toFixed(2)}`), console.log(`   Total Net Cost: $${Se.toFixed(2)} (Net Stock - Net Put - Net Call)`), console.log(`   Position Shares: ${ue}`), console.log(`   Adjusted Avg Price: $${de.toFixed(2)} per share`), b.push({
           mainPosition: {
             symbol: M.symbol,
             account: M.legal_entity || M.internal_account_id,
@@ -11676,15 +11676,16 @@ function Fa(l, e) {
           stockPurchaseCost: Y,
           stockSales: L,
           stockSaleProceeds: re,
+          netStockCost: Ne,
           putSales: F,
-          putPremiumReceived: ne,
+          putPremiumReceived: ae,
           putBuybacks: $,
           putBuybackCost: Ce,
           callSales: U,
           callPremiumReceived: xe,
           callBuybacks: J,
           callBuybackCost: ke,
-          totalStockCost: Xe,
+          totalStockCost: Ne,
           netPutCashFlow: Je,
           netCallCashFlow: Ye,
           netCost: Se,
@@ -11743,17 +11744,17 @@ function Pa(l, e, t, i = V(void 0), s = V(void 0)) {
         }
       }
       S.add(U), _.add(z < 0 ? "SHORT" : "LONG");
-      const Y = Math.abs(I.computed_cash_flow_on_entry || 0), re = Math.abs(I.market_value || 0), ne = I.unrealized_pnl || 0;
-      R += Math.abs(z), x += Y, y += re, b += ne, g.push({
+      const Y = Math.abs(I.computed_cash_flow_on_entry || 0), re = Math.abs(I.market_value || 0), ae = I.unrealized_pnl || 0;
+      R += Math.abs(z), x += Y, y += re, b += ae, g.push({
         account: L,
         strike: F,
         expiry: $,
         quantity: z,
         premiumReceived: Y,
         currentValue: re,
-        positionPnL: ne,
+        positionPnL: ae,
         symbol: I.symbol
-      }), console.log(`📍 Position: ${I.symbol} (${L})`), console.log(`   Quantity: ${z}`), console.log(`   Premium Received: $${Y.toFixed(2)}`), console.log(`   Current Value: $${re.toFixed(2)}`), console.log(`   P&L: $${ne.toFixed(2)}`);
+      }), console.log(`📍 Position: ${I.symbol} (${L})`), console.log(`   Quantity: ${z}`), console.log(`   Premium Received: $${Y.toFixed(2)}`), console.log(`   Current Value: $${re.toFixed(2)}`), console.log(`   P&L: $${ae.toFixed(2)}`);
     });
     const M = S.size === 1 ? Array.from(S)[0] : "MIXED", j = _.size === 1 ? Array.from(_)[0] : "MIXED", H = x > 0 ? b / x * 100 : 0;
     return console.log("💰 Options P&L Summary:"), console.log(`   Total Contracts: ${R}`), console.log(`   Total Premium Received: $${x.toFixed(2)}`), console.log(`   Current Market Liability: $${y.toFixed(2)}`), console.log(`   Unrealized P&L: $${b.toFixed(2)}`), console.log(`   P&L Percentage: ${H.toFixed(2)}%`), {
@@ -12004,79 +12005,79 @@ const Oa = {
 }, ur = {
   key: 2,
   class: "no-data-message"
-}, fr = { key: 3 }, pr = ["onClick"], mr = { class: "toggle-icon" }, gr = { class: "orders-count-badge" }, br = { class: "group-content" }, vr = { class: "stock-sections-container" }, wr = { class: "stock-section-half" }, yr = {
+}, fr = { key: 3 }, pr = ["onClick"], mr = { class: "toggle-icon" }, gr = { class: "orders-count-badge" }, br = { class: "group-content" }, vr = { class: "parent-stock-container" }, wr = { class: "stock-sections-container" }, yr = { class: "stock-section-half" }, Cr = {
   key: 0,
   class: "order-section order-stock-section"
-}, Cr = {
+}, Er = {
   class: "order-header",
   style: { display: "flex", "justify-content": "space-between", "align-items": "center" }
-}, Er = ["onClick"], Rr = { class: "stock-table-wrapper" }, xr = { class: "stock-purchases-table" }, kr = { class: "text-right" }, Tr = { class: "text-right" }, Sr = { class: "text-right" }, Lr = { class: "total-row" }, Mr = { class: "text-right" }, Dr = { class: "text-right" }, _r = {
+}, Rr = ["onClick"], xr = { class: "stock-table-wrapper" }, kr = { class: "stock-purchases-table" }, Tr = { class: "text-right" }, Sr = { class: "text-right" }, Lr = { class: "text-right" }, Mr = { class: "total-row" }, Dr = { class: "text-right" }, _r = { class: "text-right" }, Fr = {
   key: 1,
   class: "order-section no-orders"
-}, Fr = { class: "stock-section-half" }, Pr = {
+}, Pr = { class: "stock-section-half" }, zr = {
   key: 0,
   class: "order-section order-stock-section"
-}, zr = {
+}, Ar = {
   class: "order-header",
   style: { display: "flex", "justify-content": "space-between", "align-items": "center" }
-}, Ar = ["onClick"], Hr = { class: "stock-table-wrapper" }, Or = { class: "stock-purchases-table" }, $r = { class: "text-right" }, Br = { class: "text-right" }, Nr = { class: "text-right" }, Vr = { class: "total-row" }, Ir = { class: "text-right" }, Wr = { class: "text-right" }, Gr = {
+}, Hr = ["onClick"], Or = { class: "stock-table-wrapper" }, $r = { class: "stock-purchases-table" }, Br = { class: "text-right" }, Nr = { class: "text-right" }, Vr = { class: "text-right" }, Ir = { class: "total-row" }, Wr = { class: "text-right" }, Gr = { class: "text-right" }, jr = {
   key: 1,
   class: "order-section no-orders"
-}, jr = {
+}, Ur = {
   key: 0,
   class: "order-section",
-  style: { "background-color": "#f8f9fa", "border-left": "3px solid #28a745", padding: "1rem" }
-}, Ur = { style: { "font-size": "1.1rem", "margin-bottom": "0.75rem" } }, qr = { style: { "margin-bottom": "0.5rem" } }, Kr = { style: { "margin-left": "1rem", color: "#6c757d", "font-size": "0.95rem" } }, Qr = { key: 0 }, Xr = { style: { "border-top": "1px solid #dee2e6", "margin-top": "0.25rem", "padding-top": "0.25rem", "font-weight": "600", color: "#28a745", "font-size": "1.05rem" } }, Jr = { style: { "margin-left": "1rem", color: "#6c757d", "font-size": "0.95rem" } }, Yr = { key: 0 }, Zr = { style: { "border-top": "1px solid #dee2e6", "margin-top": "0.25rem", "padding-top": "0.25rem", "font-weight": "600", color: "#28a745", "font-size": "1.05rem" } }, el = { class: "stock-sections-container" }, tl = { class: "stock-section-half" }, il = {
+  style: { padding: "1rem" }
+}, qr = { style: { "font-size": "1.1rem", "margin-bottom": "0.75rem" } }, Kr = { style: { "margin-bottom": "0.5rem" } }, Qr = { style: { "margin-left": "1rem", color: "#6c757d", "font-size": "0.95rem" } }, Xr = { key: 0 }, Jr = { style: { "border-top": "1px solid #dee2e6", "margin-top": "0.25rem", "padding-top": "0.25rem", "font-weight": "600", color: "#28a745", "font-size": "1.05rem" } }, Yr = { style: { "margin-left": "1rem", color: "#6c757d", "font-size": "0.95rem" } }, Zr = { key: 0 }, el = { style: { "border-top": "1px solid #dee2e6", "margin-top": "0.25rem", "padding-top": "0.25rem", "font-weight": "600", color: "#28a745", "font-size": "1.05rem" } }, tl = { class: "parent-put-container" }, il = { class: "stock-sections-container" }, sl = { class: "stock-section-half" }, ol = {
   key: 0,
   class: "order-section order-put-section"
-}, sl = {
+}, nl = {
   class: "order-header",
   style: { display: "flex", "justify-content": "space-between", "align-items": "center" }
-}, ol = ["onClick"], nl = { class: "stock-table-wrapper" }, al = { class: "stock-purchases-table" }, rl = { class: "text-right" }, ll = { class: "text-right" }, hl = { class: "text-right" }, dl = { class: "total-row" }, cl = { class: "text-right" }, ul = { class: "text-right" }, fl = {
+}, al = ["onClick"], rl = { class: "stock-table-wrapper" }, ll = { class: "stock-purchases-table" }, hl = { class: "text-right" }, dl = { class: "text-right" }, cl = { class: "text-right" }, ul = { class: "total-row" }, fl = { class: "text-right" }, pl = { class: "text-right" }, ml = {
   key: 1,
   class: "order-section no-orders"
-}, pl = { class: "stock-section-half" }, ml = {
+}, gl = { class: "stock-section-half" }, bl = {
   key: 0,
   class: "order-section order-put-section"
-}, gl = {
+}, vl = {
   class: "order-header",
   style: { display: "flex", "justify-content": "space-between", "align-items": "center" }
-}, bl = ["onClick"], vl = { class: "stock-table-wrapper" }, wl = { class: "stock-purchases-table" }, yl = { class: "text-right" }, Cl = { class: "text-right" }, El = { class: "text-right" }, Rl = { class: "total-row" }, xl = { class: "text-right" }, kl = { class: "text-right" }, Tl = {
+}, wl = ["onClick"], yl = { class: "stock-table-wrapper" }, Cl = { class: "stock-purchases-table" }, El = { class: "text-right" }, Rl = { class: "text-right" }, xl = { class: "text-right" }, kl = { class: "total-row" }, Tl = { class: "text-right" }, Sl = { class: "text-right" }, Ll = {
   key: 1,
   class: "order-section no-orders"
-}, Sl = {
-  key: 1,
+}, Ml = {
+  key: 0,
   class: "order-section",
-  style: { "background-color": "#fff3e0", "border-left": "3px solid #ff9800", padding: "1rem" }
-}, Ll = { style: { "font-size": "1.1rem", "margin-bottom": "0.75rem" } }, Ml = { style: { "margin-left": "1rem", color: "#6c757d", "font-size": "0.95rem" } }, Dl = { key: 0 }, _l = { key: 1 }, Fl = { style: { "border-top": "1px solid #dee2e6", "margin-top": "0.25rem", "padding-top": "0.25rem", "font-weight": "600", color: "#ff9800", "font-size": "1.05rem" } }, Pl = { class: "stock-sections-container" }, zl = { class: "stock-section-half" }, Al = {
+  style: { padding: "1rem" }
+}, Dl = { style: { "font-size": "1.1rem", "margin-bottom": "0.75rem" } }, _l = { style: { "margin-left": "1rem", color: "#6c757d", "font-size": "0.95rem" } }, Fl = { key: 0 }, Pl = { key: 1 }, zl = { style: { "border-top": "1px solid #dee2e6", "margin-top": "0.25rem", "padding-top": "0.25rem", "font-weight": "600", color: "#ff9800", "font-size": "1.05rem" } }, Al = { class: "parent-call-container" }, Hl = { class: "stock-sections-container" }, Ol = { class: "stock-section-half" }, $l = {
   key: 0,
   class: "order-section order-call-section"
-}, Hl = {
+}, Bl = {
   class: "order-header",
   style: { display: "flex", "justify-content": "space-between", "align-items": "center" }
-}, Ol = ["onClick"], $l = { class: "stock-table-wrapper" }, Bl = { class: "stock-purchases-table" }, Nl = { class: "text-right" }, Vl = { class: "text-right" }, Il = { class: "text-right" }, Wl = { class: "total-row" }, Gl = { class: "text-right" }, jl = { class: "text-right" }, Ul = {
+}, Nl = ["onClick"], Vl = { class: "stock-table-wrapper" }, Il = { class: "stock-purchases-table" }, Wl = { class: "text-right" }, Gl = { class: "text-right" }, jl = { class: "text-right" }, Ul = { class: "total-row" }, ql = { class: "text-right" }, Kl = { class: "text-right" }, Ql = {
   key: 1,
   class: "order-section no-orders"
-}, ql = { class: "stock-section-half" }, Kl = {
+}, Xl = { class: "stock-section-half" }, Jl = {
   key: 0,
   class: "order-section order-call-section"
-}, Ql = {
+}, Yl = {
   class: "order-header",
   style: { display: "flex", "justify-content": "space-between", "align-items": "center" }
-}, Xl = ["onClick"], Jl = { class: "stock-table-wrapper" }, Yl = { class: "stock-purchases-table" }, Zl = { class: "text-right" }, eh = { class: "text-right" }, th = { class: "text-right" }, ih = { class: "total-row" }, sh = { class: "text-right" }, oh = { class: "text-right" }, nh = {
+}, Zl = ["onClick"], eh = { class: "stock-table-wrapper" }, th = { class: "stock-purchases-table" }, ih = { class: "text-right" }, sh = { class: "text-right" }, oh = { class: "text-right" }, nh = { class: "total-row" }, ah = { class: "text-right" }, rh = { class: "text-right" }, lh = {
   key: 1,
   class: "order-section no-orders"
-}, ah = {
-  key: 2,
+}, hh = {
+  key: 0,
   class: "order-section",
-  style: { "background-color": "#e3f2fd", "border-left": "3px solid #2196f3", padding: "1rem" }
-}, rh = { style: { "font-size": "1.1rem", "margin-bottom": "0.75rem" } }, lh = { style: { "margin-left": "1rem", color: "#6c757d", "font-size": "0.95rem" } }, hh = { key: 0 }, dh = { key: 1 }, ch = { style: { "border-top": "1px solid #dee2e6", "margin-top": "0.25rem", "padding-top": "0.25rem", "font-weight": "600", color: "#2196f3", "font-size": "1.05rem" } }, uh = { class: "group-calculation" }, fh = {
+  style: { padding: "1rem" }
+}, dh = { style: { "font-size": "1.1rem", "margin-bottom": "0.75rem" } }, ch = { style: { "margin-left": "1rem", color: "#6c757d", "font-size": "0.95rem" } }, uh = { key: 0 }, fh = { key: 1 }, ph = { style: { "border-top": "1px solid #dee2e6", "margin-top": "0.25rem", "padding-top": "0.25rem", "font-weight": "600", color: "#2196f3", "font-size": "1.05rem" } }, mh = { class: "group-calculation" }, gh = {
   class: "calc-line indent",
   style: { "border-top": "1px solid #dee2e6", "margin-top": "0.5rem", "padding-top": "0.5rem" }
-}, ph = { class: "calc-line indent" }, mh = {
+}, bh = { class: "calc-line indent" }, vh = {
   key: 0,
   class: "overall-adjusted-section"
-}, gh = { class: "overall-adjusted-header" }, bh = { class: "overall-calculation-breakdown" }, vh = { class: "breakdown-line" }, wh = { class: "breakdown-line" }, yh = { class: "breakdown-line" }, Ch = /* @__PURE__ */ Xi({
+}, wh = { class: "overall-adjusted-header" }, yh = { class: "overall-calculation-breakdown" }, Ch = { class: "breakdown-line" }, Eh = { class: "breakdown-line" }, Rh = { class: "breakdown-line" }, xh = /* @__PURE__ */ Xi({
   __name: "CalculationDetails",
   props: {
     showCalculationDetails: { type: Boolean },
@@ -12230,8 +12231,8 @@ ${H}`;
       }),
       nt(ut, { name: "slide-fade" }, {
         default: ft(() => [
-          Qe(d("div", $a, [
-            b[33] || (b[33] = d("h2", null, "Average Price calculation details :", -1)),
+          Xe(d("div", $a, [
+            b[36] || (b[36] = d("h2", null, "Average Price calculation details :", -1)),
             d("div", Ba, [
               d("button", {
                 class: ye(["tab-button", { active: l.avgPriceCalculationTab === "orders" }]),
@@ -12252,11 +12253,11 @@ ${H}`;
                   onClick: (_) => a(S)
                 }, [
                   d("span", Ia, p(i.value.has(S) ? "▼" : "▶"), 1),
-                  ae(" Client " + p(S + 1) + ": " + p(g.mainPosition.account), 1)
+                  oe(" Client " + p(S + 1) + ": " + p(g.mainPosition.account), 1)
                 ], 8, Va),
                 nt(ut, { name: "slide-fade" }, {
                   default: ft(() => [
-                    Qe(d("div", Wa, [
+                    Xe(d("div", Wa, [
                       d("div", Ga, [
                         b[2] || (b[2] = d("span", { class: "position-icon" }, "📍", -1)),
                         d("span", ja, p(g.mainPosition.symbol), 1),
@@ -12287,7 +12288,7 @@ ${H}`;
                       ])) : X("", !0),
                       d("div", er, [
                         b[7] || (b[7] = d("div", { class: "calc-line" }, [
-                          ae("📊 "),
+                          oe("📊 "),
                           d("strong", null, "Calculation:")
                         ], -1)),
                         d("div", tr, "Net Cost = $" + p(g.mainPosition.totalCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + p(Math.abs(g.callPositionsTotalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " = $" + p(g.netCostExcludingPuts.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
@@ -12315,7 +12316,7 @@ ${H}`;
             ])) : l.avgPriceCalculationTab === "orders" ? (T(), k("div", hr, [
               l.isAvgPriceFromOrdersLoading ? (T(), k("div", dr, [...b[8] || (b[8] = [
                 d("span", { class: "loading-spinner" }, "⏳", -1),
-                ae(" Loading order data... ", -1)
+                oe(" Loading order data... ", -1)
               ])])) : l.avgPriceFromOrdersError ? (T(), k("div", cr, " ❌ Error loading orders: " + p(l.avgPriceFromOrdersError), 1)) : !l.orderGroups || l.orderGroups.length === 0 ? (T(), k("div", ur, [...b[9] || (b[9] = [
                 d("p", null, "No order data found for these positions.", -1)
               ])])) : (T(), k("div", fr, [
@@ -12330,367 +12331,376 @@ ${H}`;
                       onClick: (L) => a(S)
                     }, [
                       d("span", mr, p(i.value.has(S) ? "▼" : "▶"), 1),
-                      ae(" Client " + p(S + 1) + ": " + p(g.mainPosition.account) + " ", 1),
+                      oe(" Client " + p(S + 1) + ": " + p(g.mainPosition.account) + " ", 1),
                       d("span", gr, p((((_ = g.stockPurchases) == null ? void 0 : _.length) || 0) + (((M = g.stockSales) == null ? void 0 : M.length) || 0) + (((j = g.putSales) == null ? void 0 : j.length) || 0) + (((H = g.putBuybacks) == null ? void 0 : H.length) || 0) + (((I = g.callSales) == null ? void 0 : I.length) || 0) + (((z = g.callBuybacks) == null ? void 0 : z.length) || 0)) + " orders ", 1)
                     ], 8, pr),
                     nt(ut, { name: "slide-fade" }, {
                       default: ft(() => [
-                        Qe(d("div", br, [
+                        Xe(d("div", br, [
                           d("div", vr, [
+                            b[18] || (b[18] = oe(" Section: A ", -1)),
                             d("div", wr, [
-                              g.stockPurchases && g.stockPurchases.length > 0 ? (T(), k("div", yr, [
-                                d("div", Cr, [
-                                  d("span", null, "📍 Stock Purchases (" + p(g.stockPurchases.length) + ")", 1),
-                                  d("button", {
-                                    class: "copy-button",
-                                    onClick: (L) => r(g.stockPurchases),
-                                    title: "Copy to clipboard (Excel-ready)"
-                                  }, " 📋 Copy ", 8, Er)
-                                ]),
-                                d("div", Rr, [
-                                  d("table", xr, [
-                                    b[12] || (b[12] = d("thead", null, [
-                                      d("tr", null, [
-                                        d("th", null, "Date"),
-                                        d("th", null, "Quantity"),
-                                        d("th", null, "Avg Price"),
-                                        d("th", null, "Total Cost")
-                                      ])
-                                    ], -1)),
-                                    d("tbody", null, [
-                                      (T(!0), k(he, null, ce(R(g.stockPurchases), (L, F) => (T(), k("tr", {
-                                        key: `stock-${S}-${F}`
-                                      }, [
-                                        d("td", null, p(w(L.orderDate)), 1),
-                                        d("td", kr, p(L.quantity.toLocaleString()), 1),
-                                        d("td", Tr, "$" + p(Number(L.avgPrice).toFixed(2)), 1),
-                                        d("td", Sr, "$" + p(Number(L.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
-                                      ]))), 128))
-                                    ]),
-                                    d("tfoot", null, [
-                                      d("tr", Lr, [
-                                        b[10] || (b[10] = d("td", null, [
-                                          d("strong", null, "Total")
-                                        ], -1)),
-                                        d("td", Mr, [
-                                          d("strong", null, p(g.stockPurchases.reduce((L, F) => L + F.quantity, 0).toLocaleString()), 1)
-                                        ]),
-                                        b[11] || (b[11] = d("td", { class: "text-right" }, "-", -1)),
-                                        d("td", Dr, [
-                                          d("strong", null, "$" + p(g.stockPurchases.reduce((L, F) => L + Number(F.totalCost), 0).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                              d("div", yr, [
+                                g.stockPurchases && g.stockPurchases.length > 0 ? (T(), k("div", Cr, [
+                                  d("div", Er, [
+                                    d("span", null, "📍 Stock Purchases (" + p(g.stockPurchases.length) + ")", 1),
+                                    d("button", {
+                                      class: "copy-button",
+                                      onClick: (L) => r(g.stockPurchases),
+                                      title: "Copy to clipboard (Excel-ready)"
+                                    }, " 📋 Copy ", 8, Rr)
+                                  ]),
+                                  d("div", xr, [
+                                    d("table", kr, [
+                                      b[12] || (b[12] = d("thead", null, [
+                                        d("tr", null, [
+                                          d("th", null, "Settlement Date"),
+                                          d("th", null, "Quantity"),
+                                          d("th", null, "Avg Price"),
+                                          d("th", null, "Total Cost")
+                                        ])
+                                      ], -1)),
+                                      d("tbody", null, [
+                                        (T(!0), k(he, null, ce(R(g.stockPurchases), (L, F) => (T(), k("tr", {
+                                          key: `stock-${S}-${F}`
+                                        }, [
+                                          d("td", null, p(w(L.orderDate)), 1),
+                                          d("td", Tr, p(L.quantity.toLocaleString()), 1),
+                                          d("td", Sr, "$" + p(Number(L.avgPrice).toFixed(2)), 1),
+                                          d("td", Lr, "$" + p(Number(L.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                        ]))), 128))
+                                      ]),
+                                      d("tfoot", null, [
+                                        d("tr", Mr, [
+                                          b[10] || (b[10] = d("td", null, [
+                                            d("strong", null, "Total")
+                                          ], -1)),
+                                          d("td", Dr, [
+                                            d("strong", null, p(g.stockPurchases.reduce((L, F) => L + F.quantity, 0).toLocaleString()), 1)
+                                          ]),
+                                          b[11] || (b[11] = d("td", { class: "text-right" }, "-", -1)),
+                                          d("td", _r, [
+                                            d("strong", null, "$" + p(g.stockPurchases.reduce((L, F) => L + Number(F.totalCost), 0).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                          ])
                                         ])
                                       ])
                                     ])
                                   ])
-                                ])
-                              ])) : (T(), k("div", _r, "No stock purchases found"))
-                            ]),
-                            d("div", Fr, [
-                              g.stockSales && g.stockSales.length > 0 ? (T(), k("div", Pr, [
-                                d("div", zr, [
-                                  d("span", null, "💰 Stock Sales (" + p(g.stockSales.length) + ")", 1),
-                                  d("button", {
-                                    class: "copy-button",
-                                    onClick: (L) => h(g.stockSales),
-                                    title: "Copy to clipboard (Excel-ready)"
-                                  }, " 📋 Copy ", 8, Ar)
-                                ]),
-                                d("div", Hr, [
-                                  d("table", Or, [
-                                    b[15] || (b[15] = d("thead", null, [
-                                      d("tr", null, [
-                                        d("th", null, "Date"),
-                                        d("th", null, "Quantity"),
-                                        d("th", null, "Avg Price"),
-                                        d("th", null, "Total Proceeds")
-                                      ])
-                                    ], -1)),
-                                    d("tbody", null, [
-                                      (T(!0), k(he, null, ce(R(g.stockSales), (L, F) => (T(), k("tr", {
-                                        key: `stock-sale-${S}-${F}`
-                                      }, [
-                                        d("td", null, p(w(L.orderDate)), 1),
-                                        d("td", $r, p(L.quantity.toLocaleString()), 1),
-                                        d("td", Br, "$" + p(Number(L.avgPrice).toFixed(2)), 1),
-                                        d("td", Nr, "$" + p(Number(L.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
-                                      ]))), 128))
-                                    ]),
-                                    d("tfoot", null, [
-                                      d("tr", Vr, [
-                                        b[13] || (b[13] = d("td", null, [
-                                          d("strong", null, "Total")
-                                        ], -1)),
-                                        d("td", Ir, [
-                                          d("strong", null, p(g.stockSales.reduce((L, F) => L + F.quantity, 0).toLocaleString()), 1)
-                                        ]),
-                                        b[14] || (b[14] = d("td", { class: "text-right" }, "-", -1)),
-                                        d("td", Wr, [
-                                          d("strong", null, "$" + p(g.stockSales.reduce((L, F) => L + Number(F.totalCost), 0).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
-                                        ])
-                                      ])
-                                    ])
-                                  ])
-                                ])
-                              ])) : (T(), k("div", Gr, "No stock sales found"))
-                            ])
-                          ]),
-                          g.netStockCost !== void 0 || g.totalShares ? (T(), k("div", jr, [
-                            d("div", Ur, [
-                              d("div", qr, [
-                                b[16] || (b[16] = d("div", { style: { "font-weight": "600", color: "#495057", "margin-bottom": "0.25rem" } }, "Net Stock Cost:", -1)),
-                                d("div", Kr, [
-                                  d("div", null, "Total Stock Purchases: $" + p(g.totalStockCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
-                                  g.stockSaleProceeds && g.stockSaleProceeds > 0 ? (T(), k("div", Qr, "Less: Stock Sales: $" + p(Math.abs(g.stockSaleProceeds).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)) : X("", !0),
-                                  d("div", Xr, " = $" + p((g.netStockCost || g.totalStockCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
-                                ])
+                                ])) : (T(), k("div", Fr, "No stock purchases found"))
                               ]),
-                              d("div", null, [
-                                b[17] || (b[17] = d("div", { style: { "font-weight": "600", color: "#495057", "margin-bottom": "0.25rem" } }, "Current Shares:", -1)),
-                                d("div", Jr, [
-                                  d("div", null, "Total Purchased: " + p(g.stockPurchases.reduce((L, F) => L + F.quantity, 0).toLocaleString()) + " shares", 1),
-                                  g.stockSales && g.stockSales.length > 0 ? (T(), k("div", Yr, "Less: Sold: " + p(g.stockSales.reduce((L, F) => L + F.quantity, 0).toLocaleString()) + " shares", 1)) : X("", !0),
-                                  d("div", Zr, " = " + p(g.totalShares.toLocaleString()) + " shares ", 1)
-                                ])
-                              ])
-                            ])
-                          ])) : X("", !0),
-                          d("div", el, [
-                            d("div", tl, [
-                              g.putSales && g.putSales.length > 0 ? (T(), k("div", il, [
-                                d("div", sl, [
-                                  d("span", null, "📉 Put Premium Received (" + p(g.putSales.length) + ")", 1),
-                                  d("button", {
-                                    class: "copy-button",
-                                    onClick: (L) => c(g.putSales, S, g.putPremiumReceived),
-                                    title: "Copy to clipboard (Excel-ready)"
-                                  }, " 📋 Copy ", 8, ol)
-                                ]),
-                                d("div", nl, [
-                                  d("table", al, [
-                                    b[20] || (b[20] = d("thead", null, [
-                                      d("tr", null, [
-                                        d("th", null, "Option"),
-                                        d("th", null, "Date"),
-                                        d("th", null, "Quantity"),
-                                        d("th", null, "Avg Price"),
-                                        d("th", null, "Total Premium")
-                                      ])
-                                    ], -1)),
-                                    d("tbody", null, [
-                                      (T(!0), k(he, null, ce(R(g.putSales), (L, F) => (T(), k("tr", {
-                                        key: `put-${S}-${F}`
-                                      }, [
-                                        d("td", null, p(x(L.symbol)), 1),
-                                        d("td", null, p(w(L.orderDate)), 1),
-                                        d("td", rl, p(L.quantity.toLocaleString()), 1),
-                                        d("td", ll, "$" + p(Number(L.avgPrice).toFixed(2)), 1),
-                                        d("td", hl, "$" + p(Number(L.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
-                                      ]))), 128))
-                                    ]),
-                                    d("tfoot", null, [
-                                      d("tr", dl, [
-                                        b[18] || (b[18] = d("td", { colspan: "2" }, [
-                                          d("strong", null, "Total")
-                                        ], -1)),
-                                        d("td", cl, [
-                                          d("strong", null, p(g.putSales.reduce((L, F) => L + F.quantity, 0).toLocaleString()), 1)
-                                        ]),
-                                        b[19] || (b[19] = d("td", { class: "text-right" }, "-", -1)),
-                                        d("td", ul, [
-                                          d("strong", null, "$" + p(Math.abs(g.putPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                              d("div", Pr, [
+                                g.stockSales && g.stockSales.length > 0 ? (T(), k("div", zr, [
+                                  d("div", Ar, [
+                                    d("span", null, "💰 Stock Sales (" + p(g.stockSales.length) + ")", 1),
+                                    d("button", {
+                                      class: "copy-button",
+                                      onClick: (L) => h(g.stockSales),
+                                      title: "Copy to clipboard (Excel-ready)"
+                                    }, " 📋 Copy ", 8, Hr)
+                                  ]),
+                                  d("div", Or, [
+                                    d("table", $r, [
+                                      b[15] || (b[15] = d("thead", null, [
+                                        d("tr", null, [
+                                          d("th", null, "Settlement Date"),
+                                          d("th", null, "Quantity"),
+                                          d("th", null, "Avg Price"),
+                                          d("th", null, "Total Proceeds")
+                                        ])
+                                      ], -1)),
+                                      d("tbody", null, [
+                                        (T(!0), k(he, null, ce(R(g.stockSales), (L, F) => (T(), k("tr", {
+                                          key: `stock-sale-${S}-${F}`
+                                        }, [
+                                          d("td", null, p(w(L.orderDate)), 1),
+                                          d("td", Br, p(L.quantity.toLocaleString()), 1),
+                                          d("td", Nr, "$" + p(Number(L.avgPrice).toFixed(2)), 1),
+                                          d("td", Vr, "$" + p(Number(L.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                        ]))), 128))
+                                      ]),
+                                      d("tfoot", null, [
+                                        d("tr", Ir, [
+                                          b[13] || (b[13] = d("td", null, [
+                                            d("strong", null, "Total")
+                                          ], -1)),
+                                          d("td", Wr, [
+                                            d("strong", null, p(g.stockSales.reduce((L, F) => L + F.quantity, 0).toLocaleString()), 1)
+                                          ]),
+                                          b[14] || (b[14] = d("td", { class: "text-right" }, "-", -1)),
+                                          d("td", Gr, [
+                                            d("strong", null, "$" + p(g.stockSales.reduce((L, F) => L + Number(F.totalCost), 0).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                          ])
                                         ])
                                       ])
                                     ])
                                   ])
-                                ])
-                              ])) : (T(), k("div", fl, "No put premium received"))
+                                ])) : (T(), k("div", jr, "No stock sales found"))
+                              ])
                             ]),
-                            d("div", pl, [
-                              g.putBuybacks && g.putBuybacks.length > 0 ? (T(), k("div", ml, [
-                                d("div", gl, [
-                                  d("span", null, "🔄 Put Buybacks (" + p(g.putBuybacks.length) + ")", 1),
-                                  d("button", {
-                                    class: "copy-button",
-                                    onClick: (L) => u(g.putBuybacks, S, g.putBuybackCost),
-                                    title: "Copy to clipboard (Excel-ready)"
-                                  }, " 📋 Copy ", 8, bl)
-                                ]),
-                                d("div", vl, [
-                                  d("table", wl, [
-                                    b[23] || (b[23] = d("thead", null, [
-                                      d("tr", null, [
-                                        d("th", null, "Option"),
-                                        d("th", null, "Date"),
-                                        d("th", null, "Quantity"),
-                                        d("th", null, "Avg Price"),
-                                        d("th", null, "Total Cost")
-                                      ])
-                                    ], -1)),
-                                    d("tbody", null, [
-                                      (T(!0), k(he, null, ce(R(g.putBuybacks), (L, F) => (T(), k("tr", {
-                                        key: `put-buyback-${S}-${F}`
-                                      }, [
-                                        d("td", null, p(x(L.symbol)), 1),
-                                        d("td", null, p(w(L.orderDate)), 1),
-                                        d("td", yl, p(L.quantity.toLocaleString()), 1),
-                                        d("td", Cl, "$" + p(Number(L.avgPrice).toFixed(2)), 1),
-                                        d("td", El, "$" + p(Number(L.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
-                                      ]))), 128))
-                                    ]),
-                                    d("tfoot", null, [
-                                      d("tr", Rl, [
-                                        b[21] || (b[21] = d("td", { colspan: "2" }, [
-                                          d("strong", null, "Total")
-                                        ], -1)),
-                                        d("td", xl, [
-                                          d("strong", null, p(g.putBuybacks.reduce((L, F) => L + F.quantity, 0).toLocaleString()), 1)
-                                        ]),
-                                        b[22] || (b[22] = d("td", { class: "text-right" }, "-", -1)),
-                                        d("td", kl, [
-                                          d("strong", null, "$" + p(Math.abs(g.putBuybackCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
-                                        ])
-                                      ])
-                                    ])
+                            g.netStockCost !== void 0 || g.totalShares ? (T(), k("div", Ur, [
+                              d("div", qr, [
+                                d("div", Kr, [
+                                  b[16] || (b[16] = d("div", { style: { "font-weight": "600", color: "#495057", "margin-bottom": "0.25rem" } }, "Net Stock Cost:", -1)),
+                                  d("div", Qr, [
+                                    d("div", null, "Total Stock Purchases: $" + p(g.stockPurchaseCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
+                                    g.stockSaleProceeds && g.stockSaleProceeds > 0 ? (T(), k("div", Xr, "Less: Stock Sales: $" + p(Math.abs(g.stockSaleProceeds).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)) : X("", !0),
+                                    d("div", Jr, " = $" + p(g.netStockCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                   ])
-                                ])
-                              ])) : (T(), k("div", Tl, "No put buybacks found"))
-                            ])
-                          ]),
-                          g.putSales && g.putSales.length > 0 || g.putBuybacks && g.putBuybacks.length > 0 ? (T(), k("div", Sl, [
-                            d("div", Ll, [
-                              d("div", null, [
-                                b[24] || (b[24] = d("div", { style: { "font-weight": "600", color: "#495057", "margin-bottom": "0.25rem" } }, "📊Net Put Cash Flow:", -1)),
-                                d("div", Ml, [
-                                  g.putPremiumReceived > 0 ? (T(), k("div", Dl, "Put Premium Received: $" + p(Math.abs(g.putPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)) : X("", !0),
-                                  g.putBuybackCost && g.putBuybackCost > 0 ? (T(), k("div", _l, "Less: Put Buyback Cost: $" + p(Math.abs(g.putBuybackCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)) : X("", !0),
-                                  d("div", Fl, " = $" + p(g.netPutCashFlow.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                ]),
+                                d("div", null, [
+                                  b[17] || (b[17] = d("div", { style: { "font-weight": "600", color: "#495057", "margin-bottom": "0.25rem" } }, "Current Shares:", -1)),
+                                  d("div", Yr, [
+                                    d("div", null, "Total Purchased: " + p(g.stockPurchases.reduce((L, F) => L + F.quantity, 0).toLocaleString()) + " shares", 1),
+                                    g.stockSales && g.stockSales.length > 0 ? (T(), k("div", Zr, "Less: Sold: " + p(g.stockSales.reduce((L, F) => L + F.quantity, 0).toLocaleString()) + " shares", 1)) : X("", !0),
+                                    d("div", el, " = " + p(g.totalShares.toLocaleString()) + " shares ", 1)
+                                  ])
                                 ])
                               ])
-                            ])
-                          ])) : X("", !0),
-                          d("div", Pl, [
-                            d("div", zl, [
-                              g.callSales && g.callSales.length > 0 ? (T(), k("div", Al, [
-                                d("div", Hl, [
-                                  d("span", null, "📞 Call Premiums Received (" + p(g.callSales.length) + ")", 1),
-                                  d("button", {
-                                    class: "copy-button",
-                                    onClick: (L) => f(g.callSales, S, g.callPremiumReceived),
-                                    title: "Copy to clipboard (Excel-ready)"
-                                  }, " 📋 Copy ", 8, Ol)
-                                ]),
-                                d("div", $l, [
-                                  d("table", Bl, [
-                                    b[27] || (b[27] = d("thead", null, [
-                                      d("tr", null, [
-                                        d("th", null, "Option"),
-                                        d("th", null, "Date"),
-                                        d("th", null, "Quantity"),
-                                        d("th", null, "Avg Price"),
-                                        d("th", null, "Total Premium")
-                                      ])
-                                    ], -1)),
-                                    d("tbody", null, [
-                                      (T(!0), k(he, null, ce(R(g.callSales), (L, F) => (T(), k("tr", {
-                                        key: `call-${S}-${F}`
-                                      }, [
-                                        d("td", null, p(x(L.symbol)), 1),
-                                        d("td", null, p(w(L.orderDate)), 1),
-                                        d("td", Nl, p(L.quantity.toLocaleString()), 1),
-                                        d("td", Vl, "$" + p(Number(L.avgPrice).toFixed(2)), 1),
-                                        d("td", Il, "$" + p(Number(L.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
-                                      ]))), 128))
-                                    ]),
-                                    d("tfoot", null, [
-                                      d("tr", Wl, [
-                                        b[25] || (b[25] = d("td", { colspan: "2" }, [
-                                          d("strong", null, "Total")
-                                        ], -1)),
-                                        d("td", Gl, [
-                                          d("strong", null, p(g.callSales.reduce((L, F) => L + F.quantity, 0).toLocaleString()), 1)
-                                        ]),
-                                        b[26] || (b[26] = d("td", { class: "text-right" }, "-", -1)),
-                                        d("td", jl, [
-                                          d("strong", null, "$" + p(Math.abs(g.callPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                            ])) : X("", !0)
+                          ]),
+                          d("div", tl, [
+                            b[26] || (b[26] = oe(" Section: B ", -1)),
+                            d("div", il, [
+                              d("div", sl, [
+                                g.putSales && g.putSales.length > 0 ? (T(), k("div", ol, [
+                                  d("div", nl, [
+                                    d("span", null, "📉 Put Premium Received (" + p(g.putSales.length) + ")", 1),
+                                    d("button", {
+                                      class: "copy-button",
+                                      onClick: (L) => c(g.putSales, S, g.putPremiumReceived),
+                                      title: "Copy to clipboard (Excel-ready)"
+                                    }, " 📋 Copy ", 8, al)
+                                  ]),
+                                  d("div", rl, [
+                                    d("table", ll, [
+                                      b[21] || (b[21] = d("thead", null, [
+                                        d("tr", null, [
+                                          d("th", null, "Option"),
+                                          d("th", null, "Settlement Date"),
+                                          d("th", null, "Quantity"),
+                                          d("th", null, "Avg Price"),
+                                          d("th", null, "Total Premium")
+                                        ])
+                                      ], -1)),
+                                      d("tbody", null, [
+                                        (T(!0), k(he, null, ce(R(g.putSales), (L, F) => (T(), k("tr", {
+                                          key: `put-${S}-${F}`
+                                        }, [
+                                          d("td", null, p(x(L.symbol)), 1),
+                                          d("td", null, p(w(L.orderDate)), 1),
+                                          d("td", hl, p(L.quantity.toLocaleString()), 1),
+                                          d("td", dl, "$" + p(Number(L.avgPrice).toFixed(2)), 1),
+                                          d("td", cl, "$" + p(Number(L.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                        ]))), 128))
+                                      ]),
+                                      d("tfoot", null, [
+                                        d("tr", ul, [
+                                          b[19] || (b[19] = d("td", { colspan: "2" }, [
+                                            d("strong", null, "Total")
+                                          ], -1)),
+                                          d("td", fl, [
+                                            d("strong", null, p(g.putSales.reduce((L, F) => L + F.quantity, 0).toLocaleString()), 1)
+                                          ]),
+                                          b[20] || (b[20] = d("td", { class: "text-right" }, "-", -1)),
+                                          d("td", pl, [
+                                            d("strong", null, "$" + p(Math.abs(g.putPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                          ])
                                         ])
                                       ])
                                     ])
                                   ])
-                                ])
-                              ])) : (T(), k("div", Ul, "No call premium received"))
+                                ])) : (T(), k("div", ml, "No put premium received"))
+                              ]),
+                              d("div", gl, [
+                                g.putBuybacks && g.putBuybacks.length > 0 ? (T(), k("div", bl, [
+                                  d("div", vl, [
+                                    d("span", null, "🔄 Put Buybacks (" + p(g.putBuybacks.length) + ")", 1),
+                                    d("button", {
+                                      class: "copy-button",
+                                      onClick: (L) => u(g.putBuybacks, S, g.putBuybackCost),
+                                      title: "Copy to clipboard (Excel-ready)"
+                                    }, " 📋 Copy ", 8, wl)
+                                  ]),
+                                  d("div", yl, [
+                                    d("table", Cl, [
+                                      b[24] || (b[24] = d("thead", null, [
+                                        d("tr", null, [
+                                          d("th", null, "Option"),
+                                          d("th", null, "Settlement Date"),
+                                          d("th", null, "Quantity"),
+                                          d("th", null, "Avg Price"),
+                                          d("th", null, "Total Cost")
+                                        ])
+                                      ], -1)),
+                                      d("tbody", null, [
+                                        (T(!0), k(he, null, ce(R(g.putBuybacks), (L, F) => (T(), k("tr", {
+                                          key: `put-buyback-${S}-${F}`
+                                        }, [
+                                          d("td", null, p(x(L.symbol)), 1),
+                                          d("td", null, p(w(L.orderDate)), 1),
+                                          d("td", El, p(L.quantity.toLocaleString()), 1),
+                                          d("td", Rl, "$" + p(Number(L.avgPrice).toFixed(2)), 1),
+                                          d("td", xl, "$" + p(Number(L.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                        ]))), 128))
+                                      ]),
+                                      d("tfoot", null, [
+                                        d("tr", kl, [
+                                          b[22] || (b[22] = d("td", { colspan: "2" }, [
+                                            d("strong", null, "Total")
+                                          ], -1)),
+                                          d("td", Tl, [
+                                            d("strong", null, p(g.putBuybacks.reduce((L, F) => L + F.quantity, 0).toLocaleString()), 1)
+                                          ]),
+                                          b[23] || (b[23] = d("td", { class: "text-right" }, "-", -1)),
+                                          d("td", Sl, [
+                                            d("strong", null, "$" + p(Math.abs(g.putBuybackCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                          ])
+                                        ])
+                                      ])
+                                    ])
+                                  ])
+                                ])) : (T(), k("div", Ll, "No put buybacks found"))
+                              ])
                             ]),
-                            d("div", ql, [
-                              g.callBuybacks && g.callBuybacks.length > 0 ? (T(), k("div", Kl, [
-                                d("div", Ql, [
-                                  d("span", null, "🔄 Call Buybacks (" + p(g.callBuybacks.length) + ")", 1),
-                                  d("button", {
-                                    class: "copy-button",
-                                    onClick: (L) => v(g.callBuybacks, S, g.callBuybackCost),
-                                    title: "Copy to clipboard (Excel-ready)"
-                                  }, " 📋 Copy ", 8, Xl)
-                                ]),
-                                d("div", Jl, [
-                                  d("table", Yl, [
-                                    b[30] || (b[30] = d("thead", null, [
-                                      d("tr", null, [
-                                        d("th", null, "Option"),
-                                        d("th", null, "Date"),
-                                        d("th", null, "Quantity"),
-                                        d("th", null, "Avg Price"),
-                                        d("th", null, "Total Cost")
-                                      ])
-                                    ], -1)),
-                                    d("tbody", null, [
-                                      (T(!0), k(he, null, ce(R(g.callBuybacks), (L, F) => (T(), k("tr", {
-                                        key: `call-buyback-${S}-${F}`
-                                      }, [
-                                        d("td", null, p(x(L.symbol)), 1),
-                                        d("td", null, p(w(L.orderDate)), 1),
-                                        d("td", Zl, p(L.quantity.toLocaleString()), 1),
-                                        d("td", eh, "$" + p(Number(L.avgPrice).toFixed(2)), 1),
-                                        d("td", th, "$" + p(Number(L.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
-                                      ]))), 128))
-                                    ]),
-                                    d("tfoot", null, [
-                                      d("tr", ih, [
-                                        b[28] || (b[28] = d("td", { colspan: "2" }, [
-                                          d("strong", null, "Total")
-                                        ], -1)),
-                                        d("td", sh, [
-                                          d("strong", null, p(g.callBuybacks.reduce((L, F) => L + F.quantity, 0).toLocaleString()), 1)
-                                        ]),
-                                        b[29] || (b[29] = d("td", { class: "text-right" }, "-", -1)),
-                                        d("td", oh, [
-                                          d("strong", null, "$" + p(Math.abs(g.callBuybackCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                            g.putSales && g.putSales.length > 0 || g.putBuybacks && g.putBuybacks.length > 0 ? (T(), k("div", Ml, [
+                              d("div", Dl, [
+                                d("div", null, [
+                                  b[25] || (b[25] = d("div", { style: { "font-weight": "600", color: "#495057", "margin-bottom": "0.25rem" } }, "📊Net Put Cash Flow:", -1)),
+                                  d("div", _l, [
+                                    g.putPremiumReceived > 0 ? (T(), k("div", Fl, "Put Premium Received: $" + p(Math.abs(g.putPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)) : X("", !0),
+                                    g.putBuybackCost && g.putBuybackCost > 0 ? (T(), k("div", Pl, "Less: Put Buyback Cost: $" + p(Math.abs(g.putBuybackCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)) : X("", !0),
+                                    d("div", zl, " = $" + p(g.netPutCashFlow.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                  ])
+                                ])
+                              ])
+                            ])) : X("", !0)
+                          ]),
+                          d("div", Al, [
+                            b[34] || (b[34] = oe(" Section: C ", -1)),
+                            d("div", Hl, [
+                              d("div", Ol, [
+                                g.callSales && g.callSales.length > 0 ? (T(), k("div", $l, [
+                                  d("div", Bl, [
+                                    d("span", null, "📞 Call Premiums Received (" + p(g.callSales.length) + ")", 1),
+                                    d("button", {
+                                      class: "copy-button",
+                                      onClick: (L) => f(g.callSales, S, g.callPremiumReceived),
+                                      title: "Copy to clipboard (Excel-ready)"
+                                    }, " 📋 Copy ", 8, Nl)
+                                  ]),
+                                  d("div", Vl, [
+                                    d("table", Il, [
+                                      b[29] || (b[29] = d("thead", null, [
+                                        d("tr", null, [
+                                          d("th", null, "Option"),
+                                          d("th", null, "Settlement Date"),
+                                          d("th", null, "Quantity"),
+                                          d("th", null, "Avg Price"),
+                                          d("th", null, "Total Premium")
+                                        ])
+                                      ], -1)),
+                                      d("tbody", null, [
+                                        (T(!0), k(he, null, ce(R(g.callSales), (L, F) => (T(), k("tr", {
+                                          key: `call-${S}-${F}`
+                                        }, [
+                                          d("td", null, p(x(L.symbol)), 1),
+                                          d("td", null, p(w(L.orderDate)), 1),
+                                          d("td", Wl, p(L.quantity.toLocaleString()), 1),
+                                          d("td", Gl, "$" + p(Number(L.avgPrice).toFixed(2)), 1),
+                                          d("td", jl, "$" + p(Number(L.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                        ]))), 128))
+                                      ]),
+                                      d("tfoot", null, [
+                                        d("tr", Ul, [
+                                          b[27] || (b[27] = d("td", { colspan: "2" }, [
+                                            d("strong", null, "Total")
+                                          ], -1)),
+                                          d("td", ql, [
+                                            d("strong", null, p(g.callSales.reduce((L, F) => L + F.quantity, 0).toLocaleString()), 1)
+                                          ]),
+                                          b[28] || (b[28] = d("td", { class: "text-right" }, "-", -1)),
+                                          d("td", Kl, [
+                                            d("strong", null, "$" + p(Math.abs(g.callPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                          ])
                                         ])
                                       ])
                                     ])
                                   ])
-                                ])
-                              ])) : (T(), k("div", nh, "No call buybacks found"))
-                            ])
-                          ]),
-                          g.callSales && g.callSales.length > 0 || g.callBuybacks && g.callBuybacks.length > 0 ? (T(), k("div", ah, [
-                            d("div", rh, [
-                              d("div", null, [
-                                b[31] || (b[31] = d("div", { style: { "font-weight": "600", color: "#495057", "margin-bottom": "0.25rem" } }, "📊 Net Call Cash Flow:", -1)),
-                                d("div", lh, [
-                                  g.callPremiumReceived > 0 ? (T(), k("div", hh, "Call Premium Received: $" + p(Math.abs(g.callPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)) : X("", !0),
-                                  g.callBuybackCost && g.callBuybackCost > 0 ? (T(), k("div", dh, "Less: Call Buyback Cost: $" + p(Math.abs(g.callBuybackCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)) : X("", !0),
-                                  d("div", ch, " = $" + p(g.netCallCashFlow.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                ])) : (T(), k("div", Ql, "No call premium received"))
+                              ]),
+                              d("div", Xl, [
+                                g.callBuybacks && g.callBuybacks.length > 0 ? (T(), k("div", Jl, [
+                                  d("div", Yl, [
+                                    d("span", null, "🔄 Call Buybacks (" + p(g.callBuybacks.length) + ")", 1),
+                                    d("button", {
+                                      class: "copy-button",
+                                      onClick: (L) => v(g.callBuybacks, S, g.callBuybackCost),
+                                      title: "Copy to clipboard (Excel-ready)"
+                                    }, " 📋 Copy ", 8, Zl)
+                                  ]),
+                                  d("div", eh, [
+                                    d("table", th, [
+                                      b[32] || (b[32] = d("thead", null, [
+                                        d("tr", null, [
+                                          d("th", null, "Option"),
+                                          d("th", null, "Settlement Date"),
+                                          d("th", null, "Quantity"),
+                                          d("th", null, "Avg Price"),
+                                          d("th", null, "Total Cost")
+                                        ])
+                                      ], -1)),
+                                      d("tbody", null, [
+                                        (T(!0), k(he, null, ce(R(g.callBuybacks), (L, F) => (T(), k("tr", {
+                                          key: `call-buyback-${S}-${F}`
+                                        }, [
+                                          d("td", null, p(x(L.symbol)), 1),
+                                          d("td", null, p(w(L.orderDate)), 1),
+                                          d("td", ih, p(L.quantity.toLocaleString()), 1),
+                                          d("td", sh, "$" + p(Number(L.avgPrice).toFixed(2)), 1),
+                                          d("td", oh, "$" + p(Number(L.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                        ]))), 128))
+                                      ]),
+                                      d("tfoot", null, [
+                                        d("tr", nh, [
+                                          b[30] || (b[30] = d("td", { colspan: "2" }, [
+                                            d("strong", null, "Total")
+                                          ], -1)),
+                                          d("td", ah, [
+                                            d("strong", null, p(g.callBuybacks.reduce((L, F) => L + F.quantity, 0).toLocaleString()), 1)
+                                          ]),
+                                          b[31] || (b[31] = d("td", { class: "text-right" }, "-", -1)),
+                                          d("td", rh, [
+                                            d("strong", null, "$" + p(Math.abs(g.callBuybackCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                          ])
+                                        ])
+                                      ])
+                                    ])
+                                  ])
+                                ])) : (T(), k("div", lh, "No call buybacks found"))
+                              ])
+                            ]),
+                            g.callSales && g.callSales.length > 0 || g.callBuybacks && g.callBuybacks.length > 0 ? (T(), k("div", hh, [
+                              d("div", dh, [
+                                d("div", null, [
+                                  b[33] || (b[33] = d("div", { style: { "font-weight": "600", color: "#495057", "margin-bottom": "0.25rem" } }, "📊 Net Call Cash Flow:", -1)),
+                                  d("div", ch, [
+                                    g.callPremiumReceived > 0 ? (T(), k("div", uh, "Call Premium Received: $" + p(Math.abs(g.callPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)) : X("", !0),
+                                    g.callBuybackCost && g.callBuybackCost > 0 ? (T(), k("div", fh, "Less: Call Buyback Cost: $" + p(Math.abs(g.callBuybackCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)) : X("", !0),
+                                    d("div", ph, " = $" + p(g.netCallCashFlow.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                  ])
                                 ])
                               ])
-                            ])
-                          ])) : X("", !0),
-                          d("div", uh, [
-                            b[32] || (b[32] = d("div", { class: "calc-line" }, [
-                              ae("📊 "),
+                            ])) : X("", !0)
+                          ]),
+                          d("div", mh, [
+                            b[35] || (b[35] = d("div", { class: "calc-line" }, [
+                              oe("📊 "),
                               d("strong", null, "Calculation:")
                             ], -1)),
-                            d("div", fh, [
-                              d("strong", null, "Total Net Cost = $" + p((g.netStockCost || g.totalStockCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + p(Math.abs(g.netPutCashFlow || g.putPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + p(Math.abs(g.netCallCashFlow || g.callPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " = $" + p(g.netCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                            d("div", gh, [
+                              d("strong", null, "Total Net Cost = $" + p(g.netStockCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + p(Math.abs(g.netPutCashFlow || g.putPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + p(Math.abs(g.netCallCashFlow || g.callPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " = $" + p(g.netCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                             ]),
-                            d("div", ph, [
+                            d("div", bh, [
                               d("strong", null, "Adjusted Avg Price = $" + p(g.netCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ÷ " + p(g.totalShares.toLocaleString()) + " = $" + p(g.adjustedAvgPricePerShare.toFixed(2)) + " per share", 1)
                             ])
                           ])
@@ -12702,12 +12712,12 @@ ${H}`;
                     }, 1024)
                   ]);
                 }), 128)),
-                l.overallAdjustedAvgPriceFromOrders !== null ? (T(), k("div", mh, [
-                  d("div", gh, " 🎯 Overall Adjusted Average: $" + p(l.overallAdjustedAvgPriceFromOrders.toFixed(2)) + " per share ", 1),
-                  d("div", bh, [
-                    d("div", vh, "Total Net Cost = " + p(l.orderGroups.map((g) => `$${g.netCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")) + " = $" + p(l.totalNetCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
-                    d("div", wh, "Total Main Qty = " + p(l.orderGroups.map((g) => g.totalShares.toLocaleString()).join(" + ")) + " = " + p(l.totalShares.toLocaleString()), 1),
-                    d("div", yh, [
+                l.overallAdjustedAvgPriceFromOrders !== null ? (T(), k("div", vh, [
+                  d("div", wh, " 🎯 Overall Adjusted Average: $" + p(l.overallAdjustedAvgPriceFromOrders.toFixed(2)) + " per share ", 1),
+                  d("div", yh, [
+                    d("div", Ch, "Total Net Cost = " + p(l.orderGroups.map((g) => `$${g.netCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")) + " = $" + p(l.totalNetCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
+                    d("div", Eh, "Total Main Qty = " + p(l.orderGroups.map((g) => g.totalShares.toLocaleString()).join(" + ")) + " = " + p(l.totalShares.toLocaleString()), 1),
+                    d("div", Rh, [
                       d("strong", null, "Overall Adjusted Average = $" + p(l.totalNetCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ÷ " + p(l.totalShares.toLocaleString()) + " = $" + p(l.overallAdjustedAvgPriceFromOrders.toFixed(2)), 1)
                     ])
                   ])
@@ -12727,140 +12737,140 @@ ${H}`;
   for (const [i, s] of e)
     t[i] = s;
   return t;
-}, Eh = /* @__PURE__ */ Es(Ch, [["__scopeId", "data-v-01ddcbff"]]), Rh = { class: "current-positions-for-single-instrument-view" }, xh = { class: "positions-table-container" }, kh = { class: "header-section" }, Th = {
+}, kh = /* @__PURE__ */ Es(xh, [["__scopeId", "data-v-f57aaace"]]), Th = { class: "current-positions-for-single-instrument-view" }, Sh = { class: "positions-table-container" }, Lh = { class: "header-section" }, Mh = {
   key: 0,
   class: "loading-state"
-}, Sh = {
+}, Dh = {
   key: 1,
   class: "error-state"
-}, Lh = {
+}, _h = {
   key: 2,
   class: "summary-section"
-}, Mh = { class: "summary-cards" }, Dh = { class: "summary-card card-cyan" }, _h = {
+}, Fh = { class: "summary-cards" }, Ph = { class: "summary-card card-cyan" }, zh = {
   key: 0,
   class: "summary-value"
-}, Fh = {
+}, Ah = {
   key: 1,
   class: "summary-value error"
-}, Ph = {
+}, Hh = {
   key: 2,
   class: "summary-value-container-vertical"
-}, zh = { key: 0 }, Ah = { key: 1 }, Hh = { class: "toggle-icon" }, Oh = { class: "summary-card card-blue" }, $h = {
+}, Oh = { key: 0 }, $h = { key: 1 }, Bh = { class: "toggle-icon" }, Nh = { class: "summary-card card-blue" }, Vh = {
   key: 0,
   class: "summary-value"
-}, Bh = {
+}, Ih = {
   key: 1,
   class: "summary-value error"
-}, Nh = {
+}, Wh = {
   key: 2,
   class: "summary-value-container-vertical"
-}, Vh = { key: 0 }, Ih = { class: "pnl-percentage" }, Wh = { key: 1 }, Gh = { class: "toggle-icon" }, jh = { class: "summary-card highlight-1 card-green" }, Uh = { class: "summary-value-container" }, qh = { class: "summary-value" }, Kh = { class: "accounts-count" }, Qh = { class: "toggle-icon" }, Xh = { class: "summary-card card-purple" }, Jh = {
+}, Gh = { key: 0 }, jh = { class: "pnl-percentage" }, Uh = { key: 1 }, qh = { class: "toggle-icon" }, Kh = { class: "summary-card highlight-1 card-green" }, Qh = { class: "summary-value-container" }, Xh = { class: "summary-value" }, Jh = { class: "accounts-count" }, Yh = { class: "toggle-icon" }, Zh = { class: "summary-card card-purple" }, ed = {
   key: 0,
   class: "summary-value"
-}, Yh = {
+}, td = {
   key: 1,
   class: "summary-value error"
-}, Zh = {
+}, id = {
   key: 2,
   class: "summary-value-container-vertical"
-}, ed = { class: "summary-value" }, td = {
+}, sd = { class: "summary-value" }, od = {
   key: 0,
   class: "52-week-range"
-}, id = { class: "blue_color" }, sd = { class: "blue_color" }, od = {
+}, nd = { class: "blue_color" }, ad = { class: "blue_color" }, rd = {
   key: 1,
   class: "52-week-range"
-}, nd = {
+}, ld = {
   key: 2,
   class: "timestamp-info"
-}, ad = {
+}, hd = {
   key: 3,
   class: "summary-value"
-}, rd = { class: "summary-card card-orange" }, ld = {
+}, dd = { class: "summary-card card-orange" }, cd = {
   key: 0,
   class: "summary-value"
-}, hd = {
+}, ud = {
   key: 1,
   class: "summary-value error"
-}, dd = { class: "summary-value-container-vertical" }, cd = { key: 0 }, ud = { key: 1 }, fd = { key: 2 }, pd = { class: "toggle-icon" }, md = { class: "summary-card card-teal" }, gd = {
+}, fd = { class: "summary-value-container-vertical" }, pd = { key: 0 }, md = { key: 1 }, gd = { key: 2 }, bd = { class: "toggle-icon" }, vd = { class: "summary-card card-teal" }, wd = {
   key: 0,
   class: "summary-value"
-}, bd = {
+}, yd = {
   key: 1,
   class: "summary-value error"
-}, vd = {
+}, Cd = {
   key: 2,
   class: "summary-value-container-vertical"
-}, wd = {
+}, Ed = {
   key: 0,
   class: "subtitle-info",
   style: { "font-size": "0.85rem", color: "#6c757d", "margin-top": "0.25rem" }
-}, yd = { class: "blue_color" }, Cd = {
+}, Rd = { class: "blue_color" }, xd = {
   key: 1,
   class: "subtitle-info",
   style: { "font-size": "0.85rem", color: "#6c757d", "margin-top": "0.25rem" }
-}, Ed = { class: "blue_color" }, Rd = {
+}, kd = { class: "blue_color" }, Td = {
   key: 2,
   class: "subtitle-info",
   style: { "font-size": "0.85rem", color: "#6c757d", "margin-top": "0.25rem" }
-}, xd = { class: "blue_color" }, kd = { class: "table-wrapper" }, Td = { class: "pnl-details" }, Sd = {
+}, Sd = { class: "blue_color" }, Ld = { class: "table-wrapper" }, Md = { class: "pnl-details" }, Dd = {
   key: 0,
   class: "pnl-breakdown"
-}, Ld = { class: "pnl-section" }, Md = { class: "calc-line" }, Dd = { class: "calc-line" }, _d = { class: "calc-line calculation-result" }, Fd = { class: "pnl-section" }, Pd = { class: "calc-line" }, zd = { class: "calc-line calculation-result" }, Ad = { class: "pnl-section highlight-section" }, Hd = { class: "calc-line" }, Od = { class: "calc-line" }, $d = {
+}, _d = { class: "pnl-section" }, Fd = { class: "calc-line" }, Pd = { class: "calc-line" }, zd = { class: "calc-line calculation-result" }, Ad = { class: "pnl-section" }, Hd = { class: "calc-line" }, Od = { class: "calc-line calculation-result" }, $d = { class: "pnl-section highlight-section" }, Bd = { class: "calc-line" }, Nd = { class: "calc-line" }, Vd = {
   key: 1,
   class: "pnl-breakdown"
-}, Bd = { class: "pnl-section" }, Nd = { class: "pnl-section-title" }, Vd = { class: "calc-line" }, Id = { class: "calc-line" }, Wd = { class: "pnl-section-title" }, Gd = { class: "calc-line" }, jd = { class: "calc-line" }, Ud = { class: "calc-line" }, qd = { class: "calc-line calculation-result" }, Kd = { class: "pnl-section highlight-section" }, Qd = { class: "calc-line" }, Xd = { class: "calc-line calculation-result" }, Jd = {
+}, Id = { class: "pnl-section" }, Wd = { class: "pnl-section-title" }, Gd = { class: "calc-line" }, jd = { class: "calc-line" }, Ud = { class: "pnl-section-title" }, qd = { class: "calc-line" }, Kd = { class: "calc-line" }, Qd = { class: "calc-line" }, Xd = { class: "calc-line calculation-result" }, Jd = { class: "pnl-section highlight-section" }, Yd = { class: "calc-line" }, Zd = { class: "calc-line calculation-result" }, ec = {
   class: "calc-line",
   style: { "margin-top": "1rem" }
-}, Yd = { class: "calc-line calculation-result" }, Zd = {
+}, tc = { class: "calc-line calculation-result" }, ic = {
   class: "calc-line",
   style: { "margin-top": "1rem" }
-}, ec = { class: "calc-line" }, tc = {
+}, sc = { class: "calc-line" }, oc = {
   key: 0,
   class: "calc-line",
   style: { "margin-top": "1rem", color: "#dc3545", "font-weight": "bold" }
-}, ic = { class: "capital-details" }, sc = {
+}, nc = { class: "capital-details" }, ac = {
   key: 0,
   class: "no-data-message"
-}, oc = {
+}, rc = {
   key: 1,
   class: "capital-breakdown"
-}, nc = { class: "capital-section" }, ac = { class: "calc-line" }, rc = { class: "calc-line" }, lc = { class: "calc-line calculation-result" }, hc = {
+}, lc = { class: "capital-section" }, hc = { class: "calc-line" }, dc = { class: "calc-line" }, cc = { class: "calc-line calculation-result" }, uc = {
   key: 2,
   class: "capital-breakdown"
-}, dc = { class: "capital-section-title" }, cc = { class: "calc-line" }, uc = { class: "calc-line" }, fc = { class: "calc-line" }, pc = { class: "calc-line calculation-result" }, mc = { class: "capital-section highlight-section" }, gc = { class: "calc-line" }, bc = { class: "calc-line calculation-result" }, vc = { class: "modal-header" }, wc = { class: "modal-body" }, yc = {
+}, fc = { class: "capital-section-title" }, pc = { class: "calc-line" }, mc = { class: "calc-line" }, gc = { class: "calc-line" }, bc = { class: "calc-line calculation-result" }, vc = { class: "capital-section highlight-section" }, wc = { class: "calc-line" }, yc = { class: "calc-line calculation-result" }, Cc = { class: "modal-header" }, Ec = { class: "modal-body" }, Rc = {
   key: 0,
   class: "position-info"
-}, Cc = { class: "attachment-tabs" }, Ec = { key: 1 }, Rc = { class: "trade-search" }, xc = {
+}, xc = { class: "attachment-tabs" }, kc = { key: 1 }, Tc = { class: "trade-search" }, Sc = {
   key: 0,
   style: { padding: "1rem", "text-align": "center", color: "#6c757d" }
-}, kc = {
+}, Lc = {
   key: 1,
   class: "trades-list"
-}, Tc = ["onClick"], Sc = ["checked", "onClick"], Lc = { class: "trade-details" }, Mc = { class: "trade-primary" }, Dc = { style: { color: "#6c757d" } }, _c = { style: { color: "#6c757d" } }, Fc = { class: "trade-secondary" }, Pc = { key: 0 }, zc = { key: 1 }, Ac = { style: { color: "#6c757d", "margin-left": "6px" } }, Hc = {
+}, Mc = ["onClick"], Dc = ["checked", "onClick"], _c = { class: "trade-details" }, Fc = { class: "trade-primary" }, Pc = { style: { color: "#6c757d" } }, zc = { style: { color: "#6c757d" } }, Ac = { class: "trade-secondary" }, Hc = { key: 0 }, Oc = { key: 1 }, $c = { style: { color: "#6c757d", "margin-left": "6px" } }, Bc = {
   key: 0,
   style: { padding: "1.5rem", "text-align": "center", color: "#6c757d" }
-}, Oc = { key: 2 }, $c = { class: "trade-search" }, Bc = {
+}, Nc = { key: 2 }, Vc = { class: "trade-search" }, Ic = {
   key: 0,
   style: { padding: "1rem", "text-align": "center", color: "#6c757d" }
-}, Nc = {
+}, Wc = {
   key: 1,
   class: "trades-list"
-}, Vc = ["onClick"], Ic = ["checked", "onClick"], Wc = { class: "trade-details" }, Gc = { class: "trade-primary" }, jc = { style: { color: "#6c757d" } }, Uc = { style: { color: "#6c757d" } }, qc = {
+}, Gc = ["onClick"], jc = ["checked", "onClick"], Uc = { class: "trade-details" }, qc = { class: "trade-primary" }, Kc = { style: { color: "#6c757d" } }, Qc = { style: { color: "#6c757d" } }, Xc = {
   key: 0,
   class: "expired-badge"
-}, Kc = { class: "trade-secondary" }, Qc = { key: 0 }, Xc = {
+}, Jc = { class: "trade-secondary" }, Yc = { key: 0 }, Zc = {
   key: 0,
   style: { padding: "1.5rem", "text-align": "center", color: "#6c757d" }
-}, Jc = { key: 3 }, Yc = { class: "trade-search" }, Zc = {
+}, eu = { key: 3 }, tu = { class: "trade-search" }, iu = {
   key: 0,
   style: { padding: "1rem", "text-align": "center", color: "#6c757d" }
-}, eu = {
+}, su = {
   key: 1,
   class: "trades-list"
-}, tu = ["onClick"], iu = ["checked", "onClick"], su = { class: "trade-details" }, ou = { class: "trade-primary" }, nu = { style: { color: "#6c757d" } }, au = { style: { color: "#6c757d" } }, ru = { class: "trade-secondary" }, lu = { key: 0 }, hu = {
+}, ou = ["onClick"], nu = ["checked", "onClick"], au = { class: "trade-details" }, ru = { class: "trade-primary" }, lu = { style: { color: "#6c757d" } }, hu = { style: { color: "#6c757d" } }, du = { class: "trade-secondary" }, cu = { key: 0 }, uu = {
   key: 0,
   style: { padding: "1.5rem", "text-align": "center", color: "#6c757d" }
-}, du = { class: "modal-footer" }, cu = ["disabled"], uu = /* @__PURE__ */ Xi({
+}, fu = { class: "modal-footer" }, pu = ["disabled"], mu = /* @__PURE__ */ Xi({
   __name: "CurrentPositions",
   props: {
     symbolRoot: { default: "META" },
@@ -12915,7 +12925,7 @@ ${H}`;
       return N = N.replace("GMT+5:30", "IST"), N = N.replace("GMT+530", "IST"), N;
     }), {
       overallAdjustedAvgPrice: re,
-      positionGroups: ne,
+      positionGroups: ae,
       isLoading: Ce,
       error: xe
     } = _a(
@@ -12923,7 +12933,7 @@ ${H}`;
       t.userId
     ), {
       overallAdjustedAvgPriceFromOrders: ke,
-      totalNetCost: Xe,
+      totalNetCost: Ne,
       totalShares: Je,
       orderGroups: Ye,
       isLoading: Se,
@@ -12938,7 +12948,7 @@ ${H}`;
       getPositionKey: de,
       getAttachedTrades: A,
       fetchAttachedPositionsForDisplay: le,
-      fetchTradesForSymbol: oe,
+      fetchTradesForSymbol: ne,
       fetchOrdersForSymbol: He,
       getAttachedOrders: Ut,
       savePositionOrderMappings: Rs,
@@ -12972,7 +12982,7 @@ ${H}`;
       const C = c.value.reduce((B, N) => B + (N.unrealized_pnl || 0), 0);
       return console.log("📊 Stock Unrealized P&L:", C), C;
     });
-    const xs = ie(() => ne.value.reduce((C, m) => C + m.netCostExcludingPuts, 0)), Oi = ie(() => ne.value.reduce((C, m) => C + m.mainPosition.quantity, 0)), {
+    const xs = ie(() => ae.value.reduce((C, m) => C + m.netCostExcludingPuts, 0)), Oi = ie(() => ae.value.reduce((C, m) => C + m.mainPosition.quantity, 0)), {
       unrealizedPnL: Me,
       pnlPercentage: ks,
       isProfitable: Oe,
@@ -13492,31 +13502,31 @@ ${H}`;
           console.error("❌ Row formatter error:", m);
         }
       }
-    }), Ne = V(!1), pe = V("trades"), Ve = V(null), Ie = V(null), We = V(/* @__PURE__ */ new Set()), Ot = V(""), $t = V(""), Bt = V(""), Ge = V(/* @__PURE__ */ new Set()), je = V(/* @__PURE__ */ new Set()), Ue = V(!1), xt = V([]), kt = V([]), Tt = V([]);
+    }), Ve = V(!1), pe = V("trades"), Ie = V(null), We = V(null), Ge = V(/* @__PURE__ */ new Set()), Ot = V(""), $t = V(""), Bt = V(""), je = V(/* @__PURE__ */ new Set()), Ue = V(/* @__PURE__ */ new Set()), qe = V(!1), xt = V([]), kt = V([]), Tt = V([]);
     function Vi(C) {
-      Ge.value.has(C) ? Ge.value.delete(C) : Ge.value.add(C);
-    }
-    function Ii(C) {
       je.value.has(C) ? je.value.delete(C) : je.value.add(C);
     }
+    function Ii(C) {
+      Ue.value.has(C) ? Ue.value.delete(C) : Ue.value.add(C);
+    }
     function Wi(C) {
-      We.value.has(C) ? We.value.delete(C) : We.value.add(C);
+      Ge.value.has(C) ? Ge.value.delete(C) : Ge.value.add(C);
     }
     async function Yt(C) {
-      Ue.value = !0, xt.value = [];
+      qe.value = !0, xt.value = [];
       try {
         const m = rt(C.symbol)[0] || "";
         if (!m) return;
-        const O = await oe(m, C.internal_account_id), B = Ot.value.trim().toLowerCase();
+        const O = await ne(m, C.internal_account_id), B = Ot.value.trim().toLowerCase();
         xt.value = B ? O.filter((N) => (N.symbol || "").toLowerCase().includes(B) || String(N.tradeID || "").toLowerCase().includes(B)) : O;
       } catch (m) {
         console.error("❌ loadAttachableTradesForPosition error:", m), xt.value = [];
       } finally {
-        Ue.value = !1;
+        qe.value = !1;
       }
     }
     async function Zt(C) {
-      Ue.value = !0, kt.value = [];
+      qe.value = !0, kt.value = [];
       try {
         const m = rt(C.symbol)[0] || "";
         if (!m) return;
@@ -13525,11 +13535,11 @@ ${H}`;
       } catch (m) {
         console.error("❌ loadAttachablePositionsForPosition error:", m), kt.value = [];
       } finally {
-        Ue.value = !1;
+        qe.value = !1;
       }
     }
     async function ei(C) {
-      Ue.value = !0, Tt.value = [];
+      qe.value = !0, Tt.value = [];
       try {
         const m = rt(C.symbol)[0] || "";
         if (!m) return;
@@ -13538,37 +13548,37 @@ ${H}`;
       } catch (m) {
         console.error("❌ loadAttachableOrdersForPosition error:", m), Tt.value = [];
       } finally {
-        Ue.value = !1;
+        qe.value = !1;
       }
     }
     async function Ps(C, m = "trades") {
-      Ve.value = C, Ie.value = C, pe.value = m, Ot.value = "", $t.value = "", Bt.value = "";
+      Ie.value = C, We.value = C, pe.value = m, Ot.value = "", $t.value = "", Bt.value = "";
       const O = de(C);
-      Ge.value = new Set(Le.value.get(O) || []), je.value = new Set(fe.value.get(O) || []), We.value = new Set(Ee.value.get(O) || []), Ne.value = !0, m === "trades" ? await Yt(C) : m === "positions" ? await Zt(C) : await ei(C);
+      je.value = new Set(Le.value.get(O) || []), Ue.value = new Set(fe.value.get(O) || []), Ge.value = new Set(Ee.value.get(O) || []), Ve.value = !0, m === "trades" ? await Yt(C) : m === "positions" ? await Zt(C) : await ei(C);
     }
     async function zs() {
-      if (!Ve.value || !t.userId) return;
-      const C = de(Ve.value);
+      if (!Ie.value || !t.userId) return;
+      const C = de(Ie.value);
       try {
-        await Js(h, t.userId, C, Ge.value), mt && await mt(), Ne.value = !1, Fe.value && Fe.value.redraw(!0), console.log("✅ Trades attached");
+        await Js(h, t.userId, C, je.value), mt && await mt(), Ve.value = !1, Fe.value && Fe.value.redraw(!0), console.log("✅ Trades attached");
       } catch (m) {
         console.error("❌ Error saving attached trades:", m);
       }
     }
     async function As() {
-      if (!Ie.value || !t.userId) return;
-      const C = de(Ie.value);
+      if (!We.value || !t.userId) return;
+      const C = de(We.value);
       try {
-        await Ys(h, t.userId, C, je.value), mt && await mt(), Ne.value = !1, Fe.value && Fe.value.redraw(!0), console.log("✅ Positions attached");
+        await Ys(h, t.userId, C, Ue.value), mt && await mt(), Ve.value = !1, Fe.value && Fe.value.redraw(!0), console.log("✅ Positions attached");
       } catch (m) {
         console.error("❌ Error saving attached positions:", m);
       }
     }
     async function Hs() {
-      if (!Ve.value || !t.userId) return;
-      const C = de(Ve.value);
+      if (!Ie.value || !t.userId) return;
+      const C = de(Ie.value);
       try {
-        await Rs(h, t.userId, C, We.value), mt && await mt(), Ne.value = !1, Fe.value && Fe.value.redraw(!0), console.log("✅ Orders attached");
+        await Rs(h, t.userId, C, Ge.value), mt && await mt(), Ve.value = !1, Fe.value && Fe.value.redraw(!0), console.log("✅ Orders attached");
       } catch (m) {
         console.error("❌ Error saving attached orders:", m);
       }
@@ -13580,7 +13590,7 @@ ${H}`;
       const B = new Date(O), N = /* @__PURE__ */ new Date();
       return N.setHours(0, 0, 0, 0), B < N;
     }
-    Ae(Ne, (C) => {
+    Ae(Ve, (C) => {
       try {
         C ? document.body.classList.add("modal-open") : document.body.classList.remove("modal-open");
       } catch {
@@ -13638,29 +13648,29 @@ ${H}`;
       console.log("🧹 Cleaning up CurrentPositions component"), R();
     }), (C, m) => {
       var O, B, N;
-      return T(), k("div", Rh, [
-        d("div", xh, [
-          d("div", kh, [
+      return T(), k("div", Th, [
+        d("div", Sh, [
+          d("div", Lh, [
             d("h2", null, "Current Positions for " + p(t.symbolRoot) + " Across All Accounts", 1),
-            D(u) ? (T(), k("div", Th, [
+            D(u) ? (T(), k("div", Mh, [
               m[15] || (m[15] = d("div", { class: "spinner" }, null, -1)),
               d("p", null, "Loading positions for " + p(t.symbolRoot) + "...", 1)
-            ])) : D(f) ? (T(), k("div", Sh, [
+            ])) : D(f) ? (T(), k("div", Dh, [
               d("p", null, "❌ Error loading positions: " + p((O = D(v)) == null ? void 0 : O.message), 1)
-            ])) : (T(), k("div", Lh, [
-              d("div", Mh, [
-                d("div", Dh, [
+            ])) : (T(), k("div", _h, [
+              d("div", Fh, [
+                d("div", Ph, [
                   m[18] || (m[18] = d("div", { class: "summary-label" }, "Capital/margin used", -1)),
-                  D(Ls) ? (T(), k("div", _h, [...m[16] || (m[16] = [
+                  D(Ls) ? (T(), k("div", zh, [...m[16] || (m[16] = [
                     d("span", { class: "loading-spinner" }, "⏳", -1),
-                    ae(" Loading... ", -1)
-                  ])])) : D(Ms) ? (T(), k("div", Fh, " ❌ Error ")) : (T(), k("div", Ph, [
+                    oe(" Loading... ", -1)
+                  ])])) : D(Ms) ? (T(), k("div", Ah, " ❌ Error ")) : (T(), k("div", Hh, [
                     d("div", {
                       class: "summary-value clickable-price",
                       onClick: Ns
                     }, [
-                      D(Qt) !== null ? (T(), k("span", zh, " $" + p(D(Qt).toLocaleString(void 0, { minimumFractionDigits: 0, maximumFractionDigits: 0 })), 1)) : (T(), k("span", Ah, "N/A")),
-                      d("span", Hh, p(n.value ? "▼" : "▶"), 1)
+                      D(Qt) !== null ? (T(), k("span", Oh, " $" + p(D(Qt).toLocaleString(void 0, { minimumFractionDigits: 0, maximumFractionDigits: 0 })), 1)) : (T(), k("span", $h, "N/A")),
+                      d("span", Bh, p(n.value ? "▼" : "▶"), 1)
                     ]),
                     m[17] || (m[17] = d("div", {
                       class: "capital-subtitle",
@@ -13668,96 +13678,96 @@ ${H}`;
                     }, " Margin: Coming soon... ", -1))
                   ]))
                 ]),
-                d("div", Oh, [
+                d("div", Nh, [
                   m[20] || (m[20] = d("div", { class: "summary-label" }, "Profit and Loss", -1)),
-                  D(Ts) ? (T(), k("div", $h, [...m[19] || (m[19] = [
+                  D(Ts) ? (T(), k("div", Vh, [...m[19] || (m[19] = [
                     d("span", { class: "loading-spinner" }, "⏳", -1),
-                    ae(" Loading... ", -1)
-                  ])])) : D(Ss) ? (T(), k("div", Bh, " ❌ Error ")) : (T(), k("div", Nh, [
+                    oe(" Loading... ", -1)
+                  ])])) : D(Ss) ? (T(), k("div", Ih, " ❌ Error ")) : (T(), k("div", Wh, [
                     d("div", {
                       class: ye(["summary-value clickable-price pnl-value", { profit: D(Oe), loss: !D(Oe) }]),
                       onClick: Bs
                     }, [
-                      D(Me) !== null ? (T(), k("span", Vh, [
-                        ae(p(D(Me) >= 0 ? "+" : "") + "$" + p(D(Me).toLocaleString(void 0, { minimumFractionDigits: 0, maximumFractionDigits: 0 })) + " ", 1),
-                        d("span", Ih, "(" + p((B = D(ks)) == null ? void 0 : B.toFixed(2)) + "%)", 1)
-                      ])) : (T(), k("span", Wh, "N/A")),
-                      d("span", Gh, p(o.value ? "▼" : "▶"), 1)
+                      D(Me) !== null ? (T(), k("span", Gh, [
+                        oe(p(D(Me) >= 0 ? "+" : "") + "$" + p(D(Me).toLocaleString(void 0, { minimumFractionDigits: 0, maximumFractionDigits: 0 })) + " ", 1),
+                        d("span", jh, "(" + p((B = D(ks)) == null ? void 0 : B.toFixed(2)) + "%)", 1)
+                      ])) : (T(), k("span", Uh, "N/A")),
+                      d("span", qh, p(o.value ? "▼" : "▶"), 1)
                     ], 2)
                   ]))
                 ]),
-                d("div", jh, [
+                d("div", Kh, [
                   m[21] || (m[21] = d("div", { class: "summary-label" }, "Total Contract Quantity", -1)),
-                  d("div", Uh, [
-                    d("div", qh, p(Hi.value.toLocaleString()), 1),
-                    d("div", Kh, [
+                  d("div", Qh, [
+                    d("div", Xh, p(Hi.value.toLocaleString()), 1),
+                    d("div", Jh, [
                       d("span", {
                         class: "clickable-accounts",
                         title: "Show positions table for all accounts",
                         onClick: St(Os, ["stop"]),
                         style: { cursor: "pointer", color: "#0d6efd" }
                       }, [
-                        ae(" (" + p(((N = D(c)) == null ? void 0 : N.length) || 0) + ") ", 1),
-                        d("span", Qh, p(i.value ? "▼" : "▶"), 1)
+                        oe(" (" + p(((N = D(c)) == null ? void 0 : N.length) || 0) + ") ", 1),
+                        d("span", Yh, p(i.value ? "▼" : "▶"), 1)
                       ])
                     ])
                   ])
                 ]),
-                d("div", Xh, [
+                d("div", Zh, [
                   m[25] || (m[25] = d("div", { class: "summary-label" }, "Current market price", -1)),
-                  D(S) ? (T(), k("div", Jh, [...m[22] || (m[22] = [
+                  D(S) ? (T(), k("div", ed, [...m[22] || (m[22] = [
                     d("span", { class: "loading-spinner" }, "⏳", -1),
-                    ae(" Loading... ", -1)
-                  ])])) : D(_) ? (T(), k("div", Yh, " ❌ Error ")) : I.value !== null ? (T(), k("div", Zh, [
-                    d("div", ed, " $" + p(I.value.toFixed(2)), 1),
-                    L.value !== null && z.value !== null ? (T(), k("div", td, [
-                      m[23] || (m[23] = ae(" 52W Range: ", -1)),
-                      d("span", id, "$" + p(L.value.toFixed(2)), 1),
-                      m[24] || (m[24] = ae(" - ", -1)),
-                      d("span", sd, "$" + p(z.value.toFixed(2)), 1)
-                    ])) : (T(), k("div", od, " 52W Range: N/A ")),
-                    Y.value ? (T(), k("div", nd, " Updated: " + p(Y.value), 1)) : X("", !0)
-                  ])) : (T(), k("div", ad, " N/A "))
+                    oe(" Loading... ", -1)
+                  ])])) : D(_) ? (T(), k("div", td, " ❌ Error ")) : I.value !== null ? (T(), k("div", id, [
+                    d("div", sd, " $" + p(I.value.toFixed(2)), 1),
+                    L.value !== null && z.value !== null ? (T(), k("div", od, [
+                      m[23] || (m[23] = oe(" 52W Range: ", -1)),
+                      d("span", nd, "$" + p(L.value.toFixed(2)), 1),
+                      m[24] || (m[24] = oe(" - ", -1)),
+                      d("span", ad, "$" + p(z.value.toFixed(2)), 1)
+                    ])) : (T(), k("div", rd, " 52W Range: N/A ")),
+                    Y.value ? (T(), k("div", ld, " Updated: " + p(Y.value), 1)) : X("", !0)
+                  ])) : (T(), k("div", hd, " N/A "))
                 ]),
-                d("div", rd, [
+                d("div", dd, [
                   m[27] || (m[27] = d("div", { class: "summary-label" }, "Average cost per share", -1)),
-                  D(Ce) ? (T(), k("div", ld, [...m[26] || (m[26] = [
+                  D(Ce) ? (T(), k("div", cd, [...m[26] || (m[26] = [
                     d("span", { class: "loading-spinner" }, "⏳", -1),
-                    ae(" Loading... ", -1)
-                  ])])) : D(xe) ? (T(), k("div", hd, " ❌ Error ")) : X("", !0),
-                  d("div", dd, [
+                    oe(" Loading... ", -1)
+                  ])])) : D(xe) ? (T(), k("div", ud, " ❌ Error ")) : X("", !0),
+                  d("div", fd, [
                     d("div", {
                       class: "summary-value average-cost-price clickable-price",
                       onClick: $s
                     }, [
-                      D(ke) !== null ? (T(), k("span", cd, " $" + p(D(ke).toFixed(2)), 1)) : D(re) !== null ? (T(), k("span", ud, " $" + p(D(re).toFixed(2)), 1)) : (T(), k("span", fd, "N/A")),
-                      d("span", pd, p(s.value ? "▼" : "▶"), 1)
+                      D(ke) !== null ? (T(), k("span", pd, " $" + p(D(ke).toFixed(2)), 1)) : D(re) !== null ? (T(), k("span", md, " $" + p(D(re).toFixed(2)), 1)) : (T(), k("span", gd, "N/A")),
+                      d("span", bd, p(s.value ? "▼" : "▶"), 1)
                     ])
                   ])
                 ]),
-                d("div", md, [
-                  D(j) ? (T(), k("div", gd, [...m[28] || (m[28] = [
+                d("div", vd, [
+                  D(j) ? (T(), k("div", wd, [...m[28] || (m[28] = [
                     d("span", { class: "loading-spinner" }, "⏳", -1),
-                    ae(" Loading... ", -1)
-                  ])])) : D(H) ? (T(), k("div", bd, " ❌ Error ")) : (T(), k("div", vd, [
-                    F.value !== null ? (T(), k("div", wd, [
-                      m[29] || (m[29] = ae(" P/E Ratio: ", -1)),
-                      d("span", yd, p(F.value.toFixed(2)), 1)
+                    oe(" Loading... ", -1)
+                  ])])) : D(H) ? (T(), k("div", yd, " ❌ Error ")) : (T(), k("div", Cd, [
+                    F.value !== null ? (T(), k("div", Ed, [
+                      m[29] || (m[29] = oe(" P/E Ratio: ", -1)),
+                      d("span", Rd, p(F.value.toFixed(2)), 1)
                     ])) : X("", !0),
-                    U.value !== null ? (T(), k("div", Cd, [
-                      m[30] || (m[30] = ae(" PEG Ratio: ", -1)),
-                      d("span", Ed, p(U.value.toFixed(2)), 1)
+                    U.value !== null ? (T(), k("div", xd, [
+                      m[30] || (m[30] = oe(" PEG Ratio: ", -1)),
+                      d("span", kd, p(U.value.toFixed(2)), 1)
                     ])) : X("", !0),
-                    $.value !== null ? (T(), k("div", Rd, [
-                      m[31] || (m[31] = ae(" Market Cap: ", -1)),
-                      d("span", xd, "$" + p(($.value / 1e9).toFixed(2)) + "B", 1)
+                    $.value !== null ? (T(), k("div", Td, [
+                      m[31] || (m[31] = oe(" Market Cap: ", -1)),
+                      d("span", Sd, "$" + p(($.value / 1e9).toFixed(2)) + "B", 1)
                     ])) : X("", !0)
                   ]))
                 ])
               ]),
               nt(ut, { name: "slide-fade" }, {
                 default: ft(() => [
-                  Qe(d("div", kd, [
+                  Xe(d("div", Ld, [
                     d("div", {
                       ref_key: "tableDiv",
                       ref: Fs
@@ -13768,96 +13778,96 @@ ${H}`;
                 ]),
                 _: 1
               }),
-              nt(Eh, {
+              nt(kh, {
                 "show-calculation-details": s.value,
                 "avg-price-calculation-tab": a.value,
                 "onUpdate:avgPriceCalculationTab": m[0] || (m[0] = (E) => a.value = E),
-                "position-groups": D(ne),
+                "position-groups": D(ae),
                 "order-groups": D(Ye),
                 "overall-adjusted-avg-price": D(re),
                 "overall-adjusted-avg-price-from-orders": D(ke),
                 "total-net-cost-all-clients": xs.value,
                 "total-main-quantity-all-clients": Oi.value,
-                "total-net-cost": D(Xe),
+                "total-net-cost": D(Ne),
                 "total-shares": D(Je),
                 "is-avg-price-from-orders-loading": D(Se),
                 "avg-price-from-orders-error": D(ue)
               }, null, 8, ["show-calculation-details", "avg-price-calculation-tab", "position-groups", "order-groups", "overall-adjusted-avg-price", "overall-adjusted-avg-price-from-orders", "total-net-cost-all-clients", "total-main-quantity-all-clients", "total-net-cost", "total-shares", "is-avg-price-from-orders-loading", "avg-price-from-orders-error"]),
               nt(ut, { name: "slide-fade" }, {
                 default: ft(() => [
-                  Qe(d("div", Td, [
+                  Xe(d("div", Md, [
                     m[36] || (m[36] = d("h2", null, "Profit & Loss Calculation Details:", -1)),
-                    D(Q) && "totalShares" in D(Q) && D(Q).totalShares != null ? (T(), k("div", Sd, [
-                      d("div", Ld, [
+                    D(Q) && "totalShares" in D(Q) && D(Q).totalShares != null ? (T(), k("div", Dd, [
+                      d("div", _d, [
                         m[32] || (m[32] = d("div", { class: "pnl-section-title" }, "📊 Total Cost Basis", -1)),
-                        d("div", Md, " Total Shares = " + p(D(Q).totalShares.toLocaleString()), 1),
-                        d("div", Dd, " Average Cost per Share = $" + p(D(Q).avgCostPerShare.toFixed(2)), 1),
-                        d("div", _d, [
+                        d("div", Fd, " Total Shares = " + p(D(Q).totalShares.toLocaleString()), 1),
+                        d("div", Pd, " Average Cost per Share = $" + p(D(Q).avgCostPerShare.toFixed(2)), 1),
+                        d("div", zd, [
                           d("strong", null, "Total Cost Basis = " + p(D(Q).totalShares.toLocaleString()) + " × $" + p(D(Q).avgCostPerShare.toFixed(2)) + " = $" + p(D(Q).totalCostBasis.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ])
                       ]),
-                      d("div", Fd, [
+                      d("div", Ad, [
                         m[33] || (m[33] = d("div", { class: "pnl-section-title" }, "💰 Current Market Value", -1)),
-                        d("div", Pd, " Current Price per Share = $" + p(D(Q).currentPricePerShare.toFixed(2)), 1),
-                        d("div", zd, [
+                        d("div", Hd, " Current Price per Share = $" + p(D(Q).currentPricePerShare.toFixed(2)), 1),
+                        d("div", Od, [
                           d("strong", null, "Current Market Value = " + p(D(Q).totalShares.toLocaleString()) + " × $" + p(D(Q).currentPricePerShare.toFixed(2)) + " = $" + p(D(Q).currentMarketValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ])
                       ]),
-                      d("div", Ad, [
+                      d("div", $d, [
                         m[34] || (m[34] = d("div", { class: "pnl-section-title" }, "🎯 Unrealized Profit & Loss", -1)),
-                        d("div", Hd, [
+                        d("div", Bd, [
                           d("strong", {
                             class: ye({ "profit-text": D(Oe), "loss-text": !D(Oe) })
                           }, " Unrealized P&L = $" + p(D(Q).currentMarketValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + p(D(Q).totalCostBasis.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " = " + p(D(Me) && D(Me) >= 0 ? "+" : "") + "$" + p(D(Q).unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 3)
                         ]),
-                        d("div", Od, [
+                        d("div", Nd, [
                           d("strong", {
                             class: ye({ "profit-text": D(Oe), "loss-text": !D(Oe) })
                           }, " P&L Percentage = (" + p(D(Me) && D(Me) >= 0 ? "+" : "") + "$" + p(D(Q).unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ÷ $" + p(D(Q).totalCostBasis.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + ") × 100 = " + p(D(Q).pnlPercentage.toFixed(2)) + "% ", 3)
                         ])
                       ])
                     ])) : X("", !0),
-                    D(Q) && "optionType" in D(Q) && D(Q).optionType != null ? (T(), k("div", $d, [
-                      d("div", Bd, [
-                        d("div", Nd, "📊 SHORT " + p(D(Q).optionType) + " OPTIONS SUMMARY", 1),
-                        d("div", Vd, " Total Contracts: " + p(D(Q).totalContracts.toLocaleString()), 1),
-                        d("div", Id, " Position Type: " + p(D(Q).positionType), 1)
+                    D(Q) && "optionType" in D(Q) && D(Q).optionType != null ? (T(), k("div", Vd, [
+                      d("div", Id, [
+                        d("div", Wd, "📊 SHORT " + p(D(Q).optionType) + " OPTIONS SUMMARY", 1),
+                        d("div", Gd, " Total Contracts: " + p(D(Q).totalContracts.toLocaleString()), 1),
+                        d("div", jd, " Position Type: " + p(D(Q).positionType), 1)
                       ]),
                       (T(!0), k(he, null, ce(D(Q).positions, (E, W) => (T(), k("div", {
                         key: `pos-${W}`,
                         class: "pnl-section"
                       }, [
-                        d("div", Wd, "Position " + p(W + 1) + ": " + p(E.account) + " - $" + p(E.strike) + " Strike (" + p(E.expiry) + ")", 1),
-                        d("div", Gd, " Contracts Sold: " + p(Math.abs(E.quantity).toLocaleString()), 1),
-                        d("div", jd, " Premium Received: $" + p(E.premiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
-                        d("div", Ud, " Current Market Value: $" + p(E.currentValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
-                        d("div", qd, [
+                        d("div", Ud, "Position " + p(W + 1) + ": " + p(E.account) + " - $" + p(E.strike) + " Strike (" + p(E.expiry) + ")", 1),
+                        d("div", qd, " Contracts Sold: " + p(Math.abs(E.quantity).toLocaleString()), 1),
+                        d("div", Kd, " Premium Received: $" + p(E.premiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
+                        d("div", Qd, " Current Market Value: $" + p(E.currentValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
+                        d("div", Xd, [
                           d("strong", {
                             class: ye({ "profit-text": E.positionPnL >= 0, "loss-text": E.positionPnL < 0 })
                           }, " P&L: " + p(E.positionPnL >= 0 ? "+" : "") + "$" + p(E.positionPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 3)
                         ])
                       ]))), 128)),
-                      d("div", Kd, [
+                      d("div", Jd, [
                         m[35] || (m[35] = d("div", { class: "pnl-section-title" }, "💰 TOTAL CALCULATION", -1)),
-                        d("div", Qd, " Total Premium Received = " + p(D(Q).positions.map((E) => `$${E.premiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")), 1),
-                        d("div", Xd, [
+                        d("div", Yd, " Total Premium Received = " + p(D(Q).positions.map((E) => `$${E.premiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")), 1),
+                        d("div", Zd, [
                           d("strong", null, "= $" + p(D(Q).totalPremiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ]),
-                        d("div", Jd, " Current Market Liability = " + p(D(Q).positions.map((E) => `$${E.currentValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")), 1),
-                        d("div", Yd, [
+                        d("div", ec, " Current Market Liability = " + p(D(Q).positions.map((E) => `$${E.currentValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")), 1),
+                        d("div", tc, [
                           d("strong", null, "= $" + p(D(Q).currentMarketLiability.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ]),
-                        d("div", Zd, [
+                        d("div", ic, [
                           d("strong", {
                             class: ye({ "profit-text": D(Oe), "loss-text": !D(Oe) })
                           }, " Unrealized P&L = $" + p(D(Q).totalPremiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + p(D(Q).currentMarketLiability.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " = " + p(D(Me) && D(Me) >= 0 ? "+" : "") + "$" + p(D(Q).unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 3)
                         ]),
-                        d("div", ec, [
+                        d("div", sc, [
                           d("strong", {
                             class: ye({ "profit-text": D(Oe), "loss-text": !D(Oe) })
                           }, " P&L % = (" + p(D(Me) && D(Me) >= 0 ? "+" : "") + "$" + p(D(Q).unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ÷ $" + p(D(Q).totalPremiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + ") × 100 = " + p(D(Q).pnlPercentage.toFixed(2)) + "% ", 3)
                         ]),
-                        D(Q).pnlPercentage < -50 ? (T(), k("div", tc, " ⚠️ WARNING: Loss exceeds 50% of premium received! ")) : X("", !0)
+                        D(Q).pnlPercentage < -50 ? (T(), k("div", oc, " ⚠️ WARNING: Loss exceeds 50% of premium received! ")) : X("", !0)
                       ])
                     ])) : X("", !0)
                   ], 512), [
@@ -13868,18 +13878,18 @@ ${H}`;
               }),
               nt(ut, { name: "slide-fade" }, {
                 default: ft(() => [
-                  Qe(d("div", ic, [
+                  Xe(d("div", nc, [
                     m[41] || (m[41] = d("h2", null, "Capital Used Calculation Details:", -1)),
-                    D(De) ? D(De).assetType === "STK" ? (T(), k("div", oc, [
-                      d("div", nc, [
+                    D(De) ? D(De).assetType === "STK" ? (T(), k("div", rc, [
+                      d("div", lc, [
                         m[38] || (m[38] = d("div", { class: "capital-section-title" }, "📊 STOCK CAPITAL CALCULATION", -1)),
-                        d("div", ac, " Total Shares = " + p(D(De).totalShares.toLocaleString()), 1),
-                        d("div", rc, " Current Price per Share = $" + p(D(De).pricePerShare.toFixed(2)), 1),
-                        d("div", lc, [
+                        d("div", hc, " Total Shares = " + p(D(De).totalShares.toLocaleString()), 1),
+                        d("div", dc, " Current Price per Share = $" + p(D(De).pricePerShare.toFixed(2)), 1),
+                        d("div", cc, [
                           d("strong", null, " Total Capital Used = " + p(D(De).totalShares.toLocaleString()) + " × $" + p(D(De).pricePerShare.toFixed(2)) + " = $" + p(D(De).totalCapital.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ])
                       ])
-                    ])) : D(De).assetType === "OPT" ? (T(), k("div", hc, [
+                    ])) : D(De).assetType === "OPT" ? (T(), k("div", uc, [
                       m[40] || (m[40] = d("div", { class: "capital-section" }, [
                         d("div", { class: "capital-section-title" }, "📊 OPTIONS CAPITAL CALCULATION"),
                         d("div", { class: "calc-line" }, " Capital = Sum of |Market Value| for all option positions ")
@@ -13888,22 +13898,22 @@ ${H}`;
                         key: `cap-${W}`,
                         class: "capital-section"
                       }, [
-                        d("div", dc, " Position " + p(W + 1) + ": " + p(E.account) + " - " + p(E.optionType), 1),
-                        d("div", cc, " Symbol: " + p(E.symbol), 1),
-                        d("div", uc, " Quantity: " + p(Math.abs(E.quantity).toLocaleString()) + " contracts ", 1),
-                        d("div", fc, " Market Price: $" + p(E.marketPrice.toFixed(2)) + " per contract ", 1),
-                        d("div", pc, [
+                        d("div", fc, " Position " + p(W + 1) + ": " + p(E.account) + " - " + p(E.optionType), 1),
+                        d("div", pc, " Symbol: " + p(E.symbol), 1),
+                        d("div", mc, " Quantity: " + p(Math.abs(E.quantity).toLocaleString()) + " contracts ", 1),
+                        d("div", gc, " Market Price: $" + p(E.marketPrice.toFixed(2)) + " per contract ", 1),
+                        d("div", bc, [
                           d("strong", null, " Market Value = " + p(Math.abs(E.quantity).toLocaleString()) + " × $" + p(E.marketPrice.toFixed(2)) + " = $" + p(Math.abs(E.marketValue).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ])
                       ]))), 128)),
-                      d("div", mc, [
+                      d("div", vc, [
                         m[39] || (m[39] = d("div", { class: "capital-section-title" }, "💰 TOTAL CAPITAL USED", -1)),
-                        d("div", gc, " Total = " + p(D(De).positions.map((E) => `$${Math.abs(E.marketValue).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")), 1),
-                        d("div", bc, [
+                        d("div", wc, " Total = " + p(D(De).positions.map((E) => `$${Math.abs(E.marketValue).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")), 1),
+                        d("div", yc, [
                           d("strong", null, " = $" + p(D(De).totalOptionsCapital.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ])
                       ])
-                    ])) : X("", !0) : (T(), k("div", sc, [...m[37] || (m[37] = [
+                    ])) : X("", !0) : (T(), k("div", ac, [...m[37] || (m[37] = [
                       d("p", null, "No capital data available", -1)
                     ])]))
                   ], 512), [
@@ -13915,81 +13925,81 @@ ${H}`;
             ]))
           ])
         ]),
-        Ne.value ? (T(), k("div", {
+        Ve.value ? (T(), k("div", {
           key: 0,
           class: "modal-overlay",
-          onClick: m[14] || (m[14] = (E) => Ne.value = !1)
+          onClick: m[14] || (m[14] = (E) => Ve.value = !1)
         }, [
           d("div", {
             class: "modal-content trade-attach-modal",
             onClick: m[13] || (m[13] = St(() => {
             }, ["stop"]))
           }, [
-            d("div", vc, [
+            d("div", Cc, [
               m[42] || (m[42] = d("h3", null, "Attach to Position", -1)),
               d("button", {
                 class: "modal-close",
-                onClick: m[1] || (m[1] = (E) => Ne.value = !1)
+                onClick: m[1] || (m[1] = (E) => Ve.value = !1)
               }, "×")
             ]),
-            d("div", wc, [
-              Ie.value ? (T(), k("div", yc, [
+            d("div", Ec, [
+              We.value ? (T(), k("div", Rc, [
                 m[43] || (m[43] = d("strong", null, "Position:", -1)),
-                (T(!0), k(he, null, ce(rt(Ie.value.symbol), (E) => (T(), k("span", {
+                (T(!0), k(he, null, ce(rt(We.value.symbol), (E) => (T(), k("span", {
                   key: E,
                   class: "fi-tag position-tag"
                 }, p(E), 1))), 128)),
-                ae(" • (Contract Qty: " + p(Ie.value.contract_quantity) + " · Avg price: $" + p(Ie.value.avgPrice) + ") ", 1)
+                oe(" • (Contract Qty: " + p(We.value.contract_quantity) + " · Avg price: $" + p(We.value.avgPrice) + ") ", 1)
               ])) : X("", !0),
-              d("div", Cc, [
+              d("div", xc, [
                 d("button", {
                   class: ye(["tab-button", { active: pe.value === "trades" }]),
                   onClick: m[2] || (m[2] = (E) => {
-                    pe.value = "trades", Yt(Ve.value);
+                    pe.value = "trades", Yt(Ie.value);
                   })
                 }, "Trades", 2),
                 d("button", {
                   class: ye(["tab-button", { active: pe.value === "positions" }]),
                   onClick: m[3] || (m[3] = (E) => {
-                    pe.value = "positions", Zt(Ie.value);
+                    pe.value = "positions", Zt(We.value);
                   })
                 }, "Positions", 2),
                 d("button", {
                   class: ye(["tab-button", { active: pe.value === "orders" }]),
                   onClick: m[4] || (m[4] = (E) => {
-                    pe.value = "orders", ei(Ve.value);
+                    pe.value = "orders", ei(Ie.value);
                   })
                 }, "Orders", 2)
               ]),
-              pe.value === "trades" ? (T(), k("div", Ec, [
-                d("div", Rc, [
-                  Qe(d("input", {
+              pe.value === "trades" ? (T(), k("div", kc, [
+                d("div", Tc, [
+                  Xe(d("input", {
                     "onUpdate:modelValue": m[5] || (m[5] = (E) => Ot.value = E),
                     type: "text",
                     class: "search-input",
                     placeholder: "Search trades (e.g., 'Put' or 'Call, 250')...",
-                    onInput: m[6] || (m[6] = (E) => Yt(Ve.value))
+                    onInput: m[6] || (m[6] = (E) => Yt(Ie.value))
                   }, null, 544), [
                     [ti, Ot.value]
                   ]),
                   m[44] || (m[44] = d("div", { class: "search-hint" }, [
-                    ae("💡 "),
+                    oe("💡 "),
                     d("em", null, "Use commas to search multiple terms (AND logic)")
                   ], -1))
                 ]),
-                Ue.value ? (T(), k("div", xc, "Loading trades...")) : (T(), k("div", kc, [
+                qe.value ? (T(), k("div", Sc, "Loading trades...")) : (T(), k("div", Lc, [
                   (T(!0), k(he, null, ce(xt.value, (E) => (T(), k("div", {
                     key: E.tradeID,
-                    class: ye(["trade-item", { selected: Ge.value.has(String(E.tradeID)) }]),
+                    class: ye(["trade-item", { selected: je.value.has(String(E.tradeID)) }]),
                     onClick: (W) => Vi(String(E.tradeID))
                   }, [
                     d("input", {
                       type: "checkbox",
-                      checked: Ge.value.has(String(E.tradeID)),
+                      checked: je.value.has(String(E.tradeID)),
                       onClick: St((W) => Vi(String(E.tradeID)), ["stop"])
-                    }, null, 8, Sc),
-                    d("div", Lc, [
-                      d("div", Mc, [
+                    }, null, 8, Dc),
+                    d("div", _c, [
+                      d("div", Fc, [
                         d("span", {
                           class: ye(["trade-side", (E.buySell || "").toLowerCase()])
                         }, p(E.buySell), 3),
@@ -13999,138 +14009,138 @@ ${H}`;
                             class: "fi-tag position-tag"
                           }, p(W), 1))), 128))
                         ]),
-                        d("span", Dc, "Qty: " + p(E.quantity), 1),
-                        d("span", _c, "· Price: " + p(E.tradePrice), 1)
+                        d("span", Pc, "Qty: " + p(E.quantity), 1),
+                        d("span", zc, "· Price: " + p(E.tradePrice), 1)
                       ]),
-                      d("div", Fc, [
+                      d("div", Ac, [
                         d("span", null, "Trade date: " + p($e(E.tradeDate)), 1),
-                        E.assetCategory ? (T(), k("span", Pc, "• " + p(E.assetCategory), 1)) : X("", !0),
-                        E.description ? (T(), k("span", zc, "• " + p(E.description), 1)) : X("", !0),
-                        d("span", Ac, "• ID: " + p(E.tradeID), 1)
+                        E.assetCategory ? (T(), k("span", Hc, "• " + p(E.assetCategory), 1)) : X("", !0),
+                        E.description ? (T(), k("span", Oc, "• " + p(E.description), 1)) : X("", !0),
+                        d("span", $c, "• ID: " + p(E.tradeID), 1)
                       ])
                     ])
-                  ], 10, Tc))), 128)),
-                  xt.value.length === 0 ? (T(), k("div", Hc, " No trades found ")) : X("", !0)
+                  ], 10, Mc))), 128)),
+                  xt.value.length === 0 ? (T(), k("div", Bc, " No trades found ")) : X("", !0)
                 ]))
-              ])) : pe.value === "positions" ? (T(), k("div", Oc, [
-                d("div", $c, [
-                  Qe(d("input", {
+              ])) : pe.value === "positions" ? (T(), k("div", Nc, [
+                d("div", Vc, [
+                  Xe(d("input", {
                     "onUpdate:modelValue": m[7] || (m[7] = (E) => $t.value = E),
                     type: "text",
                     class: "search-input",
                     placeholder: "Search positions (e.g., 'Put' or 'Call, 250')...",
-                    onInput: m[8] || (m[8] = (E) => Zt(Ie.value))
+                    onInput: m[8] || (m[8] = (E) => Zt(We.value))
                   }, null, 544), [
                     [ti, $t.value]
                   ]),
                   m[45] || (m[45] = d("div", { class: "search-hint" }, [
-                    ae("💡 "),
+                    oe("💡 "),
                     d("em", null, "Showing positions with same underlying symbol. Use commas to search multiple terms.")
                   ], -1))
                 ]),
-                Ue.value ? (T(), k("div", Bc, "Loading positions...")) : (T(), k("div", Nc, [
+                qe.value ? (T(), k("div", Ic, "Loading positions...")) : (T(), k("div", Wc, [
                   (T(!0), k(he, null, ce(kt.value, (E) => (T(), k("div", {
                     key: D(de)(E),
-                    class: ye(["trade-item", { selected: je.value.has(D(de)(E)), expired: E.asset_class === "OPT" && Gi(E) }]),
+                    class: ye(["trade-item", { selected: Ue.value.has(D(de)(E)), expired: E.asset_class === "OPT" && Gi(E) }]),
                     onClick: (W) => Ii(D(de)(E))
                   }, [
                     d("input", {
                       type: "checkbox",
-                      checked: je.value.has(D(de)(E)),
+                      checked: Ue.value.has(D(de)(E)),
                       onClick: St((W) => Ii(D(de)(E)), ["stop"])
-                    }, null, 8, Ic),
-                    d("div", Wc, [
-                      d("div", Gc, [
+                    }, null, 8, jc),
+                    d("div", Uc, [
+                      d("div", qc, [
                         d("strong", null, [
                           (T(!0), k(he, null, ce(rt(E.symbol), (W) => (T(), k("span", {
                             key: W,
                             class: "fi-tag position-tag"
                           }, p(W), 1))), 128))
                         ]),
-                        d("span", jc, "Qty: " + p(E.contract_quantity), 1),
-                        d("span", Uc, "· Avg price: " + p(_e(E.avgPrice)), 1),
-                        Gi(E) ? (T(), k("span", qc, "EXPIRED")) : X("", !0)
+                        d("span", Kc, "Qty: " + p(E.contract_quantity), 1),
+                        d("span", Qc, "· Avg price: " + p(_e(E.avgPrice)), 1),
+                        Gi(E) ? (T(), k("span", Xc, "EXPIRED")) : X("", !0)
                       ]),
-                      d("div", Kc, [
+                      d("div", Jc, [
                         d("span", null, p(E.asset_class), 1),
                         m[46] || (m[46] = d("span", null, "•", -1)),
                         d("span", null, p(E.internal_account_id || E.legal_entity), 1),
-                        E.market_value ? (T(), k("span", Qc, "• MV: " + p(_e(E.market_value)), 1)) : X("", !0),
+                        E.market_value ? (T(), k("span", Yc, "• MV: " + p(_e(E.market_value)), 1)) : X("", !0),
                         m[47] || (m[47] = d("span", null, " • ", -1)),
                         d("span", null, "Fetched at: " + p(Vs(E.fetched_at)), 1)
                       ])
                     ])
-                  ], 10, Vc))), 128)),
-                  kt.value.length === 0 ? (T(), k("div", Xc, " No positions found ")) : X("", !0)
+                  ], 10, Gc))), 128)),
+                  kt.value.length === 0 ? (T(), k("div", Zc, " No positions found ")) : X("", !0)
                 ]))
-              ])) : (T(), k("div", Jc, [
-                d("div", Yc, [
-                  Qe(d("input", {
+              ])) : (T(), k("div", eu, [
+                d("div", tu, [
+                  Xe(d("input", {
                     "onUpdate:modelValue": m[9] || (m[9] = (E) => Bt.value = E),
                     type: "text",
                     class: "search-input",
                     placeholder: "Search orders (e.g., 'Put' or 'Call, 250')...",
-                    onInput: m[10] || (m[10] = (E) => ei(Ve.value))
+                    onInput: m[10] || (m[10] = (E) => ei(Ie.value))
                   }, null, 544), [
                     [ti, Bt.value]
                   ]),
                   m[48] || (m[48] = d("div", { class: "search-hint" }, [
-                    ae("💡 "),
+                    oe("💡 "),
                     d("em", null, "Showing orders with same underlying symbol. Use commas to search multiple terms.")
                   ], -1))
                 ]),
-                Ue.value ? (T(), k("div", Zc, "Loading orders...")) : (T(), k("div", eu, [
+                qe.value ? (T(), k("div", iu, "Loading orders...")) : (T(), k("div", su, [
                   (T(!0), k(he, null, ce(Tt.value, (E) => (T(), k("div", {
                     key: E.id,
-                    class: ye(["trade-item", { selected: We.value.has(String(E.id)) }]),
+                    class: ye(["trade-item", { selected: Ge.value.has(String(E.id)) }]),
                     onClick: (W) => Wi(String(E.id))
                   }, [
                     d("input", {
                       type: "checkbox",
-                      checked: We.value.has(String(E.id)),
+                      checked: Ge.value.has(String(E.id)),
                       onClick: St((W) => Wi(String(E.id)), ["stop"])
-                    }, null, 8, iu),
-                    d("div", su, [
-                      d("div", ou, [
+                    }, null, 8, nu),
+                    d("div", au, [
+                      d("div", ru, [
                         d("strong", null, [
                           (T(!0), k(he, null, ce(Ht(E.symbol), (W) => (T(), k("span", {
                             key: W,
                             class: "fi-tag position-tag"
                           }, p(W), 1))), 128))
                         ]),
-                        d("span", nu, "Qty: " + p(E.contract_quantity), 1),
-                        d("span", au, "· Trade price: " + p(_e(E.tradePrice)), 1)
+                        d("span", lu, "Qty: " + p(E.contract_quantity), 1),
+                        d("span", hu, "· Trade price: " + p(_e(E.tradePrice)), 1)
                       ]),
-                      d("div", ru, [
+                      d("div", du, [
                         d("span", null, p(E.assetCategory), 1),
-                        E.tradeMoney ? (T(), k("span", lu, "• Trade money: " + p(_e(E.tradeMoney)), 1)) : X("", !0),
+                        E.tradeMoney ? (T(), k("span", cu, "• Trade money: " + p(_e(E.tradeMoney)), 1)) : X("", !0),
                         m[49] || (m[49] = d("span", null, " • ", -1)),
                         d("span", null, "Settlement Date: " + p(ji(E.settleDateTarget)), 1)
                       ])
                     ])
-                  ], 10, tu))), 128)),
-                  Tt.value.length === 0 ? (T(), k("div", hu, " No orders found ")) : X("", !0)
+                  ], 10, ou))), 128)),
+                  Tt.value.length === 0 ? (T(), k("div", uu, " No orders found ")) : X("", !0)
                 ]))
               ]))
             ]),
-            d("div", du, [
+            d("div", fu, [
               d("button", {
                 class: "btn btn-secondary",
-                onClick: m[11] || (m[11] = (E) => Ne.value = !1)
+                onClick: m[11] || (m[11] = (E) => Ve.value = !1)
               }, "Cancel"),
               d("button", {
                 class: "btn btn-primary",
-                disabled: pe.value === "trades" ? Ge.value.size === 0 : pe.value === "positions" ? je.value.size === 0 : We.value.size === 0,
+                disabled: pe.value === "trades" ? je.value.size === 0 : pe.value === "positions" ? Ue.value.size === 0 : Ge.value.size === 0,
                 onClick: m[12] || (m[12] = (E) => pe.value === "trades" ? zs() : pe.value === "positions" ? As() : Hs())
-              }, " Attach " + p(pe.value === "trades" ? Ge.value.size : pe.value === "positions" ? je.value.size : We.value.size) + " " + p(pe.value === "trades" ? "Trade(s)" : pe.value === "positions" ? "Position(s)" : "Order(s)"), 9, cu)
+              }, " Attach " + p(pe.value === "trades" ? je.value.size : pe.value === "positions" ? Ue.value.size : Ge.value.size) + " " + p(pe.value === "trades" ? "Trade(s)" : pe.value === "positions" ? "Position(s)" : "Order(s)"), 9, pu)
             ])
           ])
         ])) : X("", !0)
       ]);
     };
   }
-}), vu = /* @__PURE__ */ Es(uu, [["__scopeId", "data-v-248ef636"]]);
+}), Cu = /* @__PURE__ */ Es(mu, [["__scopeId", "data-v-248ef636"]]);
 export {
-  vu as currentPositions,
-  vu as default
+  Cu as currentPositions,
+  Cu as default
 };

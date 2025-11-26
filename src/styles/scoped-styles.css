@@ -1081,21 +1081,6 @@ body.modal-open {
   border-radius: 4px;
 }
 
-.order-section.order-stock-section {
-  background: rgba(33, 150, 243, 0.05);
-  border-left: 3px solid #2196f3;
-}
-
-.order-section.order-call-section {
-  background: rgba(76, 175, 80, 0.05);
-  border-left: 3px solid #4caf50;
-}
-
-.order-section.order-put-section {
-  background: rgba(244, 67, 54, 0.05);
-  border-left: 3px solid #f44336;
-}
-
 .order-section.no-orders {
   background: #f8f9fa;
   padding: 1rem;
@@ -1176,11 +1161,15 @@ body.modal-open {
 
 .stock-purchases-table th {
   padding: 0.75rem 0.5rem;
-  text-align: left;
+  text-align: right;
   font-weight: 600;
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+}
+
+.stock-purchases-table th:first-child {
+  text-align: left;
 }
 
 .stock-purchases-table tbody tr {
@@ -1199,6 +1188,10 @@ body.modal-open {
 .stock-purchases-table td {
   padding: 0.6rem 0.5rem;
   color: #495057;
+  text-align: right;
+}
+.stock-purchases-table td:first-child {
+  text-align: left;
 }
 
 .stock-purchases-table .text-right {
@@ -1235,6 +1228,7 @@ body.modal-open {
   gap: 0.3rem;
   transition: all 0.2s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: auto;
 }
 
 .copy-button:hover {
@@ -1258,6 +1252,25 @@ body.modal-open {
 .stock-section-half {
   flex: 1;
   min-width: 0; /* Allows flex items to shrink below their content size */
+}
+
+.parent-stock-container {
+  background: rgba(33, 150, 243, 0.05);
+  border-left: 3px solid #2196f3;
+  padding: 0.5rem;
+  margin: 1rem 0;
+}
+.parent-put-container{
+  background: rgba(244, 67, 54, 0.05);
+  border-left: 3px solid #f44336;
+  padding: 0.5rem;
+  margin: 1rem 0;
+}
+.parent-call-container{
+  background: rgba(76, 175, 80, 0.05);
+  border-left: 3px solid #4caf50;
+  padding: 0.5rem;
+  margin: 1rem 0;
 }
 
 /* Responsive: stack on smaller screens */

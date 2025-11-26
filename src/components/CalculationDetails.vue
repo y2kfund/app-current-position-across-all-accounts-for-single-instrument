@@ -43,6 +43,7 @@ interface OrderGroup {
   putBuybacks: OrderCalculation[]
   callSales: OrderCalculation[]
   callBuybacks: OrderCalculation[]
+  stockPurchaseCost: number
   totalStockCost: number
   stockSaleProceeds: number
   netStockCost: number
@@ -501,359 +502,368 @@ function parseOrderSymbol(symbolText: string): string {
             </div>
             <transition name="slide-fade">
               <div v-show="expandedGroups.has(groupIndex)" class="group-content">
-                
-                <!-- Stock Purchases and Sales Side by Side -->
-                <div class="stock-sections-container">
-                  <!-- Stock Purchases -->
-                  <div class="stock-section-half">
-                    <div v-if="group.stockPurchases && group.stockPurchases.length > 0" class="order-section order-stock-section">
-                      <div class="order-header" style="display: flex; justify-content: space-between; align-items: center;">
-                        <span>📍 Stock Purchases ({{ group.stockPurchases.length }})</span>
-                        <button 
-                          class="copy-button" 
-                          @click="copyStockPurchasesToClipboard(group.stockPurchases, groupIndex)"
-                          title="Copy to clipboard (Excel-ready)"
-                        >
-                          📋 Copy
-                        </button>
-                      </div>
-                      
-                      <!-- Stock Purchases Table -->
-                      <div class="stock-table-wrapper">
-                        <table class="stock-purchases-table">
-                          <thead>
-                            <tr>
-                              <th>Date</th>
-                              <th>Quantity</th>
-                              <th>Avg Price</th>
-                              <th>Total Cost</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr v-for="(order, orderIndex) in sortOrdersByDate(group.stockPurchases)" :key="`stock-${groupIndex}-${orderIndex}`">
-                              <td>{{ formatOrderDate(order.orderDate) }}</td>
-                              <td class="text-right">{{ order.quantity.toLocaleString() }}</td>
-                              <td class="text-right">${{ Number(order.avgPrice).toFixed(2) }}</td>
-                              <td class="text-right">${{ Number(order.totalCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</td>
-                            </tr>
-                          </tbody>
-                          <tfoot>
-                            <tr class="total-row">
-                              <td><strong>Total</strong></td>
-                              <td class="text-right"><strong>{{ group.stockPurchases.reduce((sum, o) => sum + o.quantity, 0).toLocaleString() }}</strong></td>
-                              <td class="text-right">-</td>
-                              <td class="text-right"><strong>${{ group.stockPurchases.reduce((sum, o) => sum + Number(o.totalCost), 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></td>
-                            </tr>
-                          </tfoot>
-                        </table>
-                      </div>
-                    </div>
-                    <div v-else class="order-section no-orders">No stock purchases found</div>
-                  </div>
-
-                  <!-- Stock Sales -->
-                  <div class="stock-section-half">
-                    <div v-if="group.stockSales && group.stockSales.length > 0" class="order-section order-stock-section">
-                      <div class="order-header" style="display: flex; justify-content: space-between; align-items: center;">
-                        <span>💰 Stock Sales ({{ group.stockSales.length }})</span>
-                        <button 
-                          class="copy-button" 
-                          @click="copyStockSalesToClipboard(group.stockSales, groupIndex)"
-                          title="Copy to clipboard (Excel-ready)"
-                        >
-                          📋 Copy
-                        </button>
-                      </div>
-                      
-                      <!-- Stock Sales Table -->
-                      <div class="stock-table-wrapper">
-                        <table class="stock-purchases-table">
-                          <thead>
-                            <tr>
-                              <th>Date</th>
-                              <th>Quantity</th>
-                              <th>Avg Price</th>
-                              <th>Total Proceeds</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr v-for="(order, orderIndex) in sortOrdersByDate(group.stockSales)" :key="`stock-sale-${groupIndex}-${orderIndex}`">
-                              <td>{{ formatOrderDate(order.orderDate) }}</td>
-                              <td class="text-right">{{ order.quantity.toLocaleString() }}</td>
-                              <td class="text-right">${{ Number(order.avgPrice).toFixed(2) }}</td>
-                              <td class="text-right">${{ Number(order.totalCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</td>
-                            </tr>
-                          </tbody>
-                          <tfoot>
-                            <tr class="total-row">
-                              <td><strong>Total</strong></td>
-                              <td class="text-right"><strong>{{ group.stockSales.reduce((sum, o) => sum + o.quantity, 0).toLocaleString() }}</strong></td>
-                              <td class="text-right">-</td>
-                              <td class="text-right"><strong>${{ group.stockSales.reduce((sum, o) => sum + Number(o.totalCost), 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></td>
-                            </tr>
-                          </tfoot>
-                        </table>
-                      </div>
-                    </div>
-                    <div v-else class="order-section no-orders">No stock sales found</div>
-                  </div>
-                </div>
-
-                <!-- Net Stock Summary -->
-                <div v-if="group.netStockCost !== undefined || group.totalShares" class="order-section" style="background-color: #f8f9fa; border-left: 3px solid #28a745; padding: 1rem;">
-                  <div style="font-size: 1.1rem; margin-bottom: 0.75rem;">                    
-                    <!-- Net Stock Cost Calculation -->
-                    <div style="margin-bottom: 0.5rem;">
-                      <div style="font-weight: 600; color: #495057; margin-bottom: 0.25rem;">Net Stock Cost:</div>
-                      <div style="margin-left: 1rem; color: #6c757d; font-size: 0.95rem;">
-                        <div>Total Stock Purchases: ${{ group.totalStockCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</div>
-                        <div v-if="group.stockSaleProceeds && group.stockSaleProceeds > 0">Less: Stock Sales: ${{ Math.abs(group.stockSaleProceeds).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</div>
-                        <div style="border-top: 1px solid #dee2e6; margin-top: 0.25rem; padding-top: 0.25rem; font-weight: 600; color: #28a745; font-size: 1.05rem;">
-                          = ${{ (group.netStockCost || group.totalStockCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+                <div class="parent-stock-container">
+                  Section: A
+                  <!-- Stock Purchases and Sales Side by Side -->
+                  <div class="stock-sections-container">
+                    <!-- Stock Purchases -->
+                    <div class="stock-section-half">
+                      <div v-if="group.stockPurchases && group.stockPurchases.length > 0" class="order-section order-stock-section">
+                        <div class="order-header" style="display: flex; justify-content: space-between; align-items: center;">
+                          <span>📍 Stock Purchases ({{ group.stockPurchases.length }})</span>
+                          <button 
+                            class="copy-button" 
+                            @click="copyStockPurchasesToClipboard(group.stockPurchases, groupIndex)"
+                            title="Copy to clipboard (Excel-ready)"
+                          >
+                            📋 Copy
+                          </button>
+                        </div>
+                        
+                        <!-- Stock Purchases Table -->
+                        <div class="stock-table-wrapper">
+                          <table class="stock-purchases-table">
+                            <thead>
+                              <tr>
+                                <th>Settlement Date</th>
+                                <th>Quantity</th>
+                                <th>Avg Price</th>
+                                <th>Total Cost</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr v-for="(order, orderIndex) in sortOrdersByDate(group.stockPurchases)" :key="`stock-${groupIndex}-${orderIndex}`">
+                                <td>{{ formatOrderDate(order.orderDate) }}</td>
+                                <td class="text-right">{{ order.quantity.toLocaleString() }}</td>
+                                <td class="text-right">${{ Number(order.avgPrice).toFixed(2) }}</td>
+                                <td class="text-right">${{ Number(order.totalCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</td>
+                              </tr>
+                            </tbody>
+                            <tfoot>
+                              <tr class="total-row">
+                                <td><strong>Total</strong></td>
+                                <td class="text-right"><strong>{{ group.stockPurchases.reduce((sum, o) => sum + o.quantity, 0).toLocaleString() }}</strong></td>
+                                <td class="text-right">-</td>
+                                <td class="text-right"><strong>${{ group.stockPurchases.reduce((sum, o) => sum + Number(o.totalCost), 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></td>
+                              </tr>
+                            </tfoot>
+                          </table>
                         </div>
                       </div>
+                      <div v-else class="order-section no-orders">No stock purchases found</div>
                     </div>
-                    
-                    <!-- Current Shares Calculation -->
-                    <div>
-                      <div style="font-weight: 600; color: #495057; margin-bottom: 0.25rem;">Current Shares:</div>
-                      <div style="margin-left: 1rem; color: #6c757d; font-size: 0.95rem;">
-                        <div>Total Purchased: {{ group.stockPurchases.reduce((sum, o) => sum + o.quantity, 0).toLocaleString() }} shares</div>
-                        <div v-if="group.stockSales && group.stockSales.length > 0">Less: Sold: {{ group.stockSales.reduce((sum, o) => sum + o.quantity, 0).toLocaleString() }} shares</div>
-                        <div style="border-top: 1px solid #dee2e6; margin-top: 0.25rem; padding-top: 0.25rem; font-weight: 600; color: #28a745; font-size: 1.05rem;">
-                          = {{ group.totalShares.toLocaleString() }} shares
+
+                    <!-- Stock Sales -->
+                    <div class="stock-section-half">
+                      <div v-if="group.stockSales && group.stockSales.length > 0" class="order-section order-stock-section">
+                        <div class="order-header" style="display: flex; justify-content: space-between; align-items: center;">
+                          <span>💰 Stock Sales ({{ group.stockSales.length }})</span>
+                          <button 
+                            class="copy-button" 
+                            @click="copyStockSalesToClipboard(group.stockSales, groupIndex)"
+                            title="Copy to clipboard (Excel-ready)"
+                          >
+                            📋 Copy
+                          </button>
+                        </div>
+                        
+                        <!-- Stock Sales Table -->
+                        <div class="stock-table-wrapper">
+                          <table class="stock-purchases-table">
+                            <thead>
+                              <tr>
+                                <th>Settlement Date</th>
+                                <th>Quantity</th>
+                                <th>Avg Price</th>
+                                <th>Total Proceeds</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr v-for="(order, orderIndex) in sortOrdersByDate(group.stockSales)" :key="`stock-sale-${groupIndex}-${orderIndex}`">
+                                <td>{{ formatOrderDate(order.orderDate) }}</td>
+                                <td class="text-right">{{ order.quantity.toLocaleString() }}</td>
+                                <td class="text-right">${{ Number(order.avgPrice).toFixed(2) }}</td>
+                                <td class="text-right">${{ Number(order.totalCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</td>
+                              </tr>
+                            </tbody>
+                            <tfoot>
+                              <tr class="total-row">
+                                <td><strong>Total</strong></td>
+                                <td class="text-right"><strong>{{ group.stockSales.reduce((sum, o) => sum + o.quantity, 0).toLocaleString() }}</strong></td>
+                                <td class="text-right">-</td>
+                                <td class="text-right"><strong>${{ group.stockSales.reduce((sum, o) => sum + Number(o.totalCost), 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></td>
+                              </tr>
+                            </tfoot>
+                          </table>
                         </div>
                       </div>
+                      <div v-else class="order-section no-orders">No stock sales found</div>
                     </div>
                   </div>
-                </div>
 
-                <!-- Put Sections Side by Side -->
-                <div class="stock-sections-container">
-                  <!-- Put Premium Received -->
-                  <div class="stock-section-half">
-                    <div v-if="group.putSales && group.putSales.length > 0" class="order-section order-put-section">
-                      <div class="order-header" style="display: flex; justify-content: space-between; align-items: center;">
-                        <span>📉 Put Premium Received ({{ group.putSales.length }})</span>
-                        <button 
-                          class="copy-button" 
-                          @click="copyPutSalesToClipboard(group.putSales, groupIndex, group.putPremiumReceived)"
-                          title="Copy to clipboard (Excel-ready)"
-                        >
-                          📋 Copy
-                        </button>
+                  <!-- Net Stock Summary -->
+                  <div v-if="group.netStockCost !== undefined || group.totalShares" class="order-section" style="padding: 1rem;">
+                    <div style="font-size: 1.1rem; margin-bottom: 0.75rem;">                    
+                      <!-- Net Stock Cost Calculation -->
+                      <div style="margin-bottom: 0.5rem;">
+                        <div style="font-weight: 600; color: #495057; margin-bottom: 0.25rem;">Net Stock Cost:</div>
+                        <div style="margin-left: 1rem; color: #6c757d; font-size: 0.95rem;">
+                          <div>Total Stock Purchases: ${{ group.stockPurchaseCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</div>
+                          <div v-if="group.stockSaleProceeds && group.stockSaleProceeds > 0">Less: Stock Sales: ${{ Math.abs(group.stockSaleProceeds).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</div>
+                          <div style="border-top: 1px solid #dee2e6; margin-top: 0.25rem; padding-top: 0.25rem; font-weight: 600; color: #28a745; font-size: 1.05rem;">
+                            = ${{ group.netStockCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+                          </div>
+                        </div>
                       </div>
                       
-                      <div class="stock-table-wrapper">
-                        <table class="stock-purchases-table">
-                          <thead>
-                            <tr>
-                              <th>Option</th>
-                              <th>Date</th>
-                              <th>Quantity</th>
-                              <th>Avg Price</th>
-                              <th>Total Premium</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr v-for="(order, orderIndex) in sortOrdersByDate(group.putSales)" :key="`put-${groupIndex}-${orderIndex}`">
-                              <td>{{ parseOrderSymbol(order.symbol) }}</td>
-                              <td>{{ formatOrderDate(order.orderDate) }}</td>
-                              <td class="text-right">{{ order.quantity.toLocaleString() }}</td>
-                              <td class="text-right">${{ Number(order.avgPrice).toFixed(2) }}</td>
-                              <td class="text-right">${{ Number(order.totalCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</td>
-                            </tr>
-                          </tbody>
-                          <tfoot>
-                            <tr class="total-row">
-                              <td colspan="2"><strong>Total</strong></td>
-                              <td class="text-right"><strong>{{ group.putSales.reduce((sum, o) => sum + o.quantity, 0).toLocaleString() }}</strong></td>
-                              <td class="text-right">-</td>
-                              <td class="text-right"><strong>${{ Math.abs(group.putPremiumReceived).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></td>
-                            </tr>
-                          </tfoot>
-                        </table>
-                      </div>
-                    </div>
-                    <div v-else class="order-section no-orders">No put premium received</div>
-                  </div>
-
-                  <!-- Put Buybacks (Closing Buys) -->
-                  <div class="stock-section-half">
-                    <div v-if="group.putBuybacks && group.putBuybacks.length > 0" class="order-section order-put-section">
-                      <div class="order-header" style="display: flex; justify-content: space-between; align-items: center;">
-                        <span>🔄 Put Buybacks ({{ group.putBuybacks.length }})</span>
-                        <button 
-                          class="copy-button" 
-                          @click="copyPutBuybacksToClipboard(group.putBuybacks, groupIndex, group.putBuybackCost)"
-                          title="Copy to clipboard (Excel-ready)"
-                        >
-                          📋 Copy
-                        </button>
-                      </div>
-                      
-                      <div class="stock-table-wrapper">
-                        <table class="stock-purchases-table">
-                          <thead>
-                            <tr>
-                              <th>Option</th>
-                              <th>Date</th>
-                              <th>Quantity</th>
-                              <th>Avg Price</th>
-                              <th>Total Cost</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr v-for="(order, orderIndex) in sortOrdersByDate(group.putBuybacks)" :key="`put-buyback-${groupIndex}-${orderIndex}`">
-                              <td>{{ parseOrderSymbol(order.symbol) }}</td>
-                              <td>{{ formatOrderDate(order.orderDate) }}</td>
-                              <td class="text-right">{{ order.quantity.toLocaleString() }}</td>
-                              <td class="text-right">${{ Number(order.avgPrice).toFixed(2) }}</td>
-                              <td class="text-right">${{ Number(order.totalCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</td>
-                            </tr>
-                          </tbody>
-                          <tfoot>
-                            <tr class="total-row">
-                              <td colspan="2"><strong>Total</strong></td>
-                              <td class="text-right"><strong>{{ group.putBuybacks.reduce((sum, o) => sum + o.quantity, 0).toLocaleString() }}</strong></td>
-                              <td class="text-right">-</td>
-                              <td class="text-right"><strong>${{ Math.abs(group.putBuybackCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></td>
-                            </tr>
-                          </tfoot>
-                        </table>
-                      </div>
-                    </div>
-                    <div v-else class="order-section no-orders">No put buybacks found</div>
-                  </div>                  
-                </div>
-
-                <!-- Net Put Summary -->
-                <div v-if="(group.putSales && group.putSales.length > 0) || (group.putBuybacks && group.putBuybacks.length > 0)" class="order-section" style="background-color: #fff3e0; border-left: 3px solid #ff9800; padding: 1rem;">
-                  <div style="font-size: 1.1rem; margin-bottom: 0.75rem;">                    
-                    <!-- Net Put Cash Flow Calculation -->
-                    <div>
-                      <div style="font-weight: 600; color: #495057; margin-bottom: 0.25rem;">📊Net Put Cash Flow:</div>
-                      <div style="margin-left: 1rem; color: #6c757d; font-size: 0.95rem;">
-                        <div v-if="group.putPremiumReceived > 0">Put Premium Received: ${{ Math.abs(group.putPremiumReceived).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</div>
-                        <div v-if="group.putBuybackCost && group.putBuybackCost > 0">Less: Put Buyback Cost: ${{ Math.abs(group.putBuybackCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</div>
-                        <div style="border-top: 1px solid #dee2e6; margin-top: 0.25rem; padding-top: 0.25rem; font-weight: 600; color: #ff9800; font-size: 1.05rem;">
-                          = ${{ group.netPutCashFlow.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+                      <!-- Current Shares Calculation -->
+                      <div>
+                        <div style="font-weight: 600; color: #495057; margin-bottom: 0.25rem;">Current Shares:</div>
+                        <div style="margin-left: 1rem; color: #6c757d; font-size: 0.95rem;">
+                          <div>Total Purchased: {{ group.stockPurchases.reduce((sum, o) => sum + o.quantity, 0).toLocaleString() }} shares</div>
+                          <div v-if="group.stockSales && group.stockSales.length > 0">Less: Sold: {{ group.stockSales.reduce((sum, o) => sum + o.quantity, 0).toLocaleString() }} shares</div>
+                          <div style="border-top: 1px solid #dee2e6; margin-top: 0.25rem; padding-top: 0.25rem; font-weight: 600; color: #28a745; font-size: 1.05rem;">
+                            = {{ group.totalShares.toLocaleString() }} shares
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
+
                 </div>
 
-                <!-- Call Sections Side by Side -->
-                <div class="stock-sections-container">
-                  <!-- Call Premiums Received -->
-                  <div class="stock-section-half">
-                    <div v-if="group.callSales && group.callSales.length > 0" class="order-section order-call-section">
-                      <div class="order-header" style="display: flex; justify-content: space-between; align-items: center;">
-                        <span>📞 Call Premiums Received ({{ group.callSales.length }})</span>
-                        <button 
-                          class="copy-button" 
-                          @click="copyCallSalesToClipboard(group.callSales, groupIndex, group.callPremiumReceived)"
-                          title="Copy to clipboard (Excel-ready)"
-                        >
-                          📋 Copy
-                        </button>
+                <div class="parent-put-container">
+                  Section: B
+                  <!-- Put Sections Side by Side -->
+                  <div class="stock-sections-container">
+                    <!-- Put Premium Received -->
+                    <div class="stock-section-half">
+                      <div v-if="group.putSales && group.putSales.length > 0" class="order-section order-put-section">
+                        <div class="order-header" style="display: flex; justify-content: space-between; align-items: center;">
+                          <span>📉 Put Premium Received ({{ group.putSales.length }})</span>
+                          <button 
+                            class="copy-button" 
+                            @click="copyPutSalesToClipboard(group.putSales, groupIndex, group.putPremiumReceived)"
+                            title="Copy to clipboard (Excel-ready)"
+                          >
+                            📋 Copy
+                          </button>
+                        </div>
+                        
+                        <div class="stock-table-wrapper">
+                          <table class="stock-purchases-table">
+                            <thead>
+                              <tr>
+                                <th>Option</th>
+                                <th>Settlement Date</th>
+                                <th>Quantity</th>
+                                <th>Avg Price</th>
+                                <th>Total Premium</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr v-for="(order, orderIndex) in sortOrdersByDate(group.putSales)" :key="`put-${groupIndex}-${orderIndex}`">
+                                <td>{{ parseOrderSymbol(order.symbol) }}</td>
+                                <td>{{ formatOrderDate(order.orderDate) }}</td>
+                                <td class="text-right">{{ order.quantity.toLocaleString() }}</td>
+                                <td class="text-right">${{ Number(order.avgPrice).toFixed(2) }}</td>
+                                <td class="text-right">${{ Number(order.totalCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</td>
+                              </tr>
+                            </tbody>
+                            <tfoot>
+                              <tr class="total-row">
+                                <td colspan="2"><strong>Total</strong></td>
+                                <td class="text-right"><strong>{{ group.putSales.reduce((sum, o) => sum + o.quantity, 0).toLocaleString() }}</strong></td>
+                                <td class="text-right">-</td>
+                                <td class="text-right"><strong>${{ Math.abs(group.putPremiumReceived).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></td>
+                              </tr>
+                            </tfoot>
+                          </table>
+                        </div>
                       </div>
-                      
-                      <div class="stock-table-wrapper">
-                        <table class="stock-purchases-table">
-                          <thead>
-                            <tr>
-                              <th>Option</th>
-                              <th>Date</th>
-                              <th>Quantity</th>
-                              <th>Avg Price</th>
-                              <th>Total Premium</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr v-for="(order, orderIndex) in sortOrdersByDate(group.callSales)" :key="`call-${groupIndex}-${orderIndex}`">
-                              <td>{{ parseOrderSymbol(order.symbol) }}</td>
-                              <td>{{ formatOrderDate(order.orderDate) }}</td>
-                              <td class="text-right">{{ order.quantity.toLocaleString() }}</td>
-                              <td class="text-right">${{ Number(order.avgPrice).toFixed(2) }}</td>
-                              <td class="text-right">${{ Number(order.totalCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</td>
-                            </tr>
-                          </tbody>
-                          <tfoot>
-                            <tr class="total-row">
-                              <td colspan="2"><strong>Total</strong></td>
-                              <td class="text-right"><strong>{{ group.callSales.reduce((sum, o) => sum + o.quantity, 0).toLocaleString() }}</strong></td>
-                              <td class="text-right">-</td>
-                              <td class="text-right"><strong>${{ Math.abs(group.callPremiumReceived).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></td>
-                            </tr>
-                          </tfoot>
-                        </table>
-                      </div>
+                      <div v-else class="order-section no-orders">No put premium received</div>
                     </div>
-                    <div v-else class="order-section no-orders">No call premium received</div>
+
+                    <!-- Put Buybacks (Closing Buys) -->
+                    <div class="stock-section-half">
+                      <div v-if="group.putBuybacks && group.putBuybacks.length > 0" class="order-section order-put-section">
+                        <div class="order-header" style="display: flex; justify-content: space-between; align-items: center;">
+                          <span>🔄 Put Buybacks ({{ group.putBuybacks.length }})</span>
+                          <button 
+                            class="copy-button" 
+                            @click="copyPutBuybacksToClipboard(group.putBuybacks, groupIndex, group.putBuybackCost)"
+                            title="Copy to clipboard (Excel-ready)"
+                          >
+                            📋 Copy
+                          </button>
+                        </div>
+                        
+                        <div class="stock-table-wrapper">
+                          <table class="stock-purchases-table">
+                            <thead>
+                              <tr>
+                                <th>Option</th>
+                                <th>Settlement Date</th>
+                                <th>Quantity</th>
+                                <th>Avg Price</th>
+                                <th>Total Cost</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr v-for="(order, orderIndex) in sortOrdersByDate(group.putBuybacks)" :key="`put-buyback-${groupIndex}-${orderIndex}`">
+                                <td>{{ parseOrderSymbol(order.symbol) }}</td>
+                                <td>{{ formatOrderDate(order.orderDate) }}</td>
+                                <td class="text-right">{{ order.quantity.toLocaleString() }}</td>
+                                <td class="text-right">${{ Number(order.avgPrice).toFixed(2) }}</td>
+                                <td class="text-right">${{ Number(order.totalCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</td>
+                              </tr>
+                            </tbody>
+                            <tfoot>
+                              <tr class="total-row">
+                                <td colspan="2"><strong>Total</strong></td>
+                                <td class="text-right"><strong>{{ group.putBuybacks.reduce((sum, o) => sum + o.quantity, 0).toLocaleString() }}</strong></td>
+                                <td class="text-right">-</td>
+                                <td class="text-right"><strong>${{ Math.abs(group.putBuybackCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></td>
+                              </tr>
+                            </tfoot>
+                          </table>
+                        </div>
+                      </div>
+                      <div v-else class="order-section no-orders">No put buybacks found</div>
+                    </div>                  
                   </div>
 
-                  <!-- Call Buybacks (Closing Buys) -->
-                  <div class="stock-section-half">
-                    <div v-if="group.callBuybacks && group.callBuybacks.length > 0" class="order-section order-call-section">
-                      <div class="order-header" style="display: flex; justify-content: space-between; align-items: center;">
-                        <span>🔄 Call Buybacks ({{ group.callBuybacks.length }})</span>
-                        <button 
-                          class="copy-button" 
-                          @click="copyCallBuybacksToClipboard(group.callBuybacks, groupIndex, group.callBuybackCost)"
-                          title="Copy to clipboard (Excel-ready)"
-                        >
-                          📋 Copy
-                        </button>
-                      </div>
-                      
-                      <div class="stock-table-wrapper">
-                        <table class="stock-purchases-table">
-                          <thead>
-                            <tr>
-                              <th>Option</th>
-                              <th>Date</th>
-                              <th>Quantity</th>
-                              <th>Avg Price</th>
-                              <th>Total Cost</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr v-for="(order, orderIndex) in sortOrdersByDate(group.callBuybacks)" :key="`call-buyback-${groupIndex}-${orderIndex}`">
-                              <td>{{ parseOrderSymbol(order.symbol) }}</td>
-                              <td>{{ formatOrderDate(order.orderDate) }}</td>
-                              <td class="text-right">{{ order.quantity.toLocaleString() }}</td>
-                              <td class="text-right">${{ Number(order.avgPrice).toFixed(2) }}</td>
-                              <td class="text-right">${{ Number(order.totalCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</td>
-                            </tr>
-                          </tbody>
-                          <tfoot>
-                            <tr class="total-row">
-                              <td colspan="2"><strong>Total</strong></td>
-                              <td class="text-right"><strong>{{ group.callBuybacks.reduce((sum, o) => sum + o.quantity, 0).toLocaleString() }}</strong></td>
-                              <td class="text-right">-</td>
-                              <td class="text-right"><strong>${{ Math.abs(group.callBuybackCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></td>
-                            </tr>
-                          </tfoot>
-                        </table>
+                  <!-- Net Put Summary -->
+                  <div v-if="(group.putSales && group.putSales.length > 0) || (group.putBuybacks && group.putBuybacks.length > 0)" class="order-section" style="padding: 1rem;">
+                    <div style="font-size: 1.1rem; margin-bottom: 0.75rem;">                    
+                      <!-- Net Put Cash Flow Calculation -->
+                      <div>
+                        <div style="font-weight: 600; color: #495057; margin-bottom: 0.25rem;">📊Net Put Cash Flow:</div>
+                        <div style="margin-left: 1rem; color: #6c757d; font-size: 0.95rem;">
+                          <div v-if="group.putPremiumReceived > 0">Put Premium Received: ${{ Math.abs(group.putPremiumReceived).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</div>
+                          <div v-if="group.putBuybackCost && group.putBuybackCost > 0">Less: Put Buyback Cost: ${{ Math.abs(group.putBuybackCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</div>
+                          <div style="border-top: 1px solid #dee2e6; margin-top: 0.25rem; padding-top: 0.25rem; font-weight: 600; color: #ff9800; font-size: 1.05rem;">
+                            = ${{ group.netPutCashFlow.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    <div v-else class="order-section no-orders">No call buybacks found</div>
                   </div>
                 </div>
 
-                <!-- Net Call Summary -->
-                <div v-if="(group.callSales && group.callSales.length > 0) || (group.callBuybacks && group.callBuybacks.length > 0)" class="order-section" style="background-color: #e3f2fd; border-left: 3px solid #2196f3; padding: 1rem;">
-                  <div style="font-size: 1.1rem; margin-bottom: 0.75rem;">                    
-                    <!-- Net Call Cash Flow Calculation -->
-                    <div>
-                      <div style="font-weight: 600; color: #495057; margin-bottom: 0.25rem;">📊 Net Call Cash Flow:</div>
-                      <div style="margin-left: 1rem; color: #6c757d; font-size: 0.95rem;">
-                        <div v-if="group.callPremiumReceived > 0">Call Premium Received: ${{ Math.abs(group.callPremiumReceived).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</div>
-                        <div v-if="group.callBuybackCost && group.callBuybackCost > 0">Less: Call Buyback Cost: ${{ Math.abs(group.callBuybackCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</div>
-                        <div style="border-top: 1px solid #dee2e6; margin-top: 0.25rem; padding-top: 0.25rem; font-weight: 600; color: #2196f3; font-size: 1.05rem;">
-                          = ${{ group.netCallCashFlow.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+                <div class="parent-call-container">
+                  Section: C
+                  <!-- Call Sections Side by Side -->
+                  <div class="stock-sections-container">
+                    <!-- Call Premiums Received -->
+                    <div class="stock-section-half">
+                      <div v-if="group.callSales && group.callSales.length > 0" class="order-section order-call-section">
+                        <div class="order-header" style="display: flex; justify-content: space-between; align-items: center;">
+                          <span>📞 Call Premiums Received ({{ group.callSales.length }})</span>
+                          <button 
+                            class="copy-button" 
+                            @click="copyCallSalesToClipboard(group.callSales, groupIndex, group.callPremiumReceived)"
+                            title="Copy to clipboard (Excel-ready)"
+                          >
+                            📋 Copy
+                          </button>
+                        </div>
+                        
+                        <div class="stock-table-wrapper">
+                          <table class="stock-purchases-table">
+                            <thead>
+                              <tr>
+                                <th>Option</th>
+                                <th>Settlement Date</th>
+                                <th>Quantity</th>
+                                <th>Avg Price</th>
+                                <th>Total Premium</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr v-for="(order, orderIndex) in sortOrdersByDate(group.callSales)" :key="`call-${groupIndex}-${orderIndex}`">
+                                <td>{{ parseOrderSymbol(order.symbol) }}</td>
+                                <td>{{ formatOrderDate(order.orderDate) }}</td>
+                                <td class="text-right">{{ order.quantity.toLocaleString() }}</td>
+                                <td class="text-right">${{ Number(order.avgPrice).toFixed(2) }}</td>
+                                <td class="text-right">${{ Number(order.totalCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</td>
+                              </tr>
+                            </tbody>
+                            <tfoot>
+                              <tr class="total-row">
+                                <td colspan="2"><strong>Total</strong></td>
+                                <td class="text-right"><strong>{{ group.callSales.reduce((sum, o) => sum + o.quantity, 0).toLocaleString() }}</strong></td>
+                                <td class="text-right">-</td>
+                                <td class="text-right"><strong>${{ Math.abs(group.callPremiumReceived).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></td>
+                              </tr>
+                            </tfoot>
+                          </table>
+                        </div>
+                      </div>
+                      <div v-else class="order-section no-orders">No call premium received</div>
+                    </div>
+
+                    <!-- Call Buybacks (Closing Buys) -->
+                    <div class="stock-section-half">
+                      <div v-if="group.callBuybacks && group.callBuybacks.length > 0" class="order-section order-call-section">
+                        <div class="order-header" style="display: flex; justify-content: space-between; align-items: center;">
+                          <span>🔄 Call Buybacks ({{ group.callBuybacks.length }})</span>
+                          <button 
+                            class="copy-button" 
+                            @click="copyCallBuybacksToClipboard(group.callBuybacks, groupIndex, group.callBuybackCost)"
+                            title="Copy to clipboard (Excel-ready)"
+                          >
+                            📋 Copy
+                          </button>
+                        </div>
+                        
+                        <div class="stock-table-wrapper">
+                          <table class="stock-purchases-table">
+                            <thead>
+                              <tr>
+                                <th>Option</th>
+                                <th>Settlement Date</th>
+                                <th>Quantity</th>
+                                <th>Avg Price</th>
+                                <th>Total Cost</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr v-for="(order, orderIndex) in sortOrdersByDate(group.callBuybacks)" :key="`call-buyback-${groupIndex}-${orderIndex}`">
+                                <td>{{ parseOrderSymbol(order.symbol) }}</td>
+                                <td>{{ formatOrderDate(order.orderDate) }}</td>
+                                <td class="text-right">{{ order.quantity.toLocaleString() }}</td>
+                                <td class="text-right">${{ Number(order.avgPrice).toFixed(2) }}</td>
+                                <td class="text-right">${{ Number(order.totalCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</td>
+                              </tr>
+                            </tbody>
+                            <tfoot>
+                              <tr class="total-row">
+                                <td colspan="2"><strong>Total</strong></td>
+                                <td class="text-right"><strong>{{ group.callBuybacks.reduce((sum, o) => sum + o.quantity, 0).toLocaleString() }}</strong></td>
+                                <td class="text-right">-</td>
+                                <td class="text-right"><strong>${{ Math.abs(group.callBuybackCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></td>
+                              </tr>
+                            </tfoot>
+                          </table>
+                        </div>
+                      </div>
+                      <div v-else class="order-section no-orders">No call buybacks found</div>
+                    </div>
+                  </div>
+
+                  <!-- Net Call Summary -->
+                  <div v-if="(group.callSales && group.callSales.length > 0) || (group.callBuybacks && group.callBuybacks.length > 0)" class="order-section" style="padding: 1rem;">
+                    <div style="font-size: 1.1rem; margin-bottom: 0.75rem;">                    
+                      <!-- Net Call Cash Flow Calculation -->
+                      <div>
+                        <div style="font-weight: 600; color: #495057; margin-bottom: 0.25rem;">📊 Net Call Cash Flow:</div>
+                        <div style="margin-left: 1rem; color: #6c757d; font-size: 0.95rem;">
+                          <div v-if="group.callPremiumReceived > 0">Call Premium Received: ${{ Math.abs(group.callPremiumReceived).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</div>
+                          <div v-if="group.callBuybackCost && group.callBuybackCost > 0">Less: Call Buyback Cost: ${{ Math.abs(group.callBuybackCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</div>
+                          <div style="border-top: 1px solid #dee2e6; margin-top: 0.25rem; padding-top: 0.25rem; font-weight: 600; color: #2196f3; font-size: 1.05rem;">
+                            = ${{ group.netCallCashFlow.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -872,7 +882,7 @@ function parseOrderSymbol(symbolText: string): string {
                   <div class="calc-line indent" v-if="group.callPremiumReceived > 0">Call Premium Received: +${{ Math.abs(group.callPremiumReceived).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</div>
                   <div class="calc-line indent" v-if="group.callBuybackCost && group.callBuybackCost > 0">Call Buyback Cost: -${{ Math.abs(group.callBuybackCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</div>
                   <div class="calc-line indent" v-if="group.netCallCashFlow !== undefined && group.netCallCashFlow !== group.callPremiumReceived"><strong>Net Call Cash Flow: ${{ group.netCallCashFlow.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></div> -->
-                  <div class="calc-line indent" style="border-top: 1px solid #dee2e6; margin-top: 0.5rem; padding-top: 0.5rem;"><strong>Total Net Cost = ${{ (group.netStockCost || group.totalStockCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} - ${{ Math.abs(group.netPutCashFlow || group.putPremiumReceived).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} - ${{ Math.abs(group.netCallCashFlow || group.callPremiumReceived).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} = ${{ group.netCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></div>
+                  <div class="calc-line indent" style="border-top: 1px solid #dee2e6; margin-top: 0.5rem; padding-top: 0.5rem;"><strong>Total Net Cost = ${{ group.netStockCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} - ${{ Math.abs(group.netPutCashFlow || group.putPremiumReceived).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} - ${{ Math.abs(group.netCallCashFlow || group.callPremiumReceived).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} = ${{ group.netCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></div>
                   <div class="calc-line indent"><strong>Adjusted Avg Price = ${{ group.netCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} ÷ {{ group.totalShares.toLocaleString() }} = ${{ group.adjustedAvgPricePerShare.toFixed(2) }} per share</strong></div>
                 </div>
               </div>
