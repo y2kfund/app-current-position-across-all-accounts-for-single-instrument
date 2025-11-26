@@ -24,7 +24,7 @@ interface currentPositionsProps {
 
 const props = withDefaults(defineProps<currentPositionsProps>(), {
   symbolRoot: 'META',
-  userId: '4fbec15d-2316-4805-b2a4-5cd2115a5ac8'
+  userId: '67e578fd-2cf7-48a4-b028-a11a3f89bb9b'
 })
 
 // State for showing/hiding details
@@ -633,6 +633,7 @@ const { tableDiv, initializeTabulator, isTableInitialized, tabulator } = useTabu
       const posKey = getRowPositionKey(data)
       const attachedTradeIds = positionTradesMap.value.get(posKey)
       const attachedPositionKeys = positionPositionsMap.value.get(posKey)
+      const attachedOrderIds = positionOrdersMap.value.get(posKey)
       const isExpanded = expandedPositions.value.has(posKey)
       
       console.log('🎨 Row formatter running for:', posKey, {
@@ -655,7 +656,8 @@ const { tableDiv, initializeTabulator, isTableInitialized, tabulator } = useTabu
 
       if (isExpanded && (
         (attachedTradeIds && attachedTradeIds.size > 0) || 
-        (attachedPositionKeys && attachedPositionKeys.size > 0)
+        (attachedPositionKeys && attachedPositionKeys.size > 0) ||
+        (attachedOrderIds && attachedOrderIds.size > 0)
       )) {
         console.log('📦 Creating nested tables for:', posKey)
         processingPositions.value.add(posKey)
