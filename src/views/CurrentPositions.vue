@@ -1434,19 +1434,42 @@ function toggleAccountExpansion(accountId: string) {
 
             <div class="summary-card card-orange">
               <div class="summary-label">Average cost per share</div><!--Adjusted average cost price of {{ props.symbolRoot }} per share-->
-              <div v-if="isAvgPriceFromOrdersLoading" class="summary-value">
+              <div v-if="isAvgPriceFromOrdersLoading || isAvgPriceFromOrdersLoadingExitToday" class="summary-value">
                 <span class="loading-spinner">⏳</span> Loading...
               </div>
-              <div v-else-if="avgPriceFromOrdersError" class="summary-value error">
+              <div v-else-if="avgPriceFromOrdersError || avgPriceFromOrdersErrorExitToday" class="summary-value error">
                 ❌ Error
               </div>
-              <div class="summary-value-container-vertical">
-                <div class="summary-value average-cost-price clickable-price" @click="toggleCalculationDetails">
-                  <span v-if="overallAdjustedAvgPriceFromOrders !== null">
-                  ${{ overallAdjustedAvgPriceFromOrders.toFixed(2) }}
+              <div v-else class="summary-value-container-vertical">
+                <!-- Hold Till Expiry Price -->
+                <div 
+                  class="summary-value average-cost-price clickable-price" 
+                  @click="avgPriceCalculationTab = 'hold-orders'; toggleCalculationDetails()"
+                  style="margin-bottom: 0.5rem;"
+                >
+                  <span style="font-size: 0.85rem; color: #6c757d; display: block; margin-bottom: 0.25rem;">
+                    If hold till expiry:
+                  </span>
+                  <span v-if="overallAdjustedAvgPriceFromOrders !== null" style="font-size: 1.2rem; font-weight: 600;">
+                    ${{ overallAdjustedAvgPriceFromOrders.toFixed(2) }}
                   </span>
                   <span v-else>N/A</span>
-                  <span class="toggle-icon">{{ showCalculationDetails ? '▼' : '▶' }}</span>
+                </div>
+                
+                <!-- Exit Today Price -->
+                <div 
+                  class="summary-value average-cost-price clickable-price" 
+                  @click="avgPriceCalculationTab = 'exit-orders'; toggleCalculationDetails()"
+                  style="padding-top: 0.5rem; border-top: 1px solid #dee2e6;"
+                >
+                  <span style="font-size: 0.85rem; color: #6c757d; display: block; margin-bottom: 0.25rem;">
+                    If exit today:
+                  </span>
+                  <span v-if="overallAdjustedAvgPriceFromOrdersExitToday !== null" style="font-size: 1.2rem; font-weight: 600;">
+                    ${{ overallAdjustedAvgPriceFromOrdersExitToday.toFixed(2) }} <span class="toggle-icon">{{ showCalculationDetails ? '▼' : '▶' }}</span>
+                  </span>
+                  
+                  <span v-else>N/A</span>
                 </div>
               </div>
             </div>
