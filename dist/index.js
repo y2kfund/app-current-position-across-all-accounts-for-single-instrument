@@ -11694,7 +11694,7 @@ function Ia(h, e) {
                 if (Be)
                   console.warn(`      ⚠️ Error querying position: ${Be.message}`);
                 else if (ie && ie.price !== 0 && ie.market_value !== 0 && ie.unrealized_pnl !== null && ie.unrealized_pnl !== void 0)
-                  $e = Math.abs(ie.unrealized_pnl), _t = "position", console.log(`      ✅ Valid position found (ID: ${ie.id})`), console.log(`      📊 Price: $${ie.price}, Market Value: $${ie.market_value}`), console.log(`      💰 Using unrealized P&L: $${$e.toFixed(2)} (EXIT TODAY scenario)`);
+                  $e = ie.unrealized_pnl, _t = "position", console.log(`      ✅ Valid position found (ID: ${ie.id})`), console.log(`      📊 Price: $${ie.price}, Market Value: $${ie.market_value}`), console.log(`      💰 Using unrealized P&L: $${$e.toFixed(2)} (EXIT TODAY scenario)`);
                 else if (ie) {
                   let qe = "";
                   ie.price === 0 ? qe = "price is zero" : ie.market_value === 0 ? qe = "market_value is zero" : (ie.unrealized_pnl === null || ie.unrealized_pnl === void 0) && (qe = "unrealized_pnl is null/undefined"), _t = "order-fallback", console.log(`      ⚠️ Position found (ID: ${ie.id}) but invalid data`), console.log(`      📊 Price: ${ie.price}, Market Value: ${ie.market_value}`), console.log(`      📊 Unrealized P&L: ${ie.unrealized_pnl}`), console.log(`      ❌ Validation failed: ${qe}`), console.log(`      💰 Fallback to order premium: $${$e.toFixed(2)}`);

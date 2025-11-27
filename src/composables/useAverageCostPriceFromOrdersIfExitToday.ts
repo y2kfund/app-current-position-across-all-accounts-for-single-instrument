@@ -309,7 +309,7 @@ export function useAverageCostPriceFromOrdersIfExitToday(
                   
                   if (isValidPosition) {
                     // Valid position with market data
-                    callValueToUse = Math.abs(positionData.unrealized_pnl)
+                    callValueToUse = positionData.unrealized_pnl
                     valueSource = 'position'
                     console.log(`      ✅ Valid position found (ID: ${positionData.id})`)
                     console.log(`      📊 Price: $${positionData.price}, Market Value: $${positionData.market_value}`)
