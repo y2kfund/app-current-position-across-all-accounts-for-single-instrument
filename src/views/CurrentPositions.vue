@@ -24,7 +24,7 @@ interface currentPositionsProps {
 }
 
 const props = withDefaults(defineProps<currentPositionsProps>(), {
-  symbolRoot: 'MSTR',
+  symbolRoot: 'META',
   userId: '4fbec15d-2316-4805-b2a4-5cd2115a5ac8'
 })
 
@@ -374,6 +374,46 @@ function formatTradeDate(dateStr: string): string {
   const day = dt.getDate().toString().padStart(2, '0')
   
   return `${year}-${month}-${day}`
+}
+
+function formatOrderDate(dateStr: string): string {
+  if (!dateStr) return ''
+  
+  // Split by semicolon to separate date and time
+  const [datePart] = String(dateStr).trim().split(';')
+  
+  // Check if it's in DD/MM/YYYY format
+  const ddmmyyyyMatch = /^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/.exec(datePart)
+  
+  if (ddmmyyyyMatch) {
+    const day = parseInt(ddmmyyyyMatch[1])
+    const month = parseInt(ddmmyyyyMatch[2]) - 1 // 0-indexed
+    let year = parseInt(ddmmyyyyMatch[3])
+    if (year < 100) {
+      year = 2000 + year
+    }
+    
+    const dt = new Date(year, month, day)
+    
+    // Return formatted date in PST (e.g., "Oct 31, 2025")
+    return dt.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      timeZone: 'America/Los_Angeles'
+    })
+  }
+  
+  // Fallback for other formats
+  const dt = new Date(datePart)
+  if (isNaN(dt.getTime())) return String(dateStr)
+  
+  return dt.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    timeZone: 'America/Los_Angeles'
+  })
 }
 
 function formatCurrency(value: number): string {
@@ -1667,7 +1707,7 @@ function toggleAccountExpansion(accountId: string) {
                   </div>
                   <div class="calc-line calculation-result">
                     <strong :class="{ 'profit-text': totalExitedPnL && totalExitedPnL >= 0, 'loss-text': totalExitedPnL && totalExitedPnL < 0 }">
-                      Total MTM P&L: {{ totalExitedPnL && totalExitedPnL >= 0 ? '+' : '' }}${{ (totalExitedPnL || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+                      Total FIFO P&L: {{ totalExitedPnL && totalExitedPnL >= 0 ? '+' : '' }}${{ (totalExitedPnL || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
                     </strong>
                   </div>
                 </div>
@@ -1686,8 +1726,8 @@ function toggleAccountExpansion(accountId: string) {
                     <span class="account-title">📋 {{ accountBreakdown.accountDisplayName }}</span>
                     <span class="account-summary">
                       ({{ accountBreakdown.orderCount }} orders • 
-                      <span :class="{ 'profit-text': accountBreakdown.totalMtmPnL >= 0, 'loss-text': accountBreakdown.totalMtmPnL < 0 }">
-                        {{ accountBreakdown.totalMtmPnL >= 0 ? '+' : '' }}${{ accountBreakdown.totalMtmPnL.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+                      <span :class="{ 'profit-text': accountBreakdown.totalFifoPnlRealized >= 0, 'loss-text': accountBreakdown.totalFifoPnlRealized < 0 }">
+                        {{ accountBreakdown.totalFifoPnlRealized >= 0 ? '+' : '' }}${{ accountBreakdown.totalFifoPnlRealized.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
                       </span>)
                     </span>
                   </div>
@@ -1698,17 +1738,18 @@ function toggleAccountExpansion(accountId: string) {
                         <table class="modern-table">
                           <thead>
                             <tr>
+                              <th>Order Date</th>
                               <th>Symbol</th>
                               <th>Side</th>
                               <th class="text-right">Quantity</th>
                               <th class="text-right">Trade Price</th>
                               <th class="text-right">Trade Money</th>
-                              <th class="text-right">MTM P&L</th>
-                              <th class="text-right">Date</th>
+                              <th class="text-right">FIFO P&L</th>
                             </tr>
                           </thead>
                           <tbody>
                             <tr v-for="order in accountBreakdown.orders" :key="order.id">
+                              <td>{{ formatOrderDate(order.dateTime) }}</td>
                               <td>
                                 <span v-for="tag in extractTagsFromTradesSymbol(order.symbol)" :key="tag" class="fi-tag position-tag">{{ tag }}</span>
                               </td>
@@ -1720,17 +1761,16 @@ function toggleAccountExpansion(accountId: string) {
                               <td class="text-right">{{ formatNumber(order.quantity) }}</td>
                               <td class="text-right">{{ formatCurrency(order.tradePrice) }}</td>
                               <td class="text-right">{{ formatCurrency(order.tradeMoney) }}</td>
-                              <td class="text-right" :class="{ 'profit-text': order.mtmPnl >= 0, 'loss-text': order.mtmPnl < 0 }">
-                                {{ order.mtmPnl >= 0 ? '+' : '' }}{{ formatCurrency(order.mtmPnl) }}
+                              <td class="text-right" :class="{ 'profit-text': order.fifoPnlRealized >= 0, 'loss-text': order.fifoPnlRealized < 0 }">
+                                {{ order.fifoPnlRealized >= 0 ? '+' : '' }}{{ formatCurrency(order.fifoPnlRealized) }}
                               </td>
-                              <td class="text-right">{{ formatTradeDate(order.dateTime) }}</td>
                             </tr>
                           </tbody>
                           <tfoot>
                             <tr class="total-row">
                               <td colspan="5" class="total-label"><strong>Total</strong></td>
-                              <td class="text-right total-value" :class="{ 'profit-text': accountBreakdown.totalMtmPnL >= 0, 'loss-text': accountBreakdown.totalMtmPnL < 0 }">
-                                <strong>{{ accountBreakdown.totalMtmPnL >= 0 ? '+' : '' }}{{ formatCurrency(accountBreakdown.totalMtmPnL) }}</strong>
+                              <td class="text-right total-value" :class="{ 'profit-text': accountBreakdown.totalFifoPnlRealized >= 0, 'loss-text': accountBreakdown.totalFifoPnlRealized < 0 }">
+                                <strong>{{ accountBreakdown.totalFifoPnlRealized >= 0 ? '+' : '' }}{{ formatCurrency(accountBreakdown.totalFifoPnlRealized) }}</strong>
                               </td>
                               <td></td>
                             </tr>

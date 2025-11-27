@@ -8,7 +8,7 @@ interface ExitedOrder {
   quantity: number
   tradePrice: number
   tradeMoney: number
-  mtmPnl: number
+  fifoPnlRealized: number
   dateTime: string
   internal_account_id: string
 }
@@ -16,13 +16,13 @@ interface ExitedOrder {
 interface AccountBreakdown {
   internal_account_id: string
   accountDisplayName: string
-  totalMtmPnL: number
+  totalFifoPnlRealized: number
   orderCount: number
   orders: ExitedOrder[]
 }
 
 interface ExitedPnLBreakdown {
-  totalMtmPnL: number
+  totalFifoPnlRealized: number
   orderCount: number
   accountBreakdowns: AccountBreakdown[]
 }
@@ -118,7 +118,7 @@ export function useExitedPositionsPnL(
       let query = supabase
         .schema('hf')
         .from('orders')
-        .select('id, symbol, buySell, quantity, tradePrice, tradeMoney, mtmPnl, dateTime, internal_account_id')
+        .select('id, symbol, buySell, quantity, tradePrice, tradeMoney, fifoPnlRealized, dateTime, internal_account_id')
         .like('symbol', symbolPattern)
 
       // Exclude attached orders if any exist
@@ -149,7 +149,7 @@ export function useExitedPositionsPnL(
           quantity: parseFloat(order.quantity) || 0,
           tradePrice: parseFloat(order.tradePrice) || 0,
           tradeMoney: parseFloat(order.tradeMoney) || 0,
-          mtmPnl: parseFloat(order.mtmPnl) || 0,
+          fifoPnlRealized: parseFloat(order.fifoPnlRealized) || 0,
           dateTime: order.dateTime,
           internal_account_id: accountId
         })
@@ -160,7 +160,7 @@ export function useExitedPositionsPnL(
       let totalPnL = 0
 
       for (const [accountId, accountOrders] of ordersByAccount) {
-        const accountPnL = accountOrders.reduce((sum, order) => sum + order.mtmPnl, 0)
+        const accountPnL = accountOrders.reduce((sum, order) => sum + order.fifoPnlRealized, 0)
         totalPnL += accountPnL
 
         const displayName = await getAccountDisplayName(accountId)
@@ -168,7 +168,7 @@ export function useExitedPositionsPnL(
         accountBreakdowns.push({
           internal_account_id: accountId,
           accountDisplayName: displayName,
-          totalMtmPnL: accountPnL,
+          totalFifoPnlRealized: accountPnL,
           orderCount: accountOrders.length,
           orders: accountOrders
         })
@@ -180,7 +180,7 @@ export function useExitedPositionsPnL(
       totalExitedPnL.value = totalPnL
 
       exitedOrdersBreakdown.value = {
-        totalMtmPnL: totalPnL,
+        totalFifoPnlRealized: totalPnL,
         orderCount: orders?.length || 0,
         accountBreakdowns
       }

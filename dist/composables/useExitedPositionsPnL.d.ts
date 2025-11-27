@@ -6,31 +6,31 @@ interface ExitedOrder {
     quantity: number;
     tradePrice: number;
     tradeMoney: number;
-    mtmPnl: number;
+    fifoPnlRealized: number;
     dateTime: string;
     internal_account_id: string;
 }
 interface AccountBreakdown {
     internal_account_id: string;
     accountDisplayName: string;
-    totalMtmPnL: number;
+    totalFifoPnlRealized: number;
     orderCount: number;
     orders: ExitedOrder[];
 }
 interface ExitedPnLBreakdown {
-    totalMtmPnL: number;
+    totalFifoPnlRealized: number;
     orderCount: number;
     accountBreakdowns: AccountBreakdown[];
 }
 export declare function useExitedPositionsPnL(symbolRoot: Ref<string>, userId: Ref<string | null | undefined>, assetClass?: Ref<string | null>): {
     totalExitedPnL: Ref<number | null, number | null>;
     exitedOrdersBreakdown: Ref<{
-        totalMtmPnL: number;
+        totalFifoPnlRealized: number;
         orderCount: number;
         accountBreakdowns: {
             internal_account_id: string;
             accountDisplayName: string;
-            totalMtmPnL: number;
+            totalFifoPnlRealized: number;
             orderCount: number;
             orders: {
                 id: string;
@@ -39,18 +39,18 @@ export declare function useExitedPositionsPnL(symbolRoot: Ref<string>, userId: R
                 quantity: number;
                 tradePrice: number;
                 tradeMoney: number;
-                mtmPnl: number;
+                fifoPnlRealized: number;
                 dateTime: string;
                 internal_account_id: string;
             }[];
         }[];
     } | null, ExitedPnLBreakdown | {
-        totalMtmPnL: number;
+        totalFifoPnlRealized: number;
         orderCount: number;
         accountBreakdowns: {
             internal_account_id: string;
             accountDisplayName: string;
-            totalMtmPnL: number;
+            totalFifoPnlRealized: number;
             orderCount: number;
             orders: {
                 id: string;
@@ -59,7 +59,7 @@ export declare function useExitedPositionsPnL(symbolRoot: Ref<string>, userId: R
                 quantity: number;
                 tradePrice: number;
                 tradeMoney: number;
-                mtmPnl: number;
+                fifoPnlRealized: number;
                 dateTime: string;
                 internal_account_id: string;
             }[];
