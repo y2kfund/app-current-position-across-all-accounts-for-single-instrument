@@ -1294,7 +1294,7 @@ function toggleAccountExpansion(accountId: string) {
   <div class="current-positions-for-single-instrument-view">
     <div class="positions-table-container">
       <div class="header-section">
-        <h2>Current Positions for {{ props.symbolRoot }} Across All Accounts</h2>
+        <!--h2>Current Positions for {{ props.symbolRoot }} Across All Accounts</h2-->
         
         <!-- Loading State -->
         <div v-if="isLoading" class="loading-state">

@@ -14283,7 +14283,6 @@ ${z}`;
       return E(), C("div", _c, [
         l("div", Lc, [
           l("div", Dc, [
-            l("h2", null, "Current Positions for " + m(t.symbolRoot) + " Across All Accounts", 1),
             M(u) ? (E(), C("div", Mc, [
               b[17] || (b[17] = l("div", { class: "spinner" }, null, -1)),
               l("p", null, "Loading positions for " + m(t.symbolRoot) + "...", 1)
@@ -14912,7 +14911,7 @@ ${z}`;
       ]);
     };
   }
-}), Ym = /* @__PURE__ */ Ds(Um, [["__scopeId", "data-v-937df5ae"]]);
+}), Ym = /* @__PURE__ */ Ds(Um, [["__scopeId", "data-v-9d026341"]]);
 export {
   Ym as currentPositions,
   Ym as default
