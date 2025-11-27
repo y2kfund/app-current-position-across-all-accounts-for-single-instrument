@@ -1348,49 +1348,53 @@ function toggleAccountExpansion(accountId: string) {
             </div> 
 
             <div class="summary-card card-blue">
-              <div class="summary-label">Profit and Loss</div>
-              <div v-if="isPnLLoading" class="summary-value">
-                <span class="loading-spinner">⏳</span> Loading...
-              </div>
-              <div v-else-if="pnlError" class="summary-value error">
-                ❌ Error
-              </div>
-              <div v-else class="summary-value-container-vertical">
-                <div 
-                  class="summary-value clickable-price pnl-value" 
-                  :class="{ 'profit': isProfitable, 'loss': !isProfitable }"
-                  @click="togglePnLDetails"
-                >
-                  <span v-if="unrealizedPnL !== null">
-                    {{ unrealizedPnL >= 0 ? '+' : '' }}${{ unrealizedPnL.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }}
-                    <span class="pnl-percentage">({{ pnlPercentage?.toFixed(2) }}%)</span>
-                  </span>
-                  <span v-else>N/A</span>
-                  <span class="toggle-icon">{{ showPnLDetails ? '▼' : '▶' }}</span>
+              <div class="current-pnl-box">
+                <div class="summary-label">P&L of the current positions</div>
+                <div v-if="isPnLLoading" class="summary-value">
+                  <span class="loading-spinner">⏳</span> Loading...
+                </div>
+                <div v-else-if="pnlError" class="summary-value error">
+                  ❌ Error
+                </div>
+                <div v-else class="summary-value-container-vertical">
+                  <div 
+                    class="summary-value clickable-price pnl-value" 
+                    :class="{ 'profit': isProfitable, 'loss': !isProfitable }"
+                    @click="togglePnLDetails"
+                  >
+                    <span v-if="unrealizedPnL !== null">
+                      {{ unrealizedPnL >= 0 ? '+' : '' }}${{ unrealizedPnL.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }}
+                      <span class="pnl-percentage">({{ pnlPercentage?.toFixed(2) }}%)</span>
+                    </span>
+                    <span v-else>N/A</span>
+                    <span class="toggle-icon">{{ showPnLDetails ? '▼' : '▶' }}</span>
+                  </div>
                 </div>
               </div>
 
-              <div class="summary-label">Exited Positions P&L</div>
-              <div v-if="isExitedPnLLoading" class="summary-value">
-                <span class="loading-spinner">⏳</span> Loading...
-              </div>
-              <div v-else-if="exitedPnLError" class="summary-value error">
-                ❌ Error
-              </div>
-              <div v-else class="summary-value-container-vertical">
-                <div 
-                  class="summary-value clickable-price pnl-value" 
-                  :class="{ 'profit': (totalExitedPnL ?? 0) >= 0, 'loss': (totalExitedPnL ?? 0) < 0 }"
-                  @click="toggleExitedPnLDetails"
-                >
-                  <span v-if="totalExitedPnL !== null">
-                    {{ totalExitedPnL >= 0 ? '+' : '' }}${{ totalExitedPnL.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }}
-                  </span>
-                  <span v-else>N/A</span>
-                  <span class="toggle-icon">{{ showExitedPnLDetails ? '▼' : '▶' }}</span>
+              <div class="exited-pnl-box">
+                <div class="summary-label">P&L of the exited postions</div>
+                <div v-if="isExitedPnLLoading" class="summary-value">
+                  <span class="loading-spinner">⏳</span> Loading...
                 </div>
-                <div v-if="exitedOrdersBreakdown" class="subtitle-info" style="font-size: 0.85rem; color: #6c757d; margin-top: 0.25rem;">
-                  {{ exitedOrdersBreakdown.orderCount }} order(s)
+                <div v-else-if="exitedPnLError" class="summary-value error">
+                  ❌ Error
+                </div>
+                <div v-else class="summary-value-container-vertical">
+                  <div 
+                    class="summary-value clickable-price pnl-value" 
+                    :class="{ 'profit': (totalExitedPnL ?? 0) >= 0, 'loss': (totalExitedPnL ?? 0) < 0 }"
+                    @click="toggleExitedPnLDetails"
+                  >
+                    <span v-if="totalExitedPnL !== null">
+                      {{ totalExitedPnL >= 0 ? '+' : '' }}${{ totalExitedPnL.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }}
+                    </span>
+                    <span v-else>N/A</span>
+                    <span class="toggle-icon">{{ showExitedPnLDetails ? '▼' : '▶' }}</span>
+                  </div>
+                  <!--div v-if="exitedOrdersBreakdown" class="subtitle-info" style="font-size: 0.8rem; color: #6c757d;">
+                    {{ exitedOrdersBreakdown.orderCount }} order(s)
+                  </div-->
                 </div>
               </div>
             </div>

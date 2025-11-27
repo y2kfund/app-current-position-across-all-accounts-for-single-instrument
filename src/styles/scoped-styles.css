@@ -1665,3 +1665,19 @@ body.modal-open {
 .clickable {
   cursor: pointer;
 }
+
+.current-pnl-box .summary-label,
+.exited-pnl-box .summary-label {
+    margin-bottom: 0.2rem;
+}
+
+.current-pnl-box .summary-value,
+.exited-pnl-box .summary-value {
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+.exited-pnl-box {
+    border-top: 1px solid #6b7280;
+    padding-top: 0.5rem;
+    margin-top: 0.5rem;
+}
