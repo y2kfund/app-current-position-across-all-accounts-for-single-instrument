@@ -1388,3 +1388,238 @@ body.modal-open {
 .exited-pnl-breakdown {
   margin-top: 1rem;
 }
+
+/* Modern Table Styling - Compact Version */
+.orders-table-wrapper {
+  margin-top: 0.75rem;
+  overflow-x: auto;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.modern-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  font-size: 0.8rem;
+}
+
+.modern-table thead {
+  background: #0d6efd;
+  color: white;
+}
+
+.modern-table thead th {
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.3px;
+  border: none;
+}
+
+.modern-table thead th:first-child {
+  border-top-left-radius: 6px;
+}
+
+.modern-table thead th:last-child {
+  border-top-right-radius: 6px;
+}
+
+.modern-table tbody tr {
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.15s ease;
+}
+
+.modern-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.modern-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.modern-table tbody td {
+  padding: 0.5rem 0.75rem;
+  color: #212529;
+  font-size: 0.8rem;
+}
+
+.modern-table tfoot {
+  background: #e3f2fd;
+  border-top: 2px solid #0d6efd;
+}
+
+.modern-table tfoot tr.total-row td {
+  padding: 0.65rem 0.75rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.modern-table tfoot tr.total-row td:first-child {
+  border-bottom-left-radius: 6px;
+}
+
+.modern-table tfoot tr.total-row td:last-child {
+  border-bottom-right-radius: 6px;
+}
+
+.modern-table .total-label {
+  color: #0d6efd;
+  font-size: 0.85rem;
+}
+
+.modern-table .total-value {
+  font-size: 0.9rem;
+}
+
+.modern-table .text-right {
+  text-align: right;
+}
+
+/* Account section styling - Compact */
+.account-section {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-left: 3px solid #0d6efd;
+  border-radius: 6px;
+  margin-top: 1rem;
+  padding: 1rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+.account-section .pnl-section-title {
+  background: transparent;
+  padding: 0 0 0.65rem 0;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #212529;
+  border-bottom: 2px solid #0d6efd;
+  margin-bottom: 0.75rem;
+}
+
+.account-section .calc-line {
+  padding: 0.35rem 0;
+  font-size: 0.85rem;
+  color: #495057;
+}
+
+/* Trade side badges in table - Compact */
+.modern-table .trade-side-badge {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 3px;
+  font-weight: 600;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+
+.modern-table .trade-side-badge.buy {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.modern-table .trade-side-badge.sell {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* Profit/Loss colors */
+.modern-table .profit-text {
+  color: #28a745;
+  font-weight: 600;
+}
+
+.modern-table .loss-text {
+  color: #dc3545;
+  font-weight: 600;
+}
+
+/* Exited PnL Details - Compact */
+.exited-pnl-details {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.exited-pnl-details h2 {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+  color: #212529;
+}
+
+.exited-pnl-breakdown {
+  margin-top: 0.75rem;
+}
+
+.exited-pnl-breakdown .pnl-section {
+  background: #f8f9fa;
+  padding: 0.75rem;
+  border-radius: 5px;
+  border-left: 3px solid #ffc107;
+  margin-bottom: 1rem;
+}
+
+.exited-pnl-breakdown .pnl-section-title {
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  color: #495057;
+}
+
+.exited-pnl-breakdown .calc-line {
+  padding: 0.25rem 0;
+  font-size: 0.8rem;
+  color: #6c757d;
+}
+
+.exited-pnl-breakdown .calculation-result {
+  margin-top: 0.4rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid #dee2e6;
+}
+
+/* Responsive table - Compact */
+@media (max-width: 768px) {
+  .modern-table {
+    font-size: 0.75rem;
+  }
+  
+  .modern-table thead th,
+  .modern-table tbody td,
+  .modern-table tfoot td {
+    padding: 0.5rem 0.4rem;
+  }
+  
+  .account-section {
+    padding: 0.75rem;
+  }
+  
+  .account-section .pnl-section-title {
+    font-size: 0.85rem;
+  }
+}
+
+/* Compact spacing for overall summary */
+.pnl-section:not(.account-section) {
+  background: #f8f9fa;
+  padding: 0.75rem;
+  border-radius: 5px;
+  border-left: 3px solid #ffc107;
+  margin-bottom: 1rem;
+}
+
+.pnl-section:not(.account-section) .pnl-section-title {
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  color: #495057;
+}
+
+.pnl-section:not(.account-section) .calc-line {
+  padding: 0.25rem 0;
+  font-size: 0.8rem;
+}

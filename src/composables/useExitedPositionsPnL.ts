@@ -1,19 +1,29 @@
 import { ref, watch, type Ref } from 'vue'
 import { useSupabase } from '@y2kfund/core'
 
+interface ExitedOrder {
+  id: string
+  symbol: string
+  buySell: string
+  quantity: number
+  tradePrice: number
+  tradeMoney: number
+  mtmPnl: number
+  dateTime: string
+  internal_account_id: string
+}
+
+interface AccountBreakdown {
+  internal_account_id: string
+  totalMtmPnL: number
+  orderCount: number
+  orders: ExitedOrder[]
+}
+
 interface ExitedPnLBreakdown {
   totalMtmPnL: number
   orderCount: number
-  orders: Array<{
-    id: string
-    symbol: string
-    buySell: string
-    quantity: number
-    tradePrice: number
-    tradeMoney: number
-    mtmPnl: number
-    dateTime: string
-  }>
+  accountBreakdowns: AccountBreakdown[]
 }
 
 export function useExitedPositionsPnL(
@@ -72,8 +82,7 @@ export function useExitedPositionsPnL(
       let query = supabase
         .schema('hf')
         .from('orders')
-        .select('id, symbol, buySell, quantity, tradePrice, tradeMoney, mtmPnl, dateTime')
-        //.eq('user_id', userId.value)
+        .select('id, symbol, buySell, quantity, tradePrice, tradeMoney, mtmPnl, dateTime, internal_account_id')
         .like('symbol', symbolPattern)
 
       // Exclude attached orders if any exist
@@ -89,19 +98,15 @@ export function useExitedPositionsPnL(
 
       console.log('📦 Fetched exited orders:', orders?.length || 0)
 
-      // Calculate total mtmPnl
-      const totalPnL = (orders || []).reduce((sum, order) => {
-        const mtmPnl = parseFloat(order.mtmPnl) || 0
-        return sum + mtmPnl
-      }, 0)
-
-      totalExitedPnL.value = totalPnL
-
-      // Create detailed breakdown
-      exitedOrdersBreakdown.value = {
-        totalMtmPnL: totalPnL,
-        orderCount: orders?.length || 0,
-        orders: (orders || []).map(order => ({
+      // Group orders by internal_account_id
+      const ordersByAccount = new Map<string, ExitedOrder[]>()
+      
+      for (const order of orders || []) {
+        const accountId = order.internal_account_id || 'Unknown'
+        if (!ordersByAccount.has(accountId)) {
+          ordersByAccount.set(accountId, [])
+        }
+        ordersByAccount.get(accountId)!.push({
           id: order.id,
           symbol: order.symbol,
           buySell: order.buySell,
@@ -109,12 +114,41 @@ export function useExitedPositionsPnL(
           tradePrice: parseFloat(order.tradePrice) || 0,
           tradeMoney: parseFloat(order.tradeMoney) || 0,
           mtmPnl: parseFloat(order.mtmPnl) || 0,
-          dateTime: order.dateTime
-        }))
+          dateTime: order.dateTime,
+          internal_account_id: accountId
+        })
+      }
+
+      // Create account breakdowns
+      const accountBreakdowns: AccountBreakdown[] = []
+      let totalPnL = 0
+
+      for (const [accountId, accountOrders] of ordersByAccount) {
+        const accountPnL = accountOrders.reduce((sum, order) => sum + order.mtmPnl, 0)
+        totalPnL += accountPnL
+
+        accountBreakdowns.push({
+          internal_account_id: accountId,
+          totalMtmPnL: accountPnL,
+          orderCount: accountOrders.length,
+          orders: accountOrders
+        })
+      }
+
+      // Sort by account ID
+      accountBreakdowns.sort((a, b) => a.internal_account_id.localeCompare(b.internal_account_id))
+
+      totalExitedPnL.value = totalPnL
+
+      exitedOrdersBreakdown.value = {
+        totalMtmPnL: totalPnL,
+        orderCount: orders?.length || 0,
+        accountBreakdowns
       }
 
       console.log('💰 Exited Positions P&L Summary:')
       console.log(`   Total Orders: ${exitedOrdersBreakdown.value.orderCount}`)
+      console.log(`   Total Accounts: ${accountBreakdowns.length}`)
       console.log(`   Total MTM P&L: $${totalPnL.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`)
 
     } catch (err: any) {

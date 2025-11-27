@@ -1631,7 +1631,10 @@ onBeforeUnmount(() => {
               
               <div v-if="exitedOrdersBreakdown" class="exited-pnl-breakdown">
                 <div class="pnl-section">
-                  <div class="pnl-section-title">📊 Exited Orders Summary</div>
+                  <div class="pnl-section-title">📊 Overall Summary</div>
+                  <div class="calc-line">
+                    Total Accounts: {{ exitedOrdersBreakdown.accountBreakdowns.length }}
+                  </div>
                   <div class="calc-line">
                     Total Orders: {{ exitedOrdersBreakdown.orderCount }}
                   </div>
@@ -1642,25 +1645,42 @@ onBeforeUnmount(() => {
                   </div>
                 </div>
 
-                <!-- Order Details -->
-                <div class="pnl-section">
-                  <div class="pnl-section-title">📋 Order Details</div>
-                  <div class="orders-table">
-                    <table>
+                <!-- Account Breakdown Sections -->
+                <div
+                  v-for="(accountBreakdown, idx) in exitedOrdersBreakdown.accountBreakdowns"
+                  :key="`account-${idx}`"
+                  class="pnl-section account-section"
+                >
+                  <div class="pnl-section-title">
+                    📋 {{ accountBreakdown.internal_account_id }}
+                  </div>
+                  <div class="calc-line">
+                    Orders: {{ accountBreakdown.orderCount }}
+                  </div>
+                  <div class="calc-line">
+                    <strong :class="{ 'profit-text': accountBreakdown.totalMtmPnL >= 0, 'loss-text': accountBreakdown.totalMtmPnL < 0 }">
+                      Account P&L: {{ accountBreakdown.totalMtmPnL >= 0 ? '+' : '' }}${{ accountBreakdown.totalMtmPnL.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+                    </strong>
+                  </div>
+                  
+                  <div class="orders-table-wrapper">
+                    <table class="modern-table">
                       <thead>
                         <tr>
                           <th>Symbol</th>
                           <th>Side</th>
-                          <th>Quantity</th>
-                          <th>Trade Price</th>
-                          <th>Trade Money</th>
-                          <th>MTM P&L</th>
-                          <th>Date</th>
+                          <th class="text-right">Quantity</th>
+                          <th class="text-right">Trade Price</th>
+                          <th class="text-right">Trade Money</th>
+                          <th class="text-right">MTM P&L</th>
+                          <th class="text-right">Date</th>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr v-for="order in exitedOrdersBreakdown.orders" :key="order.id">
-                          <td>{{ order.symbol }}</td>
+                        <tr v-for="order in accountBreakdown.orders" :key="order.id">
+                          <td>
+                            <span v-for="tag in extractTagsFromTradesSymbol(order.symbol)" :key="tag" class="fi-tag position-tag">{{ tag }}</span>
+                          </td>
                           <td>
                             <span class="trade-side-badge" :class="order.buySell.toLowerCase()">
                               {{ order.buySell }}
@@ -1672,9 +1692,18 @@ onBeforeUnmount(() => {
                           <td class="text-right" :class="{ 'profit-text': order.mtmPnl >= 0, 'loss-text': order.mtmPnl < 0 }">
                             {{ order.mtmPnl >= 0 ? '+' : '' }}{{ formatCurrency(order.mtmPnl) }}
                           </td>
-                          <td>{{ formatTradeDate(order.dateTime) }}</td>
+                          <td class="text-right">{{ formatTradeDate(order.dateTime) }}</td>
                         </tr>
                       </tbody>
+                      <tfoot>
+                        <tr class="total-row">
+                          <td colspan="5" class="total-label"><strong>Total</strong></td>
+                          <td class="text-right total-value" :class="{ 'profit-text': accountBreakdown.totalMtmPnL >= 0, 'loss-text': accountBreakdown.totalMtmPnL < 0 }">
+                            <strong>{{ accountBreakdown.totalMtmPnL >= 0 ? '+' : '' }}{{ formatCurrency(accountBreakdown.totalMtmPnL) }}</strong>
+                          </td>
+                          <td></td>
+                        </tr>
+                      </tfoot>
                     </table>
                   </div>
                 </div>
