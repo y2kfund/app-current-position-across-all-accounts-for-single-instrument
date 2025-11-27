@@ -1287,6 +1287,19 @@ onBeforeUnmount(() => {
   console.log('🧹 Cleaning up CurrentPositions component')
   _cleanup()
 })
+
+// Add state for expanded accounts
+const expandedAccounts = ref<Set<string>>(new Set())
+
+function toggleAccountExpansion(accountId: string) {
+  if (expandedAccounts.value.has(accountId)) {
+    expandedAccounts.value.delete(accountId)
+  } else {
+    expandedAccounts.value.add(accountId)
+  }
+  // Force reactivity
+  expandedAccounts.value = new Set(expandedAccounts.value)
+}
 </script>
 
 <template>
@@ -1651,61 +1664,67 @@ onBeforeUnmount(() => {
                   :key="`account-${idx}`"
                   class="pnl-section account-section"
                 >
-                  <div class="pnl-section-title">
-                    📋 {{ accountBreakdown.internal_account_id }}
-                  </div>
-                  <div class="calc-line">
-                    Orders: {{ accountBreakdown.orderCount }}
-                  </div>
-                  <div class="calc-line">
-                    <strong :class="{ 'profit-text': accountBreakdown.totalMtmPnL >= 0, 'loss-text': accountBreakdown.totalMtmPnL < 0 }">
-                      Account P&L: {{ accountBreakdown.totalMtmPnL >= 0 ? '+' : '' }}${{ accountBreakdown.totalMtmPnL.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
-                    </strong>
+                  <div 
+                    class="pnl-section-title account-header clickable" 
+                    @click="toggleAccountExpansion(accountBreakdown.internal_account_id)"
+                  >
+                    <span class="expand-icon">{{ expandedAccounts.has(accountBreakdown.internal_account_id) ? '▼' : '▶' }}</span>
+                    <span class="account-title">📋 {{ accountBreakdown.accountDisplayName }}</span>
+                    <span class="account-summary">
+                      ({{ accountBreakdown.orderCount }} orders • 
+                      <span :class="{ 'profit-text': accountBreakdown.totalMtmPnL >= 0, 'loss-text': accountBreakdown.totalMtmPnL < 0 }">
+                        {{ accountBreakdown.totalMtmPnL >= 0 ? '+' : '' }}${{ accountBreakdown.totalMtmPnL.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+                      </span>)
+                    </span>
                   </div>
                   
-                  <div class="orders-table-wrapper">
-                    <table class="modern-table">
-                      <thead>
-                        <tr>
-                          <th>Symbol</th>
-                          <th>Side</th>
-                          <th class="text-right">Quantity</th>
-                          <th class="text-right">Trade Price</th>
-                          <th class="text-right">Trade Money</th>
-                          <th class="text-right">MTM P&L</th>
-                          <th class="text-right">Date</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr v-for="order in accountBreakdown.orders" :key="order.id">
-                          <td>
-                            <span v-for="tag in extractTagsFromTradesSymbol(order.symbol)" :key="tag" class="fi-tag position-tag">{{ tag }}</span>
-                          </td>
-                          <td>
-                            <span class="trade-side-badge" :class="order.buySell.toLowerCase()">
-                              {{ order.buySell }}
-                            </span>
-                          </td>
-                          <td class="text-right">{{ formatNumber(order.quantity) }}</td>
-                          <td class="text-right">{{ formatCurrency(order.tradePrice) }}</td>
-                          <td class="text-right">{{ formatCurrency(order.tradeMoney) }}</td>
-                          <td class="text-right" :class="{ 'profit-text': order.mtmPnl >= 0, 'loss-text': order.mtmPnl < 0 }">
-                            {{ order.mtmPnl >= 0 ? '+' : '' }}{{ formatCurrency(order.mtmPnl) }}
-                          </td>
-                          <td class="text-right">{{ formatTradeDate(order.dateTime) }}</td>
-                        </tr>
-                      </tbody>
-                      <tfoot>
-                        <tr class="total-row">
-                          <td colspan="5" class="total-label"><strong>Total</strong></td>
-                          <td class="text-right total-value" :class="{ 'profit-text': accountBreakdown.totalMtmPnL >= 0, 'loss-text': accountBreakdown.totalMtmPnL < 0 }">
-                            <strong>{{ accountBreakdown.totalMtmPnL >= 0 ? '+' : '' }}{{ formatCurrency(accountBreakdown.totalMtmPnL) }}</strong>
-                          </td>
-                          <td></td>
-                        </tr>
-                      </tfoot>
-                    </table>
-                  </div>
+                  <transition name="slide-fade">
+                    <div v-show="expandedAccounts.has(accountBreakdown.internal_account_id)" class="account-content">
+                      <div class="orders-table-wrapper">
+                        <table class="modern-table">
+                          <thead>
+                            <tr>
+                              <th>Symbol</th>
+                              <th>Side</th>
+                              <th class="text-right">Quantity</th>
+                              <th class="text-right">Trade Price</th>
+                              <th class="text-right">Trade Money</th>
+                              <th class="text-right">MTM P&L</th>
+                              <th class="text-right">Date</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr v-for="order in accountBreakdown.orders" :key="order.id">
+                              <td>
+                                <span v-for="tag in extractTagsFromTradesSymbol(order.symbol)" :key="tag" class="fi-tag position-tag">{{ tag }}</span>
+                              </td>
+                              <td>
+                                <span class="trade-side-badge" :class="order.buySell.toLowerCase()">
+                                  {{ order.buySell }}
+                                </span>
+                              </td>
+                              <td class="text-right">{{ formatNumber(order.quantity) }}</td>
+                              <td class="text-right">{{ formatCurrency(order.tradePrice) }}</td>
+                              <td class="text-right">{{ formatCurrency(order.tradeMoney) }}</td>
+                              <td class="text-right" :class="{ 'profit-text': order.mtmPnl >= 0, 'loss-text': order.mtmPnl < 0 }">
+                                {{ order.mtmPnl >= 0 ? '+' : '' }}{{ formatCurrency(order.mtmPnl) }}
+                              </td>
+                              <td class="text-right">{{ formatTradeDate(order.dateTime) }}</td>
+                            </tr>
+                          </tbody>
+                          <tfoot>
+                            <tr class="total-row">
+                              <td colspan="5" class="total-label"><strong>Total</strong></td>
+                              <td class="text-right total-value" :class="{ 'profit-text': accountBreakdown.totalMtmPnL >= 0, 'loss-text': accountBreakdown.totalMtmPnL < 0 }">
+                                <strong>{{ accountBreakdown.totalMtmPnL >= 0 ? '+' : '' }}{{ formatCurrency(accountBreakdown.totalMtmPnL) }}</strong>
+                              </td>
+                              <td></td>
+                            </tr>
+                          </tfoot>
+                        </table>
+                      </div>
+                    </div>
+                  </transition>
                 </div>
               </div>
 
@@ -1714,7 +1733,7 @@ onBeforeUnmount(() => {
               </div>
             </div>
           </transition>
-          
+
           <!-- Capital Details Section (Collapsible) -->
           <transition name="slide-fade">
             <div v-show="showCapitalDetails" class="capital-details">

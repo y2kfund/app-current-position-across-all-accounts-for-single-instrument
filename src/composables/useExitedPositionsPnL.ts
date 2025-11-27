@@ -15,6 +15,7 @@ interface ExitedOrder {
 
 interface AccountBreakdown {
   internal_account_id: string
+  accountDisplayName: string
   totalMtmPnL: number
   orderCount: number
   orders: ExitedOrder[]
@@ -37,6 +38,41 @@ export function useExitedPositionsPnL(
   const exitedOrdersBreakdown = ref<ExitedPnLBreakdown | null>(null)
   const isLoading = ref<boolean>(false)
   const error = ref<string | null>(null)
+
+  async function getAccountDisplayName(internalAccountId: string): Promise<string> {
+    try {
+      // First try to get alias from user_account_alias
+      const { data: aliasData, error: aliasError } = await supabase
+        .schema('hf')
+        .from('user_account_alias')
+        .select('alias_name')
+        .eq('user_id', userId.value)
+        .eq('internal_account_id', internalAccountId)
+        .single()
+
+      if (!aliasError && aliasData?.alias_name) {
+        return aliasData.alias_name
+      }
+
+      // If no alias found, get legal_entity from user_accounts_master
+      const { data: masterData, error: masterError } = await supabase
+        .schema('hf')
+        .from('user_accounts_master')
+        .select('legal_entity')
+        .eq('internal_account_id', internalAccountId)
+        .single()
+
+      if (!masterError && masterData?.legal_entity) {
+        return masterData.legal_entity
+      }
+
+      // Fallback to internal_account_id
+      return internalAccountId
+    } catch (err) {
+      console.error('Error fetching account display name:', err)
+      return internalAccountId
+    }
+  }
 
   async function fetchExitedPositionsPnL() {
     if (!userId.value || !symbolRoot.value) {
@@ -119,7 +155,7 @@ export function useExitedPositionsPnL(
         })
       }
 
-      // Create account breakdowns
+      // Create account breakdowns with display names
       const accountBreakdowns: AccountBreakdown[] = []
       let totalPnL = 0
 
@@ -127,16 +163,19 @@ export function useExitedPositionsPnL(
         const accountPnL = accountOrders.reduce((sum, order) => sum + order.mtmPnl, 0)
         totalPnL += accountPnL
 
+        const displayName = await getAccountDisplayName(accountId)
+
         accountBreakdowns.push({
           internal_account_id: accountId,
+          accountDisplayName: displayName,
           totalMtmPnL: accountPnL,
           orderCount: accountOrders.length,
           orders: accountOrders
         })
       }
 
-      // Sort by account ID
-      accountBreakdowns.sort((a, b) => a.internal_account_id.localeCompare(b.internal_account_id))
+      // Sort by account display name
+      accountBreakdowns.sort((a, b) => a.accountDisplayName.localeCompare(b.accountDisplayName))
 
       totalExitedPnL.value = totalPnL
 
