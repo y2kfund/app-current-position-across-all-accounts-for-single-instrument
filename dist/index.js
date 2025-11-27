@@ -14332,7 +14332,7 @@ ${z}`;
                 ]),
                 l("div", Wc, [
                   l("div", Gc, [
-                    b[23] || (b[23] = l("div", { class: "summary-label" }, "P&L of the current positions", -1)),
+                    b[23] || (b[23] = l("div", { class: "summary-label" }, "P&L", -1)),
                     F(Ms) ? (E(), C("div", jc, [...b[21] || (b[21] = [
                       l("span", { class: "loading-spinner" }, "⏳", -1),
                       Y(" Loading... ", -1)
@@ -14341,7 +14341,7 @@ ${z}`;
                         class: de(["summary-value clickable-price pnl-value", { profit: F(Ne), loss: !F(Ne) }]),
                         onClick: Ks
                       }, [
-                        b[22] || (b[22] = l("span", { style: { "font-size": "0.85rem", color: "#6c757d", display: "block", "margin-bottom": "0.25rem" } }, " If exit today: ", -1)),
+                        b[22] || (b[22] = l("span", { style: { "font-size": "0.85rem", color: "#6c757d", display: "block", "margin-bottom": "0.25rem" } }, " Current positions if exit today: ", -1)),
                         F(Pe) !== null ? (E(), C("span", Kc, [
                           Y(m(F(Pe) >= 0 ? "+" : "") + "$" + m(F(Pe).toLocaleString(void 0, { minimumFractionDigits: 0, maximumFractionDigits: 0 })) + " ", 1),
                           l("span", Qc, "(" + m(($ = F(Fs)) == null ? void 0 : $.toFixed(2)) + "%)", 1)
@@ -14933,7 +14933,7 @@ ${z}`;
       ]);
     };
   }
-}), Ym = /* @__PURE__ */ Ds(Um, [["__scopeId", "data-v-d90cc33f"]]);
+}), Ym = /* @__PURE__ */ Ds(Um, [["__scopeId", "data-v-a9b19e3e"]]);
 export {
   Ym as currentPositions,
   Ym as default

@@ -1377,7 +1377,7 @@ function toggleAccountExpansion(accountId: string) {
 
             <div class="summary-card card-blue">
               <div class="current-pnl-box">
-                <div class="summary-label">P&L of the current positions</div>
+                <div class="summary-label">P&L</div>
                 <div v-if="isPnLLoading" class="summary-value">
                   <span class="loading-spinner">⏳</span> Loading...
                 </div>
@@ -1391,7 +1391,7 @@ function toggleAccountExpansion(accountId: string) {
                     @click="togglePnLDetails"
                   > 
                     <span style="font-size: 0.85rem; color: #6c757d; display: block; margin-bottom: 0.25rem;">
-                      If exit today:
+                      Current positions if exit today:
                     </span>
                     <span v-if="unrealizedPnL !== null">
                       {{ unrealizedPnL >= 0 ? '+' : '' }}${{ unrealizedPnL.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }}
