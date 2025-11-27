@@ -7,7 +7,6 @@ import { useCallPositionsQuery } from '@y2kfund/core/callPositionsForSingleInstr
 import { useTabulator } from '../composables/useTabulator'
 import { useMarketPrice } from '../composables/useMarketPrice'
 import { useFinancialData } from '../composables/useFinancialData'
-import { useAverageCostPrice } from '../composables/useAverageCostPrice'
 import { useAverageCostPriceFromOrders } from '../composables/useAverageCostPriceFromOrders'
 import { useProfitAndLoss } from '../composables/useProfitAndLoss'
 import { useExitedPositionsPnL } from '../composables/useExitedPositionsPnL'
@@ -24,8 +23,8 @@ interface currentPositionsProps {
 }
 
 const props = withDefaults(defineProps<currentPositionsProps>(), {
-  symbolRoot: 'META',
-  userId: '67e578fd-2cf7-48a4-b028-a11a3f89bb9b'
+  symbolRoot: 'MSTR',
+  userId: '4fbec15d-2316-4805-b2a4-5cd2115a5ac8'
 })
 
 // State for showing/hiding details
@@ -35,7 +34,7 @@ const showPnLDetails = ref(false)
 const showCapitalDetails = ref(false)
 
 // State for average price calculation tabs
-const avgPriceCalculationTab = ref<'positions' | 'orders'>('orders')
+const avgPriceCalculationTab = ref<'hold-orders' | 'exit-orders'>('hold-orders')
 const emit = defineEmits(['capitalUsedChanged'])
 
 const supabase = useSupabase()
@@ -117,23 +116,6 @@ const formattedTimestamp = computed(() => {
   
   return result
 })
-
-// Fetch average cost price using the composable
-const { 
-  averageCostPrice,
-  overallAdjustedAvgPrice,
-  totalCost, 
-  totalQuantity, 
-  mainPositionsCount, 
-  attachedPositionsCount,
-  positionBreakdown,
-  positionGroups,
-  isLoading: isAvgPriceLoading, 
-  error: avgPriceError 
-} = useAverageCostPrice(
-  positions,
-  props.userId
-)
 
 // Fetch average cost price from orders
 const {
@@ -218,15 +200,6 @@ const totalUnrealizedPL = computed(() => {
   return stockPnL
 })
 
-// Computed values for overall calculation breakdown
-const totalNetCostAllClients = computed(() => {
-  return positionGroups.value.reduce((sum, g) => sum + g.netCostExcludingPuts, 0)
-})
-
-const totalMainQuantityAllClients = computed(() => {
-  return positionGroups.value.reduce((sum, g) => sum + g.mainPosition.quantity, 0)
-})
-
 // Use single P&L composable that handles both stocks and options
 const {
   totalCostBasis,
@@ -238,8 +211,8 @@ const {
   isLoading: isPnLLoading,
   error: pnlError
 } = useProfitAndLoss(
-  overallAdjustedAvgPrice,
-  totalMainQuantityAllClients,
+  overallAdjustedAvgPriceFromOrders,
+  computed(() => totalShares.value),
   currentMarketPrice,
   putPositions,
   callPositions
@@ -1446,19 +1419,16 @@ function toggleAccountExpansion(accountId: string) {
 
             <div class="summary-card card-orange">
               <div class="summary-label">Average cost per share</div><!--Adjusted average cost price of {{ props.symbolRoot }} per share-->
-              <div v-if="isAvgPriceLoading" class="summary-value">
+              <div v-if="isAvgPriceFromOrdersLoading" class="summary-value">
                 <span class="loading-spinner">⏳</span> Loading...
               </div>
-              <div v-else-if="avgPriceError" class="summary-value error">
+              <div v-else-if="avgPriceFromOrdersError" class="summary-value error">
                 ❌ Error
               </div>
               <div class="summary-value-container-vertical">
                 <div class="summary-value average-cost-price clickable-price" @click="toggleCalculationDetails">
                   <span v-if="overallAdjustedAvgPriceFromOrders !== null">
                   ${{ overallAdjustedAvgPriceFromOrders.toFixed(2) }}
-                  </span>
-                  <span v-else-if="overallAdjustedAvgPrice !== null">
-                  ${{ overallAdjustedAvgPrice.toFixed(2) }}
                   </span>
                   <span v-else>N/A</span>
                   <span class="toggle-icon">{{ showCalculationDetails ? '▼' : '▶' }}</span>
@@ -1513,12 +1483,8 @@ function toggleAccountExpansion(accountId: string) {
           <CalculationDetails
             :show-calculation-details="showCalculationDetails"
             v-model:avg-price-calculation-tab="avgPriceCalculationTab"
-            :position-groups="positionGroups"
             :order-groups="orderGroups"
-            :overall-adjusted-avg-price="overallAdjustedAvgPrice"
             :overall-adjusted-avg-price-from-orders="overallAdjustedAvgPriceFromOrders"
-            :total-net-cost-all-clients="totalNetCostAllClients"
-            :total-main-quantity-all-clients="totalMainQuantityAllClients"
             :total-net-cost="totalNetCost"
             :total-shares="totalShares"
             :is-avg-price-from-orders-loading="isAvgPriceFromOrdersLoading"

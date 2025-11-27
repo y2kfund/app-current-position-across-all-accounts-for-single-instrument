@@ -45,13 +45,13 @@ export function useExitedPositionsPnL(
       const { data: aliasData, error: aliasError } = await supabase
         .schema('hf')
         .from('user_account_alias')
-        .select('alias_name')
+        .select('alias')
         .eq('user_id', userId.value)
         .eq('internal_account_id', internalAccountId)
         .single()
 
-      if (!aliasError && aliasData?.alias_name) {
-        return aliasData.alias_name
+      if (!aliasError && aliasData?.alias) {
+        return aliasData.alias
       }
 
       // If no alias found, get legal_entity from user_accounts_master
