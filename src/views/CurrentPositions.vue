@@ -1373,7 +1373,7 @@ function toggleAccountExpansion(accountId: string) {
               </div>
 
               <div class="exited-pnl-box">
-                <div class="summary-label">P&L of the exited postions</div>
+                <div class="summary-label">P&L of the exited positions</div>
                 <div v-if="isExitedPnLLoading" class="summary-value">
                   <span class="loading-spinner">⏳</span> Loading...
                 </div>

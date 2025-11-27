@@ -13823,7 +13823,7 @@ ${A}`;
                     ]))
                   ]),
                   d("div", nd, [
-                    m[22] || (m[22] = d("div", { class: "summary-label" }, "P&L of the exited postions", -1)),
+                    m[22] || (m[22] = d("div", { class: "summary-label" }, "P&L of the exited positions", -1)),
                     L(Ps) ? (k(), R("div", ad, [...m[21] || (m[21] = [
                       d("span", { class: "loading-spinner" }, "⏳", -1),
                       ie(" Loading... ", -1)
@@ -14388,7 +14388,7 @@ ${A}`;
       ]);
     };
   }
-}), nf = /* @__PURE__ */ Ss(Yu, [["__scopeId", "data-v-9ac37994"]]);
+}), nf = /* @__PURE__ */ Ss(Yu, [["__scopeId", "data-v-0e3f5efa"]]);
 export {
   nf as currentPositions,
   nf as default
