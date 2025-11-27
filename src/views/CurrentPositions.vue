@@ -10,6 +10,7 @@ import { useFinancialData } from '../composables/useFinancialData'
 import { useAverageCostPrice } from '../composables/useAverageCostPrice'
 import { useAverageCostPriceFromOrders } from '../composables/useAverageCostPriceFromOrders'
 import { useProfitAndLoss } from '../composables/useProfitAndLoss'
+import { useExitedPositionsPnL } from '../composables/useExitedPositionsPnL'
 import { useCapitalUsed } from '../composables/useCapitalUsed'
 import { useAttachedData } from '../composables/useAttachedData'
 import { usePositionExpansion } from '../composables/usePositionExpansion'
@@ -244,6 +245,17 @@ const {
   callPositions
 )
 
+const {
+  totalExitedPnL,
+  exitedOrdersBreakdown,
+  isLoading: isExitedPnLLoading,
+  error: exitedPnLError
+} = useExitedPositionsPnL(
+  computed(() => props.symbolRoot),
+  computed(() => props.userId),
+  assetType
+)
+
 // Use capital calculation composable
 const {
   totalCapitalUsed,
@@ -258,6 +270,12 @@ const {
   putPositions,
   callPositions
 )
+
+const showExitedPnLDetails = ref(false)
+
+function toggleExitedPnLDetails() {
+  showExitedPnLDetails.value = !showExitedPnLDetails.value
+}
 
 // Helper functions
 function extractTagsFromSymbol(symbolText: string): string[] {
@@ -1338,6 +1356,30 @@ onBeforeUnmount(() => {
                   <span class="toggle-icon">{{ showPnLDetails ? '▼' : '▶' }}</span>
                 </div>
               </div>
+
+              <div class="summary-label">Exited Positions P&L</div>
+              <div v-if="isExitedPnLLoading" class="summary-value">
+                <span class="loading-spinner">⏳</span> Loading...
+              </div>
+              <div v-else-if="exitedPnLError" class="summary-value error">
+                ❌ Error
+              </div>
+              <div v-else class="summary-value-container-vertical">
+                <div 
+                  class="summary-value clickable-price pnl-value" 
+                  :class="{ 'profit': (totalExitedPnL ?? 0) >= 0, 'loss': (totalExitedPnL ?? 0) < 0 }"
+                  @click="toggleExitedPnLDetails"
+                >
+                  <span v-if="totalExitedPnL !== null">
+                    {{ totalExitedPnL >= 0 ? '+' : '' }}${{ totalExitedPnL.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }}
+                  </span>
+                  <span v-else>N/A</span>
+                  <span class="toggle-icon">{{ showExitedPnLDetails ? '▼' : '▶' }}</span>
+                </div>
+                <div v-if="exitedOrdersBreakdown" class="subtitle-info" style="font-size: 0.85rem; color: #6c757d; margin-top: 0.25rem;">
+                  {{ exitedOrdersBreakdown.orderCount }} order(s)
+                </div>
+              </div>
             </div>
             
             <div class="summary-card highlight-1 card-green">
@@ -1582,6 +1624,68 @@ onBeforeUnmount(() => {
             </div>
           </transition>
 
+          <!-- Exited P&L Details Section (Collapsible) -->
+          <transition name="slide-fade">
+            <div v-show="showExitedPnLDetails" class="exited-pnl-details">
+              <h2>Exited Positions P&L Details:</h2>
+              
+              <div v-if="exitedOrdersBreakdown" class="exited-pnl-breakdown">
+                <div class="pnl-section">
+                  <div class="pnl-section-title">📊 Exited Orders Summary</div>
+                  <div class="calc-line">
+                    Total Orders: {{ exitedOrdersBreakdown.orderCount }}
+                  </div>
+                  <div class="calc-line calculation-result">
+                    <strong :class="{ 'profit-text': totalExitedPnL && totalExitedPnL >= 0, 'loss-text': totalExitedPnL && totalExitedPnL < 0 }">
+                      Total MTM P&L: {{ totalExitedPnL && totalExitedPnL >= 0 ? '+' : '' }}${{ (totalExitedPnL || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+                    </strong>
+                  </div>
+                </div>
+
+                <!-- Order Details -->
+                <div class="pnl-section">
+                  <div class="pnl-section-title">📋 Order Details</div>
+                  <div class="orders-table">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Symbol</th>
+                          <th>Side</th>
+                          <th>Quantity</th>
+                          <th>Trade Price</th>
+                          <th>Trade Money</th>
+                          <th>MTM P&L</th>
+                          <th>Date</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="order in exitedOrdersBreakdown.orders" :key="order.id">
+                          <td>{{ order.symbol }}</td>
+                          <td>
+                            <span class="trade-side-badge" :class="order.buySell.toLowerCase()">
+                              {{ order.buySell }}
+                            </span>
+                          </td>
+                          <td class="text-right">{{ formatNumber(order.quantity) }}</td>
+                          <td class="text-right">{{ formatCurrency(order.tradePrice) }}</td>
+                          <td class="text-right">{{ formatCurrency(order.tradeMoney) }}</td>
+                          <td class="text-right" :class="{ 'profit-text': order.mtmPnl >= 0, 'loss-text': order.mtmPnl < 0 }">
+                            {{ order.mtmPnl >= 0 ? '+' : '' }}{{ formatCurrency(order.mtmPnl) }}
+                          </td>
+                          <td>{{ formatTradeDate(order.dateTime) }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <div v-else class="no-data-message">
+                <p>No exited positions found</p>
+              </div>
+            </div>
+          </transition>
+          
           <!-- Capital Details Section (Collapsible) -->
           <transition name="slide-fade">
             <div v-show="showCapitalDetails" class="capital-details">
