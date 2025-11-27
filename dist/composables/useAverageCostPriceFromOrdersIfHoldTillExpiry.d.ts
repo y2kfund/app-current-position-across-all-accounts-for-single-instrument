@@ -39,7 +39,7 @@ interface PositionOrderGroup {
     totalShares: number;
     adjustedAvgPricePerShare: number;
 }
-export declare function useAverageCostPriceFromOrders(positions: Ref<Position[] | undefined>, userId: string | null | undefined): {
+export declare function useAverageCostPriceFromOrdersIfHoldTillExpiry(positions: Ref<Position[] | undefined>, userId: string | null | undefined): {
     averageCostPriceFromOrders: Ref<number | null, number | null>;
     overallAdjustedAvgPriceFromOrders: import('vue').ComputedRef<number | null>;
     totalNetCost: Ref<number, number>;

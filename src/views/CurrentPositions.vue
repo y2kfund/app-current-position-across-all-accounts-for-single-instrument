@@ -7,7 +7,8 @@ import { useCallPositionsQuery } from '@y2kfund/core/callPositionsForSingleInstr
 import { useTabulator } from '../composables/useTabulator'
 import { useMarketPrice } from '../composables/useMarketPrice'
 import { useFinancialData } from '../composables/useFinancialData'
-import { useAverageCostPriceFromOrders } from '../composables/useAverageCostPriceFromOrders'
+import { useAverageCostPriceFromOrdersIfHoldTillExpiry } from '../composables/useAverageCostPriceFromOrdersIfHoldTillExpiry'
+import { useAverageCostPriceFromOrdersIfExitToday } from '../composables/useAverageCostPriceFromOrdersIfExitToday'
 import { useProfitAndLoss } from '../composables/useProfitAndLoss'
 import { useExitedPositionsPnL } from '../composables/useExitedPositionsPnL'
 import { useCapitalUsed } from '../composables/useCapitalUsed'
@@ -117,7 +118,7 @@ const formattedTimestamp = computed(() => {
   return result
 })
 
-// Fetch average cost price from orders
+// Fetch average cost price from orders (Hold till expiry)
 const {
   averageCostPriceFromOrders,
   overallAdjustedAvgPriceFromOrders,
@@ -126,7 +127,21 @@ const {
   orderGroups,
   isLoading: isAvgPriceFromOrdersLoading,
   error: avgPriceFromOrdersError
-} = useAverageCostPriceFromOrders(
+} = useAverageCostPriceFromOrdersIfHoldTillExpiry(
+  positions,
+  props.userId
+)
+
+// Fetch average cost price from orders (Exit today)
+const {
+  averageCostPriceFromOrders: averageCostPriceFromOrdersExitToday,
+  overallAdjustedAvgPriceFromOrders: overallAdjustedAvgPriceFromOrdersExitToday,
+  totalNetCost: totalNetCostExitToday,
+  totalShares: totalSharesExitToday,
+  orderGroups: orderGroupsExitToday,
+  isLoading: isAvgPriceFromOrdersLoadingExitToday,
+  error: avgPriceFromOrdersErrorExitToday
+} = useAverageCostPriceFromOrdersIfExitToday(
   positions,
   props.userId
 )
@@ -1489,6 +1504,12 @@ function toggleAccountExpansion(accountId: string) {
             :total-shares="totalShares"
             :is-avg-price-from-orders-loading="isAvgPriceFromOrdersLoading"
             :avg-price-from-orders-error="avgPriceFromOrdersError"
+            :order-groups-exit-today="orderGroupsExitToday"
+            :overall-adjusted-avg-price-from-orders-exit-today="overallAdjustedAvgPriceFromOrdersExitToday"
+            :total-net-cost-exit-today="totalNetCostExitToday"
+            :total-shares-exit-today="totalSharesExitToday"
+            :is-avg-price-from-orders-loading-exit-today="isAvgPriceFromOrdersLoadingExitToday"
+            :avg-price-from-orders-error-exit-today="avgPriceFromOrdersErrorExitToday"
           />
 
           <!-- P&L Details Section (Collapsible) -->

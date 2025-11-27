@@ -20,6 +20,7 @@ interface Order {
   strike?: number
   account: string
   orderDate: string
+  conid?: string // ADD: Contract ID for matching with positions
 }
 
 interface OrderCalculation {
@@ -81,7 +82,7 @@ interface PositionOrderGroup {
   adjustedAvgPricePerShare: number
 }
 
-export function useAverageCostPriceFromOrders(
+export function useAverageCostPriceFromOrdersIfExitToday(
   positions: Ref<Position[] | undefined>,
   userId: string | null | undefined
 ) {
@@ -178,6 +179,7 @@ export function useAverageCostPriceFromOrders(
             strike: order.strike ? parseFloat(order.strike) : undefined,
             account: order.internal_account_id, // Use internal_account_id from database
             orderDate: order.orderDate || order.settleDateTarget || order.created_at,
+            conid: order.conid, // ADD: Include conid for position matching
           }
         })
 
@@ -196,7 +198,7 @@ export function useAverageCostPriceFromOrders(
       // Step 4: Process each position and calculate average cost from orders
       const groups: PositionOrderGroup[] = []
 
-      positions.value.forEach(pos => {
+      for (const pos of positions.value) {
         const mappingKey = generatePositionMappingKey({
           internal_account_id: pos.internal_account_id,
           symbol: pos.symbol,
@@ -226,7 +228,7 @@ export function useAverageCostPriceFromOrders(
         let callPremiumReceived = 0
         let callBuybackCost = 0
 
-        ordersForPosition.forEach(order => {
+        for (const order of ordersForPosition) {
           // totalQuantity already includes the multiplier from the mapping above
           const effectiveQuantity = order.totalQuantity
           const totalValue = order.avgFillPrice * effectiveQuantity
@@ -269,10 +271,97 @@ export function useAverageCostPriceFromOrders(
             console.log(`   🔙 Put buyback: ${order.symbol} BUY PUT @ $${order.strike} ${order.side} ${effectiveQuantity} @ $${order.avgFillPrice} = -$${Math.abs(totalValue).toFixed(2)} (close cost)`)
           }
           // Call sales (SELL CALL - covered call premium received)
+          // FOR EXIT TODAY: Use unrealized P&L from positions table if available
           else if (order.secType === 'OPT' && order.right === 'C' && order.side === 'SELL') {
-            callSales.push(orderCalc)
-            callPremiumReceived += Math.abs(totalValue) // Premium received is positive
-            console.log(`   📞 Call sale: ${order.symbol} SELL CALL @ $${order.strike} ${order.side} ${effectiveQuantity} @ $${order.avgFillPrice} = +$${Math.abs(totalValue).toFixed(2)} (premium)`)
+            const contractQuantity = order.totalQuantity / 100 // Convert shares to contracts
+            const orderPremium = Math.abs(totalValue)
+            
+            console.log(`   📞 Processing Call sale (EXIT TODAY): ${order.symbol} SELL CALL @ $${order.strike}`)
+            console.log(`      Order details: ${contractQuantity} contracts @ $${order.avgFillPrice} = $${orderPremium.toFixed(2)}`)
+            
+            // Query positions table for the most recent matching position
+            let callValueToUse = orderPremium
+            let valueSource = 'order-only'
+            
+            if (order.conid) {
+              try {
+                const { data: positionData, error: posError } = await supabase
+                  .schema('hf')
+                  .from('positions')
+                  .select('id, unrealized_pnl, price, market_value')
+                  .eq('internal_account_id', order.account)
+                  .eq('contract_quantity', contractQuantity)
+                  .eq('conid', order.conid)
+                  .order('id', { ascending: false }) // Get most recent
+                  .limit(1)
+                  .maybeSingle()
+                
+                if (posError) {
+                  console.warn(`      ⚠️ Error querying position: ${posError.message}`)
+                } else {
+                  // Enhanced validation: Check if position has valid market data
+                  const isValidPosition = 
+                    positionData &&
+                    positionData.price !== 0 &&
+                    positionData.market_value !== 0 &&
+                    positionData.unrealized_pnl !== null &&
+                    positionData.unrealized_pnl !== undefined
+                  
+                  if (isValidPosition) {
+                    // Valid position with market data
+                    callValueToUse = Math.abs(positionData.unrealized_pnl)
+                    valueSource = 'position'
+                    console.log(`      ✅ Valid position found (ID: ${positionData.id})`)
+                    console.log(`      📊 Price: $${positionData.price}, Market Value: $${positionData.market_value}`)
+                    console.log(`      💰 Using unrealized P&L: $${callValueToUse.toFixed(2)} (EXIT TODAY scenario)`)
+                  } else if (positionData) {
+                    // Position found but validation failed
+                    let validationReason = ''
+                    if (positionData.price === 0) {
+                      validationReason = 'price is zero'
+                    } else if (positionData.market_value === 0) {
+                      validationReason = 'market_value is zero'
+                    } else if (positionData.unrealized_pnl === null || positionData.unrealized_pnl === undefined) {
+                      validationReason = 'unrealized_pnl is null/undefined'
+                    }
+                    
+                    valueSource = 'order-fallback'
+                    console.log(`      ⚠️ Position found (ID: ${positionData.id}) but invalid data`)
+                    console.log(`      📊 Price: ${positionData.price}, Market Value: ${positionData.market_value}`)
+                    console.log(`      📊 Unrealized P&L: ${positionData.unrealized_pnl}`)
+                    console.log(`      ❌ Validation failed: ${validationReason}`)
+                    console.log(`      💰 Fallback to order premium: $${callValueToUse.toFixed(2)}`)
+                  } else {
+                    // No position found
+                    console.log(`      ℹ️ No matching position found`)
+                    console.log(`      💰 Using order premium: $${callValueToUse.toFixed(2)}`)
+                  }
+                }
+              } catch (err) {
+                console.error(`      ❌ Exception querying position:`, err)
+              }
+            } else {
+              console.log(`      ℹ️ No conid available, using order premium: $${callValueToUse.toFixed(2)}`)
+            }
+            
+            // Create order calculation with adjusted value
+            const adjustedOrderCalc: OrderCalculation = {
+              symbol: order.symbol,
+              side: order.side,
+              quantity: effectiveQuantity,
+              avgPrice: order.avgFillPrice,
+              totalCost: callValueToUse, // Use adjusted value (unrealized P&L or order premium)
+              secType: order.secType,
+              right: order.right,
+              strike: order.strike,
+              account: order.account,
+              orderDate: order.orderDate
+            }
+            
+            callSales.push(adjustedOrderCalc)
+            callPremiumReceived += callValueToUse
+            
+            console.log(`      📊 Added to call sales: $${callValueToUse.toFixed(2)} (source: ${valueSource})`)
           }
           // Call buybacks (BUY CALL - closing position, reduces premium)
           else if (order.secType === 'OPT' && order.right === 'C' && order.side === 'BUY') {
@@ -284,7 +373,7 @@ export function useAverageCostPriceFromOrders(
           else {
             console.log(`   ❓ Other order: ${order.symbol} ${order.secType} ${order.side} ${effectiveQuantity} @ $${order.avgFillPrice}`)
           }
-        })
+        }
 
         // Calculate net cost for this position
         // Net Stock Cost = Purchases - Sales
@@ -374,7 +463,7 @@ export function useAverageCostPriceFromOrders(
           totalShares: positionShares,
           adjustedAvgPricePerShare: adjustedAvgPrice
         })
-      })
+      }
 
       orderGroups.value = groups
 

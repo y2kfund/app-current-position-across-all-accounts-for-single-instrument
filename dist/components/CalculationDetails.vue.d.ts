@@ -45,6 +45,12 @@ interface Props {
     totalShares: number;
     isAvgPriceFromOrdersLoading: boolean;
     avgPriceFromOrdersError: string | null;
+    orderGroupsExitToday: OrderGroup[];
+    overallAdjustedAvgPriceFromOrdersExitToday: number | null;
+    totalNetCostExitToday: number;
+    totalSharesExitToday: number;
+    isAvgPriceFromOrdersLoadingExitToday: boolean;
+    avgPriceFromOrdersErrorExitToday: string | null;
 }
 declare const _default: import('vue').DefineComponent<Props, {}, {}, {}, {}, import('vue').ComponentOptionsMixin, import('vue').ComponentOptionsMixin, {
     "update:avgPriceCalculationTab": (value: "hold-orders" | "exit-orders") => any;
