@@ -24,7 +24,7 @@ interface currentPositionsProps {
 }
 
 const props = withDefaults(defineProps<currentPositionsProps>(), {
-  symbolRoot: 'META',
+  symbolRoot: 'COIN',
   userId: '4fbec15d-2316-4805-b2a4-5cd2115a5ac8'
 })
 
@@ -226,7 +226,7 @@ const {
   isLoading: isPnLLoading,
   error: pnlError
 } = useProfitAndLoss(
-  overallAdjustedAvgPriceFromOrders,
+  overallAdjustedAvgPriceFromOrdersExitToday,
   computed(() => totalShares.value),
   currentMarketPrice,
   putPositions,
@@ -1389,7 +1389,10 @@ function toggleAccountExpansion(accountId: string) {
                     class="summary-value clickable-price pnl-value" 
                     :class="{ 'profit': isProfitable, 'loss': !isProfitable }"
                     @click="togglePnLDetails"
-                  >
+                  > 
+                    <span style="font-size: 0.85rem; color: #6c757d; display: block; margin-bottom: 0.25rem;">
+                      If exit today:
+                    </span>
                     <span v-if="unrealizedPnL !== null">
                       {{ unrealizedPnL >= 0 ? '+' : '' }}${{ unrealizedPnL.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }}
                       <span class="pnl-percentage">({{ pnlPercentage?.toFixed(2) }}%)</span>
@@ -1401,7 +1404,6 @@ function toggleAccountExpansion(accountId: string) {
               </div>
 
               <div class="exited-pnl-box">
-                <div class="summary-label">P&L of the exited positions</div>
                 <div v-if="isExitedPnLLoading" class="summary-value">
                   <span class="loading-spinner">⏳</span> Loading...
                 </div>
@@ -1413,7 +1415,10 @@ function toggleAccountExpansion(accountId: string) {
                     class="summary-value clickable-price pnl-value" 
                     :class="{ 'profit': (totalExitedPnL ?? 0) >= 0, 'loss': (totalExitedPnL ?? 0) < 0 }"
                     @click="toggleExitedPnLDetails"
-                  >
+                  > 
+                    <span style="font-size: 0.85rem; color: #6c757d; display: block; margin-bottom: 0.25rem;">
+                      Of the exited:
+                    </span>
                     <span v-if="totalExitedPnL !== null">
                       {{ totalExitedPnL >= 0 ? '+' : '' }}${{ totalExitedPnL.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }}
                     </span>

@@ -1,7 +1,7 @@
 var Zs = Object.defineProperty;
 var eo = (h, e, t) => e in h ? Zs(h, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : h[e] = t;
 var O = (h, e, t) => eo(h, typeof e != "symbol" ? e + "" : e, t);
-import { inject as to, ref as B, watch as Fe, nextTick as Zt, onBeforeUnmount as ss, computed as se, defineComponent as os, createElementBlock as C, openBlock as E, Fragment as oe, createVNode as Ie, Transition as st, withCtx as ot, createCommentVNode as U, toDisplayString as m, withDirectives as He, createElementVNode as l, normalizeClass as de, createTextVNode as Y, renderList as ae, vShow as mt, onMounted as io, unref as F, withModifiers as At, vModelText as di } from "vue";
+import { inject as to, ref as B, watch as Me, nextTick as Zt, onBeforeUnmount as ss, computed as se, defineComponent as os, createElementBlock as C, openBlock as E, Fragment as oe, createVNode as Ie, Transition as st, withCtx as ot, createCommentVNode as U, toDisplayString as m, withDirectives as He, createElementVNode as l, normalizeClass as de, createTextVNode as Y, renderList as ae, vShow as mt, onMounted as io, unref as F, withModifiers as At, vModelText as di } from "vue";
 import { useQueryClient as Ni, useQuery as Vi } from "@tanstack/vue-query";
 import { useSupabase as Et, generatePositionMappingKey as It, usePositionTradeMappingsQuery as so, usePositionPositionMappingsQuery as oo, usePositionOrderMappingsQuery as no, savePositionOrderMappings as ao, fetchPositionsBySymbolRoot as ns, savePositionTradeMappings as ro, savePositionPositionMappings as lo } from "@y2kfund/core";
 const ho = Symbol.for("y2kfund.supabase");
@@ -11317,12 +11317,12 @@ function $a(h) {
       console.error("❌ Error creating Tabulator:", n);
     }
   }
-  return Fe([() => h.isSuccess.value, e], async ([n, a]) => {
+  return Me([() => h.isSuccess.value, e], async ([n, a]) => {
     var r;
     console.log("👀 Watch triggered - isSuccess:", n, "divRef:", !!a, "isTableInitialized:", s.value), n && a && !s.value && (await Zt(), a.offsetParent !== null ? (console.log("🎯 Conditions met, initializing table with", (r = h.data.value) == null ? void 0 : r.length, "rows"), o()) : (console.log("⏸️ Element not visible yet, will retry"), setTimeout(() => {
       a.offsetParent !== null && !s.value && (console.log("🚀 Initializing after visibility check"), o());
     }, 100)));
-  }, { immediate: !0 }), Fe(() => h.data.value, async (n) => {
+  }, { immediate: !0 }), Me(() => h.data.value, async (n) => {
     if (!(!t.value || !n)) {
       console.log("🔄 Data changed, updating table with", n.length, "rows");
       try {
@@ -11370,7 +11370,7 @@ function Ba(h, e) {
       s.value = !1;
     }
   };
-  return Fe(
+  return Me(
     h,
     (r) => {
       r && r > 0 ? (console.log(`🎯 Conid changed to: ${r}, fetching price...`), n(r)) : e ? (console.log(`🎯 No conid available, using symbolRoot: ${e}`), n(null)) : (console.log("⚠️ No valid conid or symbolRoot available"), i.value = null, o.value = null);
@@ -11414,7 +11414,7 @@ function Na(h, e) {
       s.value = !1;
     }
   };
-  return Fe(
+  return Me(
     h,
     (r) => {
       r && r > 0 ? (console.log(`🎯 Conid changed to: ${r}, fetching price...`), n(r)) : e ? (console.log(`🎯 No conid available, using symbolRoot: ${e}`), n(null)) : (console.log("⚠️ No valid conid or symbolRoot available"), i.value = null, o.value = null);
@@ -11501,7 +11501,7 @@ function Va(h, e) {
         }), z = x.get(I) || [], V = _.filter((R) => z.includes(R.ibOrderID));
         console.log(`📍 Processing position: ${S.symbol} (${S.legal_entity || S.internal_account_id})`), console.log(`   Attached orders: ${V.length}`);
         const A = [], w = [], M = [], Z = [], Q = [], he = [];
-        let ge = 0, ue = 0, we = 0, be = 0, Re = 0, Se = 0;
+        let ge = 0, fe = 0, we = 0, be = 0, Re = 0, Se = 0;
         V.forEach((R) => {
           const K = R.totalQuantity, ee = R.avgFillPrice * K, Ee = {
             symbol: R.symbol,
@@ -11515,14 +11515,14 @@ function Va(h, e) {
             account: R.account,
             orderDate: R.orderDate
           };
-          R.secType === "STK" && R.side === "BUY" ? (A.push(Ee), ge += Math.abs(ee), console.log(`   📈 Stock purchase: ${R.symbol} ${R.side} ${K} @ $${R.avgFillPrice} = $${Math.abs(ee).toFixed(2)}`)) : R.secType === "STK" && R.side === "SELL" ? (w.push(Ee), ue += Math.abs(ee), console.log(`   💰 Stock sale: ${R.symbol} ${R.side} ${K} @ $${R.avgFillPrice} = $${Math.abs(ee).toFixed(2)} (proceeds)`)) : R.secType === "OPT" && R.right === "P" && R.side === "SELL" ? (M.push(Ee), we += Math.abs(ee), console.log(`   📉 Put sale: ${R.symbol} SELL PUT @ $${R.strike} ${R.side} ${K} @ $${R.avgFillPrice} = +$${Math.abs(ee).toFixed(2)} (premium)`)) : R.secType === "OPT" && R.right === "P" && R.side === "BUY" ? (Z.push(Ee), be += Math.abs(ee), console.log(`   🔙 Put buyback: ${R.symbol} BUY PUT @ $${R.strike} ${R.side} ${K} @ $${R.avgFillPrice} = -$${Math.abs(ee).toFixed(2)} (close cost)`)) : R.secType === "OPT" && R.right === "C" && R.side === "SELL" ? (Q.push(Ee), Re += Math.abs(ee), console.log(`   📞 Call sale: ${R.symbol} SELL CALL @ $${R.strike} ${R.side} ${K} @ $${R.avgFillPrice} = +$${Math.abs(ee).toFixed(2)} (premium)`)) : R.secType === "OPT" && R.right === "C" && R.side === "BUY" ? (he.push(Ee), Se += Math.abs(ee), console.log(`   🔙 Call buyback: ${R.symbol} BUY CALL @ $${R.strike} ${R.side} ${K} @ $${R.avgFillPrice} = -$${Math.abs(ee).toFixed(2)} (close cost)`)) : console.log(`   ❓ Other order: ${R.symbol} ${R.secType} ${R.side} ${K} @ $${R.avgFillPrice}`);
+          R.secType === "STK" && R.side === "BUY" ? (A.push(Ee), ge += Math.abs(ee), console.log(`   📈 Stock purchase: ${R.symbol} ${R.side} ${K} @ $${R.avgFillPrice} = $${Math.abs(ee).toFixed(2)}`)) : R.secType === "STK" && R.side === "SELL" ? (w.push(Ee), fe += Math.abs(ee), console.log(`   💰 Stock sale: ${R.symbol} ${R.side} ${K} @ $${R.avgFillPrice} = $${Math.abs(ee).toFixed(2)} (proceeds)`)) : R.secType === "OPT" && R.right === "P" && R.side === "SELL" ? (M.push(Ee), we += Math.abs(ee), console.log(`   📉 Put sale: ${R.symbol} SELL PUT @ $${R.strike} ${R.side} ${K} @ $${R.avgFillPrice} = +$${Math.abs(ee).toFixed(2)} (premium)`)) : R.secType === "OPT" && R.right === "P" && R.side === "BUY" ? (Z.push(Ee), be += Math.abs(ee), console.log(`   🔙 Put buyback: ${R.symbol} BUY PUT @ $${R.strike} ${R.side} ${K} @ $${R.avgFillPrice} = -$${Math.abs(ee).toFixed(2)} (close cost)`)) : R.secType === "OPT" && R.right === "C" && R.side === "SELL" ? (Q.push(Ee), Re += Math.abs(ee), console.log(`   📞 Call sale: ${R.symbol} SELL CALL @ $${R.strike} ${R.side} ${K} @ $${R.avgFillPrice} = +$${Math.abs(ee).toFixed(2)} (premium)`)) : R.secType === "OPT" && R.right === "C" && R.side === "BUY" ? (he.push(Ee), Se += Math.abs(ee), console.log(`   🔙 Call buyback: ${R.symbol} BUY CALL @ $${R.strike} ${R.side} ${K} @ $${R.avgFillPrice} = -$${Math.abs(ee).toFixed(2)} (close cost)`)) : console.log(`   ❓ Other order: ${R.symbol} ${R.secType} ${R.side} ${K} @ $${R.avgFillPrice}`);
         });
-        const _e = ge - ue, Me = we - be, We = Re - Se, Ge = _e - Me - We;
+        const _e = ge - fe, Le = we - be, We = Re - Se, Ge = _e - Le - We;
         let re = 0;
-        const Le = A.reduce((R, K) => R + Math.abs(K.quantity), 0), nt = w.reduce((R, K) => R + Math.abs(K.quantity), 0), je = Le - nt;
-        je > 0 ? (re = je, console.log(`   ✅ Using shares from stock orders: ${Le} purchased - ${nt} sold = ${re}`)) : Le > 0 ? (re = Le, console.log(`   ✅ Using shares from stock purchases: ${re}`)) : (re = S.accounting_quantity ?? S.qty, console.log(`   ℹ️ No stock orders found, using position quantity: ${re}`));
+        const De = A.reduce((R, K) => R + Math.abs(K.quantity), 0), nt = w.reduce((R, K) => R + Math.abs(K.quantity), 0), je = De - nt;
+        je > 0 ? (re = je, console.log(`   ✅ Using shares from stock orders: ${De} purchased - ${nt} sold = ${re}`)) : De > 0 ? (re = De, console.log(`   ✅ Using shares from stock purchases: ${re}`)) : (re = S.accounting_quantity ?? S.qty, console.log(`   ℹ️ No stock orders found, using position quantity: ${re}`));
         const Ue = re > 0 ? Ge / re : 0;
-        console.log(`📊 Position Summary for ${S.legal_entity || S.internal_account_id}:`), console.log(`   Stock Purchase Cost: $${ge.toFixed(2)}`), console.log(`   Stock Sale Proceeds: -$${ue.toFixed(2)}`), console.log(`   Net Stock Cost: $${_e.toFixed(2)}`), console.log(`   Put Premium Received: +$${we.toFixed(2)}`), console.log(`   Put Buyback Cost: -$${be.toFixed(2)}`), console.log(`   Net Put Cash Flow: $${Me.toFixed(2)}`), console.log(`   Call Premium Received: +$${Re.toFixed(2)}`), console.log(`   Call Buyback Cost: -$${Se.toFixed(2)}`), console.log(`   Net Call Cash Flow: $${We.toFixed(2)}`), console.log(`   Total Net Cost: $${Ge.toFixed(2)} (Net Stock - Net Put - Net Call)`), console.log(`   Position Shares: ${re}`), console.log(`   Adjusted Avg Price: $${Ue.toFixed(2)} per share`), g.push({
+        console.log(`📊 Position Summary for ${S.legal_entity || S.internal_account_id}:`), console.log(`   Stock Purchase Cost: $${ge.toFixed(2)}`), console.log(`   Stock Sale Proceeds: -$${fe.toFixed(2)}`), console.log(`   Net Stock Cost: $${_e.toFixed(2)}`), console.log(`   Put Premium Received: +$${we.toFixed(2)}`), console.log(`   Put Buyback Cost: -$${be.toFixed(2)}`), console.log(`   Net Put Cash Flow: $${Le.toFixed(2)}`), console.log(`   Call Premium Received: +$${Re.toFixed(2)}`), console.log(`   Call Buyback Cost: -$${Se.toFixed(2)}`), console.log(`   Net Call Cash Flow: $${We.toFixed(2)}`), console.log(`   Total Net Cost: $${Ge.toFixed(2)} (Net Stock - Net Put - Net Call)`), console.log(`   Position Shares: ${re}`), console.log(`   Adjusted Avg Price: $${Ue.toFixed(2)} per share`), g.push({
           mainPosition: {
             symbol: S.symbol,
             account: S.legal_entity || S.internal_account_id,
@@ -11545,7 +11545,7 @@ function Va(h, e) {
           stockPurchases: A,
           stockPurchaseCost: ge,
           stockSales: w,
-          stockSaleProceeds: ue,
+          stockSaleProceeds: fe,
           netStockCost: _e,
           putSales: M,
           putPremiumReceived: we,
@@ -11556,7 +11556,7 @@ function Va(h, e) {
           callBuybacks: he,
           callBuybackCost: Se,
           totalStockCost: _e,
-          netPutCashFlow: Me,
+          netPutCashFlow: Le,
           netCallCashFlow: We,
           netCost: Ge,
           totalShares: re,
@@ -11571,7 +11571,7 @@ function Va(h, e) {
       a.value = !1;
     }
   };
-  return Fe(
+  return Me(
     () => h.value,
     () => {
       h.value && h.value.length > 0 && e ? c() : i.value = null;
@@ -11662,7 +11662,7 @@ function Ia(h, e) {
         }), z = x.get(I) || [], V = _.filter((R) => z.includes(R.ibOrderID));
         console.log(`📍 Processing position: ${S.symbol} (${S.legal_entity || S.internal_account_id})`), console.log(`   Attached orders: ${V.length}`);
         const A = [], w = [], M = [], Z = [], Q = [], he = [];
-        let ge = 0, ue = 0, we = 0, be = 0, Re = 0, Se = 0;
+        let ge = 0, fe = 0, we = 0, be = 0, Re = 0, Se = 0;
         for (const R of V) {
           const K = R.totalQuantity, ee = R.avgFillPrice * K, Ee = {
             symbol: R.symbol,
@@ -11679,7 +11679,7 @@ function Ia(h, e) {
           if (R.secType === "STK" && R.side === "BUY")
             A.push(Ee), ge += Math.abs(ee), console.log(`   📈 Stock purchase: ${R.symbol} ${R.side} ${K} @ $${R.avgFillPrice} = $${Math.abs(ee).toFixed(2)}`);
           else if (R.secType === "STK" && R.side === "SELL")
-            w.push(Ee), ue += Math.abs(ee), console.log(`   💰 Stock sale: ${R.symbol} ${R.side} ${K} @ $${R.avgFillPrice} = $${Math.abs(ee).toFixed(2)} (proceeds)`);
+            w.push(Ee), fe += Math.abs(ee), console.log(`   💰 Stock sale: ${R.symbol} ${R.side} ${K} @ $${R.avgFillPrice} = $${Math.abs(ee).toFixed(2)} (proceeds)`);
           else if (R.secType === "OPT" && R.right === "P" && R.side === "SELL")
             M.push(Ee), we += Math.abs(ee), console.log(`   📉 Put sale: ${R.symbol} SELL PUT @ $${R.strike} ${R.side} ${K} @ $${R.avgFillPrice} = +$${Math.abs(ee).toFixed(2)} (premium)`);
           else if (R.secType === "OPT" && R.right === "P" && R.side === "BUY")
@@ -11721,12 +11721,12 @@ function Ia(h, e) {
             Q.push(Lt), Re += $e, console.log(`      📊 Added to call sales: $${$e.toFixed(2)} (source: ${_t})`);
           } else R.secType === "OPT" && R.right === "C" && R.side === "BUY" ? (he.push(Ee), Se += Math.abs(ee), console.log(`   🔙 Call buyback: ${R.symbol} BUY CALL @ $${R.strike} ${R.side} ${K} @ $${R.avgFillPrice} = -$${Math.abs(ee).toFixed(2)} (close cost)`)) : console.log(`   ❓ Other order: ${R.symbol} ${R.secType} ${R.side} ${K} @ $${R.avgFillPrice}`);
         }
-        const _e = ge - ue, Me = we - be, We = Re - Se, Ge = _e - Me - We;
+        const _e = ge - fe, Le = we - be, We = Re - Se, Ge = _e - Le - We;
         let re = 0;
-        const Le = A.reduce((R, K) => R + Math.abs(K.quantity), 0), nt = w.reduce((R, K) => R + Math.abs(K.quantity), 0), je = Le - nt;
-        je > 0 ? (re = je, console.log(`   ✅ Using shares from stock orders: ${Le} purchased - ${nt} sold = ${re}`)) : Le > 0 ? (re = Le, console.log(`   ✅ Using shares from stock purchases: ${re}`)) : (re = S.accounting_quantity ?? S.qty, console.log(`   ℹ️ No stock orders found, using position quantity: ${re}`));
+        const De = A.reduce((R, K) => R + Math.abs(K.quantity), 0), nt = w.reduce((R, K) => R + Math.abs(K.quantity), 0), je = De - nt;
+        je > 0 ? (re = je, console.log(`   ✅ Using shares from stock orders: ${De} purchased - ${nt} sold = ${re}`)) : De > 0 ? (re = De, console.log(`   ✅ Using shares from stock purchases: ${re}`)) : (re = S.accounting_quantity ?? S.qty, console.log(`   ℹ️ No stock orders found, using position quantity: ${re}`));
         const Ue = re > 0 ? Ge / re : 0;
-        console.log(`📊 Position Summary for ${S.legal_entity || S.internal_account_id}:`), console.log(`   Stock Purchase Cost: $${ge.toFixed(2)}`), console.log(`   Stock Sale Proceeds: -$${ue.toFixed(2)}`), console.log(`   Net Stock Cost: $${_e.toFixed(2)}`), console.log(`   Put Premium Received: +$${we.toFixed(2)}`), console.log(`   Put Buyback Cost: -$${be.toFixed(2)}`), console.log(`   Net Put Cash Flow: $${Me.toFixed(2)}`), console.log(`   Call Premium Received: +$${Re.toFixed(2)}`), console.log(`   Call Buyback Cost: -$${Se.toFixed(2)}`), console.log(`   Net Call Cash Flow: $${We.toFixed(2)}`), console.log(`   Total Net Cost: $${Ge.toFixed(2)} (Net Stock - Net Put - Net Call)`), console.log(`   Position Shares: ${re}`), console.log(`   Adjusted Avg Price: $${Ue.toFixed(2)} per share`), g.push({
+        console.log(`📊 Position Summary for ${S.legal_entity || S.internal_account_id}:`), console.log(`   Stock Purchase Cost: $${ge.toFixed(2)}`), console.log(`   Stock Sale Proceeds: -$${fe.toFixed(2)}`), console.log(`   Net Stock Cost: $${_e.toFixed(2)}`), console.log(`   Put Premium Received: +$${we.toFixed(2)}`), console.log(`   Put Buyback Cost: -$${be.toFixed(2)}`), console.log(`   Net Put Cash Flow: $${Le.toFixed(2)}`), console.log(`   Call Premium Received: +$${Re.toFixed(2)}`), console.log(`   Call Buyback Cost: -$${Se.toFixed(2)}`), console.log(`   Net Call Cash Flow: $${We.toFixed(2)}`), console.log(`   Total Net Cost: $${Ge.toFixed(2)} (Net Stock - Net Put - Net Call)`), console.log(`   Position Shares: ${re}`), console.log(`   Adjusted Avg Price: $${Ue.toFixed(2)} per share`), g.push({
           mainPosition: {
             symbol: S.symbol,
             account: S.legal_entity || S.internal_account_id,
@@ -11749,7 +11749,7 @@ function Ia(h, e) {
           stockPurchases: A,
           stockPurchaseCost: ge,
           stockSales: w,
-          stockSaleProceeds: ue,
+          stockSaleProceeds: fe,
           netStockCost: _e,
           putSales: M,
           putPremiumReceived: we,
@@ -11760,7 +11760,7 @@ function Ia(h, e) {
           callBuybacks: he,
           callBuybackCost: Se,
           totalStockCost: _e,
-          netPutCashFlow: Me,
+          netPutCashFlow: Le,
           netCallCashFlow: We,
           netCost: Ge,
           totalShares: re,
@@ -11776,7 +11776,7 @@ function Ia(h, e) {
       a.value = !1;
     }
   };
-  return Fe(
+  return Me(
     () => h.value,
     () => {
       h.value && h.value.length > 0 && e ? c() : i.value = null;
@@ -11819,17 +11819,17 @@ function Wa(h, e, t, i = B(void 0), s = B(void 0)) {
         }
       }
       D.add(Q), P.add(A < 0 ? "SHORT" : "LONG");
-      const ge = Math.abs(V.computed_cash_flow_on_entry || 0), ue = Math.abs(V.market_value || 0), we = V.unrealized_pnl || 0;
-      L += Math.abs(A), _ += ge, x += ue, g += we, f.push({
+      const ge = Math.abs(V.computed_cash_flow_on_entry || 0), fe = Math.abs(V.market_value || 0), we = V.unrealized_pnl || 0;
+      L += Math.abs(A), _ += ge, x += fe, g += we, f.push({
         account: w,
         strike: M,
         expiry: Z,
         quantity: A,
         premiumReceived: ge,
-        currentValue: ue,
+        currentValue: fe,
         positionPnL: we,
         symbol: V.symbol
-      }), console.log(`📍 Position: ${V.symbol} (${w})`), console.log(`   Quantity: ${A}`), console.log(`   Premium Received: $${ge.toFixed(2)}`), console.log(`   Current Value: $${ue.toFixed(2)}`), console.log(`   P&L: $${we.toFixed(2)}`);
+      }), console.log(`📍 Position: ${V.symbol} (${w})`), console.log(`   Quantity: ${A}`), console.log(`   Premium Received: $${ge.toFixed(2)}`), console.log(`   Current Value: $${fe.toFixed(2)}`), console.log(`   P&L: $${we.toFixed(2)}`);
     });
     const S = D.size === 1 ? Array.from(D)[0] : "MIXED", I = P.size === 1 ? Array.from(P)[0] : "MIXED", z = _ > 0 ? g / _ * 100 : 0;
     return console.log("💰 Options P&L Summary:"), console.log(`   Total Contracts: ${L}`), console.log(`   Total Premium Received: $${_.toFixed(2)}`), console.log(`   Current Market Liability: $${x.toFixed(2)}`), console.log(`   Unrealized P&L: $${g.toFixed(2)}`), console.log(`   P&L Percentage: ${z.toFixed(2)}%`), {
@@ -11858,7 +11858,7 @@ function Wa(h, e, t, i = B(void 0), s = B(void 0)) {
     } else
       return console.log("📊 No stock positions, calculating OPTIONS P&L"), p();
   });
-  return Fe(
+  return Me(
     v,
     (y) => {
       y ? "totalShares" in y ? (o.value = y.totalCostBasis, n.value = y.currentMarketValue, a.value = y.unrealizedPnL, r.value = y.pnlPercentage, d.value = y.unrealizedPnL >= 0, console.log("💰 STOCK P&L Calculation:"), console.log(`   Total Shares: ${y.totalShares.toLocaleString()}`), console.log(`   Avg Cost per Share: $${y.avgCostPerShare.toFixed(2)}`), console.log(`   Total Cost Basis: $${y.totalCostBasis.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`), console.log(`   Current Price per Share: $${y.currentPricePerShare.toFixed(2)}`), console.log(`   Current Market Value: $${y.currentMarketValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`), console.log(`   Unrealized P&L: ${y.unrealizedPnL >= 0 ? "+" : ""}$${y.unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`), console.log(`   P&L Percentage: ${y.pnlPercentage.toFixed(2)}%`)) : (o.value = y.totalPremiumReceived, n.value = y.currentMarketLiability, a.value = y.unrealizedPnL, r.value = y.pnlPercentage, d.value = y.unrealizedPnL >= 0, console.log("💰 OPTIONS P&L Updated:"), console.log(`   Total Contracts: ${y.totalContracts}`), console.log(`   ${y.positionType} ${y.optionType}`), console.log(`   Premium Received: $${y.totalPremiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`), console.log(`   Current Liability: $${y.currentMarketLiability.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`), console.log(`   Unrealized P&L: ${y.unrealizedPnL >= 0 ? "+" : ""}$${y.unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`), console.log(`   P&L Percentage: ${y.pnlPercentage.toFixed(2)}%`)) : (o.value = null, n.value = null, a.value = null, r.value = null, d.value = !1, console.log("⚠️ P&L Calculation: Missing required data"));
@@ -11954,7 +11954,7 @@ function Ga(h, e, t = B("STK")) {
       n.value = !1;
     }
   }
-  return Fe(
+  return Me(
     [h, e, t],
     () => {
       d();
@@ -13486,7 +13486,7 @@ ${z}`;
 }, Gm = { class: "modal-footer" }, jm = ["disabled"], Um = /* @__PURE__ */ os({
   __name: "CurrentPositions",
   props: {
-    symbolRoot: { default: "META" },
+    symbolRoot: { default: "COIN" },
     userId: { default: "4fbec15d-2316-4805-b2a4-5cd2115a5ac8" }
   },
   emits: ["capitalUsedChanged"],
@@ -13537,7 +13537,7 @@ ${z}`;
       let N = T.toLocaleString("en-US", H).replace(/,(\s+\d)/, " $1");
       return N = N.replace("GMT+5:30", "IST"), N = N.replace("GMT+530", "IST"), N;
     }), {
-      overallAdjustedAvgPriceFromOrders: ue,
+      overallAdjustedAvgPriceFromOrders: fe,
       totalNetCost: we,
       totalShares: be,
       orderGroups: Re,
@@ -13547,11 +13547,11 @@ ${z}`;
       c,
       t.userId
     ), {
-      overallAdjustedAvgPriceFromOrders: Me,
+      overallAdjustedAvgPriceFromOrders: Le,
       totalNetCost: We,
       totalShares: Ge,
       orderGroups: re,
-      isLoading: Le,
+      isLoading: De,
       error: nt
     } = Ia(
       c,
@@ -13605,13 +13605,13 @@ ${z}`;
       isLoading: Ms,
       error: Ps
     } = Wa(
-      ue,
+      Le,
       se(() => be.value),
       V,
       _,
       x
     ), {
-      totalExitedPnL: De,
+      totalExitedPnL: Fe,
       exitedOrdersBreakdown: Ut,
       isLoading: zs,
       error: As
@@ -13634,13 +13634,13 @@ ${z}`;
     }
     function pt(T) {
       if (!T) return [];
-      const b = String(T), H = b.match(/^([A-Z]+)\b/), $ = (H == null ? void 0 : H[1]) ?? "", N = b.match(/\s([CP])\b/), k = (N == null ? void 0 : N[1]) ?? "", W = b.match(/\s(\d+(?:\.\d+)?)\s+[CP]\b/), J = (W == null ? void 0 : W[1]) ?? "", ce = b.match(/\b(\d{6})[CP]/), fe = ce ? Ui(ce[1]) : "";
-      return [$, fe, J, k].filter(Boolean);
+      const b = String(T), H = b.match(/^([A-Z]+)\b/), $ = (H == null ? void 0 : H[1]) ?? "", N = b.match(/\s([CP])\b/), k = (N == null ? void 0 : N[1]) ?? "", W = b.match(/\s(\d+(?:\.\d+)?)\s+[CP]\b/), J = (W == null ? void 0 : W[1]) ?? "", ce = b.match(/\b(\d{6})[CP]/), ue = ce ? Ui(ce[1]) : "";
+      return [$, ue, J, k].filter(Boolean);
     }
     function Ft(T) {
-      var fe;
+      var ue;
       if (!T) return [];
-      const b = String(T).trim(), H = b.match(/^([A-Z]+)\s*/), $ = (H == null ? void 0 : H[1]) ?? "", N = b.slice(((fe = H == null ? void 0 : H[0]) == null ? void 0 : fe.length) || 0), k = N.match(/(\d{6})([CP])/);
+      const b = String(T).trim(), H = b.match(/^([A-Z]+)\s*/), $ = (H == null ? void 0 : H[1]) ?? "", N = b.slice(((ue = H == null ? void 0 : H[0]) == null ? void 0 : ue.length) || 0), k = N.match(/(\d{6})([CP])/);
       let W = "", J = "", ce = "";
       if (k) {
         W = Ui(k[1]), J = k[2] === "C" ? "Call" : "Put";
@@ -13740,12 +13740,12 @@ ${z}`;
             attachedOrderIds: (W == null ? void 0 : W.size) || 0,
             isReady: Lt.value
           });
-          const J = N && N.size > 0 || k && k.size > 0 || W && W.size > 0, ce = Be.value.has($), fe = J ? `<span class="expand-arrow ${ce ? "expanded" : ""}" data-position-key="${$}" title="${ce ? "Collapse" : "Expand"} attachments">
+          const J = N && N.size > 0 || k && k.size > 0 || W && W.size > 0, ce = Be.value.has($), ue = J ? `<span class="expand-arrow ${ce ? "expanded" : ""}" data-position-key="${$}" title="${ce ? "Collapse" : "Expand"} attachments">
             ${ce ? "▼" : "▶"}
           </span>` : '<span class="expand-arrow">&nbsp;</span>', at = ((N == null ? void 0 : N.size) || 0) + ((k == null ? void 0 : k.size) || 0) + ((W == null ? void 0 : W.size) || 0), ve = at > 0 ? `<span class="trade-count">(${at})</span>` : "";
           return `
         <div style="display: flex; align-items: center; gap: 6px;">
-          ${fe} 
+          ${ue} 
           <button class="attach-trades-btn" title="Attach trades or positions" style="border:none;background:transparent;cursor:pointer;padding:0;margin-right:4px;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;">
           <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -13887,13 +13887,13 @@ ${z}`;
           if (J && (N && N.size > 0 || k && k.size > 0 || W && W.size > 0)) {
             console.log("📦 Creating nested tables for:", $), Dt.value.add($);
             try {
-              const fe = document.createElement("div");
-              if (fe.className = "nested-tables-container", fe.style.cssText = "padding: 1rem; background: #f8f9fa; border-top: 1px solid #dee2e6;", N && N.size > 0) {
+              const ue = document.createElement("div");
+              if (ue.className = "nested-tables-container", ue.style.cssText = "padding: 1rem; background: #f8f9fa; border-top: 1px solid #dee2e6;", N && N.size > 0) {
                 console.log("📊 Adding trades section");
                 const ve = document.createElement("h4");
-                ve.textContent = `Attached Trades (${N.size})`, ve.style.cssText = "margin: 0 0 0.5rem 0; font-size: 0.9rem; color: #495057;", fe.appendChild(ve);
+                ve.textContent = `Attached Trades (${N.size})`, ve.style.cssText = "margin: 0 0 0.5rem 0; font-size: 0.9rem; color: #495057;", ue.appendChild(ve);
                 const xe = document.createElement("div");
-                xe.className = "nested-trades-table", xe.style.cssText = "margin-bottom: 1rem;", fe.appendChild(xe);
+                xe.className = "nested-trades-table", xe.style.cssText = "margin-bottom: 1rem;", ue.appendChild(xe);
                 const rt = await ee(b);
                 console.log("✅ Got trades data:", rt.length), new Yt(xe, {
                   data: rt,
@@ -13994,9 +13994,9 @@ ${z}`;
               if (k && k.size > 0) {
                 console.log("📊 Adding positions section");
                 const ve = document.createElement("h4");
-                ve.textContent = `Attached Positions (${k.size})`, ve.style.cssText = "margin: 1rem 0 0.5rem 0; font-size: 0.9rem; color: #495057;", fe.appendChild(ve);
+                ve.textContent = `Attached Positions (${k.size})`, ve.style.cssText = "margin: 1rem 0 0.5rem 0; font-size: 0.9rem; color: #495057;", ue.appendChild(ve);
                 const xe = document.createElement("div");
-                xe.className = "nested-positions-table", fe.appendChild(xe);
+                xe.className = "nested-positions-table", ue.appendChild(xe);
                 const rt = await Ee(b, k);
                 console.log("✅ Got positions data:", rt.length), new Yt(xe, {
                   data: rt,
@@ -14067,9 +14067,9 @@ ${z}`;
               if (console.log("👀 Attached order IDs for", $, at), J && at && at.size > 0) {
                 console.log("📦 Adding orders section for:", $);
                 const ve = document.createElement("h4");
-                ve.textContent = `Attached Orders (${at.size})`, ve.style.cssText = "margin: 1rem 0 0.5rem 0; font-size: 0.9rem; color: #495057;", fe.appendChild(ve);
+                ve.textContent = `Attached Orders (${at.size})`, ve.style.cssText = "margin: 1rem 0 0.5rem 0; font-size: 0.9rem; color: #495057;", ue.appendChild(ve);
                 const xe = document.createElement("div");
-                xe.className = "nested-orders-table", fe.appendChild(xe);
+                xe.className = "nested-orders-table", ue.appendChild(xe);
                 const rt = await $e(b);
                 console.log("✅ Got orders data:", rt.length), new Yt(xe, {
                   data: rt,
@@ -14136,9 +14136,9 @@ ${z}`;
                   ]
                 });
               }
-              console.log("✅ Appending nested container to row"), H.appendChild(fe);
-            } catch (fe) {
-              console.error("❌ Error creating nested tables:", fe);
+              console.log("✅ Appending nested container to row"), H.appendChild(ue);
+            } catch (ue) {
+              console.error("❌ Error creating nested tables:", ue);
             } finally {
               setTimeout(() => {
                 Dt.value.delete($), console.log("✅ Removed from processing");
@@ -14238,7 +14238,7 @@ ${z}`;
       const $ = new Date(H), N = /* @__PURE__ */ new Date();
       return N.setHours(0, 0, 0, 0), $ < N;
     }
-    Fe(Ke, (T) => {
+    Me(Ke, (T) => {
       try {
         T ? document.body.classList.add("modal-open") : document.body.classList.remove("modal-open");
       } catch {
@@ -14284,11 +14284,11 @@ ${z}`;
       } else if ($ = new Date(b), isNaN($.getTime())) return String(b);
       return $.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
     }
-    Fe(Lt, async (T) => {
+    Me(Lt, async (T) => {
       console.log("👀 Mappings ready state changed:", T), T && Ae.value && ai.value && (console.log("🔄 Redrawing table with mappings"), Ae.value.redraw(!0));
-    }, { immediate: !0 }), Fe(i, async (T) => {
+    }, { immediate: !0 }), Me(i, async (T) => {
       T && !ai.value && c.value && c.value.length > 0 && (console.log("📊 Details shown via watch, initializing table..."), await Zt(), qi());
-    }), Fe(() => si.value, (T) => {
+    }), Me(() => si.value, (T) => {
       r("capitalUsedChanged", T);
     }), io(() => {
       console.log("📊 CurrentPositions component mounted");
@@ -14332,7 +14332,7 @@ ${z}`;
                 ]),
                 l("div", Wc, [
                   l("div", Gc, [
-                    b[22] || (b[22] = l("div", { class: "summary-label" }, "P&L of the current positions", -1)),
+                    b[23] || (b[23] = l("div", { class: "summary-label" }, "P&L of the current positions", -1)),
                     F(Ms) ? (E(), C("div", jc, [...b[21] || (b[21] = [
                       l("span", { class: "loading-spinner" }, "⏳", -1),
                       Y(" Loading... ", -1)
@@ -14341,6 +14341,7 @@ ${z}`;
                         class: de(["summary-value clickable-price pnl-value", { profit: F(Ne), loss: !F(Ne) }]),
                         onClick: Ks
                       }, [
+                        b[22] || (b[22] = l("span", { style: { "font-size": "0.85rem", color: "#6c757d", display: "block", "margin-bottom": "0.25rem" } }, " If exit today: ", -1)),
                         F(Pe) !== null ? (E(), C("span", Kc, [
                           Y(m(F(Pe) >= 0 ? "+" : "") + "$" + m(F(Pe).toLocaleString(void 0, { minimumFractionDigits: 0, maximumFractionDigits: 0 })) + " ", 1),
                           l("span", Qc, "(" + m(($ = F(Fs)) == null ? void 0 : $.toFixed(2)) + "%)", 1)
@@ -14350,23 +14351,23 @@ ${z}`;
                     ]))
                   ]),
                   l("div", Yc, [
-                    b[24] || (b[24] = l("div", { class: "summary-label" }, "P&L of the exited positions", -1)),
-                    F(zs) ? (E(), C("div", Zc, [...b[23] || (b[23] = [
+                    F(zs) ? (E(), C("div", Zc, [...b[24] || (b[24] = [
                       l("span", { class: "loading-spinner" }, "⏳", -1),
                       Y(" Loading... ", -1)
                     ])])) : F(As) ? (E(), C("div", eu, " ❌ Error ")) : (E(), C("div", tu, [
                       l("div", {
-                        class: de(["summary-value clickable-price pnl-value", { profit: (F(De) ?? 0) >= 0, loss: (F(De) ?? 0) < 0 }]),
+                        class: de(["summary-value clickable-price pnl-value", { profit: (F(Fe) ?? 0) >= 0, loss: (F(Fe) ?? 0) < 0 }]),
                         onClick: $s
                       }, [
-                        F(De) !== null ? (E(), C("span", iu, m(F(De) >= 0 ? "+" : "") + "$" + m(F(De).toLocaleString(void 0, { minimumFractionDigits: 0, maximumFractionDigits: 0 })), 1)) : (E(), C("span", su, "N/A")),
+                        b[25] || (b[25] = l("span", { style: { "font-size": "0.85rem", color: "#6c757d", display: "block", "margin-bottom": "0.25rem" } }, " Of the exited: ", -1)),
+                        F(Fe) !== null ? (E(), C("span", iu, m(F(Fe) >= 0 ? "+" : "") + "$" + m(F(Fe).toLocaleString(void 0, { minimumFractionDigits: 0, maximumFractionDigits: 0 })), 1)) : (E(), C("span", su, "N/A")),
                         l("span", ou, m(qt.value ? "▼" : "▶"), 1)
                       ], 2)
                     ]))
                   ])
                 ]),
                 l("div", nu, [
-                  b[25] || (b[25] = l("div", { class: "summary-label" }, "Total Contract Quantity", -1)),
+                  b[26] || (b[26] = l("div", { class: "summary-label" }, "Total Contract Quantity", -1)),
                   l("div", au, [
                     l("div", ru, m(ji.value.toLocaleString()), 1),
                     l("div", lu, [
@@ -14383,24 +14384,24 @@ ${z}`;
                   ])
                 ]),
                 l("div", du, [
-                  b[29] || (b[29] = l("div", { class: "summary-label" }, "Current market price", -1)),
-                  F(D) ? (E(), C("div", cu, [...b[26] || (b[26] = [
+                  b[30] || (b[30] = l("div", { class: "summary-label" }, "Current market price", -1)),
+                  F(D) ? (E(), C("div", cu, [...b[27] || (b[27] = [
                     l("span", { class: "loading-spinner" }, "⏳", -1),
                     Y(" Loading... ", -1)
                   ])])) : F(P) ? (E(), C("div", uu, " ❌ Error ")) : V.value !== null ? (E(), C("div", fu, [
                     l("div", mu, " $" + m(V.value.toFixed(2)), 1),
                     w.value !== null && A.value !== null ? (E(), C("div", pu, [
-                      b[27] || (b[27] = Y(" 52W Range: ", -1)),
+                      b[28] || (b[28] = Y(" 52W Range: ", -1)),
                       l("span", gu, "$" + m(w.value.toFixed(2)), 1),
-                      b[28] || (b[28] = Y(" - ", -1)),
+                      b[29] || (b[29] = Y(" - ", -1)),
                       l("span", bu, "$" + m(A.value.toFixed(2)), 1)
                     ])) : (E(), C("div", vu, " 52W Range: N/A ")),
                     ge.value ? (E(), C("div", yu, " Updated: " + m(ge.value), 1)) : U("", !0)
                   ])) : (E(), C("div", wu, " N/A "))
                 ]),
                 l("div", Cu, [
-                  b[33] || (b[33] = l("div", { class: "summary-label" }, "Average cost per share", -1)),
-                  F(Se) || F(Le) ? (E(), C("div", Eu, [...b[30] || (b[30] = [
+                  b[34] || (b[34] = l("div", { class: "summary-label" }, "Average cost per share", -1)),
+                  F(Se) || F(De) ? (E(), C("div", Eu, [...b[31] || (b[31] = [
                     l("span", { class: "loading-spinner" }, "⏳", -1),
                     Y(" Loading... ", -1)
                   ])])) : F(_e) || F(nt) ? (E(), C("div", xu, " ❌ Error ")) : (E(), C("div", ku, [
@@ -14411,8 +14412,8 @@ ${z}`;
                       }),
                       style: { "margin-bottom": "0.5rem" }
                     }, [
-                      b[31] || (b[31] = l("span", { style: { "font-size": "0.85rem", color: "#6c757d", display: "block", "margin-bottom": "0.25rem" } }, " If hold till expiry: ", -1)),
-                      F(ue) !== null ? (E(), C("span", Ru, " $" + m(F(ue).toFixed(2)), 1)) : (E(), C("span", Tu, "N/A"))
+                      b[32] || (b[32] = l("span", { style: { "font-size": "0.85rem", color: "#6c757d", display: "block", "margin-bottom": "0.25rem" } }, " If hold till expiry: ", -1)),
+                      F(fe) !== null ? (E(), C("span", Ru, " $" + m(F(fe).toFixed(2)), 1)) : (E(), C("span", Tu, "N/A"))
                     ]),
                     l("div", {
                       class: "summary-value average-cost-price clickable-price",
@@ -14421,29 +14422,29 @@ ${z}`;
                       }),
                       style: { "padding-top": "0.5rem", "border-top": "1px solid #dee2e6" }
                     }, [
-                      b[32] || (b[32] = l("span", { style: { "font-size": "0.85rem", color: "#6c757d", display: "block", "margin-bottom": "0.25rem" } }, " If exit today: ", -1)),
-                      F(Me) !== null ? (E(), C("span", Su, [
-                        Y(" $" + m(F(Me).toFixed(2)) + " ", 1),
+                      b[33] || (b[33] = l("span", { style: { "font-size": "0.85rem", color: "#6c757d", display: "block", "margin-bottom": "0.25rem" } }, " If exit today: ", -1)),
+                      F(Le) !== null ? (E(), C("span", Su, [
+                        Y(" $" + m(F(Le).toFixed(2)) + " ", 1),
                         l("span", _u, m(s.value ? "▼" : "▶"), 1)
                       ])) : (E(), C("span", Lu, "N/A"))
                     ])
                   ]))
                 ]),
                 l("div", Du, [
-                  F(I) ? (E(), C("div", Fu, [...b[34] || (b[34] = [
+                  F(I) ? (E(), C("div", Fu, [...b[35] || (b[35] = [
                     l("span", { class: "loading-spinner" }, "⏳", -1),
                     Y(" Loading... ", -1)
                   ])])) : F(z) ? (E(), C("div", Mu, " ❌ Error ")) : (E(), C("div", Pu, [
                     M.value !== null ? (E(), C("div", zu, [
-                      b[35] || (b[35] = Y(" P/E Ratio: ", -1)),
+                      b[36] || (b[36] = Y(" P/E Ratio: ", -1)),
                       l("span", Au, m(M.value.toFixed(2)), 1)
                     ])) : U("", !0),
                     Q.value !== null ? (E(), C("div", Ou, [
-                      b[36] || (b[36] = Y(" PEG Ratio: ", -1)),
+                      b[37] || (b[37] = Y(" PEG Ratio: ", -1)),
                       l("span", Hu, m(Q.value.toFixed(2)), 1)
                     ])) : U("", !0),
                     Z.value !== null ? (E(), C("div", $u, [
-                      b[37] || (b[37] = Y(" Market Cap: ", -1)),
+                      b[38] || (b[38] = Y(" Market Cap: ", -1)),
                       l("span", Bu, "$" + m((Z.value / 1e9).toFixed(2)) + "B", 1)
                     ])) : U("", !0)
                   ]))
@@ -14467,25 +14468,25 @@ ${z}`;
                 "avg-price-calculation-tab": a.value,
                 "onUpdate:avgPriceCalculationTab": b[2] || (b[2] = (k) => a.value = k),
                 "order-groups": F(Re),
-                "overall-adjusted-avg-price-from-orders": F(ue),
+                "overall-adjusted-avg-price-from-orders": F(fe),
                 "total-net-cost": F(we),
                 "total-shares": F(be),
                 "is-avg-price-from-orders-loading": F(Se),
                 "avg-price-from-orders-error": F(_e),
                 "order-groups-exit-today": F(re),
-                "overall-adjusted-avg-price-from-orders-exit-today": F(Me),
+                "overall-adjusted-avg-price-from-orders-exit-today": F(Le),
                 "total-net-cost-exit-today": F(We),
                 "total-shares-exit-today": F(Ge),
-                "is-avg-price-from-orders-loading-exit-today": F(Le),
+                "is-avg-price-from-orders-loading-exit-today": F(De),
                 "avg-price-from-orders-error-exit-today": F(nt)
               }, null, 8, ["show-calculation-details", "avg-price-calculation-tab", "order-groups", "overall-adjusted-avg-price-from-orders", "total-net-cost", "total-shares", "is-avg-price-from-orders-loading", "avg-price-from-orders-error", "order-groups-exit-today", "overall-adjusted-avg-price-from-orders-exit-today", "total-net-cost-exit-today", "total-shares-exit-today", "is-avg-price-from-orders-loading-exit-today", "avg-price-from-orders-error-exit-today"]),
               Ie(st, { name: "slide-fade" }, {
                 default: ot(() => [
                   He(l("div", Vu, [
-                    b[42] || (b[42] = l("h2", null, "Profit & Loss Calculation Details:", -1)),
+                    b[43] || (b[43] = l("h2", null, "Profit & Loss Calculation Details:", -1)),
                     F(X) && "totalShares" in F(X) && F(X).totalShares != null ? (E(), C("div", Iu, [
                       l("div", Wu, [
-                        b[38] || (b[38] = l("div", { class: "pnl-section-title" }, "📊 Total Cost Basis", -1)),
+                        b[39] || (b[39] = l("div", { class: "pnl-section-title" }, "📊 Total Cost Basis", -1)),
                         l("div", Gu, " Total Shares = " + m(F(X).totalShares.toLocaleString()), 1),
                         l("div", ju, " Average Cost per Share = $" + m(F(X).avgCostPerShare.toFixed(2)), 1),
                         l("div", Uu, [
@@ -14493,14 +14494,14 @@ ${z}`;
                         ])
                       ]),
                       l("div", qu, [
-                        b[39] || (b[39] = l("div", { class: "pnl-section-title" }, "💰 Current Market Value", -1)),
+                        b[40] || (b[40] = l("div", { class: "pnl-section-title" }, "💰 Current Market Value", -1)),
                         l("div", Ku, " Current Price per Share = $" + m(F(X).currentPricePerShare.toFixed(2)), 1),
                         l("div", Qu, [
                           l("strong", null, "Current Market Value = " + m(F(X).totalShares.toLocaleString()) + " × $" + m(F(X).currentPricePerShare.toFixed(2)) + " = $" + m(F(X).currentMarketValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ])
                       ]),
                       l("div", Xu, [
-                        b[40] || (b[40] = l("div", { class: "pnl-section-title" }, "🎯 Unrealized Profit & Loss", -1)),
+                        b[41] || (b[41] = l("div", { class: "pnl-section-title" }, "🎯 Unrealized Profit & Loss", -1)),
                         l("div", Ju, [
                           l("strong", {
                             class: de({ "profit-text": F(Ne), "loss-text": !F(Ne) })
@@ -14534,7 +14535,7 @@ ${z}`;
                         ])
                       ]))), 128)),
                       l("div", df, [
-                        b[41] || (b[41] = l("div", { class: "pnl-section-title" }, "💰 TOTAL CALCULATION", -1)),
+                        b[42] || (b[42] = l("div", { class: "pnl-section-title" }, "💰 TOTAL CALCULATION", -1)),
                         l("div", cf, " Total Premium Received = " + m(F(X).positions.map((k) => `$${k.premiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")), 1),
                         l("div", uf, [
                           l("strong", null, "= $" + m(F(X).totalPremiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
@@ -14565,16 +14566,16 @@ ${z}`;
               Ie(st, { name: "slide-fade" }, {
                 default: ot(() => [
                   He(l("div", vf, [
-                    b[49] || (b[49] = l("h2", null, "Exited Positions P&L Details:", -1)),
+                    b[50] || (b[50] = l("h2", null, "Exited Positions P&L Details:", -1)),
                     F(Ut) ? (E(), C("div", yf, [
                       l("div", wf, [
-                        b[43] || (b[43] = l("div", { class: "pnl-section-title" }, "📊 Overall Summary", -1)),
+                        b[44] || (b[44] = l("div", { class: "pnl-section-title" }, "📊 Overall Summary", -1)),
                         l("div", Cf, " Total Accounts: " + m(F(Ut).accountBreakdowns.length), 1),
                         l("div", Ef, " Total Orders: " + m(F(Ut).orderCount), 1),
                         l("div", xf, [
                           l("strong", {
-                            class: de({ "profit-text": F(De) && F(De) >= 0, "loss-text": F(De) && F(De) < 0 })
-                          }, " Total FIFO P&L: " + m(F(De) && F(De) >= 0 ? "+" : "") + "$" + m((F(De) || 0).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 3)
+                            class: de({ "profit-text": F(Fe) && F(Fe) >= 0, "loss-text": F(Fe) && F(Fe) < 0 })
+                          }, " Total FIFO P&L: " + m(F(Fe) && F(Fe) >= 0 ? "+" : "") + "$" + m((F(Fe) || 0).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 3)
                         ])
                       ]),
                       (E(!0), C(oe, null, ae(F(Ut).accountBreakdowns, (k, W) => (E(), C("div", {
@@ -14592,7 +14593,7 @@ ${z}`;
                             l("span", {
                               class: de({ "profit-text": k.totalFifoPnlRealized >= 0, "loss-text": k.totalFifoPnlRealized < 0 })
                             }, m(k.totalFifoPnlRealized >= 0 ? "+" : "") + "$" + m(k.totalFifoPnlRealized.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 3),
-                            b[44] || (b[44] = Y(") ", -1))
+                            b[45] || (b[45] = Y(") ", -1))
                           ])
                         ], 8, kf),
                         Ie(st, { name: "slide-fade" }, {
@@ -14600,7 +14601,7 @@ ${z}`;
                             He(l("div", _f, [
                               l("div", Lf, [
                                 l("table", Df, [
-                                  b[47] || (b[47] = l("thead", null, [
+                                  b[48] || (b[48] = l("thead", null, [
                                     l("tr", null, [
                                       l("th", null, "Order Date"),
                                       l("th", null, "Symbol"),
@@ -14637,7 +14638,7 @@ ${z}`;
                                   ]),
                                   l("tfoot", null, [
                                     l("tr", zf, [
-                                      b[45] || (b[45] = l("td", {
+                                      b[46] || (b[46] = l("td", {
                                         colspan: "5",
                                         class: "total-label"
                                       }, [
@@ -14648,7 +14649,7 @@ ${z}`;
                                       }, [
                                         l("strong", null, m(k.totalFifoPnlRealized >= 0 ? "+" : "") + m(Ce(k.totalFifoPnlRealized)), 1)
                                       ], 2),
-                                      b[46] || (b[46] = l("td", null, null, -1))
+                                      b[47] || (b[47] = l("td", null, null, -1))
                                     ])
                                   ])
                                 ])
@@ -14660,7 +14661,7 @@ ${z}`;
                           _: 2
                         }, 1024)
                       ]))), 128))
-                    ])) : (E(), C("div", Af, [...b[48] || (b[48] = [
+                    ])) : (E(), C("div", Af, [...b[49] || (b[49] = [
                       l("p", null, "No exited positions found", -1)
                     ])]))
                   ], 512), [
@@ -14672,10 +14673,10 @@ ${z}`;
               Ie(st, { name: "slide-fade" }, {
                 default: ot(() => [
                   He(l("div", Of, [
-                    b[54] || (b[54] = l("h2", null, "Capital Used Calculation Details:", -1)),
+                    b[55] || (b[55] = l("h2", null, "Capital Used Calculation Details:", -1)),
                     F(ze) ? F(ze).assetType === "STK" ? (E(), C("div", $f, [
                       l("div", Bf, [
-                        b[51] || (b[51] = l("div", { class: "capital-section-title" }, "📊 STOCK CAPITAL CALCULATION", -1)),
+                        b[52] || (b[52] = l("div", { class: "capital-section-title" }, "📊 STOCK CAPITAL CALCULATION", -1)),
                         l("div", Nf, " Total Shares = " + m(F(ze).totalShares.toLocaleString()), 1),
                         l("div", Vf, " Current Price per Share = $" + m(F(ze).pricePerShare.toFixed(2)), 1),
                         l("div", If, [
@@ -14683,7 +14684,7 @@ ${z}`;
                         ])
                       ])
                     ])) : F(ze).assetType === "OPT" ? (E(), C("div", Wf, [
-                      b[53] || (b[53] = l("div", { class: "capital-section" }, [
+                      b[54] || (b[54] = l("div", { class: "capital-section" }, [
                         l("div", { class: "capital-section-title" }, "📊 OPTIONS CAPITAL CALCULATION"),
                         l("div", { class: "calc-line" }, " Capital = Sum of |Market Value| for all option positions ")
                       ], -1)),
@@ -14700,13 +14701,13 @@ ${z}`;
                         ])
                       ]))), 128)),
                       l("div", Qf, [
-                        b[52] || (b[52] = l("div", { class: "capital-section-title" }, "💰 TOTAL CAPITAL USED", -1)),
+                        b[53] || (b[53] = l("div", { class: "capital-section-title" }, "💰 TOTAL CAPITAL USED", -1)),
                         l("div", Xf, " Total = " + m(F(ze).positions.map((k) => `$${Math.abs(k.marketValue).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")), 1),
                         l("div", Jf, [
                           l("strong", null, " = $" + m(F(ze).totalOptionsCapital.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ])
                       ])
-                    ])) : U("", !0) : (E(), C("div", Hf, [...b[50] || (b[50] = [
+                    ])) : U("", !0) : (E(), C("div", Hf, [...b[51] || (b[51] = [
                       l("p", null, "No capital data available", -1)
                     ])]))
                   ], 512), [
@@ -14729,7 +14730,7 @@ ${z}`;
             }, ["stop"]))
           }, [
             l("div", Yf, [
-              b[55] || (b[55] = l("h3", null, "Attach to Position", -1)),
+              b[56] || (b[56] = l("h3", null, "Attach to Position", -1)),
               l("button", {
                 class: "modal-close",
                 onClick: b[3] || (b[3] = (k) => Ke.value = !1)
@@ -14737,7 +14738,7 @@ ${z}`;
             ]),
             l("div", Zf, [
               Xe.value ? (E(), C("div", em, [
-                b[56] || (b[56] = l("strong", null, "Position:", -1)),
+                b[57] || (b[57] = l("strong", null, "Position:", -1)),
                 (E(!0), C(oe, null, ae(pt(Xe.value.symbol), (k) => (E(), C("span", {
                   key: k,
                   class: "fi-tag position-tag"
@@ -14775,7 +14776,7 @@ ${z}`;
                   }, null, 544), [
                     [di, Kt.value]
                   ]),
-                  b[57] || (b[57] = l("div", { class: "search-hint" }, [
+                  b[58] || (b[58] = l("div", { class: "search-hint" }, [
                     Y("💡 "),
                     l("em", null, "Use commas to search multiple terms (AND logic)")
                   ], -1))
@@ -14826,7 +14827,7 @@ ${z}`;
                   }, null, 544), [
                     [di, Qt.value]
                   ]),
-                  b[58] || (b[58] = l("div", { class: "search-hint" }, [
+                  b[59] || (b[59] = l("div", { class: "search-hint" }, [
                     Y("💡 "),
                     l("em", null, "Showing positions with same underlying symbol. Use commas to search multiple terms.")
                   ], -1))
@@ -14856,10 +14857,10 @@ ${z}`;
                       ]),
                       l("div", _m, [
                         l("span", null, m(k.asset_class), 1),
-                        b[59] || (b[59] = l("span", null, "•", -1)),
+                        b[60] || (b[60] = l("span", null, "•", -1)),
                         l("span", null, m(k.internal_account_id || k.legal_entity), 1),
                         k.market_value ? (E(), C("span", Lm, "• MV: " + m(Ce(k.market_value)), 1)) : U("", !0),
-                        b[60] || (b[60] = l("span", null, " • ", -1)),
+                        b[61] || (b[61] = l("span", null, " • ", -1)),
                         l("span", null, "Fetched at: " + m(Xs(k.fetched_at)), 1)
                       ])
                     ])
@@ -14877,7 +14878,7 @@ ${z}`;
                   }, null, 544), [
                     [di, Xt.value]
                   ]),
-                  b[61] || (b[61] = l("div", { class: "search-hint" }, [
+                  b[62] || (b[62] = l("div", { class: "search-hint" }, [
                     Y("💡 "),
                     l("em", null, "Showing orders with same underlying symbol. Use commas to search multiple terms.")
                   ], -1))
@@ -14907,7 +14908,7 @@ ${z}`;
                       l("div", Vm, [
                         l("span", null, m(k.assetCategory), 1),
                         k.tradeMoney ? (E(), C("span", Im, "• Trade money: " + m(Ce(k.tradeMoney)), 1)) : U("", !0),
-                        b[62] || (b[62] = l("span", null, " • ", -1)),
+                        b[63] || (b[63] = l("span", null, " • ", -1)),
                         l("span", null, "Settlement Date: " + m(Zi(k.settleDateTarget)), 1)
                       ])
                     ])
@@ -14932,7 +14933,7 @@ ${z}`;
       ]);
     };
   }
-}), Ym = /* @__PURE__ */ Ds(Um, [["__scopeId", "data-v-c6d61568"]]);
+}), Ym = /* @__PURE__ */ Ds(Um, [["__scopeId", "data-v-d90cc33f"]]);
 export {
   Ym as currentPositions,
   Ym as default
