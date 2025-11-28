@@ -17,6 +17,7 @@ interface PositionOrderGroup {
         symbol: string;
         account: string;
         quantity: number;
+        avgPrice?: number;
     };
     orders: OrderCalculation[];
     stockPurchases: OrderCalculation[];
@@ -49,6 +50,7 @@ export declare function useAverageCostPriceFromOrdersIfHoldTillExpiry(positions:
             symbol: string;
             account: string;
             quantity: number;
+            avgPrice?: number | undefined;
         };
         orders: {
             symbol: string;
@@ -152,6 +154,7 @@ export declare function useAverageCostPriceFromOrdersIfHoldTillExpiry(positions:
             symbol: string;
             account: string;
             quantity: number;
+            avgPrice?: number | undefined;
         };
         orders: {
             symbol: string;

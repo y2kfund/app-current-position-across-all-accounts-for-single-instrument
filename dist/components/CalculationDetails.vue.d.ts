@@ -15,6 +15,7 @@ interface OrderGroup {
         symbol: string;
         account: string;
         quantity: number;
+        avgPrice?: number;
     };
     stockPurchases: OrderCalculation[];
     stockSales: OrderCalculation[];

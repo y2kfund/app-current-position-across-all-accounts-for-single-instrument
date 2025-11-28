@@ -19,6 +19,7 @@ interface OrderGroup {
     symbol: string
     account: string
     quantity: number
+    avgPrice?: number
   }
   stockPurchases: OrderCalculation[]
   stockSales: OrderCalculation[]
@@ -71,6 +72,12 @@ const expandedGroups = ref<Set<number>>(new Set())
 // State for collapsing/expanding summary table rows
 const expandedSummaryRows = ref<Set<number>>(new Set())
 
+// State for showing detailed calculations within Hold panel
+const expandedHoldDetails = ref<Set<number>>(new Set())
+
+// State for showing detailed calculations within Exit panel
+const expandedExitDetails = ref<Set<number>>(new Set())
+
 // Toggle summary row expansion
 function toggleSummaryRowExpansion(rowIndex: number) {
   if (expandedSummaryRows.value.has(rowIndex)) {
@@ -80,6 +87,26 @@ function toggleSummaryRowExpansion(rowIndex: number) {
   }
   // Force reactivity
   expandedSummaryRows.value = new Set(expandedSummaryRows.value)
+}
+
+// Toggle detailed Hold calculation expansion
+function toggleHoldDetails(rowIndex: number) {
+  if (expandedHoldDetails.value.has(rowIndex)) {
+    expandedHoldDetails.value.delete(rowIndex)
+  } else {
+    expandedHoldDetails.value.add(rowIndex)
+  }
+  expandedHoldDetails.value = new Set(expandedHoldDetails.value)
+}
+
+// Toggle detailed Exit calculation expansion
+function toggleExitDetails(rowIndex: number) {
+  if (expandedExitDetails.value.has(rowIndex)) {
+    expandedExitDetails.value.delete(rowIndex)
+  } else {
+    expandedExitDetails.value.add(rowIndex)
+  }
+  expandedExitDetails.value = new Set(expandedExitDetails.value)
 }
 
 // Toast notification state
@@ -407,9 +434,10 @@ function parseOrderSymbol(symbolText: string): string {
                 <th>Account</th>
                 <th class="text-center">Shares</th>
                 <th class="text-center">Net Cost<br/><small>(Shares * Avg. Price Hold till Expiry)</small></th>
+                <th class="text-center">Avg Price<br/><small>(From IBKR)</small></th>
                 <th class="text-center"><span>Avg Price<br/><small>(Hold till Expiry)</small></span></th>
                 <th class="text-center"><span>Avg Price<br/><small>(Exit Today)</small></span></th>
-                <th class="text-center">Difference</th>
+                <th class="text-center">Difference of Avg Price<br/><small>(Exit Today - Hold till Expiry)</small></th>
               </tr>
             </thead>
             <tbody>
@@ -430,6 +458,10 @@ function parseOrderSymbol(symbolText: string): string {
                   </td>
                   <td class="text-center cost-cell">
                     <span class="currency-value">${{ group.netCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</span>
+                  </td>
+                  <td class="text-center price-cell ibkr-price">
+                    <span v-if="group.mainPosition.avgPrice" class="price-badge ibkr">${{ group.mainPosition.avgPrice.toFixed(2) }}</span>
+                    <span v-else class="no-data">-</span>
                   </td>
                   <td class="text-center price-cell hold-price">
                     <span class="price-badge hold">${{ group.adjustedAvgPricePerShare.toFixed(2) }}</span>
@@ -457,7 +489,7 @@ function parseOrderSymbol(symbolText: string): string {
                 </tr>
                 <!-- Expandable Detail Row -->
                 <tr v-if="expandedSummaryRows.has(index)" class="detail-row">
-                  <td colspan="7">
+                  <td colspan="8">
                     <div class="detail-content">
                       <!-- Side by Side Comparison -->
                       <div class="side-by-side-comparison">
@@ -538,7 +570,248 @@ function parseOrderSymbol(symbolText: string): string {
                               </div>
                             </div>
 
+                            <!-- Toggle for Detailed Calculation -->
+                            <div class="detailed-toggle-section">
+                              <button class="toggle-details-btn" @click.stop="toggleHoldDetails(index)">
+                                <span class="toggle-arrow" :class="{ 'rotated': expandedHoldDetails.has(index) }">▶</span>
+                                {{ expandedHoldDetails.has(index) ? 'Hide' : 'Show' }} Detailed Breakdown
+                              </button>
+                            </div>
                             
+                            <!-- Detailed Calculation Sections -->
+                            <transition name="slide-fade">
+                              <div v-if="expandedHoldDetails.has(index)" class="detailed-sections">
+                                <!-- Section A: Stocks -->
+                                <div class="detail-section section-stock">
+                                  <div class="section-label">Section A: Stocks</div>
+                                  <div class="section-tables">
+                                    <!-- Stock Purchases Table -->
+                                    <div class="table-half">
+                                      <div class="table-title">📍 Stock Purchases ({{ group.stockPurchases?.length || 0 }})</div>
+                                      <div v-if="group.stockPurchases && group.stockPurchases.length > 0" class="mini-table-wrapper">
+                                        <table class="mini-data-table">
+                                          <thead>
+                                            <tr>
+                                              <th>Date</th>
+                                              <th>Qty</th>
+                                              <th>Price</th>
+                                              <th>Total</th>
+                                            </tr>
+                                          </thead>
+                                          <tbody>
+                                            <tr v-for="(order, oi) in sortOrdersByDate(group.stockPurchases)" :key="`hold-sp-${index}-${oi}`">
+                                              <td>{{ formatOrderDate(order.orderDate) }}</td>
+                                              <td class="text-right">{{ order.quantity.toLocaleString() }}</td>
+                                              <td class="text-right">${{ Number(order.avgPrice).toFixed(2) }}</td>
+                                              <td class="text-right">${{ Number(order.totalCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</td>
+                                            </tr>
+                                          </tbody>
+                                          <tfoot>
+                                            <tr class="total-row">
+                                              <td><strong>Total</strong></td>
+                                              <td class="text-right"><strong>{{ group.stockPurchases.reduce((sum: number, o: OrderCalculation) => sum + o.quantity, 0).toLocaleString() }}</strong></td>
+                                              <td></td>
+                                              <td class="text-right"><strong>${{ group.stockPurchases.reduce((sum: number, o: OrderCalculation) => sum + Number(o.totalCost), 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></td>
+                                            </tr>
+                                          </tfoot>
+                                        </table>
+                                      </div>
+                                      <div v-else class="no-data-mini">No stock purchases</div>
+                                    </div>
+                                    <!-- Stock Sales Table -->
+                                    <div class="table-half">
+                                      <div class="table-title">💰 Stock Sales ({{ group.stockSales?.length || 0 }})</div>
+                                      <div v-if="group.stockSales && group.stockSales.length > 0" class="mini-table-wrapper">
+                                        <table class="mini-data-table">
+                                          <thead>
+                                            <tr>
+                                              <th>Date</th>
+                                              <th>Qty</th>
+                                              <th>Price</th>
+                                              <th>Proceeds</th>
+                                            </tr>
+                                          </thead>
+                                          <tbody>
+                                            <tr v-for="(order, oi) in sortOrdersByDate(group.stockSales)" :key="`hold-ss-${index}-${oi}`">
+                                              <td>{{ formatOrderDate(order.orderDate) }}</td>
+                                              <td class="text-right">{{ order.quantity.toLocaleString() }}</td>
+                                              <td class="text-right">${{ Number(order.avgPrice).toFixed(2) }}</td>
+                                              <td class="text-right">${{ Number(order.totalCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</td>
+                                            </tr>
+                                          </tbody>
+                                          <tfoot>
+                                            <tr class="total-row">
+                                              <td><strong>Total</strong></td>
+                                              <td class="text-right"><strong>{{ group.stockSales.reduce((sum: number, o: OrderCalculation) => sum + o.quantity, 0).toLocaleString() }}</strong></td>
+                                              <td></td>
+                                              <td class="text-right"><strong>${{ group.stockSales.reduce((sum: number, o: OrderCalculation) => sum + Number(o.totalCost), 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></td>
+                                            </tr>
+                                          </tfoot>
+                                        </table>
+                                      </div>
+                                      <div v-else class="no-data-mini">No stock sales</div>
+                                    </div>
+                                  </div>
+                                  <div class="section-summary stock-summary-box">
+                                    <div><strong>Net Stock:</strong> ${{ group.stockPurchaseCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} <span v-if="group.stockSaleProceeds > 0">- ${{ Math.abs(group.stockSaleProceeds).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</span> = <span class="result-value">${{ group.netStockCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</span></div>
+                                    <div><strong>Current Shares:</strong> {{ group.totalShares.toLocaleString() }}</div>
+                                  </div>
+                                </div>
+
+                                <!-- Section B: Puts -->
+                                <div class="detail-section section-put">
+                                  <div class="section-label">Section B: Puts</div>
+                                  <div class="section-tables">
+                                    <!-- Put Sales Table -->
+                                    <div class="table-half">
+                                      <div class="table-title">📉 Put Premium Received ({{ group.putSales?.length || 0 }})</div>
+                                      <div v-if="group.putSales && group.putSales.length > 0" class="mini-table-wrapper">
+                                        <table class="mini-data-table">
+                                          <thead>
+                                            <tr>
+                                              <th>Option</th>
+                                              <th>Qty</th>
+                                              <th>Price</th>
+                                              <th>Premium</th>
+                                            </tr>
+                                          </thead>
+                                          <tbody>
+                                            <tr v-for="(order, oi) in sortOrdersByDate(group.putSales)" :key="`hold-ps-${index}-${oi}`">
+                                              <td>{{ parseOrderSymbol(order.symbol) }}</td>
+                                              <td class="text-right">{{ order.quantity.toLocaleString() }}</td>
+                                              <td class="text-right">${{ Number(order.avgPrice).toFixed(2) }}</td>
+                                              <td class="text-right">${{ Number(order.totalCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</td>
+                                            </tr>
+                                          </tbody>
+                                          <tfoot>
+                                            <tr class="total-row">
+                                              <td><strong>Total</strong></td>
+                                              <td class="text-right"><strong>{{ group.putSales.reduce((sum: number, o: OrderCalculation) => sum + o.quantity, 0).toLocaleString() }}</strong></td>
+                                              <td></td>
+                                              <td class="text-right"><strong>${{ Math.abs(group.putPremiumReceived).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></td>
+                                            </tr>
+                                          </tfoot>
+                                        </table>
+                                      </div>
+                                      <div v-else class="no-data-mini">No put sales</div>
+                                    </div>
+                                    <!-- Put Buybacks Table -->
+                                    <div class="table-half">
+                                      <div class="table-title">🔄 Put Buybacks ({{ group.putBuybacks?.length || 0 }})</div>
+                                      <div v-if="group.putBuybacks && group.putBuybacks.length > 0" class="mini-table-wrapper">
+                                        <table class="mini-data-table">
+                                          <thead>
+                                            <tr>
+                                              <th>Option</th>
+                                              <th>Qty</th>
+                                              <th>Price</th>
+                                              <th>Cost</th>
+                                            </tr>
+                                          </thead>
+                                          <tbody>
+                                            <tr v-for="(order, oi) in sortOrdersByDate(group.putBuybacks)" :key="`hold-pb-${index}-${oi}`">
+                                              <td>{{ parseOrderSymbol(order.symbol) }}</td>
+                                              <td class="text-right">{{ order.quantity.toLocaleString() }}</td>
+                                              <td class="text-right">${{ Number(order.avgPrice).toFixed(2) }}</td>
+                                              <td class="text-right">${{ Number(order.totalCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</td>
+                                            </tr>
+                                          </tbody>
+                                          <tfoot>
+                                            <tr class="total-row">
+                                              <td><strong>Total</strong></td>
+                                              <td class="text-right"><strong>{{ group.putBuybacks.reduce((sum: number, o: OrderCalculation) => sum + o.quantity, 0).toLocaleString() }}</strong></td>
+                                              <td></td>
+                                              <td class="text-right"><strong>${{ Math.abs(group.putBuybackCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></td>
+                                            </tr>
+                                          </tfoot>
+                                        </table>
+                                      </div>
+                                      <div v-else class="no-data-mini">No put buybacks</div>
+                                    </div>
+                                  </div>
+                                  <div class="section-summary put-summary-box">
+                                    <strong>Net Put Cash Flow:</strong> ${{ Math.abs(group.putPremiumReceived).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} <span v-if="group.putBuybackCost > 0">- ${{ Math.abs(group.putBuybackCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</span> = <span class="result-value">${{ (group.netPutCashFlow || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</span>
+                                  </div>
+                                </div>
+
+                                <!-- Section C: Calls -->
+                                <div class="detail-section section-call">
+                                  <div class="section-label">Section C: Calls</div>
+                                  <div class="section-tables">
+                                    <!-- Call Sales Table -->
+                                    <div class="table-half">
+                                      <div class="table-title">📞 Call Premium Received ({{ group.callSales?.length || 0 }})</div>
+                                      <div v-if="group.callSales && group.callSales.length > 0" class="mini-table-wrapper">
+                                        <table class="mini-data-table">
+                                          <thead>
+                                            <tr>
+                                              <th>Option</th>
+                                              <th>Qty</th>
+                                              <th>Price</th>
+                                              <th>Premium</th>
+                                            </tr>
+                                          </thead>
+                                          <tbody>
+                                            <tr v-for="(order, oi) in sortOrdersByDate(group.callSales)" :key="`hold-cs-${index}-${oi}`">
+                                              <td>{{ parseOrderSymbol(order.symbol) }}</td>
+                                              <td class="text-right">{{ order.quantity.toLocaleString() }}</td>
+                                              <td class="text-right">${{ Number(order.avgPrice).toFixed(2) }}</td>
+                                              <td class="text-right">${{ Number(order.totalCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</td>
+                                            </tr>
+                                          </tbody>
+                                          <tfoot>
+                                            <tr class="total-row">
+                                              <td><strong>Total</strong></td>
+                                              <td class="text-right"><strong>{{ group.callSales.reduce((sum: number, o: OrderCalculation) => sum + o.quantity, 0).toLocaleString() }}</strong></td>
+                                              <td></td>
+                                              <td class="text-right"><strong>${{ Math.abs(group.callPremiumReceived).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></td>
+                                            </tr>
+                                          </tfoot>
+                                        </table>
+                                      </div>
+                                      <div v-else class="no-data-mini">No call sales</div>
+                                    </div>
+                                    <!-- Call Buybacks Table -->
+                                    <div class="table-half">
+                                      <div class="table-title">🔄 Call Buybacks ({{ group.callBuybacks?.length || 0 }})</div>
+                                      <div v-if="group.callBuybacks && group.callBuybacks.length > 0" class="mini-table-wrapper">
+                                        <table class="mini-data-table">
+                                          <thead>
+                                            <tr>
+                                              <th>Option</th>
+                                              <th>Qty</th>
+                                              <th>Price</th>
+                                              <th>Cost</th>
+                                            </tr>
+                                          </thead>
+                                          <tbody>
+                                            <tr v-for="(order, oi) in sortOrdersByDate(group.callBuybacks)" :key="`hold-cb-${index}-${oi}`">
+                                              <td>{{ parseOrderSymbol(order.symbol) }}</td>
+                                              <td class="text-right">{{ order.quantity.toLocaleString() }}</td>
+                                              <td class="text-right">${{ Number(order.avgPrice).toFixed(2) }}</td>
+                                              <td class="text-right">${{ Number(order.totalCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</td>
+                                            </tr>
+                                          </tbody>
+                                          <tfoot>
+                                            <tr class="total-row">
+                                              <td><strong>Total</strong></td>
+                                              <td class="text-right"><strong>{{ group.callBuybacks.reduce((sum: number, o: OrderCalculation) => sum + o.quantity, 0).toLocaleString() }}</strong></td>
+                                              <td></td>
+                                              <td class="text-right"><strong>${{ Math.abs(group.callBuybackCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></td>
+                                            </tr>
+                                          </tfoot>
+                                        </table>
+                                      </div>
+                                      <div v-else class="no-data-mini">No call buybacks</div>
+                                    </div>
+                                  </div>
+                                  <div class="section-summary call-summary-box">
+                                    <strong>Net Call Cash Flow:</strong> ${{ Math.abs(group.callPremiumReceived).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} <span v-if="group.callBuybackCost > 0">- ${{ Math.abs(group.callBuybackCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</span> = <span class="result-value">${{ (group.netCallCashFlow || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </transition>
+
                           </div>
                         </div>
                         
@@ -625,6 +898,249 @@ function parseOrderSymbol(symbolText: string): string {
                                 <span class="value big">${{ orderGroupsExitToday[index].adjustedAvgPricePerShare.toFixed(2) }}</span>
                               </div>
                             </div>
+
+                            <!-- Toggle for Detailed Calculation -->
+                            <div class="detailed-toggle-section">
+                              <button class="toggle-details-btn exit-btn" @click.stop="toggleExitDetails(index)">
+                                <span class="toggle-arrow" :class="{ 'rotated': expandedExitDetails.has(index) }">▶</span>
+                                {{ expandedExitDetails.has(index) ? 'Hide' : 'Show' }} Detailed Breakdown
+                              </button>
+                            </div>
+                            
+                            <!-- Detailed Calculation Sections -->
+                            <transition name="slide-fade">
+                              <div v-if="expandedExitDetails.has(index)" class="detailed-sections">
+                                <!-- Section A: Stocks -->
+                                <div class="detail-section section-stock">
+                                  <div class="section-label">Section A: Stocks</div>
+                                  <div class="section-tables">
+                                    <!-- Stock Purchases Table -->
+                                    <div class="table-half">
+                                      <div class="table-title">📍 Stock Purchases ({{ orderGroupsExitToday[index].stockPurchases?.length || 0 }})</div>
+                                      <div v-if="orderGroupsExitToday[index].stockPurchases && orderGroupsExitToday[index].stockPurchases.length > 0" class="mini-table-wrapper">
+                                        <table class="mini-data-table">
+                                          <thead>
+                                            <tr>
+                                              <th>Date</th>
+                                              <th>Qty</th>
+                                              <th>Price</th>
+                                              <th>Total</th>
+                                            </tr>
+                                          </thead>
+                                          <tbody>
+                                            <tr v-for="(order, oi) in sortOrdersByDate(orderGroupsExitToday[index].stockPurchases)" :key="`exit-sp-${index}-${oi}`">
+                                              <td>{{ formatOrderDate(order.orderDate) }}</td>
+                                              <td class="text-right">{{ order.quantity.toLocaleString() }}</td>
+                                              <td class="text-right">${{ Number(order.avgPrice).toFixed(2) }}</td>
+                                              <td class="text-right">${{ Number(order.totalCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</td>
+                                            </tr>
+                                          </tbody>
+                                          <tfoot>
+                                            <tr class="total-row">
+                                              <td><strong>Total</strong></td>
+                                              <td class="text-right"><strong>{{ orderGroupsExitToday[index].stockPurchases.reduce((sum: number, o: OrderCalculation) => sum + o.quantity, 0).toLocaleString() }}</strong></td>
+                                              <td></td>
+                                              <td class="text-right"><strong>${{ orderGroupsExitToday[index].stockPurchases.reduce((sum: number, o: OrderCalculation) => sum + Number(o.totalCost), 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></td>
+                                            </tr>
+                                          </tfoot>
+                                        </table>
+                                      </div>
+                                      <div v-else class="no-data-mini">No stock purchases</div>
+                                    </div>
+                                    <!-- Stock Sales Table -->
+                                    <div class="table-half">
+                                      <div class="table-title">💰 Stock Sales ({{ orderGroupsExitToday[index].stockSales?.length || 0 }})</div>
+                                      <div v-if="orderGroupsExitToday[index].stockSales && orderGroupsExitToday[index].stockSales.length > 0" class="mini-table-wrapper">
+                                        <table class="mini-data-table">
+                                          <thead>
+                                            <tr>
+                                              <th>Date</th>
+                                              <th>Qty</th>
+                                              <th>Price</th>
+                                              <th>Proceeds</th>
+                                            </tr>
+                                          </thead>
+                                          <tbody>
+                                            <tr v-for="(order, oi) in sortOrdersByDate(orderGroupsExitToday[index].stockSales)" :key="`exit-ss-${index}-${oi}`">
+                                              <td>{{ formatOrderDate(order.orderDate) }}</td>
+                                              <td class="text-right">{{ order.quantity.toLocaleString() }}</td>
+                                              <td class="text-right">${{ Number(order.avgPrice).toFixed(2) }}</td>
+                                              <td class="text-right">${{ Number(order.totalCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</td>
+                                            </tr>
+                                          </tbody>
+                                          <tfoot>
+                                            <tr class="total-row">
+                                              <td><strong>Total</strong></td>
+                                              <td class="text-right"><strong>{{ orderGroupsExitToday[index].stockSales.reduce((sum: number, o: OrderCalculation) => sum + o.quantity, 0).toLocaleString() }}</strong></td>
+                                              <td></td>
+                                              <td class="text-right"><strong>${{ orderGroupsExitToday[index].stockSales.reduce((sum: number, o: OrderCalculation) => sum + Number(o.totalCost), 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></td>
+                                            </tr>
+                                          </tfoot>
+                                        </table>
+                                      </div>
+                                      <div v-else class="no-data-mini">No stock sales</div>
+                                    </div>
+                                  </div>
+                                  <div class="section-summary stock-summary-box">
+                                    <div><strong>Net Stock:</strong> ${{ orderGroupsExitToday[index].stockPurchaseCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} <span v-if="orderGroupsExitToday[index].stockSaleProceeds > 0">- ${{ Math.abs(orderGroupsExitToday[index].stockSaleProceeds).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</span> = <span class="result-value">${{ orderGroupsExitToday[index].netStockCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</span></div>
+                                    <div><strong>Current Shares:</strong> {{ orderGroupsExitToday[index].totalShares.toLocaleString() }}</div>
+                                  </div>
+                                </div>
+
+                                <!-- Section B: Puts -->
+                                <div class="detail-section section-put">
+                                  <div class="section-label">Section B: Puts</div>
+                                  <div class="section-tables">
+                                    <!-- Put Sales Table -->
+                                    <div class="table-half">
+                                      <div class="table-title">📉 Put Premium Received ({{ orderGroupsExitToday[index].putSales?.length || 0 }})</div>
+                                      <div v-if="orderGroupsExitToday[index].putSales && orderGroupsExitToday[index].putSales.length > 0" class="mini-table-wrapper">
+                                        <table class="mini-data-table">
+                                          <thead>
+                                            <tr>
+                                              <th>Option</th>
+                                              <th>Qty</th>
+                                              <th>Price</th>
+                                              <th>Premium</th>
+                                            </tr>
+                                          </thead>
+                                          <tbody>
+                                            <tr v-for="(order, oi) in sortOrdersByDate(orderGroupsExitToday[index].putSales)" :key="`exit-ps-${index}-${oi}`">
+                                              <td>{{ parseOrderSymbol(order.symbol) }}</td>
+                                              <td class="text-right">{{ order.quantity.toLocaleString() }}</td>
+                                              <td class="text-right">${{ Number(order.avgPrice).toFixed(2) }}</td>
+                                              <td class="text-right">${{ Number(order.totalCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</td>
+                                            </tr>
+                                          </tbody>
+                                          <tfoot>
+                                            <tr class="total-row">
+                                              <td><strong>Total</strong></td>
+                                              <td class="text-right"><strong>{{ orderGroupsExitToday[index].putSales.reduce((sum: number, o: OrderCalculation) => sum + o.quantity, 0).toLocaleString() }}</strong></td>
+                                              <td></td>
+                                              <td class="text-right"><strong>${{ Math.abs(orderGroupsExitToday[index].putPremiumReceived).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></td>
+                                            </tr>
+                                          </tfoot>
+                                        </table>
+                                      </div>
+                                      <div v-else class="no-data-mini">No put sales</div>
+                                    </div>
+                                    <!-- Put Buybacks Table -->
+                                    <div class="table-half">
+                                      <div class="table-title">🔄 Put Buybacks ({{ orderGroupsExitToday[index].putBuybacks?.length || 0 }})</div>
+                                      <div v-if="orderGroupsExitToday[index].putBuybacks && orderGroupsExitToday[index].putBuybacks.length > 0" class="mini-table-wrapper">
+                                        <table class="mini-data-table">
+                                          <thead>
+                                            <tr>
+                                              <th>Option</th>
+                                              <th>Qty</th>
+                                              <th>Price</th>
+                                              <th>Cost</th>
+                                            </tr>
+                                          </thead>
+                                          <tbody>
+                                            <tr v-for="(order, oi) in sortOrdersByDate(orderGroupsExitToday[index].putBuybacks)" :key="`exit-pb-${index}-${oi}`">
+                                              <td>{{ parseOrderSymbol(order.symbol) }}</td>
+                                              <td class="text-right">{{ order.quantity.toLocaleString() }}</td>
+                                              <td class="text-right">${{ Number(order.avgPrice).toFixed(2) }}</td>
+                                              <td class="text-right">${{ Number(order.totalCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</td>
+                                            </tr>
+                                          </tbody>
+                                          <tfoot>
+                                            <tr class="total-row">
+                                              <td><strong>Total</strong></td>
+                                              <td class="text-right"><strong>{{ orderGroupsExitToday[index].putBuybacks.reduce((sum: number, o: OrderCalculation) => sum + o.quantity, 0).toLocaleString() }}</strong></td>
+                                              <td></td>
+                                              <td class="text-right"><strong>${{ Math.abs(orderGroupsExitToday[index].putBuybackCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></td>
+                                            </tr>
+                                          </tfoot>
+                                        </table>
+                                      </div>
+                                      <div v-else class="no-data-mini">No put buybacks</div>
+                                    </div>
+                                  </div>
+                                  <div class="section-summary put-summary-box">
+                                    <strong>Net Put Cash Flow:</strong> ${{ Math.abs(orderGroupsExitToday[index].putPremiumReceived).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} <span v-if="orderGroupsExitToday[index].putBuybackCost > 0">- ${{ Math.abs(orderGroupsExitToday[index].putBuybackCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</span> = <span class="result-value">${{ (orderGroupsExitToday[index].netPutCashFlow || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</span>
+                                  </div>
+                                </div>
+
+                                <!-- Section C: Calls (Current Value) -->
+                                <div class="detail-section section-call">
+                                  <div class="section-label">Section C: Calls <span class="exit-note">(Current Value)</span></div>
+                                  <div class="section-tables">
+                                    <!-- Call Current Value Table -->
+                                    <div class="table-half">
+                                      <div class="table-title">📞 Call Current Value ({{ orderGroupsExitToday[index].callSales?.length || 0 }})</div>
+                                      <div v-if="orderGroupsExitToday[index].callSales && orderGroupsExitToday[index].callSales.length > 0" class="mini-table-wrapper">
+                                        <table class="mini-data-table">
+                                          <thead>
+                                            <tr>
+                                              <th>Option</th>
+                                              <th>Qty</th>
+                                              <th>Price</th>
+                                              <th>Value</th>
+                                            </tr>
+                                          </thead>
+                                          <tbody>
+                                            <tr v-for="(order, oi) in sortOrdersByDate(orderGroupsExitToday[index].callSales)" :key="`exit-cs-${index}-${oi}`">
+                                              <td>{{ parseOrderSymbol(order.symbol) }}</td>
+                                              <td class="text-right">{{ order.quantity.toLocaleString() }}</td>
+                                              <td class="text-right">${{ Number(order.avgPrice).toFixed(2) }}</td>
+                                              <td class="text-right">${{ Number(order.totalCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</td>
+                                            </tr>
+                                          </tbody>
+                                          <tfoot>
+                                            <tr class="total-row">
+                                              <td><strong>Total</strong></td>
+                                              <td class="text-right"><strong>{{ orderGroupsExitToday[index].callSales.reduce((sum: number, o: OrderCalculation) => sum + o.quantity, 0).toLocaleString() }}</strong></td>
+                                              <td></td>
+                                              <td class="text-right"><strong>${{ Math.abs(orderGroupsExitToday[index].callPremiumReceived).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></td>
+                                            </tr>
+                                          </tfoot>
+                                        </table>
+                                      </div>
+                                      <div v-else class="no-data-mini">No call positions</div>
+                                    </div>
+                                    <!-- Call Buybacks Table -->
+                                    <div class="table-half">
+                                      <div class="table-title">🔄 Call Buybacks ({{ orderGroupsExitToday[index].callBuybacks?.length || 0 }})</div>
+                                      <div v-if="orderGroupsExitToday[index].callBuybacks && orderGroupsExitToday[index].callBuybacks.length > 0" class="mini-table-wrapper">
+                                        <table class="mini-data-table">
+                                          <thead>
+                                            <tr>
+                                              <th>Option</th>
+                                              <th>Qty</th>
+                                              <th>Price</th>
+                                              <th>Cost</th>
+                                            </tr>
+                                          </thead>
+                                          <tbody>
+                                            <tr v-for="(order, oi) in sortOrdersByDate(orderGroupsExitToday[index].callBuybacks)" :key="`exit-cb-${index}-${oi}`">
+                                              <td>{{ parseOrderSymbol(order.symbol) }}</td>
+                                              <td class="text-right">{{ order.quantity.toLocaleString() }}</td>
+                                              <td class="text-right">${{ Number(order.avgPrice).toFixed(2) }}</td>
+                                              <td class="text-right">${{ Number(order.totalCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</td>
+                                            </tr>
+                                          </tbody>
+                                          <tfoot>
+                                            <tr class="total-row">
+                                              <td><strong>Total</strong></td>
+                                              <td class="text-right"><strong>{{ orderGroupsExitToday[index].callBuybacks.reduce((sum: number, o: OrderCalculation) => sum + o.quantity, 0).toLocaleString() }}</strong></td>
+                                              <td></td>
+                                              <td class="text-right"><strong>${{ Math.abs(orderGroupsExitToday[index].callBuybackCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></td>
+                                            </tr>
+                                          </tfoot>
+                                        </table>
+                                      </div>
+                                      <div v-else class="no-data-mini">No call buybacks</div>
+                                    </div>
+                                  </div>
+                                  <div class="section-summary call-summary-box">
+                                    <strong>Net Call Cash Flow:</strong> ${{ Math.abs(orderGroupsExitToday[index].callPremiumReceived).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} <span v-if="orderGroupsExitToday[index].callBuybackCost > 0">- ${{ Math.abs(orderGroupsExitToday[index].callBuybackCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</span> = <span class="result-value">${{ (orderGroupsExitToday[index].netCallCashFlow || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </transition>
+                            
                           </div>
                         </div>
                         <div v-else class="comparison-panel exit-panel no-data-panel">
@@ -683,6 +1199,7 @@ function parseOrderSymbol(symbolText: string): string {
                 <td><span class="total-label">📈 Total / Overall</span></td>
                 <td class="text-center"><span class="total-value">{{ totalShares.toLocaleString() }}</span></td>
                 <td class="text-center"><span class="total-value currency">${{ totalNetCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</span></td>
+                <td class="text-center"><span class="total-value">-</span></td>
                 <td class="text-center"><span class="total-value highlight-hold">${{ overallAdjustedAvgPriceFromOrders?.toFixed(2) || '-' }}</span></td>
                 <td class="text-center"><span class="total-value highlight-exit">${{ overallAdjustedAvgPriceFromOrdersExitToday?.toFixed(2) || '-' }}</span></td>
                 <td class="text-center">

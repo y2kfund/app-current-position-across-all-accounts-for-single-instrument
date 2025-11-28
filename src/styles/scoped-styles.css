@@ -219,6 +219,12 @@
   border: 1px solid rgba(46, 125, 50, 0.2);
 }
 
+.summary-table-fancy .price-badge.ibkr {
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  color: #1565c0;
+  border: 1px solid rgba(21, 101, 192, 0.2);
+}
+
 /* Difference badges */
 .summary-table-fancy .diff-badge {
   display: inline-flex;
@@ -2389,3 +2395,235 @@ body.modal-open {
     padding-top: 0.5rem;
     margin-top: 0.5rem;
 }
+
+/* ========================================
+   DETAILED BREAKDOWN TOGGLE STYLES
+   ======================================== */
+
+.detailed-toggle-section {
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed #dee2e6;
+}
+
+.toggle-details-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  justify-content: center;
+}
+
+.toggle-details-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.toggle-details-btn.exit-btn {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+}
+
+.toggle-details-btn.exit-btn:hover {
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+}
+
+.toggle-arrow {
+  display: inline-block;
+  transition: transform 0.3s ease;
+  font-size: 0.7rem;
+}
+
+.toggle-arrow.rotated {
+  transform: rotate(90deg);
+}
+
+.detailed-sections {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.detail-section {
+  margin-bottom: 1rem;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.detail-section:last-child {
+  margin-bottom: 0;
+}
+
+.section-label {
+  padding: 0.6rem 0.75rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.section-stock .section-label {
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  color: #1565c0;
+  border-left: 3px solid #1976d2;
+}
+
+.section-put .section-label {
+  background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+  color: #e65100;
+  border-left: 3px solid #ff9800;
+}
+
+.section-call .section-label {
+  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+  color: #2e7d32;
+  border-left: 3px solid #4caf50;
+}
+
+.section-tables {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem;
+}
+
+.table-half {
+  flex: 1;
+  min-width: 0;
+}
+
+.table-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 0.5rem;
+  padding-left: 0.25rem;
+}
+
+.mini-table-wrapper {
+  overflow-x: auto;
+  border-radius: 4px;
+  border: 1px solid #e9ecef;
+}
+
+.mini-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.7rem;
+}
+
+.mini-data-table thead {
+  background: #f1f3f4;
+}
+
+.mini-data-table th {
+  padding: 0.4rem 0.5rem;
+  text-align: left;
+  font-weight: 600;
+  color: #495057;
+  border-bottom: 1px solid #dee2e6;
+  white-space: nowrap;
+}
+
+.mini-data-table td {
+  padding: 0.35rem 0.5rem;
+  border-bottom: 1px solid #f1f3f4;
+  white-space: nowrap;
+}
+
+.mini-data-table tbody tr:hover {
+  background: #f8f9fa;
+}
+
+.mini-data-table .total-row {
+  background: #e9ecef;
+  font-weight: 600;
+}
+
+.mini-data-table .total-row td {
+  border-bottom: none;
+  padding: 0.5rem;
+}
+
+.no-data-mini {
+  padding: 1rem;
+  text-align: center;
+  color: #9e9e9e;
+  font-size: 0.75rem;
+  font-style: italic;
+  background: #f8f9fa;
+  border-radius: 4px;
+  border: 1px dashed #dee2e6;
+}
+
+.section-summary {
+  padding: 0.6rem 0.75rem;
+  font-size: 0.8rem;
+  color: #495057;
+  border-top: 1px solid #e9ecef;
+}
+
+.section-summary .result-value {
+  font-weight: 700;
+  color: #1976d2;
+}
+
+.stock-summary-box {
+  background: #e3f2fd;
+}
+
+.put-summary-box {
+  background: #fff3e0;
+}
+
+.put-summary-box .result-value {
+  color: #e65100;
+}
+
+.call-summary-box {
+  background: #e8f5e9;
+}
+
+.call-summary-box .result-value {
+  color: #2e7d32;
+}
+
+.exit-note {
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: #6c757d;
+  font-style: italic;
+}
+
+/* Responsive adjustments for detailed sections */
+@media (max-width: 768px) {
+  .section-tables {
+    flex-direction: column;
+  }
+  
+  .table-half {
+    width: 100%;
+  }
+  
+  .mini-data-table {
+    font-size: 0.65rem;
+  }
+  
+  .mini-data-table th,
+  .mini-data-table td {
+    padding: 0.3rem 0.4rem;
+  }
+}
+
+/* ========================================
+   END DETAILED BREAKDOWN TOGGLE STYLES
+   ======================================== */

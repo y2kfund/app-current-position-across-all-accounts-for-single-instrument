@@ -40,6 +40,7 @@ interface PositionOrderGroup {
     symbol: string
     account: string
     quantity: number
+    avgPrice?: number
   }
   orders: OrderCalculation[]
   
@@ -340,7 +341,8 @@ export function useAverageCostPriceFromOrdersIfHoldTillExpiry(
           mainPosition: {
             symbol: pos.symbol,
             account: pos.legal_entity || pos.internal_account_id,
-            quantity: positionShares
+            quantity: positionShares,
+            avgPrice: pos.avgPrice
           },
           orders: ordersForPosition.map(o => ({
             symbol: o.symbol,
