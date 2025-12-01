@@ -587,7 +587,17 @@ function parseOrderSymbol(symbolText: string): string {
                                   <div class="section-tables">
                                     <!-- Stock Purchases Table -->
                                     <div class="table-half">
-                                      <div class="table-title">📍 Stock Purchases ({{ group.stockPurchases?.length || 0 }})</div>
+                                      <div class="table-title-row">
+                                        <span class="table-title">📍 Stock Purchases ({{ group.stockPurchases?.length || 0 }})</span>
+                                        <button 
+                                          v-if="group.stockPurchases && group.stockPurchases.length > 0"
+                                          class="copy-button" 
+                                          @click.stop="copyStockPurchasesToClipboard(group.stockPurchases, index)"
+                                          title="Copy to clipboard (Excel-ready)"
+                                        >
+                                          📋 Copy
+                                        </button>
+                                      </div>
                                       <div v-if="group.stockPurchases && group.stockPurchases.length > 0" class="mini-table-wrapper">
                                         <table class="mini-data-table">
                                           <thead>
@@ -620,7 +630,17 @@ function parseOrderSymbol(symbolText: string): string {
                                     </div>
                                     <!-- Stock Sales Table -->
                                     <div class="table-half">
-                                      <div class="table-title">💰 Stock Sales ({{ group.stockSales?.length || 0 }})</div>
+                                      <div class="table-title-row">
+                                        <span class="table-title">💰 Stock Sales ({{ group.stockSales?.length || 0 }})</span>
+                                        <button 
+                                          v-if="group.stockSales && group.stockSales.length > 0"
+                                          class="copy-button" 
+                                          @click.stop="copyStockSalesToClipboard(group.stockSales, index)"
+                                          title="Copy to clipboard (Excel-ready)"
+                                        >
+                                          📋 Copy
+                                        </button>
+                                      </div>
                                       <div v-if="group.stockSales && group.stockSales.length > 0" class="mini-table-wrapper">
                                         <table class="mini-data-table">
                                           <thead>
@@ -664,7 +684,17 @@ function parseOrderSymbol(symbolText: string): string {
                                   <div class="section-tables">
                                     <!-- Put Sales Table -->
                                     <div class="table-half">
-                                      <div class="table-title">📉 Put Premium Received ({{ group.putSales?.length || 0 }})</div>
+                                      <div class="table-title-row">
+                                        <span class="table-title">📉 Put Premium Received ({{ group.putSales?.length || 0 }})</span>
+                                        <button 
+                                          v-if="group.putSales && group.putSales.length > 0"
+                                          class="copy-button" 
+                                          @click.stop="copyPutSalesToClipboard(group.putSales, index, group.putPremiumReceived)"
+                                          title="Copy to clipboard (Excel-ready)"
+                                        >
+                                          📋 Copy
+                                        </button>
+                                      </div>
                                       <div v-if="group.putSales && group.putSales.length > 0" class="mini-table-wrapper">
                                         <table class="mini-data-table">
                                           <thead>
@@ -697,7 +727,17 @@ function parseOrderSymbol(symbolText: string): string {
                                     </div>
                                     <!-- Put Buybacks Table -->
                                     <div class="table-half">
-                                      <div class="table-title">🔄 Put Buybacks ({{ group.putBuybacks?.length || 0 }})</div>
+                                      <div class="table-title-row">
+                                        <span class="table-title">🔄 Put Buybacks ({{ group.putBuybacks?.length || 0 }})</span>
+                                        <button 
+                                          v-if="group.putBuybacks && group.putBuybacks.length > 0"
+                                          class="copy-button" 
+                                          @click.stop="copyPutBuybacksToClipboard(group.putBuybacks, index, group.putBuybackCost)"
+                                          title="Copy to clipboard (Excel-ready)"
+                                        >
+                                          📋 Copy
+                                        </button>
+                                      </div>
                                       <div v-if="group.putBuybacks && group.putBuybacks.length > 0" class="mini-table-wrapper">
                                         <table class="mini-data-table">
                                           <thead>
@@ -740,7 +780,17 @@ function parseOrderSymbol(symbolText: string): string {
                                   <div class="section-tables">
                                     <!-- Call Sales Table -->
                                     <div class="table-half">
-                                      <div class="table-title">📞 Call Premium Received ({{ group.callSales?.length || 0 }})</div>
+                                      <div class="table-title-row">
+                                        <span class="table-title">📞 Call Premium Received ({{ group.callSales?.length || 0 }})</span>
+                                        <button 
+                                          v-if="group.callSales && group.callSales.length > 0"
+                                          class="copy-button" 
+                                          @click.stop="copyCallSalesToClipboard(group.callSales, index, group.callPremiumReceived)"
+                                          title="Copy to clipboard (Excel-ready)"
+                                        >
+                                          📋 Copy
+                                        </button>
+                                      </div>
                                       <div v-if="group.callSales && group.callSales.length > 0" class="mini-table-wrapper">
                                         <table class="mini-data-table">
                                           <thead>
@@ -773,7 +823,17 @@ function parseOrderSymbol(symbolText: string): string {
                                     </div>
                                     <!-- Call Buybacks Table -->
                                     <div class="table-half">
-                                      <div class="table-title">🔄 Call Buybacks ({{ group.callBuybacks?.length || 0 }})</div>
+                                      <div class="table-title-row">
+                                        <span class="table-title">🔄 Call Buybacks ({{ group.callBuybacks?.length || 0 }})</span>
+                                        <button 
+                                          v-if="group.callBuybacks && group.callBuybacks.length > 0"
+                                          class="copy-button" 
+                                          @click.stop="copyCallBuybacksToClipboard(group.callBuybacks, index, group.callBuybackCost)"
+                                          title="Copy to clipboard (Excel-ready)"
+                                        >
+                                          📋 Copy
+                                        </button>
+                                      </div>
                                       <div v-if="group.callBuybacks && group.callBuybacks.length > 0" class="mini-table-wrapper">
                                         <table class="mini-data-table">
                                           <thead>
@@ -916,7 +976,17 @@ function parseOrderSymbol(symbolText: string): string {
                                   <div class="section-tables">
                                     <!-- Stock Purchases Table -->
                                     <div class="table-half">
-                                      <div class="table-title">📍 Stock Purchases ({{ orderGroupsExitToday[index].stockPurchases?.length || 0 }})</div>
+                                      <div class="table-title-row">
+                                        <span class="table-title">📍 Stock Purchases ({{ orderGroupsExitToday[index].stockPurchases?.length || 0 }})</span>
+                                        <button 
+                                          v-if="orderGroupsExitToday[index].stockPurchases && orderGroupsExitToday[index].stockPurchases.length > 0"
+                                          class="copy-button" 
+                                          @click.stop="copyStockPurchasesToClipboard(orderGroupsExitToday[index].stockPurchases, index)"
+                                          title="Copy to clipboard (Excel-ready)"
+                                        >
+                                          📋 Copy
+                                        </button>
+                                      </div>
                                       <div v-if="orderGroupsExitToday[index].stockPurchases && orderGroupsExitToday[index].stockPurchases.length > 0" class="mini-table-wrapper">
                                         <table class="mini-data-table">
                                           <thead>
@@ -949,7 +1019,17 @@ function parseOrderSymbol(symbolText: string): string {
                                     </div>
                                     <!-- Stock Sales Table -->
                                     <div class="table-half">
-                                      <div class="table-title">💰 Stock Sales ({{ orderGroupsExitToday[index].stockSales?.length || 0 }})</div>
+                                      <div class="table-title-row">
+                                        <span class="table-title">💰 Stock Sales ({{ orderGroupsExitToday[index].stockSales?.length || 0 }})</span>
+                                        <button 
+                                          v-if="orderGroupsExitToday[index].stockSales && orderGroupsExitToday[index].stockSales.length > 0"
+                                          class="copy-button" 
+                                          @click.stop="copyStockSalesToClipboard(orderGroupsExitToday[index].stockSales, index)"
+                                          title="Copy to clipboard (Excel-ready)"
+                                        >
+                                          📋 Copy
+                                        </button>
+                                      </div>
                                       <div v-if="orderGroupsExitToday[index].stockSales && orderGroupsExitToday[index].stockSales.length > 0" class="mini-table-wrapper">
                                         <table class="mini-data-table">
                                           <thead>
@@ -993,7 +1073,17 @@ function parseOrderSymbol(symbolText: string): string {
                                   <div class="section-tables">
                                     <!-- Put Sales Table -->
                                     <div class="table-half">
-                                      <div class="table-title">📉 Put Premium Received ({{ orderGroupsExitToday[index].putSales?.length || 0 }})</div>
+                                      <div class="table-title-row">
+                                        <span class="table-title">📉 Put Premium Received ({{ orderGroupsExitToday[index].putSales?.length || 0 }})</span>
+                                        <button 
+                                          v-if="orderGroupsExitToday[index].putSales && orderGroupsExitToday[index].putSales.length > 0"
+                                          class="copy-button" 
+                                          @click.stop="copyPutSalesToClipboard(orderGroupsExitToday[index].putSales, index, orderGroupsExitToday[index].putPremiumReceived)"
+                                          title="Copy to clipboard (Excel-ready)"
+                                        >
+                                          📋 Copy
+                                        </button>
+                                      </div>
                                       <div v-if="orderGroupsExitToday[index].putSales && orderGroupsExitToday[index].putSales.length > 0" class="mini-table-wrapper">
                                         <table class="mini-data-table">
                                           <thead>
@@ -1026,7 +1116,17 @@ function parseOrderSymbol(symbolText: string): string {
                                     </div>
                                     <!-- Put Buybacks Table -->
                                     <div class="table-half">
-                                      <div class="table-title">🔄 Put Buybacks ({{ orderGroupsExitToday[index].putBuybacks?.length || 0 }})</div>
+                                      <div class="table-title-row">
+                                        <span class="table-title">🔄 Put Buybacks ({{ orderGroupsExitToday[index].putBuybacks?.length || 0 }})</span>
+                                        <button 
+                                          v-if="orderGroupsExitToday[index].putBuybacks && orderGroupsExitToday[index].putBuybacks.length > 0"
+                                          class="copy-button" 
+                                          @click.stop="copyPutBuybacksToClipboard(orderGroupsExitToday[index].putBuybacks, index, orderGroupsExitToday[index].putBuybackCost)"
+                                          title="Copy to clipboard (Excel-ready)"
+                                        >
+                                          📋 Copy
+                                        </button>
+                                      </div>
                                       <div v-if="orderGroupsExitToday[index].putBuybacks && orderGroupsExitToday[index].putBuybacks.length > 0" class="mini-table-wrapper">
                                         <table class="mini-data-table">
                                           <thead>
@@ -1069,7 +1169,17 @@ function parseOrderSymbol(symbolText: string): string {
                                   <div class="section-tables">
                                     <!-- Call Current Value Table -->
                                     <div class="table-half">
-                                      <div class="table-title">📞 Call Current Value ({{ orderGroupsExitToday[index].callSales?.length || 0 }})</div>
+                                      <div class="table-title-row">
+                                        <span class="table-title">📞 Call Current Value ({{ orderGroupsExitToday[index].callSales?.length || 0 }})</span>
+                                        <button 
+                                          v-if="orderGroupsExitToday[index].callSales && orderGroupsExitToday[index].callSales.length > 0"
+                                          class="copy-button" 
+                                          @click.stop="copyCallSalesToClipboard(orderGroupsExitToday[index].callSales, index, orderGroupsExitToday[index].callPremiumReceived)"
+                                          title="Copy to clipboard (Excel-ready)"
+                                        >
+                                          📋 Copy
+                                        </button>
+                                      </div>
                                       <div v-if="orderGroupsExitToday[index].callSales && orderGroupsExitToday[index].callSales.length > 0" class="mini-table-wrapper">
                                         <table class="mini-data-table">
                                           <thead>
@@ -1102,7 +1212,17 @@ function parseOrderSymbol(symbolText: string): string {
                                     </div>
                                     <!-- Call Buybacks Table -->
                                     <div class="table-half">
-                                      <div class="table-title">🔄 Call Buybacks ({{ orderGroupsExitToday[index].callBuybacks?.length || 0 }})</div>
+                                      <div class="table-title-row">
+                                        <span class="table-title">🔄 Call Buybacks ({{ orderGroupsExitToday[index].callBuybacks?.length || 0 }})</span>
+                                        <button 
+                                          v-if="orderGroupsExitToday[index].callBuybacks && orderGroupsExitToday[index].callBuybacks.length > 0"
+                                          class="copy-button" 
+                                          @click.stop="copyCallBuybacksToClipboard(orderGroupsExitToday[index].callBuybacks, index, orderGroupsExitToday[index].callBuybackCost)"
+                                          title="Copy to clipboard (Excel-ready)"
+                                        >
+                                          📋 Copy
+                                        </button>
+                                      </div>
                                       <div v-if="orderGroupsExitToday[index].callBuybacks && orderGroupsExitToday[index].callBuybacks.length > 0" class="mini-table-wrapper">
                                         <table class="mini-data-table">
                                           <thead>

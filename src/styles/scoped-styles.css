@@ -273,7 +273,7 @@
 }
 
 .summary-table-fancy .detail-row td {
-  padding: 0;
+  padding: 0 1rem 0 0.75rem;
 }
 
 .summary-table-fancy .detail-content {
@@ -2501,6 +2501,33 @@ body.modal-open {
   min-width: 0;
 }
 
+.table-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  padding-left: 0.25rem;
+}
+
+.table-title-row .table-title {
+  margin-bottom: 0;
+  padding-left: 0;
+}
+
+.table-title-row .copy-button {
+  padding: 0.2rem 0.5rem;
+  font-size: 0.65rem;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.table-title-row .copy-button:hover {
+  background: #dee2e6;
+  border-color: #adb5bd;
+}
+
 .table-title {
   font-size: 0.75rem;
   font-weight: 600;
@@ -2527,11 +2554,15 @@ body.modal-open {
 
 .mini-data-table th {
   padding: 0.4rem 0.5rem;
-  text-align: left;
+  text-align: right;
   font-weight: 600;
   color: #495057;
   border-bottom: 1px solid #dee2e6;
   white-space: nowrap;
+}
+
+.mini-data-table th:first-child {
+  text-align: left;
 }
 
 .mini-data-table td {
@@ -2551,7 +2582,7 @@ body.modal-open {
 
 .mini-data-table .total-row td {
   border-bottom: none;
-  padding: 0.5rem;
+  padding: 0 1rem 0 0.75rem;
 }
 
 .no-data-mini {
