@@ -85,6 +85,7 @@ const peRatio = computed(() => financialData.value?.pe_ratio ?? null)
 const marketCap = computed(() => financialData.value?.market_cap ?? null)
 const computedPegRatio = computed(() => financialData.value?.computed_peg_ratio ?? null)
 const last_fetched_at_market_price = computed(() => marketData.value?.last_fetched_at ?? null)
+const last_updated_at = computed(() => financialData.value?.last_updated_at ?? null)
 
 // Format the timestamp for display with timezone
 const formattedTimestamp = computed(() => {
@@ -116,6 +117,30 @@ const formattedTimestamp = computed(() => {
   result = result.replace('GMT+530', 'IST')
   
   return result
+})
+
+const formattedLastUpdatedAt = computed(() => {
+  if (!last_updated_at.value) return null
+  
+  const date = new Date(last_updated_at.value)
+  
+  // Format: Nov 11, 2025 at 08:53:02 PM PST
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true,
+    timeZone: 'America/Los_Angeles',
+    timeZoneName: 'short'
+  }
+  
+  const formatted = date.toLocaleString('en-US', options)
+  
+  // Clean up formatting
+  return formatted.replace(/,(\s+\d)/, ' at$1')
 })
 
 // Fetch average cost price from orders (Hold till expiry)
@@ -1550,6 +1575,9 @@ function toggleAccountExpansion(accountId: string) {
                 <!--div class="subtitle-info" style="font-size: 0.85rem; color: #6c757d; margin-top: 0.25rem;">
                   Price to FCF: <span class="">Coming soon...</span>
                 </div-->
+                <div v-if="last_updated_at" class="timestamp-info">
+                  Updated: From IBKR on {{ formattedLastUpdatedAt }}
+                </div>
               </div>
             </div>
    

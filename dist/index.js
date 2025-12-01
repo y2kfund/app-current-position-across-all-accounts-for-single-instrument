@@ -1,16 +1,16 @@
-var Zs = Object.defineProperty;
-var eo = (l, e, t) => e in l ? Zs(l, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : l[e] = t;
-var P = (l, e, t) => eo(l, typeof e != "symbol" ? e + "" : e, t);
-import { inject as to, ref as O, watch as Pe, nextTick as Zt, onBeforeUnmount as ss, computed as te, defineComponent as os, createElementBlock as y, openBlock as C, Fragment as ie, createVNode as Ve, Transition as st, withCtx as ot, createCommentVNode as U, toDisplayString as m, withDirectives as et, createElementVNode as r, createTextVNode as j, renderList as le, normalizeClass as ee, withModifiers as bt, vShow as xt, onMounted as io, unref as D, vModelText as di } from "vue";
-import { useQueryClient as Ni, useQuery as Vi } from "@tanstack/vue-query";
-import { useSupabase as Et, generatePositionMappingKey as It, usePositionTradeMappingsQuery as so, usePositionPositionMappingsQuery as oo, usePositionOrderMappingsQuery as no, savePositionOrderMappings as ao, fetchPositionsBySymbolRoot as ns, savePositionTradeMappings as ro, savePositionPositionMappings as lo } from "@y2kfund/core";
-const ho = Symbol.for("y2kfund.supabase");
-function Ii() {
-  const l = to(ho, null);
+var to = Object.defineProperty;
+var io = (l, e, t) => e in l ? to(l, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : l[e] = t;
+var P = (l, e, t) => io(l, typeof e != "symbol" ? e + "" : e, t);
+import { inject as so, ref as O, watch as Me, nextTick as ei, onBeforeUnmount as ns, computed as Y, defineComponent as as, createElementBlock as y, openBlock as C, Fragment as te, createVNode as Ge, Transition as et, withCtx as tt, createCommentVNode as U, toDisplayString as m, withDirectives as Je, createElementVNode as r, createTextVNode as j, renderList as re, normalizeClass as ee, withModifiers as bt, vShow as kt, onMounted as oo, unref as D, vModelText as ci } from "vue";
+import { useQueryClient as Ii, useQuery as Gi } from "@tanstack/vue-query";
+import { useSupabase as Et, generatePositionMappingKey as Vt, usePositionTradeMappingsQuery as no, usePositionPositionMappingsQuery as ao, usePositionOrderMappingsQuery as ro, savePositionOrderMappings as lo, fetchPositionsBySymbolRoot as rs, savePositionTradeMappings as ho, savePositionPositionMappings as uo } from "@y2kfund/core";
+const co = Symbol.for("y2kfund.supabase");
+function Wi() {
+  const l = so(co, null);
   if (!l) throw new Error("[@y2kfund/core] Supabase client not found. Did you install createCore()?");
   return l;
 }
-async function Gi(l, e) {
+async function ji(l, e) {
   if (!e)
     return console.log("⚠️ No userId provided, showing all positions"), [];
   try {
@@ -26,11 +26,11 @@ async function Gi(l, e) {
     return console.error("❌ Exception fetching account access:", t), [];
   }
 }
-const uo = {
+const fo = {
   details: (l, e) => ["currentPosition", l, e]
 };
-function co(l, e) {
-  const t = Ii(), i = Ni(), s = uo.details(l, e), o = Vi({
+function mo(l, e) {
+  const t = Wi(), i = Ii(), s = fo.details(l, e), o = Gi({
     queryKey: s,
     queryFn: async () => {
       const a = e == null ? void 0 : e.trim();
@@ -40,7 +40,7 @@ function co(l, e) {
         userId: l || "none (all accounts)",
         symbolName: a
       });
-      const h = await Gi(t, l);
+      const h = await ji(t, l);
       l && h.length === 0 ? console.log("⚠️ User has no account access restrictions - showing all accounts") : h.length > 0 && console.log("🔒 User has access to accounts:", h);
       const { data: d, error: u } = await t.schema("hf").from("positions").select("fetched_at").order("fetched_at", { ascending: !1 }).limit(1).single();
       if (u)
@@ -102,9 +102,9 @@ function co(l, e) {
     }
   };
 }
-async function fo(l, e, t) {
+async function po(l, e, t) {
   var i;
-  const s = await Gi(l, t);
+  const s = await ji(l, t);
   console.log("🔍 Querying put positions with:", {
     symbolRoot: e,
     userId: t || "none",
@@ -144,10 +144,10 @@ async function fo(l, e, t) {
   });
   return console.log("✅ Enriched put positions with accounts", T.length), T;
 }
-function mo(l, e) {
-  const t = Ii(), i = Ni(), s = ["putPositions", l, e], o = Vi({
+function go(l, e) {
+  const t = Wi(), i = Ii(), s = ["putPositions", l, e], o = Gi({
     queryKey: s,
-    queryFn: async () => l ? await fo(t, l, e) : [],
+    queryFn: async () => l ? await po(t, l, e) : [],
     enabled: !!l,
     staleTime: 6e4
     // 1 minute
@@ -167,9 +167,9 @@ function mo(l, e) {
     n.unsubscribe();
   } };
 }
-async function po(l, e, t) {
+async function bo(l, e, t) {
   var i;
-  const s = await Gi(l, t);
+  const s = await ji(l, t);
   console.log("🔍 Querying call positions with:", {
     symbolRoot: e,
     userId: t || "none",
@@ -209,10 +209,10 @@ async function po(l, e, t) {
   });
   return console.log("✅ Enriched call positions with accounts", T.length), T;
 }
-function go(l, e) {
-  const t = Ii(), i = Ni(), s = ["callPositions", l, e], o = Vi({
+function vo(l, e) {
+  const t = Wi(), i = Ii(), s = ["callPositions", l, e], o = Gi({
     queryKey: s,
-    queryFn: async () => l ? await po(t, l, e) : [],
+    queryFn: async () => l ? await bo(t, l, e) : [],
     enabled: !!l,
     staleTime: 6e4
     // 1 minute
@@ -232,7 +232,7 @@ function go(l, e) {
     n.unsubscribe();
   } };
 }
-class me {
+class ge {
   constructor(e) {
     this.table = e;
   }
@@ -333,7 +333,7 @@ class me {
     return this.table.module(e);
   }
 }
-class se {
+class ie {
   static elVisible(e) {
     return !(e.offsetWidth <= 0 && e.offsetHeight <= 0);
   }
@@ -360,7 +360,7 @@ class se {
     return t;
   }
 }
-let bo = class as extends me {
+let wo = class ls extends ge {
   constructor(e, t, i) {
     super(e), this.element = t, this.container = this._lookupContainer(), this.parent = i, this.reversedX = !1, this.childPopup = null, this.blurable = !1, this.blurCallback = null, this.blurEventsBound = !1, this.renderedCallback = null, this.visible = !1, this.hideable = !0, this.element.classList.add("tabulator-popup-container"), this.blurEvent = this.hide.bind(this, !1), this.escEvent = this._escapeCheck.bind(this), this.destroyBinding = this.tableDestroyed.bind(this), this.destroyed = !1;
   }
@@ -380,14 +380,14 @@ let bo = class as extends me {
   containerEventCoords(e) {
     var t = !(e instanceof MouseEvent), i = t ? e.touches[0].pageX : e.pageX, s = t ? e.touches[0].pageY : e.pageY;
     if (this.container !== document.body) {
-      let o = se.elOffset(this.container);
+      let o = ie.elOffset(this.container);
       i -= o.left, s -= o.top;
     }
     return { x: i, y: s };
   }
   elementPositionCoords(e, t = "right") {
-    var i = se.elOffset(e), s, o, n;
-    switch (this.container !== document.body && (s = se.elOffset(this.container), i.left -= s.left, i.top -= s.top), t) {
+    var i = ie.elOffset(e), s, o, n;
+    switch (this.container !== document.body && (s = ie.elOffset(this.container), i.left -= s.left, i.top -= s.top), t) {
       case "right":
         o = i.left + e.offsetWidth, n = i.top - 1;
         break;
@@ -449,10 +449,10 @@ let bo = class as extends me {
     return this.visible && this.hideable && (this.blurable && this.blurEventsBound && (document.body.removeEventListener("keydown", this.escEvent), document.body.removeEventListener("click", this.blurEvent), document.body.removeEventListener("contextmenu", this.blurEvent), document.body.removeEventListener("mousedown", this.blurEvent), window.removeEventListener("resize", this.blurEvent), this.table.rowManager.element.removeEventListener("scroll", this.blurEvent), this.unsubscribe("cell-editing", this.blurEvent), this.blurEventsBound = !1), this.childPopup && this.childPopup.hide(), this.parent && (this.parent.childPopup = null), this.element.parentNode && this.element.parentNode.removeChild(this.element), this.visible = !1, this.blurCallback && !e && this.blurCallback(), this.unsubscribe("table-destroy", this.destroyBinding)), this;
   }
   child(e) {
-    return this.childPopup && this.childPopup.hide(), this.childPopup = new as(this.table, e, this), this.childPopup;
+    return this.childPopup && this.childPopup.hide(), this.childPopup = new ls(this.table, e, this), this.childPopup;
   }
 };
-class q extends me {
+class q extends ge {
   constructor(e, t) {
     super(e), this._handler = null;
   }
@@ -512,7 +512,7 @@ class q extends me {
   //////// Popups Management ////////
   ///////////////////////////////////
   popup(e, t) {
-    return new bo(this.table, e, t);
+    return new wo(this.table, e, t);
   }
   ///////////////////////////////////
   //////// Alert Management ////////
@@ -524,12 +524,12 @@ class q extends me {
     return this.table.alertManager.clear();
   }
 }
-var vo = {
+var yo = {
   rownum: function(l, e, t, i, s, o) {
     return o.getPosition();
   }
 };
-const Rt = class Rt extends q {
+const Tt = class Tt extends q {
   constructor(e) {
     super(e), this.allowedTypes = ["", "data", "download", "clipboard", "print", "htmlOutput"], this.registerColumnOption("accessor"), this.registerColumnOption("accessorParams"), this.registerColumnOption("accessorData"), this.registerColumnOption("accessorDataParams"), this.registerColumnOption("accessorDownload"), this.registerColumnOption("accessorDownloadParams"), this.registerColumnOption("accessorClipboard"), this.registerColumnOption("accessorClipboardParams"), this.registerColumnOption("accessorPrint"), this.registerColumnOption("accessorPrintParams"), this.registerColumnOption("accessorHtmlOutput"), this.registerColumnOption("accessorHtmlOutputParams");
   }
@@ -551,7 +551,7 @@ const Rt = class Rt extends q {
     var t = !1;
     switch (typeof e) {
       case "string":
-        Rt.accessors[e] ? t = Rt.accessors[e] : console.warn("Accessor Error - No such accessor found, ignoring: ", e);
+        Tt.accessors[e] ? t = Tt.accessors[e] : console.warn("Accessor Error - No such accessor found, ignoring: ", e);
         break;
       case "function":
         t = e;
@@ -561,42 +561,42 @@ const Rt = class Rt extends q {
   }
   //apply accessor to row
   transformRow(e, t) {
-    var i = "accessor" + (t.charAt(0).toUpperCase() + t.slice(1)), s = e.getComponent(), o = se.deepClone(e.data || {});
+    var i = "accessor" + (t.charAt(0).toUpperCase() + t.slice(1)), s = e.getComponent(), o = ie.deepClone(e.data || {});
     return this.table.columnManager.traverse(function(n) {
       var a, h, d, u;
       n.modules.accessor && (h = n.modules.accessor[i] || n.modules.accessor.accessor || !1, h && (a = n.getFieldValue(o), a != "undefined" && (u = n.getComponent(), d = typeof h.params == "function" ? h.params(a, o, t, u, s) : h.params, n.setFieldValue(o, h.accessor(a, o, t, d, u, s)))));
     }), o;
   }
 };
-P(Rt, "moduleName", "accessor"), //load defaults
-P(Rt, "accessors", vo);
-let fi = Rt;
-var wo = {
+P(Tt, "moduleName", "accessor"), //load defaults
+P(Tt, "accessors", yo);
+let pi = Tt;
+var Co = {
   method: "GET"
 };
-function mi(l, e) {
+function gi(l, e) {
   var t = [];
   if (e = e || "", Array.isArray(l))
     l.forEach((s, o) => {
-      t = t.concat(mi(s, e ? e + "[" + o + "]" : o));
+      t = t.concat(gi(s, e ? e + "[" + o + "]" : o));
     });
   else if (typeof l == "object")
     for (var i in l)
-      t = t.concat(mi(l[i], e ? e + "[" + i + "]" : i));
+      t = t.concat(gi(l[i], e ? e + "[" + i + "]" : i));
   else
     t.push({ key: e, value: l });
   return t;
 }
-function yo(l) {
-  var e = mi(l), t = [];
+function Eo(l) {
+  var e = gi(l), t = [];
   return e.forEach(function(i) {
     t.push(encodeURIComponent(i.key) + "=" + encodeURIComponent(i.value));
   }), t.join("&");
 }
-function rs(l, e, t) {
-  return l && t && Object.keys(t).length && (!e.method || e.method.toLowerCase() == "get") && (e.method = "get", l += (l.includes("?") ? "&" : "?") + yo(t)), l;
+function hs(l, e, t) {
+  return l && t && Object.keys(t).length && (!e.method || e.method.toLowerCase() == "get") && (e.method = "get", l += (l.includes("?") ? "&" : "?") + Eo(t)), l;
 }
-function Co(l, e, t) {
+function xo(l, e, t) {
   var i;
   return new Promise((s, o) => {
     if (l = this.urlGenerator.call(this.table, l, e, t), e.method.toUpperCase() != "GET")
@@ -617,20 +617,20 @@ function Co(l, e, t) {
     })) : (console.warn("Ajax Load Error - No URL Set"), s([]));
   });
 }
-function pi(l, e) {
+function bi(l, e) {
   var t = [];
   if (e = e || "", Array.isArray(l))
     l.forEach((s, o) => {
-      t = t.concat(pi(s, e ? e + "[" + o + "]" : o));
+      t = t.concat(bi(s, e ? e + "[" + o + "]" : o));
     });
   else if (typeof l == "object")
     for (var i in l)
-      t = t.concat(pi(l[i], e ? e + "[" + i + "]" : i));
+      t = t.concat(bi(l[i], e ? e + "[" + i + "]" : i));
   else
     t.push({ key: e, value: l });
   return t;
 }
-var Eo = {
+var ko = {
   json: {
     headers: {
       "Content-Type": "application/json"
@@ -642,21 +642,21 @@ var Eo = {
   form: {
     headers: {},
     body: function(l, e, t) {
-      var i = pi(t), s = new FormData();
+      var i = bi(t), s = new FormData();
       return i.forEach(function(o) {
         s.append(o.key, o.value);
       }), s;
     }
   }
 };
-const He = class He extends q {
+const Oe = class Oe extends q {
   constructor(e) {
     super(e), this.config = {}, this.url = "", this.urlGenerator = !1, this.params = !1, this.loaderPromise = !1, this.registerTableOption("ajaxURL", !1), this.registerTableOption("ajaxURLGenerator", !1), this.registerTableOption("ajaxParams", {}), this.registerTableOption("ajaxConfig", "get"), this.registerTableOption("ajaxContentType", "form"), this.registerTableOption("ajaxRequestFunc", !1), this.registerTableOption("ajaxRequesting", function() {
-    }), this.registerTableOption("ajaxResponse", !1), this.contentTypeFormatters = He.contentTypeFormatters;
+    }), this.registerTableOption("ajaxResponse", !1), this.contentTypeFormatters = Oe.contentTypeFormatters;
   }
   //initialize setup options
   initialize() {
-    this.loaderPromise = this.table.options.ajaxRequestFunc || He.defaultLoaderPromise, this.urlGenerator = this.table.options.ajaxURLGenerator || He.defaultURLGenerator, this.table.options.ajaxURL && this.setUrl(this.table.options.ajaxURL), this.setDefaultConfig(this.table.options.ajaxConfig), this.registerTableFunction("getAjaxUrl", this.getUrl.bind(this)), this.subscribe("data-loading", this.requestDataCheck.bind(this)), this.subscribe("data-params", this.requestParams.bind(this)), this.subscribe("data-load", this.requestData.bind(this));
+    this.loaderPromise = this.table.options.ajaxRequestFunc || Oe.defaultLoaderPromise, this.urlGenerator = this.table.options.ajaxURLGenerator || Oe.defaultURLGenerator, this.table.options.ajaxURL && this.setUrl(this.table.options.ajaxURL), this.setDefaultConfig(this.table.options.ajaxConfig), this.registerTableFunction("getAjaxUrl", this.getUrl.bind(this)), this.subscribe("data-loading", this.requestDataCheck.bind(this)), this.subscribe("data-params", this.requestParams.bind(this)), this.subscribe("data-load", this.requestData.bind(this));
   }
   requestParams(e, t, i, s) {
     var o = this.table.options.ajaxParams;
@@ -670,7 +670,7 @@ const He = class He extends q {
     return !o && this.requestDataCheck(e) ? (e && this.setUrl(e), n = this.generateConfig(i), this.sendRequest(this.url, t, n)) : o;
   }
   setDefaultConfig(e = {}) {
-    this.config = Object.assign({}, He.defaultConfig), typeof e == "string" ? this.config.method = e : Object.assign(this.config, e);
+    this.config = Object.assign({}, Oe.defaultConfig), typeof e == "string" ? this.config.method = e : Object.assign(this.config, e);
   }
   //load config object
   generateConfig(e = {}) {
@@ -690,10 +690,10 @@ const He = class He extends q {
     return this.table.options.ajaxRequesting.call(this.table, e, t) !== !1 ? this.loaderPromise(e, i, t).then((s) => (this.table.options.ajaxResponse && (s = this.table.options.ajaxResponse.call(this.table, e, t, s)), s)) : Promise.reject();
   }
 };
-P(He, "moduleName", "ajax"), //load defaults
-P(He, "defaultConfig", wo), P(He, "defaultURLGenerator", rs), P(He, "defaultLoaderPromise", Co), P(He, "contentTypeFormatters", Eo);
-let gi = He;
-var xo = {
+P(Oe, "moduleName", "ajax"), //load defaults
+P(Oe, "defaultConfig", Co), P(Oe, "defaultURLGenerator", hs), P(Oe, "defaultLoaderPromise", xo), P(Oe, "contentTypeFormatters", ko);
+let vi = Oe;
+var Ro = {
   replace: function(l) {
     return this.table.setData(l);
   },
@@ -703,7 +703,7 @@ var xo = {
   insert: function(l) {
     return this.table.addData(l);
   }
-}, ko = {
+}, To = {
   table: function(l) {
     var e = [], t = !0, i = this.table.columnManager.columns, s = [], o = [];
     return l = l.split(`
@@ -726,19 +726,19 @@ var xo = {
       }), o.push(a);
     }), o) : !1;
   }
-}, Ro = {
+}, So = {
   copyToClipboard: ["ctrl + 67", "meta + 67"]
-}, To = {
+}, Lo = {
   copyToClipboard: function(l) {
     this.table.modules.edit.currentCell || this.table.modExists("clipboard", !0) && this.table.modules.clipboard.copy(!1, !0);
   }
-}, So = {
+}, Do = {
   keybindings: {
-    bindings: Ro,
-    actions: To
+    bindings: So,
+    actions: Lo
   }
 };
-const lt = class lt extends q {
+const at = class at extends q {
   constructor(e) {
     super(e), this.mode = !0, this.pasteParser = function() {
     }, this.pasteAction = function() {
@@ -788,7 +788,7 @@ const lt = class lt extends q {
   setPasteAction(e) {
     switch (typeof e) {
       case "string":
-        this.pasteAction = lt.pasteActions[e], this.pasteAction || console.warn("Clipboard Error - No such paste action found:", e);
+        this.pasteAction = at.pasteActions[e], this.pasteAction || console.warn("Clipboard Error - No such paste action found:", e);
         break;
       case "function":
         this.pasteAction = e;
@@ -798,7 +798,7 @@ const lt = class lt extends q {
   setPasteParser(e) {
     switch (typeof e) {
       case "string":
-        this.pasteParser = lt.pasteParsers[e], this.pasteParser || console.warn("Clipboard Error - No such paste parser found:", e);
+        this.pasteParser = at.pasteParsers[e], this.pasteParser || console.warn("Clipboard Error - No such paste parser found:", e);
         break;
       case "function":
         this.pasteParser = e;
@@ -824,10 +824,10 @@ const lt = class lt extends q {
     return window.clipboardData && window.clipboardData.getData ? t = window.clipboardData.getData("Text") : e.clipboardData && e.clipboardData.getData ? t = e.clipboardData.getData("text/plain") : e.originalEvent && e.originalEvent.clipboardData.getData && (t = e.originalEvent.clipboardData.getData("text/plain")), t;
   }
 };
-P(lt, "moduleName", "clipboard"), P(lt, "moduleExtensions", So), //load defaults
-P(lt, "pasteActions", xo), P(lt, "pasteParsers", ko);
-let bi = lt;
-class Lo {
+P(at, "moduleName", "clipboard"), P(at, "moduleExtensions", Do), //load defaults
+P(at, "pasteActions", Ro), P(at, "pasteParsers", To);
+let wi = at;
+class Fo {
   constructor(e) {
     return this._row = e, new Proxy(this, {
       get: function(t, i, s) {
@@ -858,7 +858,7 @@ class Lo {
     return this._row;
   }
 }
-class ls {
+class ds {
   constructor(e) {
     return this._cell = e, new Proxy(this, {
       get: function(t, i, s) {
@@ -912,7 +912,7 @@ class ls {
     return this._cell;
   }
 }
-class Gt extends me {
+class It extends ge {
   constructor(e, t) {
     super(e.table), this.table = e.table, this.column = e, this.row = t, this.element = null, this.value = null, this.initialValue, this.oldValue = null, this.modules = {}, this.height = null, this.width = null, this.minWidth = null, this.component = null, this.loaded = !1, this.build();
   }
@@ -1029,10 +1029,10 @@ class Gt extends me {
   }
   //////////////// Object Generation /////////////////
   getComponent() {
-    return this.component || (this.component = new ls(this)), this.component;
+    return this.component || (this.component = new ds(this)), this.component;
   }
 }
-class hs {
+class us {
   constructor(e) {
     return this._column = e, this.type = "ColumnComponent", new Proxy(this, {
       get: function(t, i, s) {
@@ -1118,7 +1118,7 @@ class hs {
     return e === !0 ? t = this._column.reinitializeWidth(!0) : t = this._column.setWidth(e), this._column.table.columnManager.rerenderColumns(!0), t;
   }
 }
-var ds = {
+var cs = {
   title: void 0,
   field: void 0,
   columns: void 0,
@@ -1136,7 +1136,7 @@ var ds = {
   headerWordWrap: !1,
   editableTitle: void 0
 };
-const vt = class vt extends me {
+const vt = class vt extends ge {
   constructor(e, t, i) {
     super(t.table), this.definition = e, this.parent = t, this.type = "column", this.columns = [], this.cells = [], this.isGroup = !1, this.isRowHeader = i, this.element = this.createElement(), this.contentElement = !1, this.titleHolderElement = !1, this.titleElement = !1, this.groupElement = this.createGroupElement(), this.hozAlign = "", this.vertAlign = "", this.field = "", this.fieldStructure = "", this.getFieldValue = "", this.setFieldValue = "", this.titleDownload = null, this.titleFormatterRendered = !1, this.mapDefinitions(), this.setField(this.definition.field), this.modules = {}, this.width = null, this.widthStyled = "", this.maxWidth = null, this.maxWidthStyled = "", this.maxInitialWidth = null, this.minWidth = null, this.minWidthStyled = "", this.widthFixed = !1, this.visible = !0, this.component = null, this.definition.columns ? (this.isGroup = !0, this.definition.columns.forEach((s, o) => {
       var n = new vt(s, this);
@@ -1431,7 +1431,7 @@ const vt = class vt extends me {
   //////////////// Cell Management /////////////////
   //generate cell for this column
   generateCell(e) {
-    var t = new Gt(this, e);
+    var t = new It(this, e);
     return this.cells.push(t), t;
   }
   nextColumn() {
@@ -1479,7 +1479,7 @@ const vt = class vt extends me {
   }
   //////////////// Object Generation /////////////////
   getComponent() {
-    return this.component || (this.component = new hs(this)), this.component;
+    return this.component || (this.component = new us(this)), this.component;
   }
   getPosition() {
     return this.table.columnManager.getVisibleColumnsByIndex().indexOf(this) + 1;
@@ -1488,9 +1488,9 @@ const vt = class vt extends me {
     return this.parent instanceof vt ? this.parent.getComponent() : !1;
   }
 };
-P(vt, "defaultOptionList", ds);
+P(vt, "defaultOptionList", cs);
 let Ct = vt;
-class ei {
+class ti {
   constructor(e) {
     return this._row = e, new Proxy(this, {
       get: function(t, i, s) {
@@ -1556,7 +1556,7 @@ class ei {
     return e && e.getComponent();
   }
 }
-class ve extends me {
+class we extends ge {
   constructor(e, t, i = "row") {
     super(t.table), this.parent = t, this.data = {}, this.type = i, this.element = !1, this.modules = {}, this.cells = [], this.height = 0, this.heightStyled = "", this.manualHeight = !1, this.outerHeight = 0, this.initialized = !1, this.heightInitialized = !1, this.position = 0, this.positionWatchers = [], this.component = null, this.created = !1, this.setData(e);
   }
@@ -1657,7 +1657,7 @@ class ve extends me {
   }
   //update the rows data
   updateData(e) {
-    var t = this.element && se.elVisible(this.element), i = {}, s;
+    var t = this.element && ie.elVisible(this.element), i = {}, s;
     return new Promise((o, n) => {
       typeof e == "string" && (e = JSON.parse(e)), this.dispatch("row-data-save-before", this), this.subscribed("row-data-changing") && (i = Object.assign(i, this.data), i = Object.assign(i, e)), s = this.chain("row-data-changing", [this, i, e], null, e);
       for (let a in s)
@@ -1747,10 +1747,10 @@ class ve extends me {
   }
   //////////////// Object Generation /////////////////
   getComponent() {
-    return this.component || (this.component = new ei(this)), this.component;
+    return this.component || (this.component = new ti(this)), this.component;
   }
 }
-var Do = {
+var Mo = {
   avg: function(l, e, t) {
     var i = 0, s = typeof t.precision < "u" ? t.precision : 2;
     return l.length && (i = l.reduce(function(o, n) {
@@ -1792,7 +1792,7 @@ var Do = {
     return i.length;
   }
 };
-const ht = class ht extends q {
+const rt = class rt extends q {
   constructor(e) {
     super(e), this.topCalcs = [], this.botCalcs = [], this.genColumn = !1, this.topElement = this.createElement(), this.botElement = this.createElement(), this.topRow = !1, this.botRow = !1, this.topInitialized = !1, this.botInitialized = !1, this.blocked = !1, this.recalcAfterBlock = !1, this.registerTableOption("columnCalcs", !0), this.registerColumnOption("topCalc"), this.registerColumnOption("topCalcParams"), this.registerColumnOption("topCalcFormatter"), this.registerColumnOption("topCalcFormatterParams"), this.registerColumnOption("bottomCalc"), this.registerColumnOption("bottomCalcParams"), this.registerColumnOption("bottomCalcFormatter"), this.registerColumnOption("bottomCalcFormatterParams");
   }
@@ -1854,7 +1854,7 @@ const ht = class ht extends q {
     if (t.topCalc) {
       switch (typeof t.topCalc) {
         case "string":
-          ht.calculations[t.topCalc] ? i.topCalc = ht.calculations[t.topCalc] : console.warn("Column Calc Error - No such calculation found, ignoring: ", t.topCalc);
+          rt.calculations[t.topCalc] ? i.topCalc = rt.calculations[t.topCalc] : console.warn("Column Calc Error - No such calculation found, ignoring: ", t.topCalc);
           break;
         case "function":
           i.topCalc = t.topCalc;
@@ -1865,7 +1865,7 @@ const ht = class ht extends q {
     if (t.bottomCalc) {
       switch (typeof t.bottomCalc) {
         case "string":
-          ht.calculations[t.bottomCalc] ? i.botCalc = ht.calculations[t.bottomCalc] : console.warn("Column Calc Error - No such calculation found, ignoring: ", t.bottomCalc);
+          rt.calculations[t.bottomCalc] ? i.botCalc = rt.calculations[t.bottomCalc] : console.warn("Column Calc Error - No such calculation found, ignoring: ", t.bottomCalc);
           break;
         case "function":
           i.botCalc = t.bottomCalc;
@@ -1943,7 +1943,7 @@ const ht = class ht extends q {
   //generate stats row
   generateRow(e, t) {
     var i = this.generateRowData(e, t), s;
-    return this.table.modExists("mutator") && this.table.modules.mutator.disable(), s = new ve(i, this, "calc"), this.table.modExists("mutator") && this.table.modules.mutator.enable(), s.getElement().classList.add("tabulator-calcs", "tabulator-calcs-" + e), s.component = !1, s.getComponent = () => (s.component || (s.component = new Lo(s)), s.component), s.generateCells = () => {
+    return this.table.modExists("mutator") && this.table.modules.mutator.disable(), s = new we(i, this, "calc"), this.table.modExists("mutator") && this.table.modules.mutator.enable(), s.getElement().classList.add("tabulator-calcs", "tabulator-calcs-" + e), s.component = !1, s.getComponent = () => (s.component || (s.component = new Fo(s)), s.component), s.generateCells = () => {
       var o = [];
       this.table.columnManager.columnsByIndex.forEach((n) => {
         this.genColumn.setField(n.getField()), this.genColumn.hozAlign = n.hozAlign, n.definition[e + "CalcFormatter"] && this.table.modExists("format") ? this.genColumn.modules.format = {
@@ -1953,7 +1953,7 @@ const ht = class ht extends q {
           formatter: this.table.modules.format.lookupFormatter("plaintext"),
           params: {}
         }, this.genColumn.definition.cssClass = n.definition.cssClass;
-        var a = new Gt(this.genColumn, s);
+        var a = new It(this.genColumn, s);
         a.getElement(), a.column = n, a.setWidth(), n.cells.push(a), o.push(a), n.visible || a.hide();
       }), s.cells = o;
     }, s;
@@ -2003,10 +2003,10 @@ const ht = class ht extends q {
     this.botRow && (this.table.rtl ? this.botElement.style.paddingLeft = e + "px" : this.botElement.style.paddingRight = e + "px");
   }
 };
-P(ht, "moduleName", "columnCalcs"), //load defaults
-P(ht, "calculations", Do);
-let vi = ht;
-class us extends q {
+P(rt, "moduleName", "columnCalcs"), //load defaults
+P(rt, "calculations", Mo);
+let yi = rt;
+class fs extends q {
   constructor(e) {
     super(e), this.indent = 10, this.field = "", this.collapseEl = null, this.expandEl = null, this.branchEl = null, this.elementField = !1, this.startOpen = function() {
     }, this.registerTableOption("dataTree", !1), this.registerTableOption("dataTreeFilter", !0), this.registerTableOption("dataTreeSort", !0), this.registerTableOption("dataTreeElementColumn", !1), this.registerTableOption("dataTreeBranchElement", !0), this.registerTableOption("dataTreeChildIndent", 9), this.registerTableOption("dataTreeChildField", "_children"), this.registerTableOption("dataTreeCollapseElement", !1), this.registerTableOption("dataTreeExpandElement", !1), this.registerTableOption("dataTreeStartExpanded", !1), this.registerTableOption("dataTreeChildColumnCalcs", !1), this.registerTableOption("dataTreeSelectPropagate", !1), this.registerComponentFunction("row", "treeCollapse", this.collapseRow.bind(this)), this.registerComponentFunction("row", "treeExpand", this.expandRow.bind(this)), this.registerComponentFunction("row", "treeToggle", this.toggleRow.bind(this)), this.registerComponentFunction("row", "getTreeParent", this.getTreeParent.bind(this)), this.registerComponentFunction("row", "getTreeChildren", this.getRowChildren.bind(this)), this.registerComponentFunction("row", "addTreeChild", this.addTreeChildRow.bind(this)), this.registerComponentFunction("row", "isTreeExpanded", this.isRowExpanded.bind(this));
@@ -2093,7 +2093,7 @@ class us extends q {
     var t = [];
     return e.forEach((i, s) => {
       var o, n;
-      t.push(i), i instanceof ve && (i.create(), o = i.modules.dataTree, !o.index && o.children !== !1 && (n = this.getChildren(i, !1, !0), n.forEach((a) => {
+      t.push(i), i instanceof we && (i.create(), o = i.modules.dataTree, !o.index && o.children !== !1 && (n = this.getChildren(i, !1, !0), n.forEach((a) => {
         a.create(), t.push(a);
       })));
     }), t;
@@ -2111,7 +2111,7 @@ class us extends q {
   generateChildren(e) {
     var t = [], i = e.getData()[this.field];
     return Array.isArray(i) || (i = [i]), i.forEach((s) => {
-      var o = new ve(s || {}, this.table.rowManager);
+      var o = new we(s || {}, this.table.rowManager);
       o.create(), o.modules.dataTree.index = e.modules.dataTree.index + 1, o.modules.dataTree.parent = e, o.modules.dataTree.children && (o.modules.dataTree.open = this.startOpen(o.getComponent(), o.modules.dataTree.index)), t.push(o);
     }), t;
   }
@@ -2139,13 +2139,13 @@ class us extends q {
   getFilteredTreeChildren(e) {
     var t = e.modules.dataTree, i = [], s;
     return t.children && (Array.isArray(t.children) || (t.children = this.generateChildren(e)), this.table.modExists("filter") && this.table.options.dataTreeFilter ? s = this.table.modules.filter.filter(t.children) : s = t.children, s.forEach((o) => {
-      o instanceof ve && i.push(o);
+      o instanceof we && i.push(o);
     })), i;
   }
   rowDeleting(e) {
     var t = e.modules.dataTree;
     t && t.children && Array.isArray(t.children) && t.children.forEach((i) => {
-      i instanceof ve && i.wipe();
+      i instanceof we && i.wipe();
     });
   }
   rowDelete(e) {
@@ -2158,12 +2158,12 @@ class us extends q {
   }
   findChildIndex(e, t) {
     var i = !1;
-    return typeof e == "object" ? e instanceof ve ? i = e.data : e instanceof ei ? i = e._getSelf().data : typeof HTMLElement < "u" && e instanceof HTMLElement ? t.modules.dataTree && (i = t.modules.dataTree.children.find((s) => s instanceof ve ? s.element === e : !1), i && (i = i.data)) : e === null && (i = !1) : typeof e > "u" ? i = !1 : i = t.data[this.field].find((s) => s.data[this.table.options.index] == e), i && (Array.isArray(t.data[this.field]) && (i = t.data[this.field].indexOf(i)), i == -1 && (i = !1)), i;
+    return typeof e == "object" ? e instanceof we ? i = e.data : e instanceof ti ? i = e._getSelf().data : typeof HTMLElement < "u" && e instanceof HTMLElement ? t.modules.dataTree && (i = t.modules.dataTree.children.find((s) => s instanceof we ? s.element === e : !1), i && (i = i.data)) : e === null && (i = !1) : typeof e > "u" ? i = !1 : i = t.data[this.field].find((s) => s.data[this.table.options.index] == e), i && (Array.isArray(t.data[this.field]) && (i = t.data[this.field].indexOf(i)), i == -1 && (i = !1)), i;
   }
   getTreeChildren(e, t, i) {
     var s = e.modules.dataTree, o = [];
     return s && s.children && (Array.isArray(s.children) || (s.children = this.generateChildren(e)), s.children.forEach((n) => {
-      n instanceof ve && (o.push(t ? n.getComponent() : n), i && this.getTreeChildren(n, t, i).forEach((a) => {
+      n instanceof we && (o.push(t ? n.getComponent() : n), i && this.getTreeChildren(n, t, i).forEach((a) => {
         o.push(a);
       }));
     })), o;
@@ -2175,8 +2175,8 @@ class us extends q {
     return (this.field ? typeof e[this.field] < "u" : !1) || (this.elementField ? typeof e[this.elementField] < "u" : !1);
   }
 }
-P(us, "moduleName", "dataTree");
-function Fo(l, e = {}, t) {
+P(fs, "moduleName", "dataTree");
+function Po(l, e = {}, t) {
   var i = e.delimiter ? e.delimiter : ",", s = [], o = [];
   l.forEach((n) => {
     var a = [];
@@ -2211,7 +2211,7 @@ function Fo(l, e = {}, t) {
   }), o.length && s.unshift(o.join(i)), s = s.join(`
 `), e.bom && (s = "\uFEFF" + s), t(s, "text/csv");
 }
-function Mo(l, e, t) {
+function _o(l, e, t) {
   var i = [];
   l.forEach((s) => {
     var o = {};
@@ -2232,7 +2232,7 @@ function Mo(l, e, t) {
     }
   }), i = JSON.stringify(i, null, "	"), t(i, "application/json");
 }
-function Po(l, e = {}, t) {
+function zo(l, e = {}, t) {
   var i = [], s = [], o = {}, n = e.rowGroupStyles || {
     fontStyle: "bold",
     fontSize: 12,
@@ -2285,8 +2285,8 @@ function Po(l, e = {}, t) {
     f.text(d, 40, 30);
   }), o.head = i, o.body = s, f.autoTable(o), e.documentProcessing && e.documentProcessing(f), t(f.output("arraybuffer"), "application/pdf");
 }
-function _o(l, e, t) {
-  var i = this, s = e.sheetName || "Sheet1", o = this.dependencyRegistry.lookup("XLSX"), n = o.utils.book_new(), a = new me(this), h = "compress" in e ? e.compress : !0, d = e.writeOptions || { bookType: "xlsx", bookSST: !0, compression: h }, u;
+function Ao(l, e, t) {
+  var i = this, s = e.sheetName || "Sheet1", o = this.dependencyRegistry.lookup("XLSX"), n = o.utils.book_new(), a = new ge(this), h = "compress" in e ? e.compress : !0, d = e.writeOptions || { bookType: "xlsx", bookSST: !0, compression: h }, u;
   d.type = "binary", n.SheetNames = [], n.Sheets = {};
   function f() {
     var c = [], T = [], R = {}, b = { s: { c: 0, r: 0 }, e: { c: l[0] ? l[0].columns.reduce((v, A) => v + (A && A.width ? A.width : 1), 0) : 0, r: l.length } };
@@ -2320,10 +2320,10 @@ function _o(l, e, t) {
   }
   u = o.write(n, d), t(w(u), "application/octet-stream");
 }
-function zo(l, e, t) {
+function Ho(l, e, t) {
   this.modExists("export", !0) && t(this.modules.export.generateHTMLTable(l), "text/html");
 }
-function Ao(l, e, t) {
+function Oo(l, e, t) {
   const i = [];
   l.forEach((s) => {
     const o = {};
@@ -2345,15 +2345,15 @@ function Ao(l, e, t) {
   }), t(i.join(`
 `), "application/x-ndjson");
 }
-var Ho = {
-  csv: Fo,
-  json: Mo,
-  jsonLines: Ao,
-  pdf: Po,
-  xlsx: _o,
-  html: zo
+var $o = {
+  csv: Po,
+  json: _o,
+  jsonLines: Oo,
+  pdf: zo,
+  xlsx: Ao,
+  html: Ho
 };
-const Tt = class Tt extends q {
+const St = class St extends q {
   constructor(e) {
     super(e), this.registerTableOption("downloadEncoder", function(t, i) {
       return new Blob([t], { type: i });
@@ -2379,7 +2379,7 @@ const Tt = class Tt extends q {
     function a(d, u) {
       o ? o === !0 ? this.triggerDownload(d, u, e, t, !0) : o(d) : this.triggerDownload(d, u, e, t);
     }
-    if (typeof e == "function" ? n = e : Tt.downloaders[e] ? n = Tt.downloaders[e] : console.warn("Download Error - No such download type found: ", e), n) {
+    if (typeof e == "function" ? n = e : St.downloaders[e] ? n = St.downloaders[e] : console.warn("Download Error - No such download type found: ", e), n) {
       var h = this.generateExportList(s);
       n.call(this.table, h, i || {}, a.bind(this));
     }
@@ -2403,10 +2403,10 @@ const Tt = class Tt extends q {
     }
   }
 };
-P(Tt, "moduleName", "download"), //load defaults
-P(Tt, "downloaders", Ho);
-let wi = Tt;
-function ti(l, e) {
+P(St, "moduleName", "download"), //load defaults
+P(St, "downloaders", $o);
+let Ci = St;
+function ii(l, e) {
   var t = e.mask, i = typeof e.maskLetterChar < "u" ? e.maskLetterChar : "A", s = typeof e.maskNumberChar < "u" ? e.maskNumberChar : "9", o = typeof e.maskWildcardChar < "u" ? e.maskWildcardChar : "*";
   function n(a) {
     var h = t[a];
@@ -2437,7 +2437,7 @@ function ti(l, e) {
     a.keyCode > 46 && e.maskAutoFill && n(l.value.length);
   }), l.placeholder || (l.placeholder = t), e.maskAutoFill && n(l.value.length);
 }
-function Oo(l, e, t, i, s) {
+function Bo(l, e, t, i, s) {
   var o = l.getValue(), n = document.createElement("input");
   if (n.setAttribute("type", s.search ? "search" : "text"), n.style.padding = "4px", n.style.width = "100%", n.style.boxSizing = "border-box", s.elementAttributes && typeof s.elementAttributes == "object")
     for (let h in s.elementAttributes)
@@ -2461,9 +2461,9 @@ function Oo(l, e, t, i, s) {
         h.stopPropagation();
         break;
     }
-  }), s.mask && ti(n, s), n;
+  }), s.mask && ii(n, s), n;
 }
-function $o(l, e, t, i, s) {
+function No(l, e, t, i, s) {
   var o = l.getValue(), n = s.verticalNavigation || "hybrid", a = String(o !== null && typeof o < "u" ? o : ""), h = document.createElement("textarea"), d = 0;
   if (h.style.display = "block", h.style.padding = "2px", h.style.height = "100%", h.style.width = "100%", h.style.boxSizing = "border-box", h.style.whiteSpace = "pre-wrap", h.style.resize = "none", s.elementAttributes && typeof s.elementAttributes == "object")
     for (let f in s.elementAttributes)
@@ -2499,9 +2499,9 @@ function $o(l, e, t, i, s) {
         f.stopPropagation();
         break;
     }
-  }), s.mask && ti(h, s), h;
+  }), s.mask && ii(h, s), h;
 }
-function Bo(l, e, t, i, s) {
+function Vo(l, e, t, i, s) {
   var o = l.getValue(), n = s.verticalNavigation || "editor", a = document.createElement("input");
   if (a.setAttribute("type", "number"), typeof s.max < "u" && a.setAttribute("max", s.max), typeof s.min < "u" && a.setAttribute("min", s.min), typeof s.step < "u" && a.setAttribute("step", s.step), a.style.padding = "4px", a.style.width = "100%", a.style.boxSizing = "border-box", s.elementAttributes && typeof s.elementAttributes == "object")
     for (let u in s.elementAttributes)
@@ -2534,9 +2534,9 @@ function Bo(l, e, t, i, s) {
         u.stopPropagation();
         break;
     }
-  }), s.mask && ti(a, s), a;
+  }), s.mask && ii(a, s), a;
 }
-function No(l, e, t, i, s) {
+function Io(l, e, t, i, s) {
   var o = l.getValue(), n = document.createElement("input");
   if (n.setAttribute("type", "range"), typeof s.max < "u" && n.setAttribute("max", s.max), typeof s.min < "u" && n.setAttribute("min", s.min), typeof s.step < "u" && n.setAttribute("step", s.step), n.style.padding = "4px", n.style.width = "100%", n.style.boxSizing = "border-box", s.elementAttributes && typeof s.elementAttributes == "object")
     for (let h in s.elementAttributes)
@@ -2561,7 +2561,7 @@ function No(l, e, t, i, s) {
     }
   }), n;
 }
-function Vo(l, e, t, i, s) {
+function Go(l, e, t, i, s) {
   var o = s.format, n = s.verticalNavigation || "editor", a = o ? window.DateTime || luxon.DateTime : null, h = l.getValue(), d = document.createElement("input");
   function u(p) {
     var w;
@@ -2612,7 +2612,7 @@ function Vo(l, e, t, i, s) {
     }
   }), d;
 }
-function Io(l, e, t, i, s) {
+function Wo(l, e, t, i, s) {
   var o = s.format, n = s.verticalNavigation || "editor", a = o ? window.DateTime || luxon.DateTime : null, h, d = l.getValue(), u = document.createElement("input");
   if (u.type = "time", u.style.padding = "4px", u.style.width = "100%", u.style.boxSizing = "border-box", s.elementAttributes && typeof s.elementAttributes == "object")
     for (let p in s.elementAttributes)
@@ -2659,7 +2659,7 @@ function Io(l, e, t, i, s) {
     }
   }), u;
 }
-function Go(l, e, t, i, s) {
+function jo(l, e, t, i, s) {
   var o = s.format, n = s.verticalNavigation || "editor", a = o ? this.table.dependencyRegistry.lookup(["luxon", "DateTime"], "DateTime") : null, h, d = l.getValue(), u = document.createElement("input");
   if (u.type = "datetime-local", u.style.padding = "4px", u.style.width = "100%", u.style.boxSizing = "border-box", s.elementAttributes && typeof s.elementAttributes == "object")
     for (let p in s.elementAttributes)
@@ -2706,7 +2706,7 @@ function Go(l, e, t, i, s) {
     }
   }), u;
 }
-let Wo = class {
+let Uo = class {
   constructor(e, t, i, s, o, n) {
     this.edit = e, this.table = e.table, this.cell = t, this.params = this._initializeParams(n), this.data = [], this.displayItems = [], this.currentItems = [], this.focusedItem = null, this.input = this._createInputElement(), this.listEl = this._createListElement(), this.initialValues = null, this.isFilter = t.getType() === "header", this.filterTimeout = null, this.filtered = !1, this.typing = !1, this.values = [], this.popup = null, this.listIteration = 0, this.lastAction = "", this.filterTerm = "", this.blurable = !0, this.actions = {
       success: s,
@@ -2741,7 +2741,7 @@ let Wo = class {
     if (t.setAttribute("type", this.params.clearable ? "search" : "text"), t.style.padding = "4px", t.style.width = "100%", t.style.boxSizing = "border-box", this.params.autocomplete || (t.style.cursor = "default", t.style.caretColor = "transparent"), e && typeof e == "object")
       for (let i in e)
         i.charAt(0) == "+" ? (i = i.slice(1), t.setAttribute(i, t.getAttribute(i) + e["+" + i])) : t.setAttribute(i, e[i]);
-    return this.params.mask && ti(t, this.params), this._bindInputEvents(t), t;
+    return this.params.mask && ii(t, this.params), this._bindInputEvents(t), t;
   }
   _initializeParams(e) {
     var t = ["values", "valuesURL", "valuesLookup"], i;
@@ -2890,7 +2890,7 @@ let Wo = class {
   }
   _ajaxRequest(e, t) {
     var i = this.params.filterRemote ? { term: t } : {};
-    return e = rs(e, {}, i), fetch(e).then((s) => s.ok ? s.json().catch((o) => (console.warn("List Ajax Load Error - Invalid JSON returned", o), Promise.reject(o))) : (console.error("List Ajax Load Error - Connection Error: " + s.status, s.statusText), Promise.reject(s))).catch((s) => (console.error("List Ajax Load Error - Connection Error: ", s), Promise.reject(s)));
+    return e = hs(e, {}, i), fetch(e).then((s) => s.ok ? s.json().catch((o) => (console.warn("List Ajax Load Error - Invalid JSON returned", o), Promise.reject(o))) : (console.error("List Ajax Load Error - Connection Error: " + s.status, s.statusText), Promise.reject(s))).catch((s) => (console.error("List Ajax Load Error - Connection Error: ", s), Promise.reject(s)));
   }
   _uniqueColumnValues(e) {
     var t = {}, i = this.table.getData(this.params.valuesLookup), s;
@@ -3068,11 +3068,11 @@ let Wo = class {
     t === "" && (t = this.params.emptyValue), this.actions.success(t), this.isFilter && (this.initialValues = t && !Array.isArray(t) ? [t] : t, this.currentItems = []);
   }
 };
-function jo(l, e, t, i, s) {
-  var o = new Wo(this, l, e, t, i, s);
+function qo(l, e, t, i, s) {
+  var o = new Uo(this, l, e, t, i, s);
   return o.input;
 }
-function Uo(l, e, t, i, s) {
+function Ko(l, e, t, i, s) {
   var o = this, n = l.getElement(), a = l.getValue(), h = n.getElementsByTagName("svg").length || 5, d = n.getElementsByTagName("svg")[0] ? n.getElementsByTagName("svg")[0].getAttribute("width") : 14, u = [], f = document.createElement("div"), p = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   function w(b) {
     u.forEach(function(v, A) {
@@ -3120,7 +3120,7 @@ function Uo(l, e, t, i, s) {
     }
   }), f;
 }
-function qo(l, e, t, i, s) {
+function Xo(l, e, t, i, s) {
   var o = l.getElement(), n = typeof s.max > "u" ? o.getElementsByTagName("div")[0] && o.getElementsByTagName("div")[0].getAttribute("max") || 100 : s.max, a = typeof s.min > "u" ? o.getElementsByTagName("div")[0] && o.getElementsByTagName("div")[0].getAttribute("min") || 0 : s.min, h = (n - a) / 100, d = l.getValue() || 0, u = document.createElement("div"), f = document.createElement("div"), p, w;
   function c() {
     var T = window.getComputedStyle(o, null), R = h * Math.round(f.offsetWidth / ((o.clientWidth - parseInt(T.getPropertyValue("padding-left")) - parseInt(T.getPropertyValue("padding-right"))) / 100)) + a;
@@ -3157,7 +3157,7 @@ function qo(l, e, t, i, s) {
     i();
   }), f;
 }
-function Ko(l, e, t, i, s) {
+function Qo(l, e, t, i, s) {
   var o = l.getValue(), n = document.createElement("input"), a = s.tristate, h = typeof s.indeterminateValue > "u" ? null : s.indeterminateValue, d = !1, u = Object.keys(s).includes("trueValue"), f = Object.keys(s).includes("falseValue");
   if (n.setAttribute("type", "checkbox"), n.style.marginTop = "5px", n.style.boxSizing = "border-box", s.elementAttributes && typeof s.elementAttributes == "object")
     for (let w in s.elementAttributes)
@@ -3177,7 +3177,7 @@ function Ko(l, e, t, i, s) {
     w.keyCode == 13 && t(p()), w.keyCode == 27 && i();
   }), n;
 }
-function Xo(l, e, t, i, s) {
+function Jo(l, e, t, i, s) {
   var o = l._getSelf().column, n, a, h;
   function d(u) {
     var f = u.getValue(), p = "input";
@@ -3197,23 +3197,23 @@ function Xo(l, e, t, i, s) {
   }
   return n = s.editorLookup ? s.editorLookup(l) : d(l), s.paramsLookup && (h = typeof s.paramsLookup == "function" ? s.paramsLookup(n, l) : s.paramsLookup[n]), a = this.table.modules.edit.lookupEditor(n, o), a.call(this, l, e, t, i, h || {});
 }
-var Qo = {
-  input: Oo,
-  textarea: $o,
-  number: Bo,
-  range: No,
-  date: Vo,
-  time: Io,
-  datetime: Go,
-  list: jo,
-  star: Uo,
-  progress: qo,
-  tickCross: Ko,
-  adaptable: Xo
+var Yo = {
+  input: Bo,
+  textarea: No,
+  number: Vo,
+  range: Io,
+  date: Go,
+  time: Wo,
+  datetime: jo,
+  list: qo,
+  star: Ko,
+  progress: Xo,
+  tickCross: Qo,
+  adaptable: Jo
 };
-const Ot = class Ot extends q {
+const Ht = class Ht extends q {
   constructor(e) {
-    super(e), this.currentCell = !1, this.mouseClick = !1, this.recursionBlock = !1, this.invalidEdit = !1, this.editedCells = [], this.convertEmptyValues = !1, this.editors = Ot.editors, this.registerTableOption("editTriggerEvent", "focus"), this.registerTableOption("editorEmptyValue"), this.registerTableOption("editorEmptyValueFunc", this.emptyValueCheck.bind(this)), this.registerColumnOption("editable"), this.registerColumnOption("editor"), this.registerColumnOption("editorParams"), this.registerColumnOption("editorEmptyValue"), this.registerColumnOption("editorEmptyValueFunc"), this.registerColumnOption("cellEditing"), this.registerColumnOption("cellEdited"), this.registerColumnOption("cellEditCancelled"), this.registerTableFunction("getEditedCells", this.getEditedCells.bind(this)), this.registerTableFunction("clearCellEdited", this.clearCellEdited.bind(this)), this.registerTableFunction("navigatePrev", this.navigatePrev.bind(this)), this.registerTableFunction("navigateNext", this.navigateNext.bind(this)), this.registerTableFunction("navigateLeft", this.navigateLeft.bind(this)), this.registerTableFunction("navigateRight", this.navigateRight.bind(this)), this.registerTableFunction("navigateUp", this.navigateUp.bind(this)), this.registerTableFunction("navigateDown", this.navigateDown.bind(this)), this.registerComponentFunction("cell", "isEdited", this.cellIsEdited.bind(this)), this.registerComponentFunction("cell", "clearEdited", this.clearEdited.bind(this)), this.registerComponentFunction("cell", "edit", this.editCell.bind(this)), this.registerComponentFunction("cell", "cancelEdit", this.cellCancelEdit.bind(this)), this.registerComponentFunction("cell", "navigatePrev", this.navigatePrev.bind(this)), this.registerComponentFunction("cell", "navigateNext", this.navigateNext.bind(this)), this.registerComponentFunction("cell", "navigateLeft", this.navigateLeft.bind(this)), this.registerComponentFunction("cell", "navigateRight", this.navigateRight.bind(this)), this.registerComponentFunction("cell", "navigateUp", this.navigateUp.bind(this)), this.registerComponentFunction("cell", "navigateDown", this.navigateDown.bind(this));
+    super(e), this.currentCell = !1, this.mouseClick = !1, this.recursionBlock = !1, this.invalidEdit = !1, this.editedCells = [], this.convertEmptyValues = !1, this.editors = Ht.editors, this.registerTableOption("editTriggerEvent", "focus"), this.registerTableOption("editorEmptyValue"), this.registerTableOption("editorEmptyValueFunc", this.emptyValueCheck.bind(this)), this.registerColumnOption("editable"), this.registerColumnOption("editor"), this.registerColumnOption("editorParams"), this.registerColumnOption("editorEmptyValue"), this.registerColumnOption("editorEmptyValueFunc"), this.registerColumnOption("cellEditing"), this.registerColumnOption("cellEdited"), this.registerColumnOption("cellEditCancelled"), this.registerTableFunction("getEditedCells", this.getEditedCells.bind(this)), this.registerTableFunction("clearCellEdited", this.clearCellEdited.bind(this)), this.registerTableFunction("navigatePrev", this.navigatePrev.bind(this)), this.registerTableFunction("navigateNext", this.navigateNext.bind(this)), this.registerTableFunction("navigateLeft", this.navigateLeft.bind(this)), this.registerTableFunction("navigateRight", this.navigateRight.bind(this)), this.registerTableFunction("navigateUp", this.navigateUp.bind(this)), this.registerTableFunction("navigateDown", this.navigateDown.bind(this)), this.registerComponentFunction("cell", "isEdited", this.cellIsEdited.bind(this)), this.registerComponentFunction("cell", "clearEdited", this.clearEdited.bind(this)), this.registerComponentFunction("cell", "edit", this.editCell.bind(this)), this.registerComponentFunction("cell", "cancelEdit", this.cellCancelEdit.bind(this)), this.registerComponentFunction("cell", "navigatePrev", this.navigatePrev.bind(this)), this.registerComponentFunction("cell", "navigateNext", this.navigateNext.bind(this)), this.registerComponentFunction("cell", "navigateLeft", this.navigateLeft.bind(this)), this.registerComponentFunction("cell", "navigateRight", this.navigateRight.bind(this)), this.registerComponentFunction("cell", "navigateUp", this.navigateUp.bind(this)), this.registerComponentFunction("cell", "navigateDown", this.navigateDown.bind(this));
   }
   initialize() {
     this.subscribe("cell-init", this.bindEditor.bind(this)), this.subscribe("cell-delete", this.clearEdited.bind(this)), this.subscribe("cell-value-changed", this.updateCellClass.bind(this)), this.subscribe("column-layout", this.initializeColumnCheck.bind(this)), this.subscribe("column-delete", this.columnDeleteCheck.bind(this)), this.subscribe("row-deleting", this.rowDeleteCheck.bind(this)), this.subscribe("row-layout", this.rowEditableCheck.bind(this)), this.subscribe("data-refreshing", this.cancelEdit.bind(this)), this.subscribe("clipboard-paste", this.pasteBlocker.bind(this)), this.subscribe("keybinding-nav-prev", this.navigatePrev.bind(this, void 0)), this.subscribe("keybinding-nav-next", this.keybindingNavigateNext.bind(this)), this.subscribe("keybinding-nav-up", this.navigateUp.bind(this, void 0)), this.subscribe("keybinding-nav-down", this.navigateDown.bind(this, void 0)), Object.keys(this.table.options).includes("editorEmptyValue") && (this.convertEmptyValues = !0);
@@ -3297,7 +3297,7 @@ const Ot = class Ot extends q {
     if (t < e.cells.length - 1)
       for (var s = t + 1; s < e.cells.length; s++) {
         let o = e.cells[s];
-        if (o.column.modules.edit && se.elVisible(o.getElement()) && this.allowEdit(o)) {
+        if (o.column.modules.edit && ie.elVisible(o.getElement()) && this.allowEdit(o)) {
           i = o;
           break;
         }
@@ -3309,7 +3309,7 @@ const Ot = class Ot extends q {
     if (t > 0)
       for (var s = t - 1; s >= 0; s--) {
         let o = e.cells[s];
-        if (o.column.modules.edit && se.elVisible(o.getElement()) && this.allowEdit(o)) {
+        if (o.column.modules.edit && ie.elVisible(o.getElement()) && this.allowEdit(o)) {
           i = o;
           break;
         }
@@ -3483,20 +3483,20 @@ const Ot = class Ot extends q {
     e.modules.edit && e.modules.edit.edited && (e.modules.edit.edited = !1, this.dispatch("edit-edited-clear", e)), t = this.editedCells.indexOf(e), t > -1 && this.editedCells.splice(t, 1);
   }
 };
-P(Ot, "moduleName", "edit"), //load defaults
-P(Ot, "editors", Qo);
-let yi = Ot;
-class es {
+P(Ht, "moduleName", "edit"), //load defaults
+P(Ht, "editors", Yo);
+let Ei = Ht;
+class is {
   constructor(e, t, i, s) {
     this.type = e, this.columns = t, this.component = i || !1, this.indent = s || 0;
   }
 }
-class ui {
+class fi {
   constructor(e, t, i, s, o) {
     this.value = e, this.component = t || !1, this.width = i, this.height = s, this.depth = o;
   }
 }
-var Jo = {}, Yo = {
+var Zo = {}, en = {
   visible: function() {
     return this.rowManager.getVisibleRows(!1, !0);
   },
@@ -3510,7 +3510,7 @@ var Jo = {}, Yo = {
     return this.options.pagination ? this.rowManager.getDisplayRows(this.rowManager.displayRows.length - 2) : this.rowManager.getDisplayRows();
   }
 };
-const dt = class dt extends q {
+const lt = class lt extends q {
   constructor(e) {
     super(e), this.config = {}, this.cloneTableStyle = !0, this.colVisProp = "", this.colVisPropAttach = "", this.registerTableOption("htmlOutputConfig", !1), this.registerColumnOption("htmlOutput"), this.registerColumnOption("titleHtmlOutput");
   }
@@ -3522,7 +3522,7 @@ const dt = class dt extends q {
   ///////////////////////////////////
   generateExportList(e, t, i, s) {
     var o, n, a, h;
-    return this.cloneTableStyle = t, this.config = e || {}, this.colVisProp = s, this.colVisPropAttach = this.colVisProp.charAt(0).toUpperCase() + this.colVisProp.slice(1), h = dt.columnLookups[i], h && (a = h.call(this.table), a = a.filter((d) => this.columnVisCheck(d))), o = this.config.columnHeaders !== !1 ? this.headersToExportRows(this.generateColumnGroupHeaders(a)) : [], a && (a = a.map((d) => d.getComponent())), n = this.bodyToExportRows(this.rowLookup(i), a), o.concat(n);
+    return this.cloneTableStyle = t, this.config = e || {}, this.colVisProp = s, this.colVisPropAttach = this.colVisProp.charAt(0).toUpperCase() + this.colVisProp.slice(1), h = lt.columnLookups[i], h && (a = h.call(this.table), a = a.filter((d) => this.columnVisCheck(d))), o = this.config.columnHeaders !== !1 ? this.headersToExportRows(this.generateColumnGroupHeaders(a)) : [], a && (a = a.map((d) => d.getComponent())), n = this.bodyToExportRows(this.rowLookup(i), a), o.concat(n);
   }
   generateTable(e, t, i, s) {
     var o = this.generateExportList(e, t, i, s);
@@ -3532,7 +3532,7 @@ const dt = class dt extends q {
     var t = [], i;
     return typeof e == "function" ? e.call(this.table).forEach((s) => {
       s = this.table.rowManager.findRow(s), s && t.push(s);
-    }) : (i = dt.rowLookups[e] || dt.rowLookups.active, t = i.call(this.table)), Object.assign([], t);
+    }) : (i = lt.rowLookups[e] || lt.rowLookups.active, t = i.call(this.table)), Object.assign([], t);
   }
   generateColumnGroupHeaders(e) {
     var t = [];
@@ -3586,10 +3586,10 @@ const dt = class dt extends q {
       n.forEach((h) => {
         if (h) {
           let d = typeof h.title > "u" ? "" : h.title;
-          a.push(new ui(d, h.column.getComponent(), h.width, h.height, h.depth));
+          a.push(new fi(d, h.column.getComponent(), h.width, h.height, h.depth));
         } else
           a.push(null);
-      }), s.push(new es("header", a));
+      }), s.push(new is("header", a));
     }), s;
   }
   bodyToExportRows(e, t = []) {
@@ -3610,16 +3610,16 @@ const dt = class dt extends q {
       var n = s.getData(this.colVisProp), a = [], h = 0;
       switch (s.type) {
         case "group":
-          h = s.level, a.push(new ui(s.key, s.getComponent(), t.length, 1));
+          h = s.level, a.push(new fi(s.key, s.getComponent(), t.length, 1));
           break;
         case "calc":
         case "row":
           t.forEach((d) => {
-            a.push(new ui(d._column.getFieldValue(n), d, 1, 1));
+            a.push(new fi(d._column.getFieldValue(n), d, 1, 1));
           }), this.table.options.dataTree && this.config.dataTree !== !1 && (h = s.modules.dataTree.index);
           break;
       }
-      i.push(new es(s.type, a, s.getComponent(), h));
+      i.push(new is(s.type, a, s.getComponent(), h));
     }), i;
   }
   generateTableElement(e) {
@@ -3759,9 +3759,9 @@ const dt = class dt extends q {
     }
   }
 };
-P(dt, "moduleName", "export"), P(dt, "columnLookups", Jo), P(dt, "rowLookups", Yo);
-let Ci = dt;
-var Zo = {
+P(lt, "moduleName", "export"), P(lt, "columnLookups", Zo), P(lt, "rowLookups", en);
+let xi = lt;
+var tn = {
   //equal to
   "=": function(l, e, t, i) {
     return e == l;
@@ -3813,7 +3813,7 @@ var Zo = {
     return Array.isArray(l) ? l.length ? l.indexOf(e) > -1 : !0 : (console.warn("Filter Error - filter value is not an array:", l), !1);
   }
 };
-const tt = class tt extends q {
+const Ye = class Ye extends q {
   constructor(e) {
     super(e), this.filterList = [], this.headerFilters = {}, this.headerFilterColumns = [], this.prevHeaderFilterChangeCheck = "", this.prevHeaderFilterChangeCheck = "{}", this.changed = !1, this.tableInitialized = !1, this.registerTableOption("filterMode", "local"), this.registerTableOption("initialFilter", !1), this.registerTableOption("initialHeaderFilter", !1), this.registerTableOption("headerFilterLiveFilterDelay", 300), this.registerTableOption("placeholderHeaderFilter", !1), this.registerColumnOption("headerFilter"), this.registerColumnOption("headerFilterPlaceholder"), this.registerColumnOption("headerFilterParams"), this.registerColumnOption("headerFilterEmptyCheck"), this.registerColumnOption("headerFilterFunc"), this.registerColumnOption("headerFilterFuncParams"), this.registerColumnOption("headerFilterLiveFilter"), this.registerTableFunction("searchRows", this.searchRows.bind(this)), this.registerTableFunction("searchData", this.searchData.bind(this)), this.registerTableFunction("setFilter", this.userSetFilter.bind(this)), this.registerTableFunction("refreshFilter", this.userRefreshFilter.bind(this)), this.registerTableFunction("addFilter", this.userAddFilter.bind(this)), this.registerTableFunction("getFilters", this.getFilters.bind(this)), this.registerTableFunction("setHeaderFilterFocus", this.userSetHeaderFilterFocus.bind(this)), this.registerTableFunction("getHeaderFilterValue", this.userGetHeaderFilterValue.bind(this)), this.registerTableFunction("setHeaderFilterValue", this.userSetHeaderFilterValue.bind(this)), this.registerTableFunction("getHeaderFilters", this.getHeaderFilters.bind(this)), this.registerTableFunction("removeFilter", this.userRemoveFilter.bind(this)), this.registerTableFunction("clearFilter", this.userClearFilter.bind(this)), this.registerTableFunction("clearHeaderFilter", this.userClearHeaderFilter.bind(this)), this.registerComponentFunction("column", "headerFilterFocus", this.setHeaderFilterFocus.bind(this)), this.registerComponentFunction("column", "reloadHeaderFilter", this.reloadHeaderFilter.bind(this)), this.registerComponentFunction("column", "getHeaderFilterValue", this.getHeaderFilterValue.bind(this)), this.registerComponentFunction("column", "setHeaderFilterValue", this.setHeaderFilterValue.bind(this));
   }
@@ -3909,9 +3909,9 @@ const tt = class tt extends q {
         else {
           switch (e.modules.filter.value = n, typeof e.definition.headerFilterFunc) {
             case "string":
-              tt.filters[e.definition.headerFilterFunc] ? (h = e.definition.headerFilterFunc, u = function(f) {
+              Ye.filters[e.definition.headerFilterFunc] ? (h = e.definition.headerFilterFunc, u = function(f) {
                 var p = e.definition.headerFilterFuncParams || {}, w = e.getFieldValue(f);
-                return p = typeof p == "function" ? p(n, w, f) : p, tt.filters[e.definition.headerFilterFunc](n, w, f, p);
+                return p = typeof p == "function" ? p(n, w, f) : p, Ye.filters[e.definition.headerFilterFunc](n, w, f, p);
               }) : console.warn("Header Filter Error - Matching filter function not found: ", e.definition.headerFilterFunc);
               break;
             case "function":
@@ -4082,10 +4082,10 @@ const tt = class tt extends q {
     var i = !1;
     return typeof e.field == "function" ? i = function(s) {
       return e.field(s, e.type || {});
-    } : tt.filters[e.type] ? (t = this.table.columnManager.getColumnByField(e.field), t ? i = function(s) {
-      return tt.filters[e.type](e.value, t.getFieldValue(s), s, e.params || {});
+    } : Ye.filters[e.type] ? (t = this.table.columnManager.getColumnByField(e.field), t ? i = function(s) {
+      return Ye.filters[e.type](e.value, t.getFieldValue(s), s, e.params || {});
     } : i = function(s) {
-      return tt.filters[e.type](e.value, s[e.field], s, e.params || {});
+      return Ye.filters[e.type](e.value, s[e.field], s, e.params || {});
     }) : console.warn("Filter Error - No such filter type found, ignoring: ", e.type), e.func = i, e.func ? e : !1;
   }
   findSubFilters(e) {
@@ -4171,19 +4171,19 @@ const tt = class tt extends q {
     }) : i = e.func(t), i;
   }
 };
-P(tt, "moduleName", "filter"), //load defaults
-P(tt, "filters", Zo);
-let Ei = tt;
-function en(l, e, t) {
+P(Ye, "moduleName", "filter"), //load defaults
+P(Ye, "filters", tn);
+let ki = Ye;
+function sn(l, e, t) {
   return this.emptyToSpace(this.sanitizeHTML(l.getValue()));
 }
-function tn(l, e, t) {
+function on(l, e, t) {
   return l.getValue();
 }
-function sn(l, e, t) {
+function nn(l, e, t) {
   return l.getElement().style.whiteSpace = "pre-wrap", this.emptyToSpace(this.sanitizeHTML(l.getValue()));
 }
-function on(l, e, t) {
+function an(l, e, t) {
   var i = parseFloat(l.getValue()), s = "", o, n, a, h, d, u = e.decimal || ".", f = e.thousand || ",", p = e.negativeSign || "-", w = e.symbol || "", c = !!e.symbolAfter, T = typeof e.precision < "u" ? e.precision : 2;
   if (isNaN(i))
     return this.emptyToSpace(this.sanitizeHTML(l.getValue()));
@@ -4192,7 +4192,7 @@ function on(l, e, t) {
       n = n.replace(h, "$1" + f + "$2");
   return d = n + a, s === !0 ? (d = "(" + d + ")", c ? d + w : w + d) : c ? s + d + w : s + w + d;
 }
-function nn(l, e, t) {
+function rn(l, e, t) {
   var i = l.getValue(), s = e.urlPrefix || "", o = e.download, n = i, a = document.createElement("a"), h;
   function d(u, f) {
     var p = u.shift(), w = f[p];
@@ -4208,7 +4208,7 @@ function nn(l, e, t) {
         break;
     }
   if (n) {
-    if (e.urlField && (h = l.getData(), i = se.retrieveNestedData(this.table.options.nestedFieldSeparator, e.urlField, h)), e.url)
+    if (e.urlField && (h = l.getData(), i = ie.retrieveNestedData(this.table.options.nestedFieldSeparator, e.urlField, h)), e.url)
       switch (typeof e.url) {
         case "string":
           i = e.url;
@@ -4221,7 +4221,7 @@ function nn(l, e, t) {
   } else
     return "&nbsp;";
 }
-function an(l, e, t) {
+function ln(l, e, t) {
   var i = document.createElement("img"), s = l.getValue();
   switch (e.urlPrefix && (s = e.urlPrefix + l.getValue()), e.urlSuffix && (s = s + e.urlSuffix), i.setAttribute("src", s), typeof e.height) {
     case "number":
@@ -4243,11 +4243,11 @@ function an(l, e, t) {
     l.getRow().normalizeHeight();
   }), i;
 }
-function rn(l, e, t) {
+function hn(l, e, t) {
   var i = l.getValue(), s = l.getElement(), o = e.allowEmpty, n = e.allowTruthy, a = Object.keys(e).includes("trueValue"), h = typeof e.tickElement < "u" ? e.tickElement : '<svg enable-background="new 0 0 24 24" height="14" width="14" viewBox="0 0 24 24" xml:space="preserve" ><path fill="#2DC214" clip-rule="evenodd" d="M21.652,3.211c-0.293-0.295-0.77-0.295-1.061,0L9.41,14.34  c-0.293,0.297-0.771,0.297-1.062,0L3.449,9.351C3.304,9.203,3.114,9.13,2.923,9.129C2.73,9.128,2.534,9.201,2.387,9.351  l-2.165,1.946C0.078,11.445,0,11.63,0,11.823c0,0.194,0.078,0.397,0.223,0.544l4.94,5.184c0.292,0.296,0.771,0.776,1.062,1.07  l2.124,2.141c0.292,0.293,0.769,0.293,1.062,0l14.366-14.34c0.293-0.294,0.293-0.777,0-1.071L21.652,3.211z" fill-rule="evenodd"/></svg>', d = typeof e.crossElement < "u" ? e.crossElement : '<svg enable-background="new 0 0 24 24" height="14" width="14"  viewBox="0 0 24 24" xml:space="preserve" ><path fill="#CE1515" d="M22.245,4.015c0.313,0.313,0.313,0.826,0,1.139l-6.276,6.27c-0.313,0.312-0.313,0.826,0,1.14l6.273,6.272  c0.313,0.313,0.313,0.826,0,1.14l-2.285,2.277c-0.314,0.312-0.828,0.312-1.142,0l-6.271-6.271c-0.313-0.313-0.828-0.313-1.141,0  l-6.276,6.267c-0.313,0.313-0.828,0.313-1.141,0l-2.282-2.28c-0.313-0.313-0.313-0.826,0-1.14l6.278-6.269  c0.313-0.312,0.313-0.826,0-1.14L1.709,5.147c-0.314-0.313-0.314-0.827,0-1.14l2.284-2.278C4.308,1.417,4.821,1.417,5.135,1.73  L11.405,8c0.314,0.314,0.828,0.314,1.141,0.001l6.276-6.267c0.312-0.312,0.826-0.312,1.141,0L22.245,4.015z"/></svg>';
   return a && i === e.trueValue || !a && (n && i || i === !0 || i === "true" || i === "True" || i === 1 || i === "1") ? (s.setAttribute("aria-checked", !0), h || "") : o && (i === "null" || i === "" || i === null || typeof i > "u") ? (s.setAttribute("aria-checked", "mixed"), "") : (s.setAttribute("aria-checked", !1), d || "");
 }
-function ln(l, e, t) {
+function dn(l, e, t) {
   var i = this.table.dependencyRegistry.lookup(["luxon", "DateTime"], "DateTime"), s = e.inputFormat || "yyyy-MM-dd HH:mm:ss", o = e.outputFormat || "dd/MM/yyyy HH:mm:ss", n = typeof e.invalidPlaceholder < "u" ? e.invalidPlaceholder : "", a = l.getValue();
   if (typeof i < "u") {
     var h;
@@ -4255,7 +4255,7 @@ function ln(l, e, t) {
   } else
     console.error("Format Error - 'datetime' formatter is dependant on luxon.js");
 }
-function hn(l, e, t) {
+function un(l, e, t) {
   var i = this.table.dependencyRegistry.lookup(["luxon", "DateTime"], "DateTime"), s = e.inputFormat || "yyyy-MM-dd HH:mm:ss", o = typeof e.invalidPlaceholder < "u" ? e.invalidPlaceholder : "", n = typeof e.suffix < "u" ? e.suffix : !1, a = typeof e.unit < "u" ? e.unit : "days", h = typeof e.humanize < "u" ? e.humanize : !1, d = typeof e.date < "u" ? e.date : i.now(), u = l.getValue();
   if (typeof i < "u") {
     var f;
@@ -4263,11 +4263,11 @@ function hn(l, e, t) {
   } else
     console.error("Format Error - 'datetimediff' formatter is dependant on luxon.js");
 }
-function dn(l, e, t) {
+function cn(l, e, t) {
   var i = l.getValue();
   return typeof e[i] > "u" ? (console.warn("Missing display value for " + i), i) : e[i];
 }
-function un(l, e, t) {
+function fn(l, e, t) {
   var i = l.getValue(), s = l.getElement(), o = e && e.stars ? e.stars : 5, n = document.createElement("span"), a = document.createElementNS("http://www.w3.org/2000/svg", "svg"), h = '<polygon fill="#FFEA00" stroke="#C1AB60" stroke-width="37.6152" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="259.216,29.942 330.27,173.919 489.16,197.007 374.185,309.08 401.33,467.31 259.216,392.612 117.104,467.31 144.25,309.08 29.274,197.007 188.165,173.919 "/>', d = '<polygon fill="#D2D2D2" stroke="#686868" stroke-width="37.6152" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="259.216,29.942 330.27,173.919 489.16,197.007 374.185,309.08 401.33,467.31 259.216,392.612 117.104,467.31 144.25,309.08 29.274,197.007 188.165,173.919 "/>';
   n.style.verticalAlign = "middle", a.setAttribute("width", "14"), a.setAttribute("height", "14"), a.setAttribute("viewBox", "0 0 512 512"), a.setAttribute("xml:space", "preserve"), a.style.padding = "0 1px", i = i && !isNaN(i) ? parseInt(i) : 0, i = Math.max(0, Math.min(i, o));
   for (var u = 1; u <= o; u++) {
@@ -4276,7 +4276,7 @@ function un(l, e, t) {
   }
   return s.style.whiteSpace = "nowrap", s.style.overflow = "hidden", s.style.textOverflow = "ellipsis", s.setAttribute("aria-label", i), n;
 }
-function cn(l, e, t) {
+function mn(l, e, t) {
   var i = this.sanitizeHTML(l.getValue()) || 0, s = document.createElement("span"), o = e && e.max ? e.max : 100, n = e && e.min ? e.min : 0, a = e && typeof e.color < "u" ? e.color : ["red", "orange", "green"], h = "#666666", d, u;
   if (!(isNaN(i) || typeof l.getValue() > "u")) {
     switch (s.classList.add("tabulator-traffic-light"), u = parseFloat(i) <= o ? parseFloat(i) : o, u = parseFloat(u) >= n ? parseFloat(u) : n, d = (o - n) / 100, u = Math.round((u - n) / d), typeof a) {
@@ -4296,7 +4296,7 @@ function cn(l, e, t) {
     return s.style.backgroundColor = h, s;
   }
 }
-function fn(l, e = {}, t) {
+function pn(l, e = {}, t) {
   var i = this.sanitizeHTML(l.getValue()) || 0, s = l.getElement(), o = e.max ? e.max : 100, n = e.min ? e.min : 0, a = e.legendAlign ? e.legendAlign : "center", h, d, u, f, p;
   switch (d = parseFloat(i) <= o ? parseFloat(i) : o, d = parseFloat(d) >= n ? parseFloat(d) : n, h = (o - n) / 100, d = Math.round((d - n) / h), typeof e.color) {
     case "string":
@@ -4352,38 +4352,38 @@ function fn(l, e = {}, t) {
     T.style.position = "absolute", T.style.top = 0, T.style.left = 0, T.style.textAlign = a, T.style.width = "100%", T.style.color = p, T.innerHTML = f;
   }
   return t(function() {
-    if (!(l instanceof ls)) {
+    if (!(l instanceof ds)) {
       var R = document.createElement("div");
       R.style.position = "absolute", R.style.top = "4px", R.style.bottom = "4px", R.style.left = "4px", R.style.right = "4px", s.appendChild(R), s = R;
     }
     s.appendChild(c), c.appendChild(w), f && c.appendChild(T);
   }), "";
 }
-function mn(l, e, t) {
+function gn(l, e, t) {
   return l.getElement().style.backgroundColor = this.sanitizeHTML(l.getValue()), "";
 }
-function pn(l, e, t) {
+function bn(l, e, t) {
   return '<svg enable-background="new 0 0 24 24" height="14" width="14" viewBox="0 0 24 24" xml:space="preserve" ><path fill="#2DC214" clip-rule="evenodd" d="M21.652,3.211c-0.293-0.295-0.77-0.295-1.061,0L9.41,14.34  c-0.293,0.297-0.771,0.297-1.062,0L3.449,9.351C3.304,9.203,3.114,9.13,2.923,9.129C2.73,9.128,2.534,9.201,2.387,9.351  l-2.165,1.946C0.078,11.445,0,11.63,0,11.823c0,0.194,0.078,0.397,0.223,0.544l4.94,5.184c0.292,0.296,0.771,0.776,1.062,1.07  l2.124,2.141c0.292,0.293,0.769,0.293,1.062,0l14.366-14.34c0.293-0.294,0.293-0.777,0-1.071L21.652,3.211z" fill-rule="evenodd"/></svg>';
 }
-function gn(l, e, t) {
+function vn(l, e, t) {
   return '<svg enable-background="new 0 0 24 24" height="14" width="14" viewBox="0 0 24 24" xml:space="preserve" ><path fill="#CE1515" d="M22.245,4.015c0.313,0.313,0.313,0.826,0,1.139l-6.276,6.27c-0.313,0.312-0.313,0.826,0,1.14l6.273,6.272  c0.313,0.313,0.313,0.826,0,1.14l-2.285,2.277c-0.314,0.312-0.828,0.312-1.142,0l-6.271-6.271c-0.313-0.313-0.828-0.313-1.141,0  l-6.276,6.267c-0.313,0.313-0.828,0.313-1.141,0l-2.282-2.28c-0.313-0.313-0.313-0.826,0-1.14l6.278-6.269  c0.313-0.312,0.313-0.826,0-1.14L1.709,5.147c-0.314-0.313-0.314-0.827,0-1.14l2.284-2.278C4.308,1.417,4.821,1.417,5.135,1.73  L11.405,8c0.314,0.314,0.828,0.314,1.141,0.001l6.276-6.267c0.312-0.312,0.826-0.312,1.141,0L22.245,4.015z"/></svg>';
 }
-function bn(l, e, t) {
+function wn(l, e, t) {
   var i = l.getValue(), s = e.size || 15, o = s + "px", n, a, h = e.hasOwnProperty("onValue") ? e.onValue : !0, d = e.hasOwnProperty("offValue") ? e.offValue : !1, u = e.onTruthy ? i : i === h;
   return n = document.createElement("div"), n.classList.add("tabulator-toggle"), u ? (n.classList.add("tabulator-toggle-on"), n.style.flexDirection = "row-reverse", e.onColor && (n.style.background = e.onColor)) : e.offColor && (n.style.background = e.offColor), n.style.width = 2.5 * s + "px", n.style.borderRadius = o, e.clickable && n.addEventListener("click", (f) => {
     l.setValue(u ? d : h);
   }), a = document.createElement("div"), a.classList.add("tabulator-toggle-switch"), a.style.height = o, a.style.width = o, a.style.borderRadius = o, n.appendChild(a), n;
 }
-function vn(l, e, t) {
+function yn(l, e, t) {
   var i = document.createElement("span"), s = l.getRow(), o = l.getTable();
   return s.watchPosition((n) => {
     e.relativeToPage && (n += o.modules.page.getPageSize() * (o.modules.page.getPage() - 1)), i.innerText = n;
   }), i;
 }
-function wn(l, e, t) {
+function Cn(l, e, t) {
   return l.getElement().classList.add("tabulator-row-handle"), "<div class='tabulator-row-handle-box'><div class='tabulator-row-handle-bar'></div><div class='tabulator-row-handle-bar'></div><div class='tabulator-row-handle-bar'></div></div>";
 }
-function yn(l, e, t) {
+function En(l, e, t) {
   var i, s, o;
   function n(a) {
     var h = a.getValue(), d = "plaintext";
@@ -4400,41 +4400,41 @@ function yn(l, e, t) {
   }
   return i = e.formatterLookup ? e.formatterLookup(l) : n(l), e.paramsLookup && (o = typeof e.paramsLookup == "function" ? e.paramsLookup(i, l) : e.paramsLookup[i]), s = this.table.modules.format.lookupFormatter(i), s.call(this, l, o || {}, t);
 }
-function Cn(l, e, t) {
+function xn(l, e, t) {
   var i = e.delimiter || ",", s = l.getValue(), o = this.table, n;
   return e.valueMap && (typeof e.valueMap == "string" ? n = function(a) {
-    return a.map((h) => se.retrieveNestedData(o.options.nestedFieldSeparator, e.valueMap, h));
+    return a.map((h) => ie.retrieveNestedData(o.options.nestedFieldSeparator, e.valueMap, h));
   } : n = e.valueMap), Array.isArray(s) ? (n && (s = n(s)), s.join(i)) : s;
 }
-function En(l, e, t) {
+function kn(l, e, t) {
   var i = e.indent || "	", s = typeof e.multiline > "u" ? !0 : e.multiline, o = e.replacer || null, n = l.getValue();
   return s && (l.getElement().style.whiteSpace = "pre-wrap"), JSON.stringify(n, o, i);
 }
-var xn = {
-  plaintext: en,
-  html: tn,
-  textarea: sn,
-  money: on,
-  link: nn,
-  image: an,
-  tickCross: rn,
-  datetime: ln,
-  datetimediff: hn,
-  lookup: dn,
-  star: un,
-  traffic: cn,
-  progress: fn,
-  color: mn,
-  buttonTick: pn,
-  buttonCross: gn,
-  toggle: bn,
-  rownum: vn,
-  handle: wn,
-  adaptable: yn,
-  array: Cn,
-  json: En
+var Rn = {
+  plaintext: sn,
+  html: on,
+  textarea: nn,
+  money: an,
+  link: rn,
+  image: ln,
+  tickCross: hn,
+  datetime: dn,
+  datetimediff: un,
+  lookup: cn,
+  star: fn,
+  traffic: mn,
+  progress: pn,
+  color: gn,
+  buttonTick: bn,
+  buttonCross: vn,
+  toggle: wn,
+  rownum: yn,
+  handle: Cn,
+  adaptable: En,
+  array: xn,
+  json: kn
 };
-const ut = class ut extends q {
+const ht = class ht extends q {
   constructor(e) {
     super(e), this.registerColumnOption("formatter"), this.registerColumnOption("formatterParams"), this.registerColumnOption("formatterPrint"), this.registerColumnOption("formatterPrintParams"), this.registerColumnOption("formatterClipboard"), this.registerColumnOption("formatterClipboardParams"), this.registerColumnOption("formatterHtmlOutput"), this.registerColumnOption("formatterHtmlOutputParams"), this.registerColumnOption("titleFormatter"), this.registerColumnOption("titleFormatterParams");
   }
@@ -4453,13 +4453,13 @@ const ut = class ut extends q {
     var t;
     switch (typeof e) {
       case "string":
-        ut.formatters[e] ? t = ut.formatters[e] : (console.warn("Formatter Error - No such formatter found: ", e), t = ut.formatters.plaintext);
+        ht.formatters[e] ? t = ht.formatters[e] : (console.warn("Formatter Error - No such formatter found: ", e), t = ht.formatters.plaintext);
         break;
       case "function":
         t = e;
         break;
       default:
-        t = ut.formatters.plaintext;
+        t = ht.formatters.plaintext;
         break;
     }
     return t;
@@ -4528,10 +4528,10 @@ const ut = class ut extends q {
     return e === null || typeof e > "u" || e === "" ? "&nbsp;" : e;
   }
 };
-P(ut, "moduleName", "format"), //load defaults
-P(ut, "formatters", xn);
-let xi = ut;
-class cs extends q {
+P(ht, "moduleName", "format"), //load defaults
+P(ht, "formatters", Rn);
+let Ri = ht;
+class ms extends q {
   constructor(e) {
     super(e), this.leftColumns = [], this.rightColumns = [], this.initializationMode = "left", this.active = !1, this.blocked = !0, this.registerColumnOption("frozen");
   }
@@ -4632,8 +4632,8 @@ class cs extends q {
     return i;
   }
 }
-P(cs, "moduleName", "frozenColumns");
-class fs extends q {
+P(ms, "moduleName", "frozenColumns");
+class ps extends q {
   constructor(e) {
     super(e), this.topElement = document.createElement("div"), this.rows = [], this.registerComponentFunction("row", "freeze", this.freezeRow.bind(this)), this.registerComponentFunction("row", "unfreeze", this.unfreezeRow.bind(this)), this.registerComponentFunction("row", "isFrozen", this.isRowFrozen.bind(this)), this.registerTableOption("frozenRowsField", "id"), this.registerTableOption("frozenRows", !1);
   }
@@ -4692,8 +4692,8 @@ class fs extends q {
     });
   }
 }
-P(fs, "moduleName", "frozenRows");
-class kn {
+P(ps, "moduleName", "frozenRows");
+class Tn {
   constructor(e) {
     return this._group = e, this.type = "GroupComponent", new Proxy(this, {
       get: function(t, i, s) {
@@ -4741,7 +4741,7 @@ class kn {
     return this._group.groupManager.table;
   }
 }
-class kt {
+class Rt {
   constructor(e, t, i, s, o, n, a) {
     this.groupManager = e, this.parent = t, this.key = s, this.level = i, this.field = o, this.hasSubGroups = i < e.groupIDLookups.length - 1, this.addRow = this.hasSubGroups ? this._addRowToGroup : this._addRow, this.type = "group", this.old = a, this.rows = [], this.groups = [], this.groupList = [], this.generator = n, this.element = !1, this.elementContents = !1, this.height = 0, this.outerHeight = 0, this.initialized = !1, this.calcs = {}, this.initialized = !1, this.modules = {}, this.arrowElement = !1, this.visible = a ? a.visible : typeof e.startOpen[i] < "u" ? e.startOpen[i] : e.startOpen[0], this.component = null, this.createElements(), this.addBindings(), this.createValueGroups();
   }
@@ -4771,7 +4771,7 @@ class kt {
     }));
   }
   _createGroup(e, t) {
-    var i = t + "_" + e, s = new kt(this.groupManager, this, t, e, this.groupManager.groupIDLookups[t].field, this.groupManager.headerGenerator[t] || this.groupManager.headerGenerator[0], this.old ? this.old.groups[i] : !1);
+    var i = t + "_" + e, s = new Rt(this.groupManager, this, t, e, this.groupManager.groupIDLookups[t].field, this.groupManager.headerGenerator[t] || this.groupManager.headerGenerator[0], this.old ? this.old.groups[i] : !1);
     this.groups[i] = s, this.groupList.push(s);
   }
   _addRowToGroup(e) {
@@ -4919,7 +4919,7 @@ class kt {
     (!this.initialized || e) && (this.normalizeHeight(), this.initialized = !0);
   }
   reinitialize() {
-    this.initialized = !1, this.height = 0, se.elVisible(this.element) && this.initialize(!0);
+    this.initialized = !1, this.height = 0, ie.elVisible(this.element) && this.initialize(!0);
   }
   setHeight(e) {
     this.height != e && (this.height = e, this.outerHeight = this.element.offsetHeight);
@@ -4945,10 +4945,10 @@ class kt {
   }
   //////////////// Object Generation /////////////////
   getComponent() {
-    return this.component || (this.component = new kn(this)), this.component;
+    return this.component || (this.component = new Tn(this)), this.component;
   }
 }
-class ms extends q {
+class gs extends q {
   constructor(e) {
     super(e), this.groupIDLookups = !1, this.startOpen = [function() {
       return !1;
@@ -5056,8 +5056,8 @@ class ms extends q {
   ///////////////////////////////////
   rowMoving(e, t, i) {
     if (this.table.options.groupBy) {
-      !i && t instanceof kt && (t = this.table.rowManager.prevDisplayRow(e) || t);
-      var s = t instanceof kt ? t : t.modules.group, o = e instanceof kt ? e : e.modules.group;
+      !i && t instanceof Rt && (t = this.table.rowManager.prevDisplayRow(e) || t);
+      var s = t instanceof Rt ? t : t.modules.group, o = e instanceof Rt ? e : e.modules.group;
       s === o ? this.table.rowManager.moveRowInArray(s.rows, e, t, i) : (o && o.removeRow(e), s.insertRow(e, t, i));
     }
   }
@@ -5129,7 +5129,7 @@ class ms extends q {
   }
   createGroup(e, t, i) {
     var s = t + "_" + e, o;
-    i = i || [], o = new kt(this, !1, t, e, this.groupIDLookups[0].field, this.headerGenerator[0], i[s]), this.groups[s] = o, this.groupList.push(o);
+    i = i || [], o = new Rt(this, !1, t, e, this.groupIDLookups[0].field, this.headerGenerator[0], i[s]), this.groups[s] = o, this.groupList.push(o);
   }
   assignRowToExistingGroup(e, t) {
     var i = this.groupIDLookups[0].func(e.getData()), s = "0_" + i;
@@ -5173,8 +5173,8 @@ class ms extends q {
     }), t ? e.style.minWidth = this.table.columnManager.getWidth() + "px" : e.style.minWidth = "";
   }
 }
-P(ms, "moduleName", "groupRows");
-var Rn = {
+P(gs, "moduleName", "groupRows");
+var Sn = {
   cellEdit: function(l) {
     l.component.setValueProcessData(l.data.oldValue), l.component.cellRendered();
   },
@@ -5189,7 +5189,7 @@ var Rn = {
     var e = l.data.posFrom - l.data.posTo > 0;
     this.table.rowManager.moveRowActual(l.component, this.table.rowManager.getRowFromPosition(l.data.posFrom), e), this.table.rowManager.regenerateRowPositions(), this.table.rowManager.reRenderInPosition();
   }
-}, Tn = {
+}, Ln = {
   cellEdit: function(l) {
     l.component.setValueProcessData(l.data.newValue), l.component.cellRendered();
   },
@@ -5203,10 +5203,10 @@ var Rn = {
   rowMove: function(l) {
     this.table.rowManager.moveRowActual(l.component, this.table.rowManager.getRowFromPosition(l.data.posTo), l.data.after), this.table.rowManager.regenerateRowPositions(), this.table.rowManager.reRenderInPosition();
   }
-}, Sn = {
+}, Dn = {
   undo: ["ctrl + 90", "meta + 90"],
   redo: ["ctrl + 89", "meta + 89"]
-}, Ln = {
+}, Fn = {
   undo: function(l) {
     var e = !1;
     this.table.options.history && this.table.modExists("history") && this.table.modExists("edit") && (e = this.table.modules.edit.currentCell, e || (l.preventDefault(), this.table.modules.history.undo()));
@@ -5215,13 +5215,13 @@ var Rn = {
     var e = !1;
     this.table.options.history && this.table.modExists("history") && this.table.modExists("edit") && (e = this.table.modules.edit.currentCell, e || (l.preventDefault(), this.table.modules.history.redo()));
   }
-}, Dn = {
+}, Mn = {
   keybindings: {
-    bindings: Sn,
-    actions: Ln
+    bindings: Dn,
+    actions: Fn
   }
 };
-const ct = class ct extends q {
+const dt = class dt extends q {
   constructor(e) {
     super(e), this.history = [], this.index = -1, this.registerTableOption("history", !1);
   }
@@ -5266,7 +5266,7 @@ const ct = class ct extends q {
   undo() {
     if (this.index > -1) {
       let e = this.history[this.index];
-      return ct.undoers[e.type].call(this, e), this.index--, this.dispatchExternal("historyUndo", e.type, e.component.getComponent(), e.data), !0;
+      return dt.undoers[e.type].call(this, e), this.index--, this.dispatchExternal("historyUndo", e.type, e.component.getComponent(), e.data), !0;
     } else
       return console.warn(this.options("history") ? "History Undo Error - No more history to undo" : "History module not enabled"), !1;
   }
@@ -5274,26 +5274,26 @@ const ct = class ct extends q {
     if (this.history.length - 1 > this.index) {
       this.index++;
       let e = this.history[this.index];
-      return ct.redoers[e.type].call(this, e), this.dispatchExternal("historyRedo", e.type, e.component.getComponent(), e.data), !0;
+      return dt.redoers[e.type].call(this, e), this.dispatchExternal("historyRedo", e.type, e.component.getComponent(), e.data), !0;
     } else
       return console.warn(this.options("history") ? "History Redo Error - No more history to redo" : "History module not enabled"), !1;
   }
   //rebind rows to new element after deletion
   _rebindRow(e, t) {
     this.history.forEach(function(i) {
-      if (i.component instanceof ve)
+      if (i.component instanceof we)
         i.component === e && (i.component = t);
-      else if (i.component instanceof Gt && i.component.row === e) {
+      else if (i.component instanceof It && i.component.row === e) {
         var s = i.component.column.getField();
         s && (i.component = t.getCell(s));
       }
     });
   }
 };
-P(ct, "moduleName", "history"), P(ct, "moduleExtensions", Dn), //load defaults
-P(ct, "undoers", Rn), P(ct, "redoers", Tn);
-let ki = ct;
-class ps extends q {
+P(dt, "moduleName", "history"), P(dt, "moduleExtensions", Mn), //load defaults
+P(dt, "undoers", Sn), P(dt, "redoers", Ln);
+let Ti = dt;
+class bs extends q {
   constructor(e) {
     super(e), this.fieldIndex = [], this.hasIndex = !1;
   }
@@ -5354,8 +5354,8 @@ class ps extends q {
     }
   }
 }
-P(ps, "moduleName", "htmlTableImport");
-function Fn(l) {
+P(bs, "moduleName", "htmlTableImport");
+function Pn(l) {
   var e = [], t = 0, i = 0, s = !1;
   for (let o = 0; o < l.length; o++) {
     let n = l[o], a = l[o + 1];
@@ -5385,27 +5385,27 @@ function Fn(l) {
   }
   return e;
 }
-function Mn(l) {
+function _n(l) {
   try {
     return JSON.parse(l);
   } catch (e) {
     return console.warn("JSON Import Error - File contents is invalid JSON", e), Promise.reject();
   }
 }
-function Pn(l) {
+function zn(l) {
   return l;
 }
-function _n(l) {
+function An(l) {
   var e = this.dependencyRegistry.lookup("XLSX"), t = e.read(l), i = t.Sheets[t.SheetNames[0]];
   return e.utils.sheet_to_json(i, { header: 1 });
 }
-var zn = {
-  csv: Fn,
-  json: Mn,
-  array: Pn,
-  xlsx: _n
+var Hn = {
+  csv: Pn,
+  json: _n,
+  array: zn,
+  xlsx: An
 };
-const $t = class $t extends q {
+const Ot = class Ot extends q {
   constructor(e) {
     super(e), this.registerTableOption("importFormat"), this.registerTableOption("importReader", "text"), this.registerTableOption("importHeaderTransform"), this.registerTableOption("importValueTransform"), this.registerTableOption("importDataValidator"), this.registerTableOption("importFileValidator");
   }
@@ -5420,7 +5420,7 @@ const $t = class $t extends q {
   }
   lookupImporter(e) {
     var t;
-    return e || (e = this.table.options.importFormat), typeof e == "string" ? t = $t.importers[e] : t = e, t || console.error("Import Error - Importer not found:", e), t;
+    return e || (e = this.table.options.importFormat), typeof e == "string" ? t = Ot.importers[e] : t = e, t || console.error("Import Error - Importer not found:", e), t;
   }
   importFromFile(e, t, i) {
     var s = this.lookupImporter(e);
@@ -5527,10 +5527,10 @@ const $t = class $t extends q {
     return this.dispatch("import-imported", e), this.dispatchExternal("importImported", e), this.table.dataLoader.clearAlert(), this.table.setData(e);
   }
 };
-P($t, "moduleName", "import"), //load defaults
-P($t, "importers", zn);
-let Ri = $t;
-class gs extends q {
+P(Ot, "moduleName", "import"), //load defaults
+P(Ot, "importers", Hn);
+let Si = Ot;
+class vs extends q {
   constructor(e) {
     super(e), this.eventMap = {
       //row events
@@ -5677,11 +5677,11 @@ class gs extends q {
   }
   dispatchEvent(e, t, i) {
     var s = i.getComponent(), o;
-    this.columnSubscribers[e] && (i instanceof Gt ? o = i.column.definition[e] : i instanceof Ct && (o = i.definition[e]), o && o(t, s)), this.dispatchExternal(e, t, s);
+    this.columnSubscribers[e] && (i instanceof It ? o = i.column.definition[e] : i instanceof Ct && (o = i.definition[e]), o && o(t, s)), this.dispatchExternal(e, t, s);
   }
 }
-P(gs, "moduleName", "interaction");
-var An = {
+P(vs, "moduleName", "interaction");
+var On = {
   navPrev: "shift + 9",
   navNext: 9,
   navUp: 38,
@@ -5692,7 +5692,7 @@ var An = {
   scrollPageDown: 34,
   scrollToStart: 36,
   scrollToEnd: 35
-}, Hn = {
+}, $n = {
   keyBlock: function(l) {
     l.stopPropagation(), l.preventDefault();
   },
@@ -5731,17 +5731,17 @@ var An = {
     this.dispatch("keybinding-nav-down", l);
   }
 };
-const ft = class ft extends q {
+const ut = class ut extends q {
   constructor(e) {
     super(e), this.watchKeys = null, this.pressedKeys = null, this.keyupBinding = !1, this.keydownBinding = !1, this.registerTableOption("keybindings", {}), this.registerTableOption("tabEndNewRow", !1);
   }
   initialize() {
     var e = this.table.options.keybindings, t = {};
-    this.watchKeys = {}, this.pressedKeys = [], e !== !1 && (Object.assign(t, ft.bindings), Object.assign(t, e), this.mapBindings(t), this.bindEvents()), this.subscribe("table-destroy", this.clearBindings.bind(this));
+    this.watchKeys = {}, this.pressedKeys = [], e !== !1 && (Object.assign(t, ut.bindings), Object.assign(t, e), this.mapBindings(t), this.bindEvents()), this.subscribe("table-destroy", this.clearBindings.bind(this));
   }
   mapBindings(e) {
     for (let t in e)
-      ft.actions[t] ? e[t] && (typeof e[t] != "object" && (e[t] = [e[t]]), e[t].forEach((i) => {
+      ut.actions[t] ? e[t] && (typeof e[t] != "object" && (e[t] = [e[t]]), e[t].forEach((i) => {
         var s = Array.isArray(i) ? i : [i];
         s.forEach((o) => {
           this.mapBinding(t, o);
@@ -5750,7 +5750,7 @@ const ft = class ft extends q {
   }
   mapBinding(e, t) {
     var i = {
-      action: ft.actions[e],
+      action: ut.actions[e],
       keys: [],
       ctrl: !1,
       shift: !1,
@@ -5798,10 +5798,10 @@ const ft = class ft extends q {
     }), i && t.action.call(this, e), !0) : !1;
   }
 };
-P(ft, "moduleName", "keybindings"), //load defaults
-P(ft, "bindings", An), P(ft, "actions", Hn);
-let Ti = ft;
-class bs extends q {
+P(ut, "moduleName", "keybindings"), //load defaults
+P(ut, "bindings", On), P(ut, "actions", $n);
+let Li = ut;
+class ws extends q {
   constructor(e) {
     super(e), this.menuContainer = null, this.nestedMenuBlock = !1, this.currentComponent = null, this.rootPopup = null, this.columnSubscribers = {}, this.registerTableOption("rowContextMenu", !1), this.registerTableOption("rowClickMenu", !1), this.registerTableOption("rowDblClickMenu", !1), this.registerTableOption("groupContextMenu", !1), this.registerTableOption("groupClickMenu", !1), this.registerTableOption("groupDblClickMenu", !1), this.registerColumnOption("headerContextMenu"), this.registerColumnOption("headerClickMenu"), this.registerColumnOption("headerDblClickMenu"), this.registerColumnOption("headerMenu"), this.registerColumnOption("headerMenuIcon"), this.registerColumnOption("contextMenu"), this.registerColumnOption("clickMenu"), this.registerColumnOption("dblClickMenu");
   }
@@ -5867,8 +5867,8 @@ class bs extends q {
     }
   }
 }
-P(bs, "moduleName", "menu");
-class vs extends q {
+P(ws, "moduleName", "menu");
+class ys extends q {
   constructor(e) {
     super(e), this.placeholderElement = this.createPlaceholderElement(), this.hoverElement = !1, this.checkTimeout = !1, this.checkPeriod = 250, this.moving = !1, this.toCol = !1, this.toColAfter = !1, this.startX = 0, this.autoScrollMargin = 40, this.autoScrollStep = 5, this.autoScrollTimeout = !1, this.touchMove = !1, this.moveHover = this.moveHover.bind(this), this.endMove = this.endMove.bind(this), this.registerTableOption("movableColumns", !1);
   }
@@ -5885,7 +5885,7 @@ class vs extends q {
   initializeColumn(e) {
     var t = this, i = {}, s;
     !e.modules.frozen && !e.isGroup && !e.isRowHeader && (s = e.getElement(), i.mousemove = (function(o) {
-      e.parent === t.moving.parent && ((t.touchMove ? o.touches[0].pageX : o.pageX) - se.elOffset(s).left + t.table.columnManager.contentsElement.scrollLeft > e.getWidth() / 2 ? (t.toCol !== e || !t.toColAfter) && (s.parentNode.insertBefore(t.placeholderElement, s.nextSibling), t.moveColumn(e, !0)) : (t.toCol !== e || t.toColAfter) && (s.parentNode.insertBefore(t.placeholderElement, s), t.moveColumn(e, !1)));
+      e.parent === t.moving.parent && ((t.touchMove ? o.touches[0].pageX : o.pageX) - ie.elOffset(s).left + t.table.columnManager.contentsElement.scrollLeft > e.getWidth() / 2 ? (t.toCol !== e || !t.toColAfter) && (s.parentNode.insertBefore(t.placeholderElement, s.nextSibling), t.moveColumn(e, !0)) : (t.toCol !== e || t.toColAfter) && (s.parentNode.insertBefore(t.placeholderElement, s), t.moveColumn(e, !1)));
     }).bind(t), s.addEventListener("mousedown", function(o) {
       t.touchMove = !1, o.which === 1 && (t.checkTimeout = setTimeout(function() {
         t.startMove(o, e);
@@ -5909,7 +5909,7 @@ class vs extends q {
   }
   startMove(e, t) {
     var i = t.getElement(), s = this.table.columnManager.getContentsElement(), o = this.table.columnManager.getHeadersElement();
-    this.table.modules.selectRange && this.table.modules.selectRange.columnSelection && this.table.modules.selectRange.mousedown && this.table.modules.selectRange.selecting === "column" || (this.moving = t, this.startX = (this.touchMove ? e.touches[0].pageX : e.pageX) - se.elOffset(i).left, this.table.element.classList.add("tabulator-block-select"), this.placeholderElement.style.width = t.getWidth() + "px", this.placeholderElement.style.height = t.getHeight() + "px", i.parentNode.insertBefore(this.placeholderElement, i), i.parentNode.removeChild(i), this.hoverElement = i.cloneNode(!0), this.hoverElement.classList.add("tabulator-moving"), s.appendChild(this.hoverElement), this.hoverElement.style.left = "0", this.hoverElement.style.bottom = s.clientHeight - o.offsetHeight + "px", this.touchMove || (this._bindMouseMove(), document.body.addEventListener("mousemove", this.moveHover), document.body.addEventListener("mouseup", this.endMove)), this.moveHover(e), this.dispatch("column-moving", e, this.moving));
+    this.table.modules.selectRange && this.table.modules.selectRange.columnSelection && this.table.modules.selectRange.mousedown && this.table.modules.selectRange.selecting === "column" || (this.moving = t, this.startX = (this.touchMove ? e.touches[0].pageX : e.pageX) - ie.elOffset(i).left, this.table.element.classList.add("tabulator-block-select"), this.placeholderElement.style.width = t.getWidth() + "px", this.placeholderElement.style.height = t.getHeight() + "px", i.parentNode.insertBefore(this.placeholderElement, i), i.parentNode.removeChild(i), this.hoverElement = i.cloneNode(!0), this.hoverElement.classList.add("tabulator-moving"), s.appendChild(this.hoverElement), this.hoverElement.style.left = "0", this.hoverElement.style.bottom = s.clientHeight - o.offsetHeight + "px", this.touchMove || (this._bindMouseMove(), document.body.addEventListener("mousemove", this.moveHover), document.body.addEventListener("mouseup", this.endMove)), this.moveHover(e), this.dispatch("column-moving", e, this.moving));
   }
   _bindMouseMove() {
     this.table.columnManager.columnsByIndex.forEach(function(e) {
@@ -5935,7 +5935,7 @@ class vs extends q {
     (e.which === 1 || this.touchMove) && (this._unbindMouseMove(), this.placeholderElement.parentNode.insertBefore(this.moving.getElement(), this.placeholderElement.nextSibling), this.placeholderElement.parentNode.removeChild(this.placeholderElement), this.hoverElement.parentNode.removeChild(this.hoverElement), this.table.element.classList.remove("tabulator-block-select"), this.toCol && this.table.columnManager.moveColumnActual(this.moving, this.toCol, this.toColAfter), this.moving = !1, this.toCol = !1, this.toColAfter = !1, this.touchMove || (document.body.removeEventListener("mousemove", this.moveHover), document.body.removeEventListener("mouseup", this.endMove)));
   }
   moveHover(e) {
-    var t = this.table.columnManager.getContentsElement(), i = t.scrollLeft, s = (this.touchMove ? e.touches[0].pageX : e.pageX) - se.elOffset(t).left + i, o;
+    var t = this.table.columnManager.getContentsElement(), i = t.scrollLeft, s = (this.touchMove ? e.touches[0].pageX : e.pageX) - ie.elOffset(t).left + i, o;
     this.hoverElement.style.left = s - this.startX + "px", s - i < this.autoScrollMargin && (this.autoScrollTimeout || (this.autoScrollTimeout = setTimeout(() => {
       o = Math.max(0, i - 5), this.table.rowManager.getElement().scrollLeft = o, this.autoScrollTimeout = !1;
     }, 1))), i + t.clientWidth - s < this.autoScrollMargin && (this.autoScrollTimeout || (this.autoScrollTimeout = setTimeout(() => {
@@ -5943,12 +5943,12 @@ class vs extends q {
     }, 1)));
   }
 }
-P(vs, "moduleName", "moveColumn");
-var On = {
+P(ys, "moduleName", "moveColumn");
+var Bn = {
   delete: function(l, e, t) {
     l.delete();
   }
-}, $n = {
+}, Nn = {
   insert: function(l, e, t) {
     return this.table.addRow(l.getData(), void 0, e), !0;
   },
@@ -5979,7 +5979,7 @@ const wt = class wt extends q {
       t.tableRowDrop(s, e);
     }).bind(t), i.mousemove = (function(s) {
       var o;
-      s.pageY - se.elOffset(e.element).top + t.table.rowManager.element.scrollTop > e.getHeight() / 2 ? (t.toRow !== e || !t.toRowAfter) && (o = e.getElement(), o.parentNode.insertBefore(t.placeholderElement, o.nextSibling), t.moveRow(e, !0)) : (t.toRow !== e || t.toRowAfter) && (o = e.getElement(), o.previousSibling && (o.parentNode.insertBefore(t.placeholderElement, o), t.moveRow(e, !1)));
+      s.pageY - ie.elOffset(e.element).top + t.table.rowManager.element.scrollTop > e.getHeight() / 2 ? (t.toRow !== e || !t.toRowAfter) && (o = e.getElement(), o.parentNode.insertBefore(t.placeholderElement, o.nextSibling), t.moveRow(e, !0)) : (t.toRow !== e || t.toRowAfter) && (o = e.getElement(), o.previousSibling && (o.parentNode.insertBefore(t.placeholderElement, o), t.moveRow(e, !1)));
     }).bind(t), e.modules.moveRow = i;
   }
   initializeRow(e) {
@@ -5988,7 +5988,7 @@ const wt = class wt extends q {
       t.tableRowDrop(o, e);
     }).bind(t), i.mousemove = (function(o) {
       var n = e.getElement();
-      o.pageY - se.elOffset(n).top + t.table.rowManager.element.scrollTop > e.getHeight() / 2 ? (t.toRow !== e || !t.toRowAfter) && (n.parentNode.insertBefore(t.placeholderElement, n.nextSibling), t.moveRow(e, !0)) : (t.toRow !== e || t.toRowAfter) && (n.parentNode.insertBefore(t.placeholderElement, n), t.moveRow(e, !1));
+      o.pageY - ie.elOffset(n).top + t.table.rowManager.element.scrollTop > e.getHeight() / 2 ? (t.toRow !== e || !t.toRowAfter) && (n.parentNode.insertBefore(t.placeholderElement, n.nextSibling), t.moveRow(e, !0)) : (t.toRow !== e || t.toRowAfter) && (n.parentNode.insertBefore(t.placeholderElement, n), t.moveRow(e, !1));
     }).bind(t), this.hasHandle || (s = e.getElement(), s.addEventListener("mousedown", function(o) {
       o.which === 1 && (t.checkTimeout = setTimeout(function() {
         t.startMove(o, e);
@@ -6138,10 +6138,10 @@ const wt = class wt extends q {
   }
 };
 P(wt, "moduleName", "moveRow"), //load defaults
-P(wt, "senders", On), P(wt, "receivers", $n);
-let Si = wt;
-var Bn = {};
-const St = class St extends q {
+P(wt, "senders", Bn), P(wt, "receivers", Nn);
+let Di = wt;
+var Vn = {};
+const Lt = class Lt extends q {
   constructor(e) {
     super(e), this.allowedTypes = ["", "data", "edit", "clipboard", "import"], this.enabled = !0, this.registerColumnOption("mutator"), this.registerColumnOption("mutatorParams"), this.registerColumnOption("mutatorData"), this.registerColumnOption("mutatorDataParams"), this.registerColumnOption("mutatorEdit"), this.registerColumnOption("mutatorEditParams"), this.registerColumnOption("mutatorClipboard"), this.registerColumnOption("mutatorClipboardParams"), this.registerColumnOption("mutatorImport"), this.registerColumnOption("mutatorImportParams"), this.registerColumnOption("mutateLink");
   }
@@ -6166,7 +6166,7 @@ const St = class St extends q {
     var t = !1;
     switch (typeof e) {
       case "string":
-        St.mutators[e] ? t = St.mutators[e] : console.warn("Mutator Error - No such mutator found, ignoring: ", e);
+        Lt.mutators[e] ? t = Lt.mutators[e] : console.warn("Mutator Error - No such mutator found, ignoring: ", e);
         break;
       case "function":
         t = e;
@@ -6205,10 +6205,10 @@ const St = class St extends q {
     this.enabled = !1;
   }
 };
-P(St, "moduleName", "mutator"), //load defaults
-P(St, "mutators", Bn);
-let Li = St;
-function Nn(l, e, t, i, s) {
+P(Lt, "moduleName", "mutator"), //load defaults
+P(Lt, "mutators", Vn);
+let Fi = Lt;
+function In(l, e, t, i, s) {
   var o = document.createElement("span"), n = document.createElement("span"), a = document.createElement("span"), h = document.createElement("span"), d = document.createElement("span"), u = document.createElement("span");
   return this.table.modules.localize.langBind("pagination|counter|showing", (f) => {
     n.innerHTML = f;
@@ -6218,7 +6218,7 @@ function Nn(l, e, t, i, s) {
     u.innerHTML = f;
   }), i ? (a.innerHTML = " " + e + "-" + Math.min(e + l - 1, i) + " ", d.innerHTML = " " + i + " ", o.appendChild(n), o.appendChild(a), o.appendChild(h), o.appendChild(d), o.appendChild(u)) : (a.innerHTML = " 0 ", o.appendChild(n), o.appendChild(a), o.appendChild(u)), o;
 }
-function Vn(l, e, t, i, s) {
+function Gn(l, e, t, i, s) {
   var o = document.createElement("span"), n = document.createElement("span"), a = document.createElement("span"), h = document.createElement("span"), d = document.createElement("span"), u = document.createElement("span");
   return this.table.modules.localize.langBind("pagination|counter|showing", (f) => {
     n.innerHTML = f;
@@ -6228,11 +6228,11 @@ function Vn(l, e, t, i, s) {
     u.innerHTML = f;
   }), o.appendChild(n), o.appendChild(a), o.appendChild(h), o.appendChild(d), o.appendChild(u), o;
 }
-var In = {
-  rows: Nn,
-  pages: Vn
+var Wn = {
+  rows: In,
+  pages: Gn
 };
-const Bt = class Bt extends q {
+const $t = class $t extends q {
   constructor(e) {
     super(e), this.mode = "local", this.progressiveLoad = !1, this.element = null, this.pageCounterElement = null, this.pageCounter = null, this.size = 0, this.page = 1, this.count = 5, this.max = 1, this.remoteRowCountEstimate = null, this.initialLoad = !0, this.dataChanging = !1, this.pageSizes = [], this.registerTableOption("pagination", !1), this.registerTableOption("paginationMode", "local"), this.registerTableOption("paginationSize", !1), this.registerTableOption("paginationInitialPage", 1), this.registerTableOption("paginationCounter", !1), this.registerTableOption("paginationCounterElement", !1), this.registerTableOption("paginationButtonCount", 5), this.registerTableOption("paginationSizeSelector", !1), this.registerTableOption("paginationElement", !1), this.registerTableOption("paginationAddRow", "page"), this.registerTableOption("paginationOutOfRange", !1), this.registerTableOption("progressiveLoad", !1), this.registerTableOption("progressiveLoadDelay", 0), this.registerTableOption("progressiveLoadScrollMargin", 0), this.registerTableFunction("setMaxPage", this.setMaxPage.bind(this)), this.registerTableFunction("setPage", this.setPage.bind(this)), this.registerTableFunction("setPageToRow", this.userSetPageToRow.bind(this)), this.registerTableFunction("setPageSize", this.userSetPageSize.bind(this)), this.registerTableFunction("getPageSize", this.getPageSize.bind(this)), this.registerTableFunction("previousPage", this.previousPage.bind(this)), this.registerTableFunction("nextPage", this.nextPage.bind(this)), this.registerTableFunction("getPage", this.getPage.bind(this)), this.registerTableFunction("getPageMax", this.getPageMax.bind(this)), this.registerComponentFunction("row", "pageTo", this.setPageToRow.bind(this));
   }
@@ -6303,7 +6303,7 @@ const Bt = class Bt extends q {
   }
   initializePageCounter() {
     var e = this.table.options.paginationCounter, t = null;
-    e && (typeof e == "function" ? t = e : t = Bt.pageCounters[e], t ? (this.pageCounter = t, this.pageCounterElement = document.createElement("span"), this.pageCounterElement.classList.add("tabulator-page-counter")) : console.warn("Pagination Error - No such page counter found: ", e));
+    e && (typeof e == "function" ? t = e : t = $t.pageCounters[e], t ? (this.pageCounter = t, this.pageCounterElement = document.createElement("span"), this.pageCounterElement.classList.add("tabulator-page-counter")) : console.warn("Pagination Error - No such page counter found: ", e));
   }
   //setup pagination
   initializePaginator(e) {
@@ -6499,10 +6499,10 @@ const Bt = class Bt extends q {
     Math.ceil(e.clientWidth) - e.scrollWidth < 0 ? this.pagesElement.style.display = "none" : (this.pagesElement.style.display = "", Math.ceil(e.clientWidth) - e.scrollWidth < 0 && (this.pagesElement.style.display = "none"));
   }
 };
-P(Bt, "moduleName", "page"), //load defaults
-P(Bt, "pageCounters", In);
-let Di = Bt;
-var Gn = {
+P($t, "moduleName", "page"), //load defaults
+P($t, "pageCounters", Wn);
+let Mi = $t;
+var jn = {
   local: function(l, e) {
     var t = localStorage.getItem(l + "-" + e);
     return t ? JSON.parse(t) : !1;
@@ -6511,7 +6511,7 @@ var Gn = {
     var t = document.cookie, i = l + "-" + e, s = t.indexOf(i + "="), o, n;
     return s > -1 && (t = t.slice(s), o = t.indexOf(";"), o > -1 && (t = t.slice(0, o)), n = t.replace(i + "=", "")), n ? JSON.parse(n) : !1;
   }
-}, Wn = {
+}, Un = {
   local: function(l, e, t) {
     localStorage.setItem(l + "-" + e, JSON.stringify(t));
   },
@@ -6678,9 +6678,9 @@ const ke = class ke extends q {
   }
 };
 P(ke, "moduleName", "persistence"), P(ke, "moduleInitOrder", -10), //load defaults
-P(ke, "readers", Gn), P(ke, "writers", Wn);
-let Fi = ke;
-class ws extends q {
+P(ke, "readers", jn), P(ke, "writers", Un);
+let Pi = ke;
+class Cs extends q {
   constructor(e) {
     super(e), this.columnSubscribers = {}, this.registerTableOption("rowContextPopup", !1), this.registerTableOption("rowClickPopup", !1), this.registerTableOption("rowDblClickPopup", !1), this.registerTableOption("groupContextPopup", !1), this.registerTableOption("groupClickPopup", !1), this.registerTableOption("groupDblClickPopup", !1), this.registerColumnOption("headerContextPopup"), this.registerColumnOption("headerClickPopup"), this.registerColumnOption("headerDblClickPopup"), this.registerColumnOption("headerPopup"), this.registerColumnOption("headerPopupIcon"), this.registerColumnOption("contextPopup"), this.registerColumnOption("clickPopup"), this.registerColumnOption("dblClickPopup"), this.registerComponentFunction("cell", "popup", this._componentPopupCall.bind(this)), this.registerComponentFunction("column", "popup", this._componentPopupCall.bind(this)), this.registerComponentFunction("row", "popup", this._componentPopupCall.bind(this)), this.registerComponentFunction("group", "popup", this._componentPopupCall.bind(this));
   }
@@ -6728,8 +6728,8 @@ class ws extends q {
     }), this.dispatchExternal("popupOpened", t.getComponent());
   }
 }
-P(ws, "moduleName", "popup");
-class ys extends q {
+P(Cs, "moduleName", "popup");
+class Es extends q {
   constructor(e) {
     super(e), this.element = !1, this.manualBlock = !1, this.beforeprintEventHandler = null, this.afterprintEventHandler = null, this.registerTableOption("printAsHtml", !1), this.registerTableOption("printFormatter", !1), this.registerTableOption("printHeader", !1), this.registerTableOption("printFooter", !1), this.registerTableOption("printStyled", !0), this.registerTableOption("printRowRange", "visible"), this.registerTableOption("printConfig", {}), this.registerColumnOption("print"), this.registerColumnOption("titlePrint");
   }
@@ -6756,8 +6756,8 @@ class ys extends q {
     this.manualBlock = !0, this.element = document.createElement("div"), this.element.classList.add("tabulator-print-fullscreen"), this.table.options.printHeader && (n.classList.add("tabulator-print-header"), d = typeof this.table.options.printHeader == "function" ? this.table.options.printHeader.call(this.table) : this.table.options.printHeader, typeof d == "string" ? n.innerHTML = d : n.appendChild(d), this.element.appendChild(n)), this.element.appendChild(h), this.table.options.printFooter && (a.classList.add("tabulator-print-footer"), u = typeof this.table.options.printFooter == "function" ? this.table.options.printFooter.call(this.table) : this.table.options.printFooter, typeof u == "string" ? a.innerHTML = u : a.appendChild(u), this.element.appendChild(a)), document.body.classList.add("tabulator-print-fullscreen-hide"), document.body.appendChild(this.element), this.table.options.printFormatter && this.table.options.printFormatter(this.element, h), window.print(), this.cleanup(), window.scrollTo(s, o), this.manualBlock = !1;
   }
 }
-P(ys, "moduleName", "print");
-class Cs extends q {
+P(Es, "moduleName", "print");
+class xs extends q {
   constructor(e) {
     super(e), this.data = !1, this.blocked = !1, this.origFuncs = {}, this.currentVersion = 0, this.registerTableOption("reactiveData", !1);
   }
@@ -6927,8 +6927,8 @@ class Cs extends q {
     this.blocked === e && (this.blocked = !1);
   }
 }
-P(Cs, "moduleName", "reactiveData");
-class Es extends q {
+P(xs, "moduleName", "reactiveData");
+class ks extends q {
   constructor(e) {
     super(e), this.startColumn = !1, this.startX = !1, this.startWidth = !1, this.latestX = !1, this.handle = null, this.initialNextColumn = null, this.nextColumn = null, this.initialized = !1, this.registerColumnOption("resizable", !0), this.registerTableOption("resizableColumnFit", !1), this.registerTableOption("resizableColumnGuide", !1);
   }
@@ -7023,8 +7023,8 @@ class Es extends q {
     e.stopPropagation(), s.startColumn.modules.edit && (s.startColumn.modules.edit.blocked = !0), s.startX = typeof e.clientX > "u" ? e.touches[0].clientX : e.clientX, s.latestX = s.startX, s.startWidth = t.getWidth(), document.body.addEventListener("mousemove", n), document.body.addEventListener("mouseup", a), i.addEventListener("touchmove", n, { passive: !0 }), i.addEventListener("touchend", a);
   }
 }
-P(Es, "moduleName", "resizeColumns");
-class xs extends q {
+P(ks, "moduleName", "resizeColumns");
+class Rs extends q {
   constructor(e) {
     super(e), this.startColumn = !1, this.startY = !1, this.startHeight = !1, this.handle = null, this.prevHandle = null, this.registerTableOption("resizableRows", !1), this.registerTableOption("resizableRowGuide", !1);
   }
@@ -7071,8 +7071,8 @@ class xs extends q {
     e.stopPropagation(), s.startY = typeof e.screenY > "u" ? e.touches[0].screenY : e.screenY, s.startHeight = t.getHeight(), document.body.addEventListener("mousemove", n), document.body.addEventListener("mouseup", a), i.addEventListener("touchmove", n, { passive: !0 }), i.addEventListener("touchend", a);
   }
 }
-P(xs, "moduleName", "resizeRows");
-class ks extends q {
+P(Rs, "moduleName", "resizeRows");
+class Ts extends q {
   constructor(e) {
     super(e), this.binding = !1, this.visibilityObserver = !1, this.resizeObserver = !1, this.containerObserver = !1, this.tableHeight = 0, this.tableWidth = 0, this.containerHeight = 0, this.containerWidth = 0, this.autoResize = !1, this.visible = !1, this.initialized = !1, this.initialRedraw = !1, this.registerTableOption("autoResize", !0);
   }
@@ -7109,8 +7109,8 @@ class ks extends q {
     this.binding && window.removeEventListener("resize", this.binding), this.resizeObserver && this.resizeObserver.unobserve(this.table.element), this.visibilityObserver && this.visibilityObserver.unobserve(this.table.element), this.containerObserver && this.containerObserver.unobserve(this.table.element.parentNode);
   }
 }
-P(ks, "moduleName", "resizeTable");
-function jn(l, e, t) {
+P(Ts, "moduleName", "resizeTable");
+function qn(l, e, t) {
   var i = document.createElement("div"), s = l.getRow()._row.modules.responsiveLayout;
   i.classList.add("tabulator-responsive-collapse-toggle"), i.innerHTML = `<svg class='tabulator-responsive-collapse-toggle-open' viewbox="0 0 24 24">
   <line x1="7" y1="12" x2="17" y2="12" fill="none" stroke-width="3" stroke-linecap="round" />
@@ -7128,14 +7128,14 @@ function jn(l, e, t) {
     n.stopImmediatePropagation(), o(!s.open), l.getTable().rowManager.adjustTableSize();
   }), o(s.open), i;
 }
-var Un = {
+var Kn = {
   format: {
     formatters: {
-      responsiveCollapse: jn
+      responsiveCollapse: qn
     }
   }
 };
-class Mi extends q {
+class _i extends q {
   constructor(e) {
     super(e), this.columns = [], this.hiddenColumns = [], this.mode = "", this.index = 0, this.collapseFormatter = [], this.collapseStartOpen = !0, this.collapseHandleColumn = !1, this.registerTableOption("responsiveLayout", !1), this.registerTableOption("responsiveLayoutCollapseStartOpen", !0), this.registerTableOption("responsiveLayoutCollapseUseFormatters", !0), this.registerTableOption("responsiveLayoutCollapseFormatter", !1), this.registerColumnOption("responsive");
   }
@@ -7270,15 +7270,15 @@ class Mi extends q {
     }), Object.keys(e).length ? t : "";
   }
 }
-P(Mi, "moduleName", "responsiveLayout"), P(Mi, "moduleExtensions", Un);
-function qn(l, e, t) {
+P(_i, "moduleName", "responsiveLayout"), P(_i, "moduleExtensions", Kn);
+function Xn(l, e, t) {
   var i = document.createElement("input"), s = !1;
   if (i.type = "checkbox", i.setAttribute("aria-label", "Select Row"), this.table.modExists("selectRow", !0))
     if (i.addEventListener("click", (n) => {
       n.stopPropagation();
     }), typeof l.getRow == "function") {
       var o = l.getRow();
-      o instanceof ei ? (i.addEventListener("change", (n) => {
+      o instanceof ti ? (i.addEventListener("change", (n) => {
         this.table.options.selectableRowsRangeMode === "click" && s ? s = !1 : o.toggleSelect();
       }), this.table.options.selectableRowsRangeMode === "click" && i.addEventListener("click", (n) => {
         s = !0, this.table.modules.selectRow.handleComplexRowClick(o._row, n);
@@ -7289,14 +7289,14 @@ function qn(l, e, t) {
       }), this.table.modules.selectRow.registerHeaderSelectCheckbox(i);
   return i;
 }
-var Kn = {
+var Qn = {
   format: {
     formatters: {
-      rowSelection: qn
+      rowSelection: Xn
     }
   }
 };
-class Pi extends q {
+class zi extends q {
   constructor(e) {
     super(e), this.selecting = !1, this.lastClickedRow = !1, this.selectPrev = [], this.selectedRows = [], this.headerCheckboxElement = null, this.registerTableOption("selectableRows", "highlight"), this.registerTableOption("selectableRowsRangeMode", "drag"), this.registerTableOption("selectableRowsRollingSelection", !0), this.registerTableOption("selectableRowsPersistence", !0), this.registerTableOption("selectableRowsCheck", function(t, i) {
       return !0;
@@ -7451,8 +7451,8 @@ class Pi extends q {
         this._deselectRow(s, !0);
   }
 }
-P(Pi, "moduleName", "selectRow"), P(Pi, "moduleExtensions", Kn);
-class Xn {
+P(zi, "moduleName", "selectRow"), P(zi, "moduleExtensions", Qn);
+class Jn {
   constructor(e) {
     return this._range = e, new Proxy(this, {
       get: function(t, i, s) {
@@ -7509,7 +7509,7 @@ class Xn {
     this._range.destroyedGuard("remove") && this._range.destroy(!0);
   }
 }
-class Qn extends me {
+class Yn extends ge {
   constructor(e, t, i, s) {
     super(e), this.rangeManager = t, this.element = null, this.initialized = !1, this.initializing = {
       start: !1,
@@ -7623,7 +7623,7 @@ class Qn extends me {
     return t.length ? (i.start = t[0], i.end = t[t.length - 1]) : console.warn("No bounds defined on range"), i;
   }
   getComponent() {
-    return this.component || (this.component = new Xn(this)), this.component;
+    return this.component || (this.component = new Jn(this)), this.component;
   }
   destroy(e) {
     this.destroyed = !0, this.element.remove(), e && this.rangeManager.rangeRemoved(this), this.initialized && this.dispatchExternal("rangeRemoved", this.getComponent());
@@ -7632,7 +7632,7 @@ class Qn extends me {
     return this.destroyed && console.warn("You cannot call the " + e + " function on a destroyed range"), !this.destroyed;
   }
 }
-var Jn = {
+var Zn = {
   rangeJumpUp: ["ctrl + 38", "meta + 38"],
   rangeJumpDown: ["ctrl + 40", "meta + 40"],
   rangeJumpLeft: ["ctrl + 37", "meta + 37"],
@@ -7645,7 +7645,7 @@ var Jn = {
   rangeExpandJumpDown: ["ctrl + shift + 40", "meta + shift + 40"],
   rangeExpandJumpLeft: ["ctrl + shift + 37", "meta + shift + 37"],
   rangeExpandJumpRight: ["ctrl + shift + 39", "meta + shift + 39"]
-}, Yn = {
+}, ea = {
   rangeJumpLeft: function(l) {
     this.dispatch("keybinding-nav-range", l, "left", !0, !1);
   },
@@ -7682,14 +7682,14 @@ var Jn = {
   rangeExpandJumpDown: function(l) {
     this.dispatch("keybinding-nav-range", l, "down", !0, !0);
   }
-}, Zn = {
+}, ta = {
   range: function(l) {
     var e = [], t = this.table.modules.selectRange.activeRange, i = !1, s, o, n, a, h;
     return h = l.length, t && (s = t.getBounds(), o = s.start, s.start === s.end && (i = !0), o && (e = this.table.rowManager.activeRows.slice(), n = e.indexOf(o.row), i ? a = l.length : a = e.indexOf(s.end.row) - n + 1, n > -1 && (this.table.blockRedraw(), e = e.slice(n, n + a), e.forEach((d, u) => {
       d.updateData(l[u % h]);
     }), this.table.restoreRedraw()))), e;
   }
-}, ea = {
+}, ia = {
   range: function(l) {
     var e = [], t = [], i = this.table.modules.selectRange.activeRange, s = !1, o, n, a, h, d;
     return i && (o = i.getBounds(), n = o.start, o.start === o.end && (s = !0), n && (l = l.split(`
@@ -7702,30 +7702,30 @@ var Jn = {
       }), t.push(f);
     }), t) : !1;
   }
-}, ta = {
+}, sa = {
   range: function() {
     var l = this.modules.selectRange.selectedColumns();
     return this.columnManager.rowHeader && l.unshift(this.columnManager.rowHeader), l;
   }
-}, ia = {
+}, oa = {
   range: function() {
     return this.modules.selectRange.selectedRows();
   }
-}, sa = {
+}, na = {
   keybindings: {
-    bindings: Jn,
-    actions: Yn
+    bindings: Zn,
+    actions: ea
   },
   clipboard: {
-    pasteActions: Zn,
-    pasteParsers: ea
+    pasteActions: ta,
+    pasteParsers: ia
   },
   export: {
-    columnLookups: ta,
-    rowLookups: ia
+    columnLookups: sa,
+    rowLookups: oa
   }
 };
-class Jt extends q {
+class Yt extends q {
   constructor(e) {
     super(e), this.selecting = "cell", this.mousedown = !1, this.ranges = [], this.overlay = null, this.rowHeader = null, this.layoutChangeTimeout = null, this.columnSelection = !1, this.rowSelection = !1, this.maxRanges = 0, this.activeRange = !1, this.blockKeydown = !1, this.keyDownEvent = this._handleKeyDown.bind(this), this.mouseUpEvent = this._handleMouseUp.bind(this), this.registerTableOption("selectableRange", !1), this.registerTableOption("selectableRangeColumns", !1), this.registerTableOption("selectableRangeRows", !1), this.registerTableOption("selectableRangeClearCells", !1), this.registerTableOption("selectableRangeClearCellsValue", void 0), this.registerTableOption("selectableRangeAutoFocus", !0), this.registerTableFunction("getRangesData", this.getRangesData.bind(this)), this.registerTableFunction("getRanges", this.getRanges.bind(this)), this.registerTableFunction("addRange", this.addRangeFromComponent.bind(this)), this.registerComponentFunction("cell", "getRanges", this.cellGetRanges.bind(this)), this.registerComponentFunction("row", "getRanges", this.rowGetRanges.bind(this)), this.registerComponentFunction("column", "getRanges", this.colGetRanges.bind(this));
   }
@@ -8035,7 +8035,7 @@ class Jt extends q {
   }
   addRange(e, t) {
     var i;
-    return this.maxRanges !== !0 && this.ranges.length >= this.maxRanges && this.ranges.shift().destroy(), i = new Qn(this.table, this, e, t), this.activeRange = i, this.ranges.push(i), this.rangeContainer.appendChild(i.element), i;
+    return this.maxRanges !== !0 && this.ranges.length >= this.maxRanges && this.ranges.shift().destroy(), i = new Yn(this.table, this, e, t), this.activeRange = i, this.ranges.push(i), this.rangeContainer.appendChild(i.element), i;
   }
   resetRanges() {
     var e, t, i;
@@ -8057,8 +8057,8 @@ class Jt extends q {
     return e == null || e === "";
   }
 }
-P(Jt, "moduleName", "selectRange"), P(Jt, "moduleInitOrder", 1), P(Jt, "moduleExtensions", sa);
-function oa(l, e, t, i, s, o, n) {
+P(Yt, "moduleName", "selectRange"), P(Yt, "moduleInitOrder", 1), P(Yt, "moduleExtensions", na);
+function aa(l, e, t, i, s, o, n) {
   var a = n.alignEmptyValues, h = n.decimalSeparator, d = n.thousandSeparator, u = 0;
   if (l = String(l), e = String(e), d && (l = l.split(d).join(""), e = e.split(d).join("")), h && (l = l.split(h).join("."), e = e.split(h).join(".")), l = parseFloat(l), e = parseFloat(e), isNaN(l))
     u = isNaN(e) ? 0 : -1;
@@ -8068,7 +8068,7 @@ function oa(l, e, t, i, s, o, n) {
     return l - e;
   return (a === "top" && o === "desc" || a === "bottom" && o === "asc") && (u *= -1), u;
 }
-function na(l, e, t, i, s, o, n) {
+function ra(l, e, t, i, s, o, n) {
   var a = n.alignEmptyValues, h = 0, d;
   if (!l)
     h = e ? -1 : 0;
@@ -8087,7 +8087,7 @@ function na(l, e, t, i, s, o, n) {
   }
   return (a === "top" && o === "desc" || a === "bottom" && o === "asc") && (h *= -1), h;
 }
-function Wi(l, e, t, i, s, o, n) {
+function Ui(l, e, t, i, s, o, n) {
   var a = this.table.dependencyRegistry.lookup(["luxon", "DateTime"], "DateTime"), h = n.format || "dd/MM/yyyy HH:mm:ss", d = n.alignEmptyValues, u = 0;
   if (typeof a < "u") {
     if (a.isDateTime(l) || (h === "iso" ? l = a.fromISO(String(l)) : l = a.fromFormat(String(l), h)), a.isDateTime(e) || (h === "iso" ? e = a.fromISO(String(e)) : e = a.fromFormat(String(e), h)), !l.isValid)
@@ -8100,20 +8100,20 @@ function Wi(l, e, t, i, s, o, n) {
   } else
     console.error("Sort Error - 'datetime' sorter is dependant on luxon.js");
 }
-function aa(l, e, t, i, s, o, n) {
-  return n.format || (n.format = "dd/MM/yyyy"), Wi.call(this, l, e, t, i, s, o, n);
-}
-function ra(l, e, t, i, s, o, n) {
-  return n.format || (n.format = "HH:mm"), Wi.call(this, l, e, t, i, s, o, n);
-}
 function la(l, e, t, i, s, o, n) {
+  return n.format || (n.format = "dd/MM/yyyy"), Ui.call(this, l, e, t, i, s, o, n);
+}
+function ha(l, e, t, i, s, o, n) {
+  return n.format || (n.format = "HH:mm"), Ui.call(this, l, e, t, i, s, o, n);
+}
+function da(l, e, t, i, s, o, n) {
   var a = l === !0 || l === "true" || l === "True" || l === 1 ? 1 : 0, h = e === !0 || e === "true" || e === "True" || e === 1 ? 1 : 0;
   return a - h;
 }
-function ha(l, e, t, i, s, o, n) {
+function ua(l, e, t, i, s, o, n) {
   var a = n.type || "length", h = n.alignEmptyValues, d = 0, u = this.table, f;
   n.valueMap && (typeof n.valueMap == "string" ? f = function(w) {
-    return w.map((c) => se.retrieveNestedData(u.options.nestedFieldSeparator, n.valueMap, c));
+    return w.map((c) => ie.retrieveNestedData(u.options.nestedFieldSeparator, n.valueMap, c));
   } : f = n.valueMap);
   function p(w) {
     var c;
@@ -8151,11 +8151,11 @@ function ha(l, e, t, i, s, o, n) {
     return a === "string" ? String(p(l)).toLowerCase().localeCompare(String(p(e)).toLowerCase()) : p(e) - p(l);
   return (h === "top" && o === "desc" || h === "bottom" && o === "asc") && (d *= -1), d;
 }
-function da(l, e, t, i, s, o, n) {
+function ca(l, e, t, i, s, o, n) {
   var a = typeof l > "u" ? 0 : 1, h = typeof e > "u" ? 0 : 1;
   return a - h;
 }
-function ua(l, e, t, i, s, o, n) {
+function fa(l, e, t, i, s, o, n) {
   var a, h, d, u, f = 0, p, w = /(\d+)|(\D+)/g, c = /\d/, T = n.alignEmptyValues, R = 0;
   if (!l && l !== 0)
     R = !e && e !== 0 ? 0 : -1;
@@ -8172,16 +8172,16 @@ function ua(l, e, t, i, s, o, n) {
   }
   return (T === "top" && o === "desc" || T === "bottom" && o === "asc") && (R *= -1), R;
 }
-var ca = {
-  number: oa,
-  string: na,
-  date: aa,
-  time: ra,
-  datetime: Wi,
-  boolean: la,
-  array: ha,
-  exists: da,
-  alphanum: ua
+var ma = {
+  number: aa,
+  string: ra,
+  date: la,
+  time: ha,
+  datetime: Ui,
+  boolean: da,
+  array: ua,
+  exists: ca,
+  alphanum: fa
 };
 const yt = class yt extends q {
   constructor(e) {
@@ -8364,9 +8364,9 @@ const yt = class yt extends q {
   }
 };
 P(yt, "moduleName", "sort"), //load defaults
-P(yt, "sorters", ca);
-let _i = yt;
-class fa {
+P(yt, "sorters", ma);
+let Ai = yt;
+class pa {
   constructor(e, t) {
     this.columnCount = e, this.rowCount = t, this.columnString = [], this.columns = [], this.rows = [];
   }
@@ -8395,7 +8395,7 @@ class fa {
     this.columnCount = e;
   }
 }
-class Rs {
+class Ss {
   constructor(e) {
     return this._sheet = e, new Proxy(this, {
       get: function(t, i, s) {
@@ -8437,9 +8437,9 @@ class Rs {
     return this._sheet.setColumns(e);
   }
 }
-class ts extends me {
+class ss extends ge {
   constructor(e, t) {
-    super(e.table), this.spreadsheetManager = e, this.definition = t, this.title = this.definition.title || "", this.key = this.definition.key || this.definition.title, this.rowCount = this.definition.rows, this.columnCount = this.definition.columns, this.data = this.definition.data || [], this.element = null, this.isActive = !1, this.grid = new fa(this.columnCount, this.rowCount), this.defaultColumnDefinition = { width: 100, headerHozAlign: "center", headerSort: !1 }, this.columnDefinition = Object.assign(this.defaultColumnDefinition, this.options("spreadsheetColumnDefinition")), this.columnDefs = [], this.rowDefs = [], this.columnFields = [], this.columns = [], this.rows = [], this.scrollTop = null, this.scrollLeft = null, this.initialize(), this.dispatchExternal("sheetAdded", this.getComponent());
+    super(e.table), this.spreadsheetManager = e, this.definition = t, this.title = this.definition.title || "", this.key = this.definition.key || this.definition.title, this.rowCount = this.definition.rows, this.columnCount = this.definition.columns, this.data = this.definition.data || [], this.element = null, this.isActive = !1, this.grid = new pa(this.columnCount, this.rowCount), this.defaultColumnDefinition = { width: 100, headerHozAlign: "center", headerSort: !1 }, this.columnDefinition = Object.assign(this.defaultColumnDefinition, this.options("spreadsheetColumnDefinition")), this.columnDefs = [], this.rowDefs = [], this.columnFields = [], this.columns = [], this.rows = [], this.scrollTop = null, this.scrollLeft = null, this.initialize(), this.dispatchExternal("sheetAdded", this.getComponent());
   }
   ///////////////////////////////////
   ///////// Initialization //////////
@@ -8482,7 +8482,7 @@ class ts extends me {
   //////// Helper Functions /////////
   ///////////////////////////////////
   getComponent() {
-    return new Rs(this);
+    return new Ss(this);
   }
   getDefinition() {
     return {
@@ -8527,7 +8527,7 @@ class ts extends me {
     this.spreadsheetManager.loadSheet(this);
   }
 }
-class Ts extends q {
+class Ls extends q {
   constructor(e) {
     super(e), this.sheets = [], this.element = null, this.registerTableOption("spreadsheet", !1), this.registerTableOption("spreadsheetRows", 50), this.registerTableOption("spreadsheetColumns", 50), this.registerTableOption("spreadsheetColumnDefinition", {}), this.registerTableOption("spreadsheetOutputFull", !1), this.registerTableOption("spreadsheetData", !1), this.registerTableOption("spreadsheetSheets", !1), this.registerTableOption("spreadsheetSheetTabs", !1), this.registerTableOption("spreadsheetSheetTabsElement", !1), this.registerTableFunction("setSheets", this.setSheets.bind(this)), this.registerTableFunction("addSheet", this.addSheet.bind(this)), this.registerTableFunction("getSheets", this.getSheets.bind(this)), this.registerTableFunction("getSheetDefinitions", this.getSheetDefinitions.bind(this)), this.registerTableFunction("setSheetData", this.setSheetData.bind(this)), this.registerTableFunction("getSheet", this.getSheet.bind(this)), this.registerTableFunction("getSheetData", this.getSheetData.bind(this)), this.registerTableFunction("clearSheet", this.clearSheet.bind(this)), this.registerTableFunction("removeSheet", this.removeSheetFunc.bind(this)), this.registerTableFunction("activeSheet", this.activeSheetFunc.bind(this));
   }
@@ -8581,14 +8581,14 @@ Data:     `, e), !1;
   }
   newSheet(e = {}) {
     var t;
-    return e.rows || (e.rows = this.options("spreadsheetRows")), e.columns || (e.columns = this.options("spreadsheetColumns")), t = new ts(this, e), this.sheets.push(t), this.element && this.element.appendChild(t.element), t;
+    return e.rows || (e.rows = this.options("spreadsheetRows")), e.columns || (e.columns = this.options("spreadsheetColumns")), t = new ss(this, e), this.sheets.push(t), this.element && this.element.appendChild(t.element), t;
   }
   removeSheet(e) {
     var t = this.sheets.indexOf(e), i;
     this.sheets.length > 1 ? t > -1 && (this.sheets.splice(t, 1), e.destroy(), this.activeSheet === e && (i = this.sheets[t - 1] || this.sheets[0], i ? this.loadSheet(i) : this.activeSheet = null)) : console.warn("Unable to remove sheet, at least one sheet must be active");
   }
   lookupSheet(e) {
-    return e ? e instanceof ts ? e : e instanceof Rs ? e._sheet : this.sheets.find((t) => t.key === e) || !1 : this.activeSheet;
+    return e ? e instanceof ss ? e : e instanceof Ss ? e._sheet : this.sheets.find((t) => t.key === e) || !1 : this.activeSheet;
   }
   ///////////////////////////////////
   //////// Public Functions /////////
@@ -8631,8 +8631,8 @@ Data:     `, e), !1;
     return t ? this.loadSheet(t) : !1;
   }
 }
-P(Ts, "moduleName", "spreadsheet");
-class Ss extends q {
+P(Ls, "moduleName", "spreadsheet");
+class Ds extends q {
   constructor(e) {
     super(e), this.tooltipSubscriber = null, this.headerSubscriber = null, this.timeout = null, this.popupInstance = null, this.registerTableOption("tooltipDelay", 300), this.registerColumnOption("tooltip"), this.registerColumnOption("headerTooltip");
   }
@@ -8659,15 +8659,15 @@ class Ss extends q {
     function a(h) {
       o = h;
     }
-    typeof i == "function" && (i = i(e, t.getComponent(), a)), i instanceof HTMLElement ? s = i : (s = document.createElement("div"), i === !0 && (t instanceof Gt ? i = t.value : t.definition.field ? this.langBind("columns|" + t.definition.field, (h) => {
+    typeof i == "function" && (i = i(e, t.getComponent(), a)), i instanceof HTMLElement ? s = i : (s = document.createElement("div"), i === !0 && (t instanceof It ? i = t.value : t.definition.field ? this.langBind("columns|" + t.definition.field, (h) => {
       s.innerHTML = i = h || t.definition.title;
     }) : i = t.definition.title), s.innerHTML = i), (i || i === 0 || i === !1) && (s.classList.add("tabulator-tooltip"), s.addEventListener("mousemove", (h) => h.preventDefault()), this.popupInstance = this.popup(s), typeof o == "function" && this.popupInstance.renderCallback(o), n = this.popupInstance.containerEventCoords(e), this.popupInstance.show(n.x + 15, n.y + 15).hideOnBlur(() => {
       this.dispatchExternal("TooltipClosed", t.getComponent()), this.popupInstance = null;
     }), this.dispatchExternal("TooltipOpened", t.getComponent()));
   }
 }
-P(Ss, "moduleName", "tooltip");
-var ma = {
+P(Ds, "moduleName", "tooltip");
+var ga = {
   //is integer
   integer: function(l, e, t) {
     return e === "" || e === null || typeof e > "u" ? !0 : (e = Number(e), !isNaN(e) && isFinite(e) && Math.floor(e) === e);
@@ -8741,7 +8741,7 @@ var ma = {
     return e !== "" && e !== null && typeof e < "u";
   }
 };
-const Nt = class Nt extends q {
+const Bt = class Bt extends q {
   constructor(e) {
     super(e), this.invalidCells = [], this.registerTableOption("validationMode", "blocking"), this.registerColumnOption("validator"), this.registerTableFunction("getInvalidCells", this.getInvalidCells.bind(this)), this.registerTableFunction("clearCellValidation", this.userClearCellValidation.bind(this)), this.registerTableFunction("validate", this.userValidate.bind(this)), this.registerComponentFunction("cell", "isValid", this.cellIsValid.bind(this)), this.registerComponentFunction("cell", "clearValidation", this.clearValidation.bind(this)), this.registerComponentFunction("cell", "validate", this.cellValidate.bind(this)), this.registerComponentFunction("column", "validate", this.columnValidate.bind(this)), this.registerComponentFunction("row", "validate", this.rowValidate.bind(this));
   }
@@ -8831,7 +8831,7 @@ const Nt = class Nt extends q {
     }
   }
   _buildValidator(e, t) {
-    var i = typeof e == "function" ? e : Nt.validators[e];
+    var i = typeof e == "function" ? e : Bt.validators[e];
     return i ? {
       type: typeof e == "function" ? "function" : e,
       func: i,
@@ -8858,49 +8858,49 @@ const Nt = class Nt extends q {
     e.modules.validate && e.modules.validate.invalid && (e.getElement().classList.remove("tabulator-validation-fail"), e.modules.validate.invalid = !1, t = this.invalidCells.indexOf(e), t > -1 && this.invalidCells.splice(t, 1));
   }
 };
-P(Nt, "moduleName", "validate"), //load defaults
-P(Nt, "validators", ma);
-let zi = Nt;
-var ci = /* @__PURE__ */ Object.freeze({
+P(Bt, "moduleName", "validate"), //load defaults
+P(Bt, "validators", ga);
+let Hi = Bt;
+var mi = /* @__PURE__ */ Object.freeze({
   __proto__: null,
-  AccessorModule: fi,
-  AjaxModule: gi,
-  ClipboardModule: bi,
-  ColumnCalcsModule: vi,
-  DataTreeModule: us,
-  DownloadModule: wi,
-  EditModule: yi,
-  ExportModule: Ci,
-  FilterModule: Ei,
-  FormatModule: xi,
-  FrozenColumnsModule: cs,
-  FrozenRowsModule: fs,
-  GroupRowsModule: ms,
-  HistoryModule: ki,
-  HtmlTableImportModule: ps,
-  ImportModule: Ri,
-  InteractionModule: gs,
-  KeybindingsModule: Ti,
-  MenuModule: bs,
-  MoveColumnsModule: vs,
-  MoveRowsModule: Si,
-  MutatorModule: Li,
-  PageModule: Di,
-  PersistenceModule: Fi,
-  PopupModule: ws,
-  PrintModule: ys,
-  ReactiveDataModule: Cs,
-  ResizeColumnsModule: Es,
-  ResizeRowsModule: xs,
-  ResizeTableModule: ks,
-  ResponsiveLayoutModule: Mi,
-  SelectRangeModule: Jt,
-  SelectRowModule: Pi,
-  SortModule: _i,
-  SpreadsheetModule: Ts,
-  TooltipModule: Ss,
-  ValidateModule: zi
-}), pa = {
+  AccessorModule: pi,
+  AjaxModule: vi,
+  ClipboardModule: wi,
+  ColumnCalcsModule: yi,
+  DataTreeModule: fs,
+  DownloadModule: Ci,
+  EditModule: Ei,
+  ExportModule: xi,
+  FilterModule: ki,
+  FormatModule: Ri,
+  FrozenColumnsModule: ms,
+  FrozenRowsModule: ps,
+  GroupRowsModule: gs,
+  HistoryModule: Ti,
+  HtmlTableImportModule: bs,
+  ImportModule: Si,
+  InteractionModule: vs,
+  KeybindingsModule: Li,
+  MenuModule: ws,
+  MoveColumnsModule: ys,
+  MoveRowsModule: Di,
+  MutatorModule: Fi,
+  PageModule: Mi,
+  PersistenceModule: Pi,
+  PopupModule: Cs,
+  PrintModule: Es,
+  ReactiveDataModule: xs,
+  ResizeColumnsModule: ks,
+  ResizeRowsModule: Rs,
+  ResizeTableModule: Ts,
+  ResponsiveLayoutModule: _i,
+  SelectRangeModule: Yt,
+  SelectRowModule: zi,
+  SortModule: Ai,
+  SpreadsheetModule: Ls,
+  TooltipModule: Ds,
+  ValidateModule: Hi
+}), ba = {
   debugEventsExternal: !1,
   //flag to console log events
   debugEventsInternal: !1,
@@ -8965,7 +8965,7 @@ var ci = /* @__PURE__ */ Object.freeze({
   dataReceiveParams: {},
   dependencies: {}
 };
-class Ls {
+class Fs {
   constructor(e, t, i = {}) {
     this.table = e, this.msgType = t, this.registeredDefaults = Object.assign({}, i);
   }
@@ -8982,7 +8982,7 @@ class Ls {
     return i;
   }
 }
-class ii extends me {
+class si extends ge {
   constructor(e) {
     super(e), this.elementVertical = e.rowManager.element, this.elementHorizontal = e.columnManager.element, this.tableElement = e.rowManager.tableElement, this.verticalFillMode = "fit";
   }
@@ -9050,7 +9050,7 @@ class ii extends me {
     var s = this.rows().indexOf(e), o = e.getElement(), n = 0;
     return new Promise((a, h) => {
       if (s > -1) {
-        if (typeof i > "u" && (i = this.table.options.scrollToRowIfVisible), !i && se.elVisible(o) && (n = se.elOffset(o).top - se.elOffset(this.elementVertical).top, n > 0 && n < this.elementVertical.clientHeight - o.offsetHeight))
+        if (typeof i > "u" && (i = this.table.options.scrollToRowIfVisible), !i && ie.elVisible(o) && (n = ie.elOffset(o).top - ie.elOffset(this.elementVertical).top, n > 0 && n < this.elementVertical.clientHeight - o.offsetHeight))
           return a(), !1;
         switch (typeof t > "u" && (t = this.table.options.scrollToRowPosition), t === "nearest" && (t = this.scrollToRowNearestTop(e) ? "top" : "bottom"), this.scrollToRow(e), t) {
           case "middle":
@@ -9070,7 +9070,7 @@ class ii extends me {
     });
   }
 }
-class ga extends ii {
+class va extends si {
   constructor(e) {
     super(e);
   }
@@ -9088,7 +9088,7 @@ class ga extends ii {
     });
   }
 }
-class ba extends ii {
+class wa extends si {
   constructor(e) {
     super(e), this.leftCol = 0, this.rightCol = 0, this.scrollLeft = 0, this.vDomScrollPosLeft = 0, this.vDomScrollPosRight = 0, this.vDomPadLeft = 0, this.vDomPadRight = 0, this.fitDataColAvg = 0, this.windowBuffer = 200, this.visibleRows = null, this.initialized = !1, this.isFitData = !1, this.columns = [];
   }
@@ -9312,9 +9312,9 @@ class ba extends ii {
     }
   }
 }
-class va extends me {
+class ya extends ge {
   constructor(e) {
-    super(e), this.blockHozScrollEvent = !1, this.headersElement = null, this.contentsElement = null, this.rowHeader = null, this.element = null, this.columns = [], this.columnsByIndex = [], this.columnsByField = {}, this.scrollLeft = 0, this.optionsList = new Ls(this.table, "column definition", ds), this.redrawBlock = !1, this.redrawBlockUpdate = null, this.renderer = null;
+    super(e), this.blockHozScrollEvent = !1, this.headersElement = null, this.contentsElement = null, this.rowHeader = null, this.element = null, this.columns = [], this.columnsByIndex = [], this.columnsByField = {}, this.scrollLeft = 0, this.optionsList = new Fs(this.table, "column definition", cs), this.redrawBlock = !1, this.redrawBlockUpdate = null, this.renderer = null;
   }
   ////////////// Setup Functions /////////////////
   initialize() {
@@ -9325,8 +9325,8 @@ class va extends me {
   }
   initializeRenderer() {
     var e, t = {
-      virtual: ba,
-      basic: ga
+      virtual: wa,
+      basic: va
     };
     typeof this.table.options.renderHorizontal == "string" ? e = t[this.table.options.renderHorizontal] : e = this.table.options.renderHorizontal, e ? (this.renderer = new e(this.table, this.element, this.tableElement), this.renderer.initialize()) : console.error("Unable to find matching renderer:", this.table.options.renderHorizontal);
   }
@@ -9461,7 +9461,7 @@ class va extends me {
     if (typeof e == "object") {
       if (e instanceof Ct)
         return e;
-      if (e instanceof hs)
+      if (e instanceof us)
         return e._getSelf() || !1;
       if (typeof HTMLElement < "u" && e instanceof HTMLElement)
         return t = [], this.columns.forEach((s) => {
@@ -9605,10 +9605,10 @@ class va extends me {
   }
   //redraw columns
   redraw(e) {
-    se.elVisible(this.element) && this.verticalAlignHeaders(), e && (this.table.rowManager.resetScroll(), this.table.rowManager.reinitialize()), this.confirm("table-redrawing", e) || this.layoutRefresh(e), this.dispatch("table-redraw", e), this.table.footerManager.redraw();
+    ie.elVisible(this.element) && this.verticalAlignHeaders(), e && (this.table.rowManager.resetScroll(), this.table.rowManager.reinitialize()), this.confirm("table-redrawing", e) || this.layoutRefresh(e), this.dispatch("table-redraw", e), this.table.footerManager.redraw();
   }
 }
-class wa extends ii {
+class Ca extends si {
   constructor(e) {
     super(e), this.verticalFillMode = "fill", this.scrollTop = 0, this.scrollLeft = 0, this.scrollTop = 0, this.scrollLeft = 0;
   }
@@ -9630,18 +9630,18 @@ class wa extends ii {
     this.clearRows(), e && e(), this.renderRows(), this.rows().length || this.table.rowManager.tableEmpty();
   }
   scrollToRowNearestTop(e) {
-    var t = se.elOffset(e.getElement()).top;
+    var t = ie.elOffset(e.getElement()).top;
     return !(Math.abs(this.elementVertical.scrollTop - t) > Math.abs(this.elementVertical.scrollTop + this.elementVertical.clientHeight - t));
   }
   scrollToRow(e) {
     var t = e.getElement();
-    this.elementVertical.scrollTop = se.elOffset(t).top - se.elOffset(this.elementVertical).top + this.elementVertical.scrollTop;
+    this.elementVertical.scrollTop = ie.elOffset(t).top - ie.elOffset(this.elementVertical).top + this.elementVertical.scrollTop;
   }
   visibleRows(e) {
     return this.rows();
   }
 }
-class ya extends ii {
+class Ea extends si {
   constructor(e) {
     super(e), this.verticalFillMode = "fill", this.scrollTop = 0, this.scrollLeft = 0, this.vDomRowHeight = 20, this.vDomTop = 0, this.vDomBottom = 0, this.vDomScrollPosTop = 0, this.vDomScrollPosBottom = 0, this.vDomTopPad = 0, this.vDomBottomPad = 0, this.vDomMaxRenderChain = 90, this.vDomWindowBuffer = 0, this.vDomWindowMinTotalRows = 20, this.vDomWindowMinMarginRows = 5, this.vDomTopNewRows = [], this.vDomBottomNewRows = [];
   }
@@ -9722,7 +9722,7 @@ class ya extends ii {
       for (; s.firstChild; ) s.removeChild(s.firstChild);
       d = (w - e + 1) * this.vDomRowHeight, d < F && (e -= Math.ceil((F - d) / this.vDomRowHeight), e < 0 && (e = 0)), n = Math.min(Math.max(Math.floor(this.vDomWindowBuffer / this.vDomRowHeight), this.vDomWindowMinMarginRows), e), e -= n;
     }
-    if (w && se.elVisible(this.elementVertical)) {
+    if (w && ie.elVisible(this.elementVertical)) {
       for (this.vDomTop = e, this.vDomBottom = e - 1, _ || this.table.options.maxHeight ? (L && (A = F / L + this.vDomWindowBuffer / L), A = Math.max(this.vDomWindowMinTotalRows, Math.ceil(A))) : A = w; (A == w || a <= F + this.vDomWindowBuffer || v < this.vDomWindowMinTotalRows) && this.vDomBottom < w - 1; ) {
         for (b = [], R = document.createDocumentFragment(), f = 0; f < A && this.vDomBottom < w - 1; )
           c = this.vDomBottom + 1, T = p[c], this.styleRow(T, c), T.initialize(!1, !0), !T.heightInitialized && !this.table.options.rowHeight && T.clearCellHeight(), R.appendChild(T.getElement()), b.push(T), this.vDomBottom++, f++;
@@ -9788,7 +9788,7 @@ class ya extends ii {
       t.setCellHeight();
   }
 }
-class Ca extends me {
+class xa extends ge {
   constructor(e) {
     super(e), this.element = this.createHolderElement(), this.tableElement = this.createTableElement(), this.heightFixer = this.createTableElement(), this.placeholder = null, this.placeholderContents = null, this.firstRender = !1, this.renderMode = "virtual", this.fixedHeight = !1, this.rows = [], this.activeRowsPipeline = [], this.activeRows = [], this.activeRowsCount = 0, this.displayRows = [], this.displayRowsCount = 0, this.scrollTop = 0, this.scrollLeft = 0, this.redrawBlock = !1, this.redrawBlockRestoreConfig = !1, this.redrawBlockRenderInPosition = !1, this.dataPipeline = [], this.displayPipeline = [], this.scrollbarWidth = 0, this.renderer = null;
   }
@@ -9829,9 +9829,9 @@ class Ca extends me {
   ////////////////// Row Manipulation //////////////////
   findRow(e) {
     if (typeof e == "object") {
-      if (e instanceof ve)
+      if (e instanceof we)
         return e;
-      if (e instanceof ei)
+      if (e instanceof ti)
         return e._getSelf() || !1;
       if (typeof HTMLElement < "u" && e instanceof HTMLElement)
         return this.rows.find((i) => i.getElement() === e) || !1;
@@ -9861,7 +9861,7 @@ class Ca extends me {
   _setDataActual(e, t) {
     this.dispatchExternal("dataProcessing", e), this._wipeElements(), Array.isArray(e) ? (this.dispatch("data-processing", e), e.forEach((i, s) => {
       if (i && typeof i == "object") {
-        var o = new ve(i, this);
+        var o = new we(i, this);
         this.rows.push(o);
       } else
         console.warn("Data Loading Warning - Invalid row data detected and ignored, expecting object but received:", i);
@@ -9903,7 +9903,7 @@ Data:     `, e);
     return typeof e > "u" && (e = this.table.options.addRowPos), e === "pos" && (e = !0), e === "bottom" && (e = !1), e;
   }
   addRowActual(e, t, i, s) {
-    var o = e instanceof ve ? e : new ve(e || {}, this), n = this.findAddRowPos(t), a = -1, h, d;
+    var o = e instanceof we ? e : new we(e || {}, this), n = this.findAddRowPos(t), a = -1, h, d;
     return i || (d = this.chain("row-adding-position", [o, n], null, { index: i, top: n }), i = d.index, n = d.top), typeof i < "u" && (i = this.findRow(i)), i = this.chain("row-adding-index", [o, i, n], null, i), i && (a = this.rows.indexOf(i)), i && a > -1 ? (h = this.activeRows.indexOf(i), this.displayRowIterator(function(u) {
       var f = u.indexOf(i);
       f > -1 && u.splice(n ? f : f + 1, 0, o);
@@ -9941,11 +9941,11 @@ Data:     `, e);
   }
   nextDisplayRow(e, t) {
     var i = this.getDisplayRowIndex(e), s = !1;
-    return i !== !1 && i < this.displayRowsCount - 1 && (s = this.getDisplayRows()[i + 1]), s && (!(s instanceof ve) || s.type != "row") ? this.nextDisplayRow(s, t) : s;
+    return i !== !1 && i < this.displayRowsCount - 1 && (s = this.getDisplayRows()[i + 1]), s && (!(s instanceof we) || s.type != "row") ? this.nextDisplayRow(s, t) : s;
   }
   prevDisplayRow(e, t) {
     var i = this.getDisplayRowIndex(e), s = !1;
-    return i && (s = this.getDisplayRows()[i - 1]), t && s && (!(s instanceof ve) || s.type != "row") ? this.prevDisplayRow(s, t) : s;
+    return i && (s = this.getDisplayRows()[i - 1]), t && s && (!(s instanceof we) || s.type != "row") ? this.prevDisplayRow(s, t) : s;
   }
   findRowIndex(e, t) {
     var i;
@@ -10001,7 +10001,7 @@ Data:     `, e);
         });
         return;
       } else
-        se.elVisible(this.element) ? i ? this.reRenderInPosition(this.refreshPipelines.bind(this, e, o, n, i)) : (this.refreshPipelines(e, o, n, i), e || this.table.columnManager.renderer.renderColumns(), this.renderTable(), s.options.layoutColumnsOnNewData && this.table.columnManager.redraw(!0)) : this.refreshPipelines(e, o, n, i), this.dispatch("data-refreshed");
+        ie.elVisible(this.element) ? i ? this.reRenderInPosition(this.refreshPipelines.bind(this, e, o, n, i)) : (this.refreshPipelines(e, o, n, i), e || this.table.columnManager.renderer.renderColumns(), this.renderTable(), s.options.layoutColumnsOnNewData && this.table.columnManager.redraw(!0)) : this.refreshPipelines(e, o, n, i), this.dispatch("data-refreshed");
     }
   }
   refreshPipelines(e, t, i, s) {
@@ -10083,8 +10083,8 @@ Data:     `, e);
   }
   initializeRenderer() {
     var e, t = {
-      virtual: ya,
-      basic: wa
+      virtual: Ea,
+      basic: Ca
     };
     typeof this.table.options.renderVertical == "string" ? e = t[this.table.options.renderVertical] : e = this.table.options.renderVertical, e ? (this.renderMode = this.table.options.renderVertical, this.renderer = new e(this.table, this.element, this.tableElement), this.renderer.initialize(), (this.table.element.clientHeight || this.table.options.height) && !(this.table.options.minHeight && this.table.options.maxHeight) ? this.fixedHeight = !0 : this.fixedHeight = !1) : console.error("Unable to find matching renderer:", this.table.options.renderVertical);
   }
@@ -10167,7 +10167,7 @@ Data:     `, e);
       this.element.dispatchEvent(new Event("scroll"));
   }
 }
-class Ea extends me {
+class ka extends ge {
   constructor(e) {
     super(e), this.active = !1, this.element = this.createElement(), this.containerElement = this.createContainerElement(), this.external = !1;
   }
@@ -10215,7 +10215,7 @@ class Ea extends me {
     this.dispatch("footer-redraw");
   }
 }
-class xa extends me {
+class Ra extends ge {
   constructor(e) {
     super(e), this.el = null, this.abortClasses = ["tabulator-headers", "tabulator-table"], this.previousTargets = {}, this.listeners = [
       "click",
@@ -10339,7 +10339,7 @@ class xa extends me {
             s.components.includes("column") && (d = this.table.columnManager.findColumn(u));
             break;
           case "cell":
-            s.components.includes("cell") && (o.row instanceof ve ? d = o.row.findCell(u) : t.row && console.warn("Event Target Lookup Error - The row this cell is attached to cannot be found, has the table been reinitialized without being destroyed first?"));
+            s.components.includes("cell") && (o.row instanceof we ? d = o.row.findCell(u) : t.row && console.warn("Event Target Lookup Error - The row this cell is attached to cannot be found, has the table been reinitialized without being destroyed first?"));
             break;
         }
       d && (o[h] = d, a[h] = {
@@ -10364,7 +10364,7 @@ class xa extends me {
     }
   }
 }
-class ka {
+class Ta {
   constructor(e) {
     this.table = e, this.bindings = {};
   }
@@ -10377,7 +10377,7 @@ class ka {
     i !== "then" && typeof i == "string" && !i.startsWith("_") && this.table.options.debugInvalidComponentFuncs && console.error("The " + e + " component does not have a " + i + " function, have you checked that you have the correct Tabulator module installed?");
   }
 }
-class Ra extends me {
+class Sa extends ge {
   constructor(e) {
     super(e), this.requestOrder = 0, this.loading = !1;
   }
@@ -10434,7 +10434,7 @@ class Ra extends me {
     this.table.alertManager.clear();
   }
 }
-class Ta {
+class La {
   constructor(e, t, i) {
     this.table = e, this.events = {}, this.optionsList = t || {}, this.subscriptionNotifiers = {}, this.dispatch = i ? this._debugDispatch.bind(this) : this._dispatch.bind(this), this.debug = i;
   }
@@ -10483,7 +10483,7 @@ class Ta {
     return e[0] = "ExternalEvent:" + e[0], (this.debug === !0 || this.debug.includes(t)) && console.log(...e), this._dispatch(...arguments);
   }
 }
-class Sa {
+class Da {
   constructor(e) {
     this.events = {}, this.subscriptionNotifiers = {}, this.dispatch = e ? this._debugDispatch.bind(this) : this._dispatch.bind(this), this.chain = e ? this._debugChain.bind(this) : this._chain.bind(this), this.confirm = e ? this._debugConfirm.bind(this) : this._confirm.bind(this), this.debug = e;
   }
@@ -10549,7 +10549,7 @@ class Sa {
     return e[0] = "InternalEvent:" + t, (this.debug === !0 || this.debug.includes(t)) && console.log(...e), this._confirm(...arguments);
   }
 }
-class La extends me {
+class Fa extends ge {
   constructor(e) {
     super(e);
   }
@@ -10567,7 +10567,7 @@ class La extends me {
     this._warnUser(e);
   }
 }
-class Da extends me {
+class Ma extends ge {
   constructor(e) {
     super(e), this.deps = {}, this.props = {};
   }
@@ -10602,21 +10602,21 @@ class Da extends me {
     console.error("Unable to find dependency", e, "Please check documentation and ensure you have imported the required library into your project");
   }
 }
-function Fa(l, e) {
+function Pa(l, e) {
   e && this.table.columnManager.renderer.reinitializeColumnWidths(l), this.table.options.responsiveLayout && this.table.modExists("responsiveLayout", !0) && this.table.modules.responsiveLayout.update();
 }
-function is(l, e) {
+function os(l, e) {
   l.forEach(function(t) {
     t.reinitializeWidth();
   }), this.table.options.responsiveLayout && this.table.modExists("responsiveLayout", !0) && this.table.modules.responsiveLayout.update();
 }
-function Ma(l, e) {
+function _a(l, e) {
   var t = 0, i = this.table.rowManager.element.clientWidth, s = 0, o = !1;
   l.forEach((n, a) => {
     n.widthFixed || n.reinitializeWidth(), (this.table.options.responsiveLayout ? n.modules.responsive.visible : n.visible) && (o = n), n.visible && (t += n.getWidth());
   }), o ? (s = i - t + o.getWidth(), this.table.options.responsiveLayout && this.table.modExists("responsiveLayout", !0) && (o.setWidth(0), this.table.modules.responsiveLayout.update()), s > 0 ? o.setWidth(s) : o.reinitializeWidth()) : this.table.options.responsiveLayout && this.table.modExists("responsiveLayout", !0) && this.table.modules.responsiveLayout.update();
 }
-function Pa(l, e) {
+function za(l, e) {
   var t = this.table.rowManager.element.getBoundingClientRect().width, i = 0, s = 0, o = 0, n = 0, a = [], h = [], d = 0, u = 0, f = 0;
   function p(c) {
     var T;
@@ -10627,16 +10627,16 @@ function Pa(l, e) {
     function M(W) {
       return R * (W.column.definition.widthGrow || 1);
     }
-    function oe(W) {
+    function se(W) {
       return p(W.width) - R * (W.column.definition.widthShrink || 0);
     }
-    return c.forEach(function(W, de) {
-      var ne = b ? oe(W) : M(W);
-      W.column.minWidth >= ne ? v.push(W) : W.column.maxWidth && W.column.maxWidth < ne ? (W.width = W.column.maxWidth, T -= W.column.maxWidth, L -= b ? W.column.definition.widthShrink || 1 : W.column.definition.widthGrow || 1, L && (R = Math.floor(T / L))) : (S.push(W), z += b ? W.column.definition.widthShrink || 1 : W.column.definition.widthGrow || 1);
+    return c.forEach(function(W, ue) {
+      var oe = b ? se(W) : M(W);
+      W.column.minWidth >= oe ? v.push(W) : W.column.maxWidth && W.column.maxWidth < oe ? (W.width = W.column.maxWidth, T -= W.column.maxWidth, L -= b ? W.column.definition.widthShrink || 1 : W.column.definition.widthGrow || 1, L && (R = Math.floor(T / L))) : (S.push(W), z += b ? W.column.definition.widthShrink || 1 : W.column.definition.widthGrow || 1);
     }), v.length ? (v.forEach(function(W) {
       A += b ? W.width - W.column.minWidth : W.column.minWidth, W.width = W.column.minWidth;
     }), _ = T - A, F = z ? Math.floor(_ / z) : _, I = w(S, _, F, b)) : (I = z ? T - Math.floor(T / z) * z : T, S.forEach(function(W) {
-      W.width = b ? oe(W) : M(W);
+      W.width = b ? se(W) : M(W);
     })), I;
   }
   this.table.options.responsiveLayout && this.table.modExists("responsiveLayout", !0) && this.table.modules.responsiveLayout.update(), this.table.rowManager.element.scrollHeight > this.table.rowManager.element.clientHeight && (t -= this.table.rowManager.element.offsetWidth - this.table.rowManager.element.clientWidth), l.forEach(function(c) {
@@ -10656,21 +10656,21 @@ function Pa(l, e) {
     c.column.setWidth(c.width);
   });
 }
-var _a = {
-  fitData: Fa,
-  fitDataFill: is,
-  fitDataTable: is,
-  fitDataStretch: Ma,
-  fitColumns: Pa
+var Aa = {
+  fitData: Pa,
+  fitDataFill: os,
+  fitDataTable: os,
+  fitDataStretch: _a,
+  fitColumns: za
 };
-const Lt = class Lt extends q {
+const Dt = class Dt extends q {
   constructor(e) {
     super(e, "layout"), this.mode = null, this.registerTableOption("layout", "fitData"), this.registerTableOption("layoutColumnsOnNewData", !1), this.registerColumnOption("widthGrow"), this.registerColumnOption("widthShrink");
   }
   //initialize layout system
   initialize() {
     var e = this.table.options.layout;
-    Lt.modes[e] ? this.mode = e : (console.warn("Layout Error - invalid mode set, defaulting to 'fitData' : " + e), this.mode = "fitData"), this.table.element.setAttribute("tabulator-layout", this.mode), this.subscribe("column-init", this.initializeColumn.bind(this));
+    Dt.modes[e] ? this.mode = e : (console.warn("Layout Error - invalid mode set, defaulting to 'fitData' : " + e), this.mode = "fitData"), this.table.element.setAttribute("tabulator-layout", this.mode), this.subscribe("column-init", this.initializeColumn.bind(this));
   }
   initializeColumn(e) {
     e.definition.widthGrow && (e.definition.widthGrow = Number(e.definition.widthGrow)), e.definition.widthShrink && (e.definition.widthShrink = Number(e.definition.widthShrink));
@@ -10681,13 +10681,13 @@ const Lt = class Lt extends q {
   //trigger table layout
   layout(e) {
     var t = this.table.columnManager.columnsByIndex.find((i) => i.definition.variableHeight || i.definition.formatter === "textarea");
-    this.dispatch("layout-refreshing"), Lt.modes[this.mode].call(this, this.table.columnManager.columnsByIndex, e), t && this.table.rowManager.normalizeHeight(!0), this.dispatch("layout-refreshed");
+    this.dispatch("layout-refreshing"), Dt.modes[this.mode].call(this, this.table.columnManager.columnsByIndex, e), t && this.table.rowManager.normalizeHeight(!0), this.dispatch("layout-refreshed");
   }
 };
-P(Lt, "moduleName", "layout"), //load defaults
-P(Lt, "modes", _a);
-let Ai = Lt;
-var za = {
+P(Dt, "moduleName", "layout"), //load defaults
+P(Dt, "modes", Aa);
+let Oi = Dt;
+var Ha = {
   default: {
     //hold default locale text
     groups: {
@@ -10724,12 +10724,12 @@ var za = {
     }
   }
 };
-const Vt = class Vt extends q {
+const Nt = class Nt extends q {
   constructor(e) {
     super(e), this.locale = "default", this.lang = !1, this.bindings = {}, this.langList = {}, this.registerTableOption("locale", !1), this.registerTableOption("langs", {});
   }
   initialize() {
-    this.langList = se.deepClone(Vt.langs), this.table.options.columnDefaults.headerFilterPlaceholder !== !1 && this.setHeaderFilterPlaceholder(this.table.options.columnDefaults.headerFilterPlaceholder);
+    this.langList = ie.deepClone(Nt.langs), this.table.options.columnDefaults.headerFilterPlaceholder !== !1 && this.setHeaderFilterPlaceholder(this.table.options.columnDefaults.headerFilterPlaceholder);
     for (let e in this.table.options.langs)
       this.installLang(e, this.table.options.langs[e]);
     this.setLocale(this.table.options.locale), this.registerTableFunction("setLocale", this.setLocale.bind(this)), this.registerTableFunction("getLocale", this.getLocale.bind(this)), this.registerTableFunction("getLang", this.getLang.bind(this));
@@ -10757,7 +10757,7 @@ const Vt = class Vt extends q {
       let i = e.split("-")[0];
       this.langList[i] ? (console.warn("Localization Error - Exact matching locale not found, using closest match: ", e, i), e = i) : (console.warn("Localization Error - Matching locale not found, using default: ", e), e = "default");
     }
-    this.locale = e, this.lang = se.deepClone(this.langList.default || {}), e != "default" && t(this.langList[e], this.lang), this.dispatchExternal("localized", this.locale, this.lang), this._executeBindings();
+    this.locale = e, this.lang = ie.deepClone(this.langList.default || {}), e != "default" && t(this.langList[e], this.lang), this.dispatchExternal("localized", this.locale, this.lang), this._executeBindings();
   }
   //get current locale
   getLocale(e) {
@@ -10792,10 +10792,10 @@ const Vt = class Vt extends q {
       });
   }
 };
-P(Vt, "moduleName", "localize"), //load defaults
-P(Vt, "langs", za);
-let Hi = Vt;
-class Ds extends q {
+P(Nt, "moduleName", "localize"), //load defaults
+P(Nt, "langs", Ha);
+let $i = Nt;
+class Ms extends q {
   constructor(e) {
     super(e);
   }
@@ -10820,12 +10820,12 @@ class Ds extends q {
     console.warn("Inter-table Comms Error - no such module:", t);
   }
 }
-P(Ds, "moduleName", "comms");
-var Aa = /* @__PURE__ */ Object.freeze({
+P(Ms, "moduleName", "comms");
+var Oa = /* @__PURE__ */ Object.freeze({
   __proto__: null,
-  CommsModule: Ds,
-  LayoutModule: Ai,
-  LocalizeModule: Hi
+  CommsModule: Ms,
+  LayoutModule: Oi,
+  LocalizeModule: $i
 });
 const Te = class Te {
   static findTable(e) {
@@ -10859,17 +10859,17 @@ P(Te, "registry", {
     });
   }
 });
-let Oi = Te;
-const Y = class Y extends Oi {
+let Bi = Te;
+const Z = class Z extends Bi {
   constructor() {
     super();
   }
   static initializeModuleBinder(e) {
-    Y.modulesRegistered || (Y.modulesRegistered = !0, Y._registerModules(Aa, !0), e && Y._registerModules(e));
+    Z.modulesRegistered || (Z.modulesRegistered = !0, Z._registerModules(Oa, !0), e && Z._registerModules(e));
   }
   static _extendModule(e, t, i) {
-    if (Y.moduleBindings[e]) {
-      var s = Y.moduleBindings[e][t];
+    if (Z.moduleBindings[e]) {
+      var s = Z.moduleBindings[e][t];
       if (s)
         if (typeof i == "object")
           for (let o in i)
@@ -10885,52 +10885,52 @@ const Y = class Y extends Oi {
     var i = Object.values(e);
     t && i.forEach((s) => {
       s.prototype.moduleCore = !0;
-    }), Y._registerModule(i);
+    }), Z._registerModule(i);
   }
   static _registerModule(e) {
     Array.isArray(e) || (e = [e]), e.forEach((t) => {
-      Y._registerModuleBinding(t), Y._registerModuleExtensions(t);
+      Z._registerModuleBinding(t), Z._registerModuleExtensions(t);
     });
   }
   static _registerModuleBinding(e) {
-    e.moduleName ? Y.moduleBindings[e.moduleName] = e : console.error("Unable to bind module, no moduleName defined", e.moduleName);
+    e.moduleName ? Z.moduleBindings[e.moduleName] = e : console.error("Unable to bind module, no moduleName defined", e.moduleName);
   }
   static _registerModuleExtensions(e) {
     var t = e.moduleExtensions;
     if (e.moduleExtensions)
       for (let i in t) {
         let s = t[i];
-        if (Y.moduleBindings[i])
+        if (Z.moduleBindings[i])
           for (let o in s)
-            Y._extendModule(i, o, s[o]);
+            Z._extendModule(i, o, s[o]);
         else {
-          Y.moduleExtensions[i] || (Y.moduleExtensions[i] = {});
+          Z.moduleExtensions[i] || (Z.moduleExtensions[i] = {});
           for (let o in s)
-            Y.moduleExtensions[i][o] || (Y.moduleExtensions[i][o] = {}), Object.assign(Y.moduleExtensions[i][o], s[o]);
+            Z.moduleExtensions[i][o] || (Z.moduleExtensions[i][o] = {}), Object.assign(Z.moduleExtensions[i][o], s[o]);
         }
       }
-    Y._extendModuleFromQueue(e);
+    Z._extendModuleFromQueue(e);
   }
   static _extendModuleFromQueue(e) {
-    var t = Y.moduleExtensions[e.moduleName];
+    var t = Z.moduleExtensions[e.moduleName];
     if (t)
       for (let i in t)
-        Y._extendModule(e.moduleName, i, t[i]);
+        Z._extendModule(e.moduleName, i, t[i]);
   }
   //ensure that module are bound to instantiated function
   _bindModules() {
     var e = [], t = [], i = [];
     this.modules = {};
-    for (var s in Y.moduleBindings) {
-      let o = Y.moduleBindings[s], n = new o(this);
+    for (var s in Z.moduleBindings) {
+      let o = Z.moduleBindings[s], n = new o(this);
       this.modules[s] = n, o.prototype.moduleCore ? this.modulesCore.push(n) : o.moduleInitOrder ? o.moduleInitOrder < 0 ? e.push(n) : t.push(n) : i.push(n);
     }
     e.sort((o, n) => o.moduleInitOrder > n.moduleInitOrder ? 1 : -1), t.sort((o, n) => o.moduleInitOrder > n.moduleInitOrder ? 1 : -1), this.modulesRegular = e.concat(i.concat(t));
   }
 };
-P(Y, "moduleBindings", {}), P(Y, "moduleExtensions", {}), P(Y, "modulesRegistered", !1), P(Y, "defaultModules", !1);
-let $i = Y;
-class Ha extends me {
+P(Z, "moduleBindings", {}), P(Z, "moduleExtensions", {}), P(Z, "modulesRegistered", !1), P(Z, "defaultModules", !1);
+let Ni = Z;
+class $a extends ge {
   constructor(e) {
     super(e), this.element = this._createAlertElement(), this.msgElement = this._createMsgElement(), this.type = null, this.element.appendChild(this.msgElement);
   }
@@ -10955,15 +10955,15 @@ class Ha extends me {
     this.dispatch("alert-hide", this.type), this.element.parentNode && this.element.parentNode.removeChild(this.element), this.msgElement.classList.remove(this._typeClass());
   }
 }
-const it = class it extends $i {
+const Ze = class Ze extends Ni {
   static extendModule() {
-    it.initializeModuleBinder(), it._extendModule(...arguments);
+    Ze.initializeModuleBinder(), Ze._extendModule(...arguments);
   }
   static registerModule() {
-    it.initializeModuleBinder(), it._registerModule(...arguments);
+    Ze.initializeModuleBinder(), Ze._registerModule(...arguments);
   }
   constructor(e, t, i) {
-    super(), it.initializeModuleBinder(i), this.options = {}, this.columnManager = null, this.rowManager = null, this.footerManager = null, this.alertManager = null, this.vdomHoz = null, this.externalEvents = null, this.eventBus = null, this.interactionMonitor = !1, this.browser = "", this.browserSlow = !1, this.browserMobile = !1, this.rtl = !1, this.originalElement = null, this.componentFunctionBinder = new ka(this), this.dataLoader = !1, this.modules = {}, this.modulesCore = [], this.modulesRegular = [], this.deprecationAdvisor = new La(this), this.optionsList = new Ls(this, "table constructor"), this.dependencyRegistry = new Da(this), this.initialized = !1, this.destroyed = !1, this.initializeElement(e) && (this.initializeCoreSystems(t), setTimeout(() => {
+    super(), Ze.initializeModuleBinder(i), this.options = {}, this.columnManager = null, this.rowManager = null, this.footerManager = null, this.alertManager = null, this.vdomHoz = null, this.externalEvents = null, this.eventBus = null, this.interactionMonitor = !1, this.browser = "", this.browserSlow = !1, this.browserMobile = !1, this.rtl = !1, this.originalElement = null, this.componentFunctionBinder = new Ta(this), this.dataLoader = !1, this.modules = {}, this.modulesCore = [], this.modulesRegular = [], this.deprecationAdvisor = new Fa(this), this.optionsList = new Fs(this, "table constructor"), this.dependencyRegistry = new Ma(this), this.initialized = !1, this.destroyed = !1, this.initializeElement(e) && (this.initializeCoreSystems(t), setTimeout(() => {
       this._create();
     })), this.constructor.registry.register(this);
   }
@@ -10971,7 +10971,7 @@ const it = class it extends $i {
     return typeof HTMLElement < "u" && e instanceof HTMLElement ? (this.element = e, !0) : typeof e == "string" ? (this.element = document.querySelector(e), this.element ? !0 : (console.error("Tabulator Creation Error - no element found matching selector: ", e), !1)) : (console.error("Tabulator Creation Error - Invalid element provided:", e), !1);
   }
   initializeCoreSystems(e) {
-    this.columnManager = new va(this), this.rowManager = new Ca(this), this.footerManager = new Ea(this), this.dataLoader = new Ra(this), this.alertManager = new Ha(this), this._bindModules(), this.options = this.optionsList.generate(it.defaultOptions, e), this._clearObjectPointers(), this._mapDeprecatedFunctionality(), this.externalEvents = new Ta(this, this.options, this.options.debugEventsExternal), this.eventBus = new Sa(this.options.debugEventsInternal), this.interactionMonitor = new xa(this), this.dataLoader.initialize(), this.footerManager.initialize(), this.dependencyRegistry.initialize();
+    this.columnManager = new ya(this), this.rowManager = new xa(this), this.footerManager = new ka(this), this.dataLoader = new Sa(this), this.alertManager = new $a(this), this._bindModules(), this.options = this.optionsList.generate(Ze.defaultOptions, e), this._clearObjectPointers(), this._mapDeprecatedFunctionality(), this.externalEvents = new La(this, this.options, this.options.debugEventsExternal), this.eventBus = new Da(this.options.debugEventsInternal), this.interactionMonitor = new Ra(this), this.dataLoader.initialize(), this.footerManager.initialize(), this.dependencyRegistry.initialize();
   }
   //convert deprecated functionality to new functions
   _mapDeprecatedFunctionality() {
@@ -11263,22 +11263,22 @@ const it = class it extends $i {
   }
 };
 //default setup options
-P(it, "defaultOptions", pa);
-let Bi = it;
-var Ht = Bi;
-class Oa extends Ht {
+P(Ze, "defaultOptions", ba);
+let Vi = Ze;
+var At = Vi;
+class Ba extends At {
   static extendModule() {
-    Ht.initializeModuleBinder(ci), Ht._extendModule(...arguments);
+    At.initializeModuleBinder(mi), At._extendModule(...arguments);
   }
   static registerModule() {
-    Ht.initializeModuleBinder(ci), Ht._registerModule(...arguments);
+    At.initializeModuleBinder(mi), At._registerModule(...arguments);
   }
   constructor(e, t, i) {
-    super(e, t, ci);
+    super(e, t, mi);
   }
 }
-var Yt = Oa;
-function $a(l) {
+var Zt = Ba;
+function Na(l) {
   const e = O(null), t = O(null), i = O(!1), s = O(!1);
   function o() {
     if (!e.value || !l.data.value) {
@@ -11312,26 +11312,26 @@ function $a(l) {
         layoutColumnsOnNewData: !0,
         autoResize: !0
       };
-      l.rowFormatter && (n.rowFormatter = l.rowFormatter), t.value = new Yt(e.value, n), i.value = !0, s.value = !0, console.log("✅ Tabulator initialized successfully");
+      l.rowFormatter && (n.rowFormatter = l.rowFormatter), t.value = new Zt(e.value, n), i.value = !0, s.value = !0, console.log("✅ Tabulator initialized successfully");
     } catch (n) {
       console.error("❌ Error creating Tabulator:", n);
     }
   }
-  return Pe([() => l.isSuccess.value, e], async ([n, a]) => {
+  return Me([() => l.isSuccess.value, e], async ([n, a]) => {
     var h;
-    console.log("👀 Watch triggered - isSuccess:", n, "divRef:", !!a, "isTableInitialized:", s.value), n && a && !s.value && (await Zt(), a.offsetParent !== null ? (console.log("🎯 Conditions met, initializing table with", (h = l.data.value) == null ? void 0 : h.length, "rows"), o()) : (console.log("⏸️ Element not visible yet, will retry"), setTimeout(() => {
+    console.log("👀 Watch triggered - isSuccess:", n, "divRef:", !!a, "isTableInitialized:", s.value), n && a && !s.value && (await ei(), a.offsetParent !== null ? (console.log("🎯 Conditions met, initializing table with", (h = l.data.value) == null ? void 0 : h.length, "rows"), o()) : (console.log("⏸️ Element not visible yet, will retry"), setTimeout(() => {
       a.offsetParent !== null && !s.value && (console.log("🚀 Initializing after visibility check"), o());
     }, 100)));
-  }, { immediate: !0 }), Pe(() => l.data.value, async (n) => {
+  }, { immediate: !0 }), Me(() => l.data.value, async (n) => {
     if (!(!t.value || !n)) {
       console.log("🔄 Data changed, updating table with", n.length, "rows");
       try {
-        await Zt(), t.value.setData(n);
+        await ei(), t.value.setData(n);
       } catch (a) {
         console.warn("Error updating table data:", a), o();
       }
     }
-  }, { deep: !0 }), ss(() => {
+  }, { deep: !0 }), ns(() => {
     console.log("👋 Cleaning up tabulator"), t.value && t.value.destroy();
   }), {
     tableDiv: e,
@@ -11341,7 +11341,7 @@ function $a(l) {
     initializeTabulator: o
   };
 }
-function Ba(l, e) {
+function Va(l, e) {
   const t = Et(), i = O(null), s = O(!1), o = O(null), n = async (h) => {
     s.value = !0, o.value = null;
     try {
@@ -11370,7 +11370,7 @@ function Ba(l, e) {
       s.value = !1;
     }
   };
-  return Pe(
+  return Me(
     l,
     (h) => {
       h && h > 0 ? (console.log(`🎯 Conid changed to: ${h}, fetching price...`), n(h)) : e ? (console.log(`🎯 No conid available, using symbolRoot: ${e}`), n(null)) : (console.log("⚠️ No valid conid or symbolRoot available"), i.value = null, o.value = null);
@@ -11385,7 +11385,7 @@ function Ba(l, e) {
     }
   };
 }
-function Na(l, e) {
+function Ia(l, e) {
   const t = Et(), i = O(null), s = O(!1), o = O(null), n = async (h) => {
     s.value = !0, o.value = null;
     try {
@@ -11414,7 +11414,7 @@ function Na(l, e) {
       s.value = !1;
     }
   };
-  return Pe(
+  return Me(
     l,
     (h) => {
       h && h > 0 ? (console.log(`🎯 Conid changed to: ${h}, fetching price...`), n(h)) : e ? (console.log(`🎯 No conid available, using symbolRoot: ${e}`), n(null)) : (console.log("⚠️ No valid conid or symbolRoot available"), i.value = null, o.value = null);
@@ -11429,8 +11429,8 @@ function Na(l, e) {
     }
   };
 }
-function Va(l, e) {
-  const t = Et(), i = O(null), s = O(0), o = O(0), n = O([]), a = O(!1), h = O(null), d = te(() => {
+function Ga(l, e) {
+  const t = Et(), i = O(null), s = O(0), o = O(0), n = O([]), a = O(!1), h = O(null), d = Y(() => {
     if (n.value.length === 0) return null;
     const f = n.value.reduce((w, c) => w + c.netCost, 0), p = n.value.reduce((w, c) => w + c.totalShares, 0);
     return console.log(`🔢 Calculating overall adjusted average from orders: Total Net Cost = $${f}, Total Shares = ${p}`), p > 0 ? f / p : null;
@@ -11443,7 +11443,7 @@ function Va(l, e) {
     try {
       console.log("📊 Calculating average cost price from orders for positions:", l.value.length);
       const f = l.value.map(
-        (L) => It({
+        (L) => Vt({
           internal_account_id: L.internal_account_id,
           symbol: L.symbol,
           contract_quantity: L.contract_quantity ?? L.qty,
@@ -11465,15 +11465,15 @@ function Va(l, e) {
         if (I)
           throw new Error(`Failed to fetch orders: ${I.message}`);
         R = (L || []).map((z) => {
-          const S = parseFloat(z.quantity) || 0, M = z.assetCategory === "OPT" ? 100 : 1, oe = S * M;
+          const S = parseFloat(z.quantity) || 0, M = z.assetCategory === "OPT" ? 100 : 1, se = S * M;
           return {
             ibOrderID: z.ibOrderID,
             symbol: z.symbol,
             side: z.buySell,
             // Use buySell from database
-            totalQuantity: oe,
+            totalQuantity: se,
             avgFillPrice: parseFloat(z.tradePrice) || 0,
-            totalCost: parseFloat(z.tradePrice || 0) * oe,
+            totalCost: parseFloat(z.tradePrice || 0) * se,
             orderType: z.orderType,
             secType: z.assetCategory,
             multiplier: M,
@@ -11492,7 +11492,7 @@ function Va(l, e) {
       });
       const v = [];
       l.value.forEach((L) => {
-        const I = It({
+        const I = Vt({
           internal_account_id: L.internal_account_id,
           symbol: L.symbol,
           contract_quantity: L.contract_quantity ?? L.qty,
@@ -11500,13 +11500,13 @@ function Va(l, e) {
           conid: L.conid
         }), z = b.get(I) || [], S = R.filter((x) => z.includes(x.ibOrderID));
         console.log(`📍 Processing position: ${L.symbol} (${L.legal_entity || L.internal_account_id})`), console.log(`   Attached orders: ${S.length}`);
-        const M = [], oe = [], W = [], de = [], ne = [], we = [];
-        let pe = 0, ce = 0, ye = 0, ge = 0, Re = 0, Se = 0;
+        const M = [], se = [], W = [], ue = [], oe = [], ye = [];
+        let fe = 0, be = 0, Ce = 0, me = 0, Re = 0, Se = 0;
         S.forEach((x) => {
-          const K = x.totalQuantity, J = x.avgFillPrice * K, Ee = {
+          const Q = x.totalQuantity, J = x.avgFillPrice * Q, le = {
             symbol: x.symbol,
             side: x.side,
-            quantity: K,
+            quantity: Q,
             avgPrice: x.avgFillPrice,
             totalCost: J,
             secType: x.secType,
@@ -11515,18 +11515,18 @@ function Va(l, e) {
             account: x.account,
             orderDate: x.orderDate
           };
-          x.secType === "STK" && x.side === "BUY" ? (M.push(Ee), pe += Math.abs(J), console.log(`   📈 Stock purchase: ${x.symbol} ${x.side} ${K} @ $${x.avgFillPrice} = $${Math.abs(J).toFixed(2)}`)) : x.secType === "STK" && x.side === "SELL" ? (oe.push(Ee), ce += Math.abs(J), console.log(`   💰 Stock sale: ${x.symbol} ${x.side} ${K} @ $${x.avgFillPrice} = $${Math.abs(J).toFixed(2)} (proceeds)`)) : x.secType === "OPT" && x.right === "P" && x.side === "SELL" ? (W.push(Ee), ye += Math.abs(J), console.log(`   📉 Put sale: ${x.symbol} SELL PUT @ $${x.strike} ${x.side} ${K} @ $${x.avgFillPrice} = +$${Math.abs(J).toFixed(2)} (premium)`)) : x.secType === "OPT" && x.right === "P" && x.side === "BUY" ? (de.push(Ee), ge += Math.abs(J), console.log(`   🔙 Put buyback: ${x.symbol} BUY PUT @ $${x.strike} ${x.side} ${K} @ $${x.avgFillPrice} = -$${Math.abs(J).toFixed(2)} (close cost)`)) : x.secType === "OPT" && x.right === "C" && x.side === "SELL" ? (ne.push(Ee), Re += Math.abs(J), console.log(`   📞 Call sale: ${x.symbol} SELL CALL @ $${x.strike} ${x.side} ${K} @ $${x.avgFillPrice} = +$${Math.abs(J).toFixed(2)} (premium)`)) : x.secType === "OPT" && x.right === "C" && x.side === "BUY" ? (we.push(Ee), Se += Math.abs(J), console.log(`   🔙 Call buyback: ${x.symbol} BUY CALL @ $${x.strike} ${x.side} ${K} @ $${x.avgFillPrice} = -$${Math.abs(J).toFixed(2)} (close cost)`)) : console.log(`   ❓ Other order: ${x.symbol} ${x.secType} ${x.side} ${K} @ $${x.avgFillPrice}`);
+          x.secType === "STK" && x.side === "BUY" ? (M.push(le), fe += Math.abs(J), console.log(`   📈 Stock purchase: ${x.symbol} ${x.side} ${Q} @ $${x.avgFillPrice} = $${Math.abs(J).toFixed(2)}`)) : x.secType === "STK" && x.side === "SELL" ? (se.push(le), be += Math.abs(J), console.log(`   💰 Stock sale: ${x.symbol} ${x.side} ${Q} @ $${x.avgFillPrice} = $${Math.abs(J).toFixed(2)} (proceeds)`)) : x.secType === "OPT" && x.right === "P" && x.side === "SELL" ? (W.push(le), Ce += Math.abs(J), console.log(`   📉 Put sale: ${x.symbol} SELL PUT @ $${x.strike} ${x.side} ${Q} @ $${x.avgFillPrice} = +$${Math.abs(J).toFixed(2)} (premium)`)) : x.secType === "OPT" && x.right === "P" && x.side === "BUY" ? (ue.push(le), me += Math.abs(J), console.log(`   🔙 Put buyback: ${x.symbol} BUY PUT @ $${x.strike} ${x.side} ${Q} @ $${x.avgFillPrice} = -$${Math.abs(J).toFixed(2)} (close cost)`)) : x.secType === "OPT" && x.right === "C" && x.side === "SELL" ? (oe.push(le), Re += Math.abs(J), console.log(`   📞 Call sale: ${x.symbol} SELL CALL @ $${x.strike} ${x.side} ${Q} @ $${x.avgFillPrice} = +$${Math.abs(J).toFixed(2)} (premium)`)) : x.secType === "OPT" && x.right === "C" && x.side === "BUY" ? (ye.push(le), Se += Math.abs(J), console.log(`   🔙 Call buyback: ${x.symbol} BUY CALL @ $${x.strike} ${x.side} ${Q} @ $${x.avgFillPrice} = -$${Math.abs(J).toFixed(2)} (close cost)`)) : console.log(`   ❓ Other order: ${x.symbol} ${x.secType} ${x.side} ${Q} @ $${x.avgFillPrice}`);
         });
-        const Le = pe - ce, De = ye - ge, Ie = Re - Se, Ge = Le - De - Ie;
-        let ae = 0;
-        const Fe = M.reduce((x, K) => x + Math.abs(K.quantity), 0), nt = oe.reduce((x, K) => x + Math.abs(K.quantity), 0), We = Fe - nt;
-        We > 0 ? (ae = We, console.log(`   ✅ Using shares from stock orders: ${Fe} purchased - ${nt} sold = ${ae}`)) : Fe > 0 ? (ae = Fe, console.log(`   ✅ Using shares from stock purchases: ${ae}`)) : (ae = L.accounting_quantity ?? L.qty, console.log(`   ℹ️ No stock orders found, using position quantity: ${ae}`));
-        const je = ae > 0 ? Ge / ae : 0;
-        console.log(`📊 Position Summary for ${L.legal_entity || L.internal_account_id}:`), console.log(`   Stock Purchase Cost: $${pe.toFixed(2)}`), console.log(`   Stock Sale Proceeds: -$${ce.toFixed(2)}`), console.log(`   Net Stock Cost: $${Le.toFixed(2)}`), console.log(`   Put Premium Received: +$${ye.toFixed(2)}`), console.log(`   Put Buyback Cost: -$${ge.toFixed(2)}`), console.log(`   Net Put Cash Flow: $${De.toFixed(2)}`), console.log(`   Call Premium Received: +$${Re.toFixed(2)}`), console.log(`   Call Buyback Cost: -$${Se.toFixed(2)}`), console.log(`   Net Call Cash Flow: $${Ie.toFixed(2)}`), console.log(`   Total Net Cost: $${Ge.toFixed(2)} (Net Stock - Net Put - Net Call)`), console.log(`   Position Shares: ${ae}`), console.log(`   Adjusted Avg Price: $${je.toFixed(2)} per share`), v.push({
+        const Pe = fe - be, $e = Ce - me, Be = Re - Se, Le = Pe - $e - Be;
+        let ne = 0;
+        const _e = M.reduce((x, Q) => x + Math.abs(Q.quantity), 0), ct = se.reduce((x, Q) => x + Math.abs(Q.quantity), 0), it = _e - ct;
+        it > 0 ? (ne = it, console.log(`   ✅ Using shares from stock orders: ${_e} purchased - ${ct} sold = ${ne}`)) : _e > 0 ? (ne = _e, console.log(`   ✅ Using shares from stock purchases: ${ne}`)) : (ne = L.accounting_quantity ?? L.qty, console.log(`   ℹ️ No stock orders found, using position quantity: ${ne}`));
+        const st = ne > 0 ? Le / ne : 0;
+        console.log(`📊 Position Summary for ${L.legal_entity || L.internal_account_id}:`), console.log(`   Stock Purchase Cost: $${fe.toFixed(2)}`), console.log(`   Stock Sale Proceeds: -$${be.toFixed(2)}`), console.log(`   Net Stock Cost: $${Pe.toFixed(2)}`), console.log(`   Put Premium Received: +$${Ce.toFixed(2)}`), console.log(`   Put Buyback Cost: -$${me.toFixed(2)}`), console.log(`   Net Put Cash Flow: $${$e.toFixed(2)}`), console.log(`   Call Premium Received: +$${Re.toFixed(2)}`), console.log(`   Call Buyback Cost: -$${Se.toFixed(2)}`), console.log(`   Net Call Cash Flow: $${Be.toFixed(2)}`), console.log(`   Total Net Cost: $${Le.toFixed(2)} (Net Stock - Net Put - Net Call)`), console.log(`   Position Shares: ${ne}`), console.log(`   Adjusted Avg Price: $${st.toFixed(2)} per share`), v.push({
           mainPosition: {
             symbol: L.symbol,
             account: L.legal_entity || L.internal_account_id,
-            quantity: ae,
+            quantity: ne,
             avgPrice: L.avgPrice
           },
           orders: S.map((x) => ({
@@ -11544,24 +11544,24 @@ function Va(l, e) {
             orderDate: x.orderDate
           })),
           stockPurchases: M,
-          stockPurchaseCost: pe,
-          stockSales: oe,
-          stockSaleProceeds: ce,
-          netStockCost: Le,
+          stockPurchaseCost: fe,
+          stockSales: se,
+          stockSaleProceeds: be,
+          netStockCost: Pe,
           putSales: W,
-          putPremiumReceived: ye,
-          putBuybacks: de,
-          putBuybackCost: ge,
-          callSales: ne,
+          putPremiumReceived: Ce,
+          putBuybacks: ue,
+          putBuybackCost: me,
+          callSales: oe,
           callPremiumReceived: Re,
-          callBuybacks: we,
+          callBuybacks: ye,
           callBuybackCost: Se,
-          totalStockCost: Le,
-          netPutCashFlow: De,
-          netCallCashFlow: Ie,
-          netCost: Ge,
-          totalShares: ae,
-          adjustedAvgPricePerShare: je
+          totalStockCost: Pe,
+          netPutCashFlow: $e,
+          netCallCashFlow: Be,
+          netCost: Le,
+          totalShares: ne,
+          adjustedAvgPricePerShare: st
         });
       }), n.value = v;
       const A = v.reduce((L, I) => L + I.netCost, 0), _ = v.reduce((L, I) => L + I.totalShares, 0), F = _ > 0 ? A / _ : null;
@@ -11572,7 +11572,7 @@ function Va(l, e) {
       a.value = !1;
     }
   };
-  return Pe(
+  return Me(
     () => l.value,
     () => {
       l.value && l.value.length > 0 && e ? u() : i.value = null;
@@ -11589,8 +11589,8 @@ function Va(l, e) {
     refetch: u
   };
 }
-function Ia(l, e) {
-  const t = Et(), i = O(null), s = O(0), o = O(0), n = O([]), a = O(!1), h = O(null), d = te(() => {
+function Wa(l, e) {
+  const t = Et(), i = O(null), s = O(0), o = O(0), n = O([]), a = O(!1), h = O(null), d = Y(() => {
     if (n.value.length === 0) return null;
     const f = n.value.reduce((w, c) => w + c.netCost, 0), p = n.value.reduce((w, c) => w + c.totalShares, 0);
     return console.log(`🔢 Calculating overall adjusted average from orders: Total Net Cost = $${f}, Total Shares = ${p}`), p > 0 ? f / p : null;
@@ -11603,7 +11603,7 @@ function Ia(l, e) {
     try {
       console.log("📊 Calculating average cost price from orders for positions:", l.value.length);
       const f = l.value.map(
-        (L) => It({
+        (L) => Vt({
           internal_account_id: L.internal_account_id,
           symbol: L.symbol,
           contract_quantity: L.contract_quantity ?? L.qty,
@@ -11625,15 +11625,15 @@ function Ia(l, e) {
         if (I)
           throw new Error(`Failed to fetch orders: ${I.message}`);
         R = (L || []).map((z) => {
-          const S = parseFloat(z.quantity) || 0, M = z.assetCategory === "OPT" ? 100 : 1, oe = S * M;
+          const S = parseFloat(z.quantity) || 0, M = z.assetCategory === "OPT" ? 100 : 1, se = S * M;
           return {
             ibOrderID: z.ibOrderID,
             symbol: z.symbol,
             side: z.buySell,
             // Use buySell from database
-            totalQuantity: oe,
+            totalQuantity: se,
             avgFillPrice: parseFloat(z.tradePrice) || 0,
-            totalCost: parseFloat(z.tradePrice || 0) * oe,
+            totalCost: parseFloat(z.tradePrice || 0) * se,
             orderType: z.orderType,
             secType: z.assetCategory,
             multiplier: M,
@@ -11654,7 +11654,7 @@ function Ia(l, e) {
       });
       const v = [];
       for (const L of l.value) {
-        const I = It({
+        const I = Vt({
           internal_account_id: L.internal_account_id,
           symbol: L.symbol,
           contract_quantity: L.contract_quantity ?? L.qty,
@@ -11662,13 +11662,13 @@ function Ia(l, e) {
           conid: L.conid
         }), z = b.get(I) || [], S = R.filter((x) => z.includes(x.ibOrderID));
         console.log(`📍 Processing position: ${L.symbol} (${L.legal_entity || L.internal_account_id})`), console.log(`   Attached orders: ${S.length}`);
-        const M = [], oe = [], W = [], de = [], ne = [], we = [];
-        let pe = 0, ce = 0, ye = 0, ge = 0, Re = 0, Se = 0;
+        const M = [], se = [], W = [], ue = [], oe = [], ye = [];
+        let fe = 0, be = 0, Ce = 0, me = 0, Re = 0, Se = 0;
         for (const x of S) {
-          const K = x.totalQuantity, J = x.avgFillPrice * K, Ee = {
+          const Q = x.totalQuantity, J = x.avgFillPrice * Q, le = {
             symbol: x.symbol,
             side: x.side,
-            quantity: K,
+            quantity: Q,
             avgPrice: x.avgFillPrice,
             totalCost: J,
             secType: x.secType,
@@ -11678,40 +11678,40 @@ function Ia(l, e) {
             orderDate: x.orderDate
           };
           if (x.secType === "STK" && x.side === "BUY")
-            M.push(Ee), pe += Math.abs(J), console.log(`   📈 Stock purchase: ${x.symbol} ${x.side} ${K} @ $${x.avgFillPrice} = $${Math.abs(J).toFixed(2)}`);
+            M.push(le), fe += Math.abs(J), console.log(`   📈 Stock purchase: ${x.symbol} ${x.side} ${Q} @ $${x.avgFillPrice} = $${Math.abs(J).toFixed(2)}`);
           else if (x.secType === "STK" && x.side === "SELL")
-            oe.push(Ee), ce += Math.abs(J), console.log(`   💰 Stock sale: ${x.symbol} ${x.side} ${K} @ $${x.avgFillPrice} = $${Math.abs(J).toFixed(2)} (proceeds)`);
+            se.push(le), be += Math.abs(J), console.log(`   💰 Stock sale: ${x.symbol} ${x.side} ${Q} @ $${x.avgFillPrice} = $${Math.abs(J).toFixed(2)} (proceeds)`);
           else if (x.secType === "OPT" && x.right === "P" && x.side === "SELL")
-            W.push(Ee), ye += Math.abs(J), console.log(`   📉 Put sale: ${x.symbol} SELL PUT @ $${x.strike} ${x.side} ${K} @ $${x.avgFillPrice} = +$${Math.abs(J).toFixed(2)} (premium)`);
+            W.push(le), Ce += Math.abs(J), console.log(`   📉 Put sale: ${x.symbol} SELL PUT @ $${x.strike} ${x.side} ${Q} @ $${x.avgFillPrice} = +$${Math.abs(J).toFixed(2)} (premium)`);
           else if (x.secType === "OPT" && x.right === "P" && x.side === "BUY")
-            de.push(Ee), ge += Math.abs(J), console.log(`   🔙 Put buyback: ${x.symbol} BUY PUT @ $${x.strike} ${x.side} ${K} @ $${x.avgFillPrice} = -$${Math.abs(J).toFixed(2)} (close cost)`);
+            ue.push(le), me += Math.abs(J), console.log(`   🔙 Put buyback: ${x.symbol} BUY PUT @ $${x.strike} ${x.side} ${Q} @ $${x.avgFillPrice} = -$${Math.abs(J).toFixed(2)} (close cost)`);
           else if (x.secType === "OPT" && x.right === "C" && x.side === "SELL") {
-            const Wt = x.totalQuantity / 100, jt = Math.abs(J);
-            console.log(`   📞 Processing Call sale (EXIT TODAY): ${x.symbol} SELL CALL @ $${x.strike}`), console.log(`      Order details: ${Wt} contracts @ $${x.avgFillPrice} = $${jt.toFixed(2)}`);
-            let Oe = jt, Dt = "order-only";
+            const Gt = x.totalQuantity / 100, Wt = Math.abs(J);
+            console.log(`   📞 Processing Call sale (EXIT TODAY): ${x.symbol} SELL CALL @ $${x.strike}`), console.log(`      Order details: ${Gt} contracts @ $${x.avgFillPrice} = $${Wt.toFixed(2)}`);
+            let Ne = Wt, Ft = "order-only";
             if (x.conid)
               try {
-                const { data: Z, error: $e } = await t.schema("hf").from("positions").select("id, unrealized_pnl, price, market_value").eq("internal_account_id", x.account).eq("contract_quantity", Wt).eq("conid", x.conid).order("id", { ascending: !1 }).limit(1).maybeSingle();
-                if ($e)
-                  console.warn(`      ⚠️ Error querying position: ${$e.message}`);
-                else if (Z && Z.price !== 0 && Z.market_value !== 0 && Z.unrealized_pnl !== null && Z.unrealized_pnl !== void 0)
-                  Oe = Z.unrealized_pnl, Dt = "position", console.log(`      ✅ Valid position found (ID: ${Z.id})`), console.log(`      📊 Price: $${Z.price}, Market Value: $${Z.market_value}`), console.log(`      💰 Using unrealized P&L: $${Oe.toFixed(2)} (EXIT TODAY scenario)`);
-                else if (Z) {
-                  let Ue = "";
-                  Z.price === 0 ? Ue = "price is zero" : Z.market_value === 0 ? Ue = "market_value is zero" : (Z.unrealized_pnl === null || Z.unrealized_pnl === void 0) && (Ue = "unrealized_pnl is null/undefined"), Dt = "order-fallback", console.log(`      ⚠️ Position found (ID: ${Z.id}) but invalid data`), console.log(`      📊 Price: ${Z.price}, Market Value: ${Z.market_value}`), console.log(`      📊 Unrealized P&L: ${Z.unrealized_pnl}`), console.log(`      ❌ Validation failed: ${Ue}`), console.log(`      💰 Fallback to order premium: $${Oe.toFixed(2)}`);
+                const { data: he, error: xt } = await t.schema("hf").from("positions").select("id, unrealized_pnl, price, market_value").eq("internal_account_id", x.account).eq("contract_quantity", Gt).eq("conid", x.conid).order("id", { ascending: !1 }).limit(1).maybeSingle();
+                if (xt)
+                  console.warn(`      ⚠️ Error querying position: ${xt.message}`);
+                else if (he && he.price !== 0 && he.market_value !== 0 && he.unrealized_pnl !== null && he.unrealized_pnl !== void 0)
+                  Ne = he.unrealized_pnl, Ft = "position", console.log(`      ✅ Valid position found (ID: ${he.id})`), console.log(`      📊 Price: $${he.price}, Market Value: $${he.market_value}`), console.log(`      💰 Using unrealized P&L: $${Ne.toFixed(2)} (EXIT TODAY scenario)`);
+                else if (he) {
+                  let De = "";
+                  he.price === 0 ? De = "price is zero" : he.market_value === 0 ? De = "market_value is zero" : (he.unrealized_pnl === null || he.unrealized_pnl === void 0) && (De = "unrealized_pnl is null/undefined"), Ft = "order-fallback", console.log(`      ⚠️ Position found (ID: ${he.id}) but invalid data`), console.log(`      📊 Price: ${he.price}, Market Value: ${he.market_value}`), console.log(`      📊 Unrealized P&L: ${he.unrealized_pnl}`), console.log(`      ❌ Validation failed: ${De}`), console.log(`      💰 Fallback to order premium: $${Ne.toFixed(2)}`);
                 } else
-                  console.log("      ℹ️ No matching position found"), console.log(`      💰 Using order premium: $${Oe.toFixed(2)}`);
-              } catch (Z) {
-                console.error("      ❌ Exception querying position:", Z);
+                  console.log("      ℹ️ No matching position found"), console.log(`      💰 Using order premium: $${Ne.toFixed(2)}`);
+              } catch (he) {
+                console.error("      ❌ Exception querying position:", he);
               }
             else
-              console.log(`      ℹ️ No conid available, using order premium: $${Oe.toFixed(2)}`);
-            const Ft = {
+              console.log(`      ℹ️ No conid available, using order premium: $${Ne.toFixed(2)}`);
+            const oi = {
               symbol: x.symbol,
               side: x.side,
-              quantity: K,
+              quantity: Q,
               avgPrice: x.avgFillPrice,
-              totalCost: Oe,
+              totalCost: Ne,
               // Use adjusted value (unrealized P&L or order premium)
               secType: x.secType,
               right: x.right,
@@ -11719,19 +11719,19 @@ function Ia(l, e) {
               account: x.account,
               orderDate: x.orderDate
             };
-            ne.push(Ft), Re += Oe, console.log(`      📊 Added to call sales: $${Oe.toFixed(2)} (source: ${Dt})`);
-          } else x.secType === "OPT" && x.right === "C" && x.side === "BUY" ? (we.push(Ee), Se += Math.abs(J), console.log(`   🔙 Call buyback: ${x.symbol} BUY CALL @ $${x.strike} ${x.side} ${K} @ $${x.avgFillPrice} = -$${Math.abs(J).toFixed(2)} (close cost)`)) : console.log(`   ❓ Other order: ${x.symbol} ${x.secType} ${x.side} ${K} @ $${x.avgFillPrice}`);
+            oe.push(oi), Re += Ne, console.log(`      📊 Added to call sales: $${Ne.toFixed(2)} (source: ${Ft})`);
+          } else x.secType === "OPT" && x.right === "C" && x.side === "BUY" ? (ye.push(le), Se += Math.abs(J), console.log(`   🔙 Call buyback: ${x.symbol} BUY CALL @ $${x.strike} ${x.side} ${Q} @ $${x.avgFillPrice} = -$${Math.abs(J).toFixed(2)} (close cost)`)) : console.log(`   ❓ Other order: ${x.symbol} ${x.secType} ${x.side} ${Q} @ $${x.avgFillPrice}`);
         }
-        const Le = pe - ce, De = ye - ge, Ie = Re - Se, Ge = Le - De - Ie;
-        let ae = 0;
-        const Fe = M.reduce((x, K) => x + Math.abs(K.quantity), 0), nt = oe.reduce((x, K) => x + Math.abs(K.quantity), 0), We = Fe - nt;
-        We > 0 ? (ae = We, console.log(`   ✅ Using shares from stock orders: ${Fe} purchased - ${nt} sold = ${ae}`)) : Fe > 0 ? (ae = Fe, console.log(`   ✅ Using shares from stock purchases: ${ae}`)) : (ae = L.accounting_quantity ?? L.qty, console.log(`   ℹ️ No stock orders found, using position quantity: ${ae}`));
-        const je = ae > 0 ? Ge / ae : 0;
-        console.log(`📊 Position Summary for ${L.legal_entity || L.internal_account_id}:`), console.log(`   Stock Purchase Cost: $${pe.toFixed(2)}`), console.log(`   Stock Sale Proceeds: -$${ce.toFixed(2)}`), console.log(`   Net Stock Cost: $${Le.toFixed(2)}`), console.log(`   Put Premium Received: +$${ye.toFixed(2)}`), console.log(`   Put Buyback Cost: -$${ge.toFixed(2)}`), console.log(`   Net Put Cash Flow: $${De.toFixed(2)}`), console.log(`   Call Premium Received: +$${Re.toFixed(2)}`), console.log(`   Call Buyback Cost: -$${Se.toFixed(2)}`), console.log(`   Net Call Cash Flow: $${Ie.toFixed(2)}`), console.log(`   Total Net Cost: $${Ge.toFixed(2)} (Net Stock - Net Put - Net Call)`), console.log(`   Position Shares: ${ae}`), console.log(`   Adjusted Avg Price: $${je.toFixed(2)} per share`), v.push({
+        const Pe = fe - be, $e = Ce - me, Be = Re - Se, Le = Pe - $e - Be;
+        let ne = 0;
+        const _e = M.reduce((x, Q) => x + Math.abs(Q.quantity), 0), ct = se.reduce((x, Q) => x + Math.abs(Q.quantity), 0), it = _e - ct;
+        it > 0 ? (ne = it, console.log(`   ✅ Using shares from stock orders: ${_e} purchased - ${ct} sold = ${ne}`)) : _e > 0 ? (ne = _e, console.log(`   ✅ Using shares from stock purchases: ${ne}`)) : (ne = L.accounting_quantity ?? L.qty, console.log(`   ℹ️ No stock orders found, using position quantity: ${ne}`));
+        const st = ne > 0 ? Le / ne : 0;
+        console.log(`📊 Position Summary for ${L.legal_entity || L.internal_account_id}:`), console.log(`   Stock Purchase Cost: $${fe.toFixed(2)}`), console.log(`   Stock Sale Proceeds: -$${be.toFixed(2)}`), console.log(`   Net Stock Cost: $${Pe.toFixed(2)}`), console.log(`   Put Premium Received: +$${Ce.toFixed(2)}`), console.log(`   Put Buyback Cost: -$${me.toFixed(2)}`), console.log(`   Net Put Cash Flow: $${$e.toFixed(2)}`), console.log(`   Call Premium Received: +$${Re.toFixed(2)}`), console.log(`   Call Buyback Cost: -$${Se.toFixed(2)}`), console.log(`   Net Call Cash Flow: $${Be.toFixed(2)}`), console.log(`   Total Net Cost: $${Le.toFixed(2)} (Net Stock - Net Put - Net Call)`), console.log(`   Position Shares: ${ne}`), console.log(`   Adjusted Avg Price: $${st.toFixed(2)} per share`), v.push({
           mainPosition: {
             symbol: L.symbol,
             account: L.legal_entity || L.internal_account_id,
-            quantity: ae,
+            quantity: ne,
             avgPrice: L.avgPrice
           },
           orders: S.map((x) => ({
@@ -11749,24 +11749,24 @@ function Ia(l, e) {
             orderDate: x.orderDate
           })),
           stockPurchases: M,
-          stockPurchaseCost: pe,
-          stockSales: oe,
-          stockSaleProceeds: ce,
-          netStockCost: Le,
+          stockPurchaseCost: fe,
+          stockSales: se,
+          stockSaleProceeds: be,
+          netStockCost: Pe,
           putSales: W,
-          putPremiumReceived: ye,
-          putBuybacks: de,
-          putBuybackCost: ge,
-          callSales: ne,
+          putPremiumReceived: Ce,
+          putBuybacks: ue,
+          putBuybackCost: me,
+          callSales: oe,
           callPremiumReceived: Re,
-          callBuybacks: we,
+          callBuybacks: ye,
           callBuybackCost: Se,
-          totalStockCost: Le,
-          netPutCashFlow: De,
-          netCallCashFlow: Ie,
-          netCost: Ge,
-          totalShares: ae,
-          adjustedAvgPricePerShare: je
+          totalStockCost: Pe,
+          netPutCashFlow: $e,
+          netCallCashFlow: Be,
+          netCost: Le,
+          totalShares: ne,
+          adjustedAvgPricePerShare: st
         });
       }
       n.value = v;
@@ -11778,7 +11778,7 @@ function Ia(l, e) {
       a.value = !1;
     }
   };
-  return Pe(
+  return Me(
     () => l.value,
     () => {
       l.value && l.value.length > 0 && e ? u() : i.value = null;
@@ -11795,7 +11795,7 @@ function Ia(l, e) {
     refetch: u
   };
 }
-function Ga(l, e, t, i = O(void 0), s = O(void 0)) {
+function ja(l, e, t, i = O(void 0), s = O(void 0)) {
   const o = O(null), n = O(null), a = O(null), h = O(null), d = O(!1), u = O(!1), f = O(null), p = () => {
     const c = [
       ...i.value || [],
@@ -11807,31 +11807,31 @@ function Ga(l, e, t, i = O(void 0), s = O(void 0)) {
     let T = 0, R = 0, b = 0, v = 0;
     const A = [], _ = /* @__PURE__ */ new Set(), F = /* @__PURE__ */ new Set();
     c.forEach((S) => {
-      const M = S.accounting_quantity ?? S.qty, oe = S.legal_entity || S.internal_account_id;
-      let W = null, de = null, ne = "UNKNOWN";
-      const we = S.symbol.match(/(\d{4}-\d{2}-\d{2})\s+(\d+(?:\.\d+)?)\s+([CP])/);
-      if (we)
-        de = we[1], W = parseFloat(we[2]), ne = we[3] === "C" ? "CALL" : "PUT";
+      const M = S.accounting_quantity ?? S.qty, se = S.legal_entity || S.internal_account_id;
+      let W = null, ue = null, oe = "UNKNOWN";
+      const ye = S.symbol.match(/(\d{4}-\d{2}-\d{2})\s+(\d+(?:\.\d+)?)\s+([CP])/);
+      if (ye)
+        ue = ye[1], W = parseFloat(ye[2]), oe = ye[3] === "C" ? "CALL" : "PUT";
       else {
-        const ge = S.symbol.match(/([CP])(\d{8})/);
-        if (ge) {
-          ne = ge[1] === "C" ? "CALL" : "PUT";
-          const Re = ge[2];
+        const me = S.symbol.match(/([CP])(\d{8})/);
+        if (me) {
+          oe = me[1] === "C" ? "CALL" : "PUT";
+          const Re = me[2];
           W = parseFloat(Re) / 1e3;
         }
       }
-      _.add(ne), F.add(M < 0 ? "SHORT" : "LONG");
-      const pe = Math.abs(S.computed_cash_flow_on_entry || 0), ce = Math.abs(S.market_value || 0), ye = S.unrealized_pnl || 0;
-      T += Math.abs(M), R += pe, b += ce, v += ye, A.push({
-        account: oe,
+      _.add(oe), F.add(M < 0 ? "SHORT" : "LONG");
+      const fe = Math.abs(S.computed_cash_flow_on_entry || 0), be = Math.abs(S.market_value || 0), Ce = S.unrealized_pnl || 0;
+      T += Math.abs(M), R += fe, b += be, v += Ce, A.push({
+        account: se,
         strike: W,
-        expiry: de,
+        expiry: ue,
         quantity: M,
-        premiumReceived: pe,
-        currentValue: ce,
-        positionPnL: ye,
+        premiumReceived: fe,
+        currentValue: be,
+        positionPnL: Ce,
         symbol: S.symbol
-      }), console.log(`📍 Position: ${S.symbol} (${oe})`), console.log(`   Quantity: ${M}`), console.log(`   Premium Received: $${pe.toFixed(2)}`), console.log(`   Current Value: $${ce.toFixed(2)}`), console.log(`   P&L: $${ye.toFixed(2)}`);
+      }), console.log(`📍 Position: ${S.symbol} (${se})`), console.log(`   Quantity: ${M}`), console.log(`   Premium Received: $${fe.toFixed(2)}`), console.log(`   Current Value: $${be.toFixed(2)}`), console.log(`   P&L: $${Ce.toFixed(2)}`);
     });
     const L = _.size === 1 ? Array.from(_)[0] : "MIXED", I = F.size === 1 ? Array.from(F)[0] : "MIXED", z = R > 0 ? v / R * 100 : 0;
     return console.log("💰 Options P&L Summary:"), console.log(`   Total Contracts: ${T}`), console.log(`   Total Premium Received: $${R.toFixed(2)}`), console.log(`   Current Market Liability: $${b.toFixed(2)}`), console.log(`   Unrealized P&L: $${v.toFixed(2)}`), console.log(`   P&L Percentage: ${z.toFixed(2)}%`), {
@@ -11844,7 +11844,7 @@ function Ga(l, e, t, i = O(void 0), s = O(void 0)) {
       pnlPercentage: z,
       positions: A
     };
-  }, w = te(() => {
+  }, w = Y(() => {
     if (e.value > 0 && l.value !== null && t.value !== null) {
       console.log("📈 Calculating STOCK P&L");
       const c = e.value, T = l.value, R = t.value, b = c * T, v = c * R, A = v - b, _ = b !== 0 ? A / b * 100 : 0;
@@ -11860,7 +11860,7 @@ function Ga(l, e, t, i = O(void 0), s = O(void 0)) {
     } else
       return console.log("📊 No stock positions, calculating OPTIONS P&L"), p();
   });
-  return Pe(
+  return Me(
     w,
     (c) => {
       c ? "totalShares" in c ? (o.value = c.totalCostBasis, n.value = c.currentMarketValue, a.value = c.unrealizedPnL, h.value = c.pnlPercentage, d.value = c.unrealizedPnL >= 0, console.log("💰 STOCK P&L Calculation:"), console.log(`   Total Shares: ${c.totalShares.toLocaleString()}`), console.log(`   Avg Cost per Share: $${c.avgCostPerShare.toFixed(2)}`), console.log(`   Total Cost Basis: $${c.totalCostBasis.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`), console.log(`   Current Price per Share: $${c.currentPricePerShare.toFixed(2)}`), console.log(`   Current Market Value: $${c.currentMarketValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`), console.log(`   Unrealized P&L: ${c.unrealizedPnL >= 0 ? "+" : ""}$${c.unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`), console.log(`   P&L Percentage: ${c.pnlPercentage.toFixed(2)}%`)) : (o.value = c.totalPremiumReceived, n.value = c.currentMarketLiability, a.value = c.unrealizedPnL, h.value = c.pnlPercentage, d.value = c.unrealizedPnL >= 0, console.log("💰 OPTIONS P&L Updated:"), console.log(`   Total Contracts: ${c.totalContracts}`), console.log(`   ${c.positionType} ${c.optionType}`), console.log(`   Premium Received: $${c.totalPremiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`), console.log(`   Current Liability: $${c.currentMarketLiability.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`), console.log(`   Unrealized P&L: ${c.unrealizedPnL >= 0 ? "+" : ""}$${c.unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`), console.log(`   P&L Percentage: ${c.pnlPercentage.toFixed(2)}%`)) : (o.value = null, n.value = null, a.value = null, h.value = null, d.value = !1, console.log("⚠️ P&L Calculation: Missing required data"));
@@ -11877,7 +11877,7 @@ function Ga(l, e, t, i = O(void 0), s = O(void 0)) {
     error: f
   };
 }
-function Wa(l, e, t = O("STK")) {
+function Ua(l, e, t = O("STK")) {
   const i = Et(), s = O(null), o = O(null), n = O(!1), a = O(null);
   async function h(u) {
     try {
@@ -11956,7 +11956,7 @@ function Wa(l, e, t = O("STK")) {
       n.value = !1;
     }
   }
-  return Pe(
+  return Me(
     [l, e, t],
     () => {
       d();
@@ -11970,9 +11970,9 @@ function Wa(l, e, t = O("STK")) {
     refetch: d
   };
 }
-function ja(l, e, t, i, s, o) {
+function qa(l, e, t, i, s, o) {
   console.log("🏦 useCapitalUsed initialized");
-  const n = te(() => !1), a = te(() => null), h = te(() => {
+  const n = Y(() => !1), a = Y(() => null), h = Y(() => {
     const u = l.value;
     if (console.log("🏦 Calculating capital breakdown for asset type:", u), u === "STK") {
       const f = e.value, p = t.value;
@@ -11991,7 +11991,7 @@ function ja(l, e, t, i, s, o) {
       };
     }
     return u === "OPT" ? (console.log("⚠️ Options capital calculation not implemented yet"), null) : (console.log("⚠️ Unknown or null asset type, cannot calculate capital"), null);
-  }), d = te(() => {
+  }), d = Y(() => {
     const u = h.value;
     return u && u.assetType === "STK" ? u.totalCapital : null;
   });
@@ -12002,20 +12002,20 @@ function ja(l, e, t, i, s, o) {
     error: a
   };
 }
-function Ua(l) {
-  const e = Et(), t = so(l), i = oo(l), s = no(l), o = te(() => {
+function Ka(l) {
+  const e = Et(), t = no(l), i = ao(l), s = ro(l), o = Y(() => {
     const v = t.data.value;
     return v || /* @__PURE__ */ new Map();
-  }), n = te(() => {
+  }), n = Y(() => {
     const v = i.data.value;
     return v || /* @__PURE__ */ new Map();
-  }), a = te(() => {
+  }), a = Y(() => {
     const v = s.data.value;
     return v || /* @__PURE__ */ new Map();
   }), h = O(/* @__PURE__ */ new Map()), d = O(/* @__PURE__ */ new Map());
   O(/* @__PURE__ */ new Map());
   function u(v) {
-    return It({
+    return Vt({
       internal_account_id: v.internal_account_id,
       symbol: v.symbol,
       contract_quantity: v.contract_quantity,
@@ -12038,12 +12038,12 @@ function Ua(l) {
       if (F)
         throw console.error("❌ Error fetching trades:", F), F;
       const L = (_ || []).sort((z, S) => {
-        const M = (de) => {
-          if (!de) return 0;
-          const ne = de.split("/");
-          return ne.length !== 3 ? 0 : new Date(parseInt(ne[2]), parseInt(ne[1]) - 1, parseInt(ne[0])).getTime();
-        }, oe = M(z.tradeDate);
-        return M(S.tradeDate) - oe;
+        const M = (ue) => {
+          if (!ue) return 0;
+          const oe = ue.split("/");
+          return oe.length !== 3 ? 0 : new Date(parseInt(oe[2]), parseInt(oe[1]) - 1, parseInt(oe[0])).getTime();
+        }, se = M(z.tradeDate);
+        return M(S.tradeDate) - se;
       });
       console.log(`✅ Fetched ${(L == null ? void 0 : L.length) || 0} trades for ${v}`);
       const I = L || [];
@@ -12058,12 +12058,12 @@ function Ua(l) {
       const { data: _, error: F } = await e.schema("hf").from("orders").select("*").ilike("symbol", `${v}%`).eq("internal_account_id", A);
       if (F) throw F;
       const L = (_ || []).sort((z, S) => {
-        const M = (de) => {
-          if (!de) return 0;
-          const ne = de.split("/");
-          return ne.length !== 3 ? 0 : new Date(parseInt(ne[2]), parseInt(ne[1]) - 1, parseInt(ne[0])).getTime();
-        }, oe = M(z.settleDateTarget);
-        return M(S.settleDateTarget) - oe;
+        const M = (ue) => {
+          if (!ue) return 0;
+          const oe = ue.split("/");
+          return oe.length !== 3 ? 0 : new Date(parseInt(oe[2]), parseInt(oe[1]) - 1, parseInt(oe[0])).getTime();
+        }, se = M(z.settleDateTarget);
+        return M(S.settleDateTarget) - se;
       });
       return _ || [];
     } catch (_) {
@@ -12097,7 +12097,7 @@ function Ua(l) {
         return h.value.get(_) || [];
       const F = f(v.symbol), L = v.internal_account_id || v.legal_entity;
       if (!F || !L || !l) return [];
-      const z = (await ns(
+      const z = (await rs(
         e,
         F,
         l,
@@ -12111,7 +12111,7 @@ function Ua(l) {
       return console.error("❌ Error fetching attached positions:", _), [];
     }
   }
-  const b = te(() => t.isSuccess.value && i.isSuccess.value);
+  const b = Y(() => t.isSuccess.value && i.isSuccess.value);
   return {
     positionTradesMap: o,
     positionPositionsMap: n,
@@ -12129,10 +12129,10 @@ function Ua(l) {
     },
     fetchTradesForSymbol: p,
     fetchOrdersForSymbol: w,
-    savePositionOrderMappings: ao
+    savePositionOrderMappings: lo
   };
 }
-function qa() {
+function Xa() {
   const l = O(/* @__PURE__ */ new Set()), e = O(/* @__PURE__ */ new Set());
   function t(i, s) {
     e.value.delete(i), l.value.has(i) ? l.value.delete(i) : l.value.add(i);
@@ -12154,151 +12154,151 @@ function qa() {
     togglePositionExpansion: t
   };
 }
-const Ka = {
+const Qa = {
   key: 0,
   class: "toast-notification"
-}, Xa = { class: "calculation-details" }, Qa = {
+}, Ja = { class: "calculation-details" }, Ya = {
   key: 0,
   class: "summary-table-section"
-}, Ja = { class: "summary-header-fancy" }, Ya = { class: "header-badge" }, Za = { class: "summary-table-wrapper-fancy" }, er = { class: "summary-table-fancy" }, tr = ["onClick"], ir = { class: "expand-cell" }, sr = { class: "text-center account-cell" }, or = { class: "account-badge" }, nr = { class: "text-center shares-cell" }, ar = { class: "value-highlight" }, rr = { class: "text-center cost-cell" }, lr = { class: "currency-value" }, hr = { class: "text-center price-cell ibkr-price" }, dr = {
+}, Za = { class: "summary-header-fancy" }, er = { class: "header-badge" }, tr = { class: "summary-table-wrapper-fancy" }, ir = { class: "summary-table-fancy" }, sr = ["onClick"], or = { class: "expand-cell" }, nr = { class: "text-center account-cell" }, ar = { class: "account-badge" }, rr = { class: "text-center shares-cell" }, lr = { class: "value-highlight" }, hr = { class: "text-center cost-cell" }, dr = { class: "currency-value" }, ur = { class: "text-center price-cell ibkr-price" }, cr = {
   key: 0,
   class: "price-badge ibkr"
-}, ur = {
+}, fr = {
   key: 1,
   class: "no-data"
-}, cr = { class: "text-center price-cell hold-price" }, fr = { class: "price-badge hold" }, mr = { class: "text-center price-cell exit-price" }, pr = {
+}, mr = { class: "text-center price-cell hold-price" }, pr = { class: "price-badge hold" }, gr = { class: "text-center price-cell exit-price" }, br = {
   key: 0,
   class: "price-badge exit"
-}, gr = {
+}, vr = {
   key: 1,
   class: "no-data"
-}, br = { class: "text-center diff-cell" }, vr = { class: "diff-icon" }, wr = {
+}, wr = { class: "text-center diff-cell" }, yr = { class: "diff-icon" }, Cr = {
   key: 1,
   class: "no-data"
-}, yr = {
+}, Er = {
   key: 0,
   class: "detail-row"
-}, Cr = { colspan: "8" }, Er = { class: "detail-content" }, xr = { class: "side-by-side-comparison" }, kr = { class: "comparison-panel hold-panel" }, Rr = { class: "panel-content" }, Tr = { class: "mini-section stock-mini" }, Sr = { class: "mini-row" }, Lr = { class: "value" }, Dr = {
+}, xr = { colspan: "8" }, kr = { class: "detail-content" }, Rr = { class: "side-by-side-comparison" }, Tr = { class: "comparison-panel hold-panel" }, Sr = { class: "panel-content" }, Lr = { class: "mini-section stock-mini" }, Dr = { class: "mini-row" }, Fr = { class: "value" }, Mr = {
   key: 0,
   class: "mini-row"
-}, Fr = { class: "value" }, Mr = { class: "mini-row result" }, Pr = { class: "value" }, _r = { class: "mini-section put-mini" }, zr = {
+}, Pr = { class: "value" }, _r = { class: "mini-row result" }, zr = { class: "value" }, Ar = { class: "mini-section put-mini" }, Hr = {
   key: 0,
   class: "mini-row"
-}, Ar = { class: "value" }, Hr = {
+}, Or = { class: "value" }, $r = {
   key: 1,
   class: "mini-row"
-}, Or = { class: "value" }, $r = { class: "mini-row result" }, Br = { class: "value" }, Nr = { class: "mini-section call-mini" }, Vr = {
+}, Br = { class: "value" }, Nr = { class: "mini-row result" }, Vr = { class: "value" }, Ir = { class: "mini-section call-mini" }, Gr = {
   key: 0,
   class: "mini-row"
-}, Ir = { class: "value" }, Gr = {
+}, Wr = { class: "value" }, jr = {
   key: 1,
   class: "mini-row"
-}, Wr = { class: "value" }, jr = { class: "mini-row result" }, Ur = { class: "value" }, qr = { class: "mini-section final-calc" }, Kr = { class: "mini-row formula" }, Xr = { class: "mini-row result highlight" }, Qr = { class: "value" }, Jr = { class: "mini-row result highlight final" }, Yr = { class: "value big" }, Zr = { class: "detailed-toggle-section" }, el = ["onClick"], tl = {
+}, Ur = { class: "value" }, qr = { class: "mini-row result" }, Kr = { class: "value" }, Xr = { class: "mini-section final-calc" }, Qr = { class: "mini-row formula" }, Jr = { class: "mini-row result highlight" }, Yr = { class: "value" }, Zr = { class: "mini-row result highlight final" }, el = { class: "value big" }, tl = { class: "detailed-toggle-section" }, il = ["onClick"], sl = {
   key: 0,
   class: "detailed-sections"
-}, il = { class: "detail-section section-stock" }, sl = { class: "section-tables" }, ol = { class: "table-half" }, nl = { class: "table-title" }, al = {
+}, ol = { class: "detail-section section-stock" }, nl = { class: "section-tables" }, al = { class: "table-half" }, rl = { class: "table-title" }, ll = {
   key: 0,
   class: "mini-table-wrapper"
-}, rl = { class: "mini-data-table" }, ll = { class: "text-right" }, hl = { class: "text-right" }, dl = { class: "text-right" }, ul = { class: "total-row" }, cl = { class: "text-right" }, fl = { class: "text-right" }, ml = {
+}, hl = { class: "mini-data-table" }, dl = { class: "text-right" }, ul = { class: "text-right" }, cl = { class: "text-right" }, fl = { class: "total-row" }, ml = { class: "text-right" }, pl = { class: "text-right" }, gl = {
   key: 1,
   class: "no-data-mini"
-}, pl = { class: "table-half" }, gl = { class: "table-title" }, bl = {
+}, bl = { class: "table-half" }, vl = { class: "table-title" }, wl = {
   key: 0,
   class: "mini-table-wrapper"
-}, vl = { class: "mini-data-table" }, wl = { class: "text-right" }, yl = { class: "text-right" }, Cl = { class: "text-right" }, El = { class: "total-row" }, xl = { class: "text-right" }, kl = { class: "text-right" }, Rl = {
+}, yl = { class: "mini-data-table" }, Cl = { class: "text-right" }, El = { class: "text-right" }, xl = { class: "text-right" }, kl = { class: "total-row" }, Rl = { class: "text-right" }, Tl = { class: "text-right" }, Sl = {
   key: 1,
   class: "no-data-mini"
-}, Tl = { class: "section-summary stock-summary-box" }, Sl = { key: 0 }, Ll = { class: "result-value" }, Dl = { class: "detail-section section-put" }, Fl = { class: "section-tables" }, Ml = { class: "table-half" }, Pl = { class: "table-title" }, _l = {
+}, Ll = { class: "section-summary stock-summary-box" }, Dl = { key: 0 }, Fl = { class: "result-value" }, Ml = { class: "detail-section section-put" }, Pl = { class: "section-tables" }, _l = { class: "table-half" }, zl = { class: "table-title" }, Al = {
   key: 0,
   class: "mini-table-wrapper"
-}, zl = { class: "mini-data-table" }, Al = { class: "text-right" }, Hl = { class: "text-right" }, Ol = { class: "text-right" }, $l = { class: "total-row" }, Bl = { class: "text-right" }, Nl = { class: "text-right" }, Vl = {
+}, Hl = { class: "mini-data-table" }, Ol = { class: "text-right" }, $l = { class: "text-right" }, Bl = { class: "text-right" }, Nl = { class: "total-row" }, Vl = { class: "text-right" }, Il = { class: "text-right" }, Gl = {
   key: 1,
   class: "no-data-mini"
-}, Il = { class: "table-half" }, Gl = { class: "table-title" }, Wl = {
+}, Wl = { class: "table-half" }, jl = { class: "table-title" }, Ul = {
   key: 0,
   class: "mini-table-wrapper"
-}, jl = { class: "mini-data-table" }, Ul = { class: "text-right" }, ql = { class: "text-right" }, Kl = { class: "text-right" }, Xl = { class: "total-row" }, Ql = { class: "text-right" }, Jl = { class: "text-right" }, Yl = {
+}, ql = { class: "mini-data-table" }, Kl = { class: "text-right" }, Xl = { class: "text-right" }, Ql = { class: "text-right" }, Jl = { class: "total-row" }, Yl = { class: "text-right" }, Zl = { class: "text-right" }, eh = {
   key: 1,
   class: "no-data-mini"
-}, Zl = { class: "section-summary put-summary-box" }, eh = { key: 0 }, th = { class: "result-value" }, ih = { class: "detail-section section-call" }, sh = { class: "section-tables" }, oh = { class: "table-half" }, nh = { class: "table-title" }, ah = {
+}, th = { class: "section-summary put-summary-box" }, ih = { key: 0 }, sh = { class: "result-value" }, oh = { class: "detail-section section-call" }, nh = { class: "section-tables" }, ah = { class: "table-half" }, rh = { class: "table-title" }, lh = {
   key: 0,
   class: "mini-table-wrapper"
-}, rh = { class: "mini-data-table" }, lh = { class: "text-right" }, hh = { class: "text-right" }, dh = { class: "text-right" }, uh = { class: "total-row" }, ch = { class: "text-right" }, fh = { class: "text-right" }, mh = {
+}, hh = { class: "mini-data-table" }, dh = { class: "text-right" }, uh = { class: "text-right" }, ch = { class: "text-right" }, fh = { class: "total-row" }, mh = { class: "text-right" }, ph = { class: "text-right" }, gh = {
   key: 1,
   class: "no-data-mini"
-}, ph = { class: "table-half" }, gh = { class: "table-title" }, bh = {
+}, bh = { class: "table-half" }, vh = { class: "table-title" }, wh = {
   key: 0,
   class: "mini-table-wrapper"
-}, vh = { class: "mini-data-table" }, wh = { class: "text-right" }, yh = { class: "text-right" }, Ch = { class: "text-right" }, Eh = { class: "total-row" }, xh = { class: "text-right" }, kh = { class: "text-right" }, Rh = {
+}, yh = { class: "mini-data-table" }, Ch = { class: "text-right" }, Eh = { class: "text-right" }, xh = { class: "text-right" }, kh = { class: "total-row" }, Rh = { class: "text-right" }, Th = { class: "text-right" }, Sh = {
   key: 1,
   class: "no-data-mini"
-}, Th = { class: "section-summary call-summary-box" }, Sh = { key: 0 }, Lh = { class: "result-value" }, Dh = {
+}, Lh = { class: "section-summary call-summary-box" }, Dh = { key: 0 }, Fh = { class: "result-value" }, Mh = {
   key: 0,
   class: "comparison-panel exit-panel"
-}, Fh = { class: "panel-content" }, Mh = { class: "mini-section stock-mini" }, Ph = { class: "mini-row" }, _h = { class: "value" }, zh = {
+}, Ph = { class: "panel-content" }, _h = { class: "mini-section stock-mini" }, zh = { class: "mini-row" }, Ah = { class: "value" }, Hh = {
   key: 0,
   class: "mini-row"
-}, Ah = { class: "value" }, Hh = { class: "mini-row result" }, Oh = { class: "value" }, $h = { class: "mini-section put-mini" }, Bh = {
+}, Oh = { class: "value" }, $h = { class: "mini-row result" }, Bh = { class: "value" }, Nh = { class: "mini-section put-mini" }, Vh = {
   key: 0,
   class: "mini-row"
-}, Nh = { class: "value" }, Vh = {
+}, Ih = { class: "value" }, Gh = {
   key: 1,
   class: "mini-row"
-}, Ih = { class: "value" }, Gh = { class: "mini-row result" }, Wh = { class: "value" }, jh = { class: "mini-section call-mini" }, Uh = {
+}, Wh = { class: "value" }, jh = { class: "mini-row result" }, Uh = { class: "value" }, qh = { class: "mini-section call-mini" }, Kh = {
   key: 0,
   class: "mini-row"
-}, qh = { class: "value" }, Kh = {
+}, Xh = { class: "value" }, Qh = {
   key: 1,
   class: "mini-row"
-}, Xh = { class: "value" }, Qh = { class: "mini-row result" }, Jh = { class: "value" }, Yh = { class: "mini-section final-calc" }, Zh = { class: "mini-row formula" }, ed = { class: "mini-row result highlight" }, td = { class: "value" }, id = { class: "mini-row result highlight final" }, sd = { class: "value big" }, od = { class: "detailed-toggle-section" }, nd = ["onClick"], ad = {
+}, Jh = { class: "value" }, Yh = { class: "mini-row result" }, Zh = { class: "value" }, ed = { class: "mini-section final-calc" }, td = { class: "mini-row formula" }, id = { class: "mini-row result highlight" }, sd = { class: "value" }, od = { class: "mini-row result highlight final" }, nd = { class: "value big" }, ad = { class: "detailed-toggle-section" }, rd = ["onClick"], ld = {
   key: 0,
   class: "detailed-sections"
-}, rd = { class: "detail-section section-stock" }, ld = { class: "section-tables" }, hd = { class: "table-half" }, dd = { class: "table-title" }, ud = {
+}, hd = { class: "detail-section section-stock" }, dd = { class: "section-tables" }, ud = { class: "table-half" }, cd = { class: "table-title" }, fd = {
   key: 0,
   class: "mini-table-wrapper"
-}, cd = { class: "mini-data-table" }, fd = { class: "text-right" }, md = { class: "text-right" }, pd = { class: "text-right" }, gd = { class: "total-row" }, bd = { class: "text-right" }, vd = { class: "text-right" }, wd = {
+}, md = { class: "mini-data-table" }, pd = { class: "text-right" }, gd = { class: "text-right" }, bd = { class: "text-right" }, vd = { class: "total-row" }, wd = { class: "text-right" }, yd = { class: "text-right" }, Cd = {
   key: 1,
   class: "no-data-mini"
-}, yd = { class: "table-half" }, Cd = { class: "table-title" }, Ed = {
+}, Ed = { class: "table-half" }, xd = { class: "table-title" }, kd = {
   key: 0,
   class: "mini-table-wrapper"
-}, xd = { class: "mini-data-table" }, kd = { class: "text-right" }, Rd = { class: "text-right" }, Td = { class: "text-right" }, Sd = { class: "total-row" }, Ld = { class: "text-right" }, Dd = { class: "text-right" }, Fd = {
+}, Rd = { class: "mini-data-table" }, Td = { class: "text-right" }, Sd = { class: "text-right" }, Ld = { class: "text-right" }, Dd = { class: "total-row" }, Fd = { class: "text-right" }, Md = { class: "text-right" }, Pd = {
   key: 1,
   class: "no-data-mini"
-}, Md = { class: "section-summary stock-summary-box" }, Pd = { key: 0 }, _d = { class: "result-value" }, zd = { class: "detail-section section-put" }, Ad = { class: "section-tables" }, Hd = { class: "table-half" }, Od = { class: "table-title" }, $d = {
+}, _d = { class: "section-summary stock-summary-box" }, zd = { key: 0 }, Ad = { class: "result-value" }, Hd = { class: "detail-section section-put" }, Od = { class: "section-tables" }, $d = { class: "table-half" }, Bd = { class: "table-title" }, Nd = {
   key: 0,
   class: "mini-table-wrapper"
-}, Bd = { class: "mini-data-table" }, Nd = { class: "text-right" }, Vd = { class: "text-right" }, Id = { class: "text-right" }, Gd = { class: "total-row" }, Wd = { class: "text-right" }, jd = { class: "text-right" }, Ud = {
+}, Vd = { class: "mini-data-table" }, Id = { class: "text-right" }, Gd = { class: "text-right" }, Wd = { class: "text-right" }, jd = { class: "total-row" }, Ud = { class: "text-right" }, qd = { class: "text-right" }, Kd = {
   key: 1,
   class: "no-data-mini"
-}, qd = { class: "table-half" }, Kd = { class: "table-title" }, Xd = {
+}, Xd = { class: "table-half" }, Qd = { class: "table-title" }, Jd = {
   key: 0,
   class: "mini-table-wrapper"
-}, Qd = { class: "mini-data-table" }, Jd = { class: "text-right" }, Yd = { class: "text-right" }, Zd = { class: "text-right" }, eu = { class: "total-row" }, tu = { class: "text-right" }, iu = { class: "text-right" }, su = {
+}, Yd = { class: "mini-data-table" }, Zd = { class: "text-right" }, eu = { class: "text-right" }, tu = { class: "text-right" }, iu = { class: "total-row" }, su = { class: "text-right" }, ou = { class: "text-right" }, nu = {
   key: 1,
   class: "no-data-mini"
-}, ou = { class: "section-summary put-summary-box" }, nu = { key: 0 }, au = { class: "result-value" }, ru = { class: "detail-section section-call" }, lu = { class: "section-tables" }, hu = { class: "table-half" }, du = { class: "table-title" }, uu = {
+}, au = { class: "section-summary put-summary-box" }, ru = { key: 0 }, lu = { class: "result-value" }, hu = { class: "detail-section section-call" }, du = { class: "section-tables" }, uu = { class: "table-half" }, cu = { class: "table-title" }, fu = {
   key: 0,
   class: "mini-table-wrapper"
-}, cu = { class: "mini-data-table" }, fu = { class: "text-right" }, mu = { class: "text-right" }, pu = { class: "text-right" }, gu = { class: "total-row" }, bu = { class: "text-right" }, vu = { class: "text-right" }, wu = {
+}, mu = { class: "mini-data-table" }, pu = { class: "text-right" }, gu = { class: "text-right" }, bu = { class: "text-right" }, vu = { class: "total-row" }, wu = { class: "text-right" }, yu = { class: "text-right" }, Cu = {
   key: 1,
   class: "no-data-mini"
-}, yu = { class: "table-half" }, Cu = { class: "table-title" }, Eu = {
+}, Eu = { class: "table-half" }, xu = { class: "table-title" }, ku = {
   key: 0,
   class: "mini-table-wrapper"
-}, xu = { class: "mini-data-table" }, ku = { class: "text-right" }, Ru = { class: "text-right" }, Tu = { class: "text-right" }, Su = { class: "total-row" }, Lu = { class: "text-right" }, Du = { class: "text-right" }, Fu = {
+}, Ru = { class: "mini-data-table" }, Tu = { class: "text-right" }, Su = { class: "text-right" }, Lu = { class: "text-right" }, Du = { class: "total-row" }, Fu = { class: "text-right" }, Mu = { class: "text-right" }, Pu = {
   key: 1,
   class: "no-data-mini"
-}, Mu = { class: "section-summary call-summary-box" }, Pu = { key: 0 }, _u = { class: "result-value" }, zu = {
+}, _u = { class: "section-summary call-summary-box" }, zu = { key: 0 }, Au = { class: "result-value" }, Hu = {
   key: 1,
   class: "comparison-panel exit-panel no-data-panel"
-}, Au = {
+}, Ou = {
   key: 0,
   class: "difference-summary"
-}, Hu = { class: "diff-summary-content" }, Ou = { class: "diff-item" }, $u = { class: "diff-item" }, Bu = { class: "total-row-fancy" }, Nu = { class: "text-center" }, Vu = { class: "total-value" }, Iu = { class: "text-center" }, Gu = { class: "total-value currency" }, Wu = { class: "text-center" }, ju = { class: "total-value highlight-hold" }, Uu = { class: "text-center" }, qu = { class: "total-value highlight-exit" }, Ku = { class: "text-center" }, Xu = {
+}, $u = { class: "diff-summary-content" }, Bu = { class: "diff-item" }, Nu = { class: "diff-item" }, Vu = { class: "total-row-fancy" }, Iu = { class: "text-center" }, Gu = { class: "total-value" }, Wu = { class: "text-center" }, ju = { class: "total-value currency" }, Uu = { class: "text-center" }, qu = { class: "total-value highlight-hold" }, Ku = { class: "text-center" }, Xu = { class: "total-value highlight-exit" }, Qu = { class: "text-center" }, Ju = {
   key: 1,
   class: "no-data"
-}, Qu = /* @__PURE__ */ os({
+}, Yu = /* @__PURE__ */ as({
   __name: "CalculationDetails",
   props: {
     showCalculationDetails: { type: Boolean },
@@ -12364,30 +12364,30 @@ const Ka = {
       }
       return c;
     }
-    return (w, c) => (C(), y(ie, null, [
-      Ve(st, { name: "toast-fade" }, {
-        default: ot(() => [
-          d.value ? (C(), y("div", Ka, m(h.value), 1)) : U("", !0)
+    return (w, c) => (C(), y(te, null, [
+      Ge(et, { name: "toast-fade" }, {
+        default: tt(() => [
+          d.value ? (C(), y("div", Qa, m(h.value), 1)) : U("", !0)
         ]),
         _: 1
       }),
-      Ve(st, { name: "slide-fade" }, {
-        default: ot(() => {
+      Ge(et, { name: "slide-fade" }, {
+        default: tt(() => {
           var T, R;
           return [
-            et(r("div", Xa, [
+            Je(r("div", Ja, [
               c[99] || (c[99] = r("h2", null, "Average Price calculation details :", -1)),
-              l.orderGroups && l.orderGroups.length > 0 ? (C(), y("div", Qa, [
-                r("div", Ja, [
+              l.orderGroups && l.orderGroups.length > 0 ? (C(), y("div", Ya, [
+                r("div", Za, [
                   c[0] || (c[0] = r("div", { class: "header-icon" }, "📊", -1)),
                   c[1] || (c[1] = r("div", { class: "header-text" }, [
                     r("h3", null, "Quick Summary"),
                     r("span", { class: "header-subtitle" }, "All Accounts at a Glance")
                   ], -1)),
-                  r("div", Ya, m(l.orderGroups.length) + " Accounts", 1)
+                  r("div", er, m(l.orderGroups.length) + " Accounts", 1)
                 ]),
-                r("div", Za, [
-                  r("table", er, [
+                r("div", tr, [
+                  r("table", ir, [
                     c[98] || (c[98] = r("thead", null, [
                       r("tr", null, [
                         r("th", { class: "expand-col" }),
@@ -12425,37 +12425,37 @@ const Ka = {
                       ])
                     ], -1)),
                     r("tbody", null, [
-                      (C(!0), y(ie, null, le(l.orderGroups, (b, v) => (C(), y(ie, {
+                      (C(!0), y(te, null, re(l.orderGroups, (b, v) => (C(), y(te, {
                         key: `summary-${v}`
                       }, [
                         r("tr", {
                           class: ee(["summary-row clickable-row", { expanded: t.value.has(v) }]),
                           onClick: (A) => o(v)
                         }, [
-                          r("td", ir, [
+                          r("td", or, [
                             r("span", {
                               class: ee(["expand-arrow", { rotated: t.value.has(v) }])
                             }, "▶", 2)
                           ]),
-                          r("td", sr, [
-                            r("span", or, m(b.mainPosition.account), 1)
-                          ]),
                           r("td", nr, [
-                            r("span", ar, m(b.totalShares.toLocaleString()), 1)
+                            r("span", ar, m(b.mainPosition.account), 1)
                           ]),
                           r("td", rr, [
-                            r("span", lr, "$" + m(b.netCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                            r("span", lr, m(b.totalShares.toLocaleString()), 1)
                           ]),
                           r("td", hr, [
-                            b.mainPosition.avgPrice ? (C(), y("span", dr, "$" + m(b.mainPosition.avgPrice.toFixed(2)), 1)) : (C(), y("span", ur, "-"))
+                            r("span", dr, "$" + m(b.netCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                           ]),
-                          r("td", cr, [
-                            r("span", fr, "$" + m(b.adjustedAvgPricePerShare.toFixed(2)), 1)
+                          r("td", ur, [
+                            b.mainPosition.avgPrice ? (C(), y("span", cr, "$" + m(b.mainPosition.avgPrice.toFixed(2)), 1)) : (C(), y("span", fr, "-"))
                           ]),
                           r("td", mr, [
-                            l.orderGroupsExitToday && l.orderGroupsExitToday[v] ? (C(), y("span", pr, " $" + m(l.orderGroupsExitToday[v].adjustedAvgPricePerShare.toFixed(2)), 1)) : (C(), y("span", gr, "-"))
+                            r("span", pr, "$" + m(b.adjustedAvgPricePerShare.toFixed(2)), 1)
                           ]),
-                          r("td", br, [
+                          r("td", gr, [
+                            l.orderGroupsExitToday && l.orderGroupsExitToday[v] ? (C(), y("span", br, " $" + m(l.orderGroupsExitToday[v].adjustedAvgPricePerShare.toFixed(2)), 1)) : (C(), y("span", vr, "-"))
+                          ]),
+                          r("td", wr, [
                             l.orderGroupsExitToday && l.orderGroupsExitToday[v] ? (C(), y("span", {
                               key: 0,
                               class: ee(["diff-badge", {
@@ -12463,84 +12463,84 @@ const Ka = {
                                 negative: l.orderGroupsExitToday[v].adjustedAvgPricePerShare > b.adjustedAvgPricePerShare
                               }])
                             }, [
-                              r("span", vr, m(l.orderGroupsExitToday[v].adjustedAvgPricePerShare < b.adjustedAvgPricePerShare ? "↓" : "↑"), 1),
+                              r("span", yr, m(l.orderGroupsExitToday[v].adjustedAvgPricePerShare < b.adjustedAvgPricePerShare ? "↓" : "↑"), 1),
                               j(" $" + m(Math.abs(l.orderGroupsExitToday[v].adjustedAvgPricePerShare - b.adjustedAvgPricePerShare).toFixed(2)), 1)
-                            ], 2)) : (C(), y("span", wr, "-"))
+                            ], 2)) : (C(), y("span", Cr, "-"))
                           ])
-                        ], 10, tr),
-                        t.value.has(v) ? (C(), y("tr", yr, [
-                          r("td", Cr, [
-                            r("div", Er, [
-                              r("div", xr, [
-                                r("div", kr, [
+                        ], 10, sr),
+                        t.value.has(v) ? (C(), y("tr", Er, [
+                          r("td", xr, [
+                            r("div", kr, [
+                              r("div", Rr, [
+                                r("div", Tr, [
                                   c[45] || (c[45] = r("div", { class: "panel-header hold" }, [
                                     r("span", { class: "panel-icon" }, "🔒"),
                                     r("span", { class: "panel-title" }, "Hold till Expiry")
                                   ], -1)),
-                                  r("div", Rr, [
-                                    r("div", Tr, [
+                                  r("div", Sr, [
+                                    r("div", Lr, [
                                       c[5] || (c[5] = r("div", { class: "mini-header" }, "📊 Stocks", -1)),
-                                      r("div", Sr, [
+                                      r("div", Dr, [
                                         c[2] || (c[2] = r("span", null, "Total Stock Purchases:", -1)),
-                                        r("span", Lr, "$" + m(b.stockPurchaseCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                        r("span", Fr, "$" + m(b.stockPurchaseCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                       ]),
-                                      b.stockSaleProceeds && b.stockSaleProceeds > 0 ? (C(), y("div", Dr, [
+                                      b.stockSaleProceeds && b.stockSaleProceeds > 0 ? (C(), y("div", Mr, [
                                         c[3] || (c[3] = r("span", null, "Less: Stock Sales:", -1)),
-                                        r("span", Fr, "-$" + m(Math.abs(b.stockSaleProceeds).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                        r("span", Pr, "-$" + m(Math.abs(b.stockSaleProceeds).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                       ])) : U("", !0),
-                                      r("div", Mr, [
+                                      r("div", _r, [
                                         c[4] || (c[4] = r("span", null, "Net Stock Cost:", -1)),
-                                        r("span", Pr, "$" + m(b.netStockCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                        r("span", zr, "$" + m(b.netStockCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                       ])
                                     ]),
-                                    r("div", _r, [
+                                    r("div", Ar, [
                                       c[9] || (c[9] = r("div", { class: "mini-header" }, "📉 Puts", -1)),
-                                      b.putPremiumReceived > 0 ? (C(), y("div", zr, [
+                                      b.putPremiumReceived > 0 ? (C(), y("div", Hr, [
                                         c[6] || (c[6] = r("span", null, "Put Premium Received:", -1)),
-                                        r("span", Ar, "$" + m(Math.abs(b.putPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                        r("span", Or, "$" + m(Math.abs(b.putPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                       ])) : U("", !0),
-                                      b.putBuybackCost && b.putBuybackCost > 0 ? (C(), y("div", Hr, [
+                                      b.putBuybackCost && b.putBuybackCost > 0 ? (C(), y("div", $r, [
                                         c[7] || (c[7] = r("span", null, "Less: Buyback Cost:", -1)),
-                                        r("span", Or, "-$" + m(Math.abs(b.putBuybackCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                        r("span", Br, "-$" + m(Math.abs(b.putBuybackCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                       ])) : U("", !0),
-                                      r("div", $r, [
+                                      r("div", Nr, [
                                         c[8] || (c[8] = r("span", null, "Net Put Cash Flow:", -1)),
-                                        r("span", Br, "$" + m((b.netPutCashFlow || 0).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                        r("span", Vr, "$" + m((b.netPutCashFlow || 0).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                       ])
                                     ]),
-                                    r("div", Nr, [
+                                    r("div", Ir, [
                                       c[13] || (c[13] = r("div", { class: "mini-header" }, "� Calls", -1)),
-                                      b.callPremiumReceived > 0 ? (C(), y("div", Vr, [
+                                      b.callPremiumReceived > 0 ? (C(), y("div", Gr, [
                                         c[10] || (c[10] = r("span", null, "Call Premium Received:", -1)),
-                                        r("span", Ir, "$" + m(Math.abs(b.callPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                        r("span", Wr, "$" + m(Math.abs(b.callPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                       ])) : U("", !0),
-                                      b.callBuybackCost && b.callBuybackCost > 0 ? (C(), y("div", Gr, [
+                                      b.callBuybackCost && b.callBuybackCost > 0 ? (C(), y("div", jr, [
                                         c[11] || (c[11] = r("span", null, "Less: Buyback Cost:", -1)),
-                                        r("span", Wr, "-$" + m(Math.abs(b.callBuybackCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                        r("span", Ur, "-$" + m(Math.abs(b.callBuybackCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                       ])) : U("", !0),
-                                      r("div", jr, [
+                                      r("div", qr, [
                                         c[12] || (c[12] = r("span", null, "Net Call Cash Flow:", -1)),
-                                        r("span", Ur, "$" + m((b.netCallCashFlow || 0).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                        r("span", Kr, "$" + m((b.netCallCashFlow || 0).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                       ])
                                     ]),
-                                    r("div", qr, [
+                                    r("div", Xr, [
                                       c[15] || (c[15] = r("div", { class: "mini-header" }, "🎯 Final Calculation", -1)),
                                       c[16] || (c[16] = r("div", { class: "mini-row formula" }, [
                                         r("span", null, "Total Net Cost = Stock - Puts - Calls")
                                       ], -1)),
-                                      r("div", Kr, [
+                                      r("div", Qr, [
                                         r("span", null, "= $" + m(b.netStockCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + m(Math.abs(b.netPutCashFlow || 0).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + m(Math.abs(b.netCallCashFlow || 0).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                       ]),
-                                      r("div", Xr, [
-                                        c[14] || (c[14] = r("span", null, "Total Net Cost:", -1)),
-                                        r("span", Qr, "$" + m(b.netCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
-                                      ]),
                                       r("div", Jr, [
+                                        c[14] || (c[14] = r("span", null, "Total Net Cost:", -1)),
+                                        r("span", Yr, "$" + m(b.netCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                      ]),
+                                      r("div", Zr, [
                                         r("span", null, "Avg Price (" + m(b.totalShares.toLocaleString()) + " shares):", 1),
-                                        r("span", Yr, "$" + m(b.adjustedAvgPricePerShare.toFixed(2)), 1)
+                                        r("span", el, "$" + m(b.adjustedAvgPricePerShare.toFixed(2)), 1)
                                       ])
                                     ]),
-                                    r("div", Zr, [
+                                    r("div", tl, [
                                       r("button", {
                                         class: "toggle-details-btn",
                                         onClick: bt((A) => n(v), ["stop"])
@@ -12549,20 +12549,20 @@ const Ka = {
                                           class: ee(["toggle-arrow", { rotated: i.value.has(v) }])
                                         }, "▶", 2),
                                         j(" " + m(i.value.has(v) ? "Hide" : "Show") + " Detailed Breakdown ", 1)
-                                      ], 8, el)
+                                      ], 8, il)
                                     ]),
-                                    Ve(st, { name: "slide-fade" }, {
-                                      default: ot(() => {
+                                    Ge(et, { name: "slide-fade" }, {
+                                      default: tt(() => {
                                         var A, _, F, L, I, z;
                                         return [
-                                          i.value.has(v) ? (C(), y("div", tl, [
-                                            r("div", il, [
+                                          i.value.has(v) ? (C(), y("div", sl, [
+                                            r("div", ol, [
                                               c[26] || (c[26] = r("div", { class: "section-label" }, "Section A: Stocks", -1)),
-                                              r("div", sl, [
-                                                r("div", ol, [
-                                                  r("div", nl, "📍 Stock Purchases (" + m(((A = b.stockPurchases) == null ? void 0 : A.length) || 0) + ")", 1),
-                                                  b.stockPurchases && b.stockPurchases.length > 0 ? (C(), y("div", al, [
-                                                    r("table", rl, [
+                                              r("div", nl, [
+                                                r("div", al, [
+                                                  r("div", rl, "📍 Stock Purchases (" + m(((A = b.stockPurchases) == null ? void 0 : A.length) || 0) + ")", 1),
+                                                  b.stockPurchases && b.stockPurchases.length > 0 ? (C(), y("div", ll, [
+                                                    r("table", hl, [
                                                       c[19] || (c[19] = r("thead", null, [
                                                         r("tr", null, [
                                                           r("th", null, "Date"),
@@ -12572,36 +12572,36 @@ const Ka = {
                                                         ])
                                                       ], -1)),
                                                       r("tbody", null, [
-                                                        (C(!0), y(ie, null, le(f(b.stockPurchases), (S, M) => (C(), y("tr", {
+                                                        (C(!0), y(te, null, re(f(b.stockPurchases), (S, M) => (C(), y("tr", {
                                                           key: `hold-sp-${v}-${M}`
                                                         }, [
                                                           r("td", null, m(u(S.orderDate)), 1),
-                                                          r("td", ll, m(S.quantity.toLocaleString()), 1),
-                                                          r("td", hl, "$" + m(Number(S.avgPrice).toFixed(2)), 1),
-                                                          r("td", dl, "$" + m(Number(S.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                                          r("td", dl, m(S.quantity.toLocaleString()), 1),
+                                                          r("td", ul, "$" + m(Number(S.avgPrice).toFixed(2)), 1),
+                                                          r("td", cl, "$" + m(Number(S.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                                         ]))), 128))
                                                       ]),
                                                       r("tfoot", null, [
-                                                        r("tr", ul, [
+                                                        r("tr", fl, [
                                                           c[17] || (c[17] = r("td", null, [
                                                             r("strong", null, "Total")
                                                           ], -1)),
-                                                          r("td", cl, [
+                                                          r("td", ml, [
                                                             r("strong", null, m(b.stockPurchases.reduce((S, M) => S + M.quantity, 0).toLocaleString()), 1)
                                                           ]),
                                                           c[18] || (c[18] = r("td", null, null, -1)),
-                                                          r("td", fl, [
+                                                          r("td", pl, [
                                                             r("strong", null, "$" + m(b.stockPurchases.reduce((S, M) => S + Number(M.totalCost), 0).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                                           ])
                                                         ])
                                                       ])
                                                     ])
-                                                  ])) : (C(), y("div", ml, "No stock purchases"))
+                                                  ])) : (C(), y("div", gl, "No stock purchases"))
                                                 ]),
-                                                r("div", pl, [
-                                                  r("div", gl, "💰 Stock Sales (" + m(((_ = b.stockSales) == null ? void 0 : _.length) || 0) + ")", 1),
-                                                  b.stockSales && b.stockSales.length > 0 ? (C(), y("div", bl, [
-                                                    r("table", vl, [
+                                                r("div", bl, [
+                                                  r("div", vl, "💰 Stock Sales (" + m(((_ = b.stockSales) == null ? void 0 : _.length) || 0) + ")", 1),
+                                                  b.stockSales && b.stockSales.length > 0 ? (C(), y("div", wl, [
+                                                    r("table", yl, [
                                                       c[22] || (c[22] = r("thead", null, [
                                                         r("tr", null, [
                                                           r("th", null, "Date"),
@@ -12611,40 +12611,40 @@ const Ka = {
                                                         ])
                                                       ], -1)),
                                                       r("tbody", null, [
-                                                        (C(!0), y(ie, null, le(f(b.stockSales), (S, M) => (C(), y("tr", {
+                                                        (C(!0), y(te, null, re(f(b.stockSales), (S, M) => (C(), y("tr", {
                                                           key: `hold-ss-${v}-${M}`
                                                         }, [
                                                           r("td", null, m(u(S.orderDate)), 1),
-                                                          r("td", wl, m(S.quantity.toLocaleString()), 1),
-                                                          r("td", yl, "$" + m(Number(S.avgPrice).toFixed(2)), 1),
-                                                          r("td", Cl, "$" + m(Number(S.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                                          r("td", Cl, m(S.quantity.toLocaleString()), 1),
+                                                          r("td", El, "$" + m(Number(S.avgPrice).toFixed(2)), 1),
+                                                          r("td", xl, "$" + m(Number(S.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                                         ]))), 128))
                                                       ]),
                                                       r("tfoot", null, [
-                                                        r("tr", El, [
+                                                        r("tr", kl, [
                                                           c[20] || (c[20] = r("td", null, [
                                                             r("strong", null, "Total")
                                                           ], -1)),
-                                                          r("td", xl, [
+                                                          r("td", Rl, [
                                                             r("strong", null, m(b.stockSales.reduce((S, M) => S + M.quantity, 0).toLocaleString()), 1)
                                                           ]),
                                                           c[21] || (c[21] = r("td", null, null, -1)),
-                                                          r("td", kl, [
+                                                          r("td", Tl, [
                                                             r("strong", null, "$" + m(b.stockSales.reduce((S, M) => S + Number(M.totalCost), 0).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                                           ])
                                                         ])
                                                       ])
                                                     ])
-                                                  ])) : (C(), y("div", Rl, "No stock sales"))
+                                                  ])) : (C(), y("div", Sl, "No stock sales"))
                                                 ])
                                               ]),
-                                              r("div", Tl, [
+                                              r("div", Ll, [
                                                 r("div", null, [
                                                   c[23] || (c[23] = r("strong", null, "Net Stock:", -1)),
                                                   j(" $" + m(b.stockPurchaseCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ", 1),
-                                                  b.stockSaleProceeds > 0 ? (C(), y("span", Sl, "- $" + m(Math.abs(b.stockSaleProceeds).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)) : U("", !0),
+                                                  b.stockSaleProceeds > 0 ? (C(), y("span", Dl, "- $" + m(Math.abs(b.stockSaleProceeds).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)) : U("", !0),
                                                   c[24] || (c[24] = j(" = ", -1)),
-                                                  r("span", Ll, "$" + m(b.netStockCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                                  r("span", Fl, "$" + m(b.netStockCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                                 ]),
                                                 r("div", null, [
                                                   c[25] || (c[25] = r("strong", null, "Current Shares:", -1)),
@@ -12652,13 +12652,13 @@ const Ka = {
                                                 ])
                                               ])
                                             ]),
-                                            r("div", Dl, [
+                                            r("div", Ml, [
                                               c[35] || (c[35] = r("div", { class: "section-label" }, "Section B: Puts", -1)),
-                                              r("div", Fl, [
-                                                r("div", Ml, [
-                                                  r("div", Pl, "📉 Put Premium Received (" + m(((F = b.putSales) == null ? void 0 : F.length) || 0) + ")", 1),
-                                                  b.putSales && b.putSales.length > 0 ? (C(), y("div", _l, [
-                                                    r("table", zl, [
+                                              r("div", Pl, [
+                                                r("div", _l, [
+                                                  r("div", zl, "📉 Put Premium Received (" + m(((F = b.putSales) == null ? void 0 : F.length) || 0) + ")", 1),
+                                                  b.putSales && b.putSales.length > 0 ? (C(), y("div", Al, [
+                                                    r("table", Hl, [
                                                       c[29] || (c[29] = r("thead", null, [
                                                         r("tr", null, [
                                                           r("th", null, "Option"),
@@ -12668,36 +12668,36 @@ const Ka = {
                                                         ])
                                                       ], -1)),
                                                       r("tbody", null, [
-                                                        (C(!0), y(ie, null, le(f(b.putSales), (S, M) => (C(), y("tr", {
+                                                        (C(!0), y(te, null, re(f(b.putSales), (S, M) => (C(), y("tr", {
                                                           key: `hold-ps-${v}-${M}`
                                                         }, [
                                                           r("td", null, m(p(S.symbol)), 1),
-                                                          r("td", Al, m(S.quantity.toLocaleString()), 1),
-                                                          r("td", Hl, "$" + m(Number(S.avgPrice).toFixed(2)), 1),
-                                                          r("td", Ol, "$" + m(Number(S.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                                          r("td", Ol, m(S.quantity.toLocaleString()), 1),
+                                                          r("td", $l, "$" + m(Number(S.avgPrice).toFixed(2)), 1),
+                                                          r("td", Bl, "$" + m(Number(S.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                                         ]))), 128))
                                                       ]),
                                                       r("tfoot", null, [
-                                                        r("tr", $l, [
+                                                        r("tr", Nl, [
                                                           c[27] || (c[27] = r("td", null, [
                                                             r("strong", null, "Total")
                                                           ], -1)),
-                                                          r("td", Bl, [
+                                                          r("td", Vl, [
                                                             r("strong", null, m(b.putSales.reduce((S, M) => S + M.quantity, 0).toLocaleString()), 1)
                                                           ]),
                                                           c[28] || (c[28] = r("td", null, null, -1)),
-                                                          r("td", Nl, [
+                                                          r("td", Il, [
                                                             r("strong", null, "$" + m(Math.abs(b.putPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                                           ])
                                                         ])
                                                       ])
                                                     ])
-                                                  ])) : (C(), y("div", Vl, "No put sales"))
+                                                  ])) : (C(), y("div", Gl, "No put sales"))
                                                 ]),
-                                                r("div", Il, [
-                                                  r("div", Gl, "🔄 Put Buybacks (" + m(((L = b.putBuybacks) == null ? void 0 : L.length) || 0) + ")", 1),
-                                                  b.putBuybacks && b.putBuybacks.length > 0 ? (C(), y("div", Wl, [
-                                                    r("table", jl, [
+                                                r("div", Wl, [
+                                                  r("div", jl, "🔄 Put Buybacks (" + m(((L = b.putBuybacks) == null ? void 0 : L.length) || 0) + ")", 1),
+                                                  b.putBuybacks && b.putBuybacks.length > 0 ? (C(), y("div", Ul, [
+                                                    r("table", ql, [
                                                       c[32] || (c[32] = r("thead", null, [
                                                         r("tr", null, [
                                                           r("th", null, "Option"),
@@ -12707,48 +12707,48 @@ const Ka = {
                                                         ])
                                                       ], -1)),
                                                       r("tbody", null, [
-                                                        (C(!0), y(ie, null, le(f(b.putBuybacks), (S, M) => (C(), y("tr", {
+                                                        (C(!0), y(te, null, re(f(b.putBuybacks), (S, M) => (C(), y("tr", {
                                                           key: `hold-pb-${v}-${M}`
                                                         }, [
                                                           r("td", null, m(p(S.symbol)), 1),
-                                                          r("td", Ul, m(S.quantity.toLocaleString()), 1),
-                                                          r("td", ql, "$" + m(Number(S.avgPrice).toFixed(2)), 1),
-                                                          r("td", Kl, "$" + m(Number(S.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                                          r("td", Kl, m(S.quantity.toLocaleString()), 1),
+                                                          r("td", Xl, "$" + m(Number(S.avgPrice).toFixed(2)), 1),
+                                                          r("td", Ql, "$" + m(Number(S.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                                         ]))), 128))
                                                       ]),
                                                       r("tfoot", null, [
-                                                        r("tr", Xl, [
+                                                        r("tr", Jl, [
                                                           c[30] || (c[30] = r("td", null, [
                                                             r("strong", null, "Total")
                                                           ], -1)),
-                                                          r("td", Ql, [
+                                                          r("td", Yl, [
                                                             r("strong", null, m(b.putBuybacks.reduce((S, M) => S + M.quantity, 0).toLocaleString()), 1)
                                                           ]),
                                                           c[31] || (c[31] = r("td", null, null, -1)),
-                                                          r("td", Jl, [
+                                                          r("td", Zl, [
                                                             r("strong", null, "$" + m(Math.abs(b.putBuybackCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                                           ])
                                                         ])
                                                       ])
                                                     ])
-                                                  ])) : (C(), y("div", Yl, "No put buybacks"))
+                                                  ])) : (C(), y("div", eh, "No put buybacks"))
                                                 ])
                                               ]),
-                                              r("div", Zl, [
+                                              r("div", th, [
                                                 c[33] || (c[33] = r("strong", null, "Net Put Cash Flow:", -1)),
                                                 j(" $" + m(Math.abs(b.putPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ", 1),
-                                                b.putBuybackCost > 0 ? (C(), y("span", eh, "- $" + m(Math.abs(b.putBuybackCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)) : U("", !0),
+                                                b.putBuybackCost > 0 ? (C(), y("span", ih, "- $" + m(Math.abs(b.putBuybackCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)) : U("", !0),
                                                 c[34] || (c[34] = j(" = ", -1)),
-                                                r("span", th, "$" + m((b.netPutCashFlow || 0).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                                r("span", sh, "$" + m((b.netPutCashFlow || 0).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                               ])
                                             ]),
-                                            r("div", ih, [
+                                            r("div", oh, [
                                               c[44] || (c[44] = r("div", { class: "section-label" }, "Section C: Calls", -1)),
-                                              r("div", sh, [
-                                                r("div", oh, [
-                                                  r("div", nh, "📞 Call Premium Received (" + m(((I = b.callSales) == null ? void 0 : I.length) || 0) + ")", 1),
-                                                  b.callSales && b.callSales.length > 0 ? (C(), y("div", ah, [
-                                                    r("table", rh, [
+                                              r("div", nh, [
+                                                r("div", ah, [
+                                                  r("div", rh, "📞 Call Premium Received (" + m(((I = b.callSales) == null ? void 0 : I.length) || 0) + ")", 1),
+                                                  b.callSales && b.callSales.length > 0 ? (C(), y("div", lh, [
+                                                    r("table", hh, [
                                                       c[38] || (c[38] = r("thead", null, [
                                                         r("tr", null, [
                                                           r("th", null, "Option"),
@@ -12758,36 +12758,36 @@ const Ka = {
                                                         ])
                                                       ], -1)),
                                                       r("tbody", null, [
-                                                        (C(!0), y(ie, null, le(f(b.callSales), (S, M) => (C(), y("tr", {
+                                                        (C(!0), y(te, null, re(f(b.callSales), (S, M) => (C(), y("tr", {
                                                           key: `hold-cs-${v}-${M}`
                                                         }, [
                                                           r("td", null, m(p(S.symbol)), 1),
-                                                          r("td", lh, m(S.quantity.toLocaleString()), 1),
-                                                          r("td", hh, "$" + m(Number(S.avgPrice).toFixed(2)), 1),
-                                                          r("td", dh, "$" + m(Number(S.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                                          r("td", dh, m(S.quantity.toLocaleString()), 1),
+                                                          r("td", uh, "$" + m(Number(S.avgPrice).toFixed(2)), 1),
+                                                          r("td", ch, "$" + m(Number(S.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                                         ]))), 128))
                                                       ]),
                                                       r("tfoot", null, [
-                                                        r("tr", uh, [
+                                                        r("tr", fh, [
                                                           c[36] || (c[36] = r("td", null, [
                                                             r("strong", null, "Total")
                                                           ], -1)),
-                                                          r("td", ch, [
+                                                          r("td", mh, [
                                                             r("strong", null, m(b.callSales.reduce((S, M) => S + M.quantity, 0).toLocaleString()), 1)
                                                           ]),
                                                           c[37] || (c[37] = r("td", null, null, -1)),
-                                                          r("td", fh, [
+                                                          r("td", ph, [
                                                             r("strong", null, "$" + m(Math.abs(b.callPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                                           ])
                                                         ])
                                                       ])
                                                     ])
-                                                  ])) : (C(), y("div", mh, "No call sales"))
+                                                  ])) : (C(), y("div", gh, "No call sales"))
                                                 ]),
-                                                r("div", ph, [
-                                                  r("div", gh, "🔄 Call Buybacks (" + m(((z = b.callBuybacks) == null ? void 0 : z.length) || 0) + ")", 1),
-                                                  b.callBuybacks && b.callBuybacks.length > 0 ? (C(), y("div", bh, [
-                                                    r("table", vh, [
+                                                r("div", bh, [
+                                                  r("div", vh, "🔄 Call Buybacks (" + m(((z = b.callBuybacks) == null ? void 0 : z.length) || 0) + ")", 1),
+                                                  b.callBuybacks && b.callBuybacks.length > 0 ? (C(), y("div", wh, [
+                                                    r("table", yh, [
                                                       c[41] || (c[41] = r("thead", null, [
                                                         r("tr", null, [
                                                           r("th", null, "Option"),
@@ -12797,39 +12797,39 @@ const Ka = {
                                                         ])
                                                       ], -1)),
                                                       r("tbody", null, [
-                                                        (C(!0), y(ie, null, le(f(b.callBuybacks), (S, M) => (C(), y("tr", {
+                                                        (C(!0), y(te, null, re(f(b.callBuybacks), (S, M) => (C(), y("tr", {
                                                           key: `hold-cb-${v}-${M}`
                                                         }, [
                                                           r("td", null, m(p(S.symbol)), 1),
-                                                          r("td", wh, m(S.quantity.toLocaleString()), 1),
-                                                          r("td", yh, "$" + m(Number(S.avgPrice).toFixed(2)), 1),
-                                                          r("td", Ch, "$" + m(Number(S.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                                          r("td", Ch, m(S.quantity.toLocaleString()), 1),
+                                                          r("td", Eh, "$" + m(Number(S.avgPrice).toFixed(2)), 1),
+                                                          r("td", xh, "$" + m(Number(S.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                                         ]))), 128))
                                                       ]),
                                                       r("tfoot", null, [
-                                                        r("tr", Eh, [
+                                                        r("tr", kh, [
                                                           c[39] || (c[39] = r("td", null, [
                                                             r("strong", null, "Total")
                                                           ], -1)),
-                                                          r("td", xh, [
+                                                          r("td", Rh, [
                                                             r("strong", null, m(b.callBuybacks.reduce((S, M) => S + M.quantity, 0).toLocaleString()), 1)
                                                           ]),
                                                           c[40] || (c[40] = r("td", null, null, -1)),
-                                                          r("td", kh, [
+                                                          r("td", Th, [
                                                             r("strong", null, "$" + m(Math.abs(b.callBuybackCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                                           ])
                                                         ])
                                                       ])
                                                     ])
-                                                  ])) : (C(), y("div", Rh, "No call buybacks"))
+                                                  ])) : (C(), y("div", Sh, "No call buybacks"))
                                                 ])
                                               ]),
-                                              r("div", Th, [
+                                              r("div", Lh, [
                                                 c[42] || (c[42] = r("strong", null, "Net Call Cash Flow:", -1)),
                                                 j(" $" + m(Math.abs(b.callPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ", 1),
-                                                b.callBuybackCost > 0 ? (C(), y("span", Sh, "- $" + m(Math.abs(b.callBuybackCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)) : U("", !0),
+                                                b.callBuybackCost > 0 ? (C(), y("span", Dh, "- $" + m(Math.abs(b.callBuybackCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)) : U("", !0),
                                                 c[43] || (c[43] = j(" = ", -1)),
-                                                r("span", Lh, "$" + m((b.netCallCashFlow || 0).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                                r("span", Fh, "$" + m((b.netCallCashFlow || 0).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                               ])
                                             ])
                                           ])) : U("", !0)
@@ -12844,78 +12844,78 @@ const Ka = {
                                   r("div", { class: "divider-text" }, "VS"),
                                   r("div", { class: "divider-line" })
                                 ], -1)),
-                                l.orderGroupsExitToday && l.orderGroupsExitToday[v] ? (C(), y("div", Dh, [
+                                l.orderGroupsExitToday && l.orderGroupsExitToday[v] ? (C(), y("div", Mh, [
                                   c[89] || (c[89] = r("div", { class: "panel-header exit" }, [
                                     r("span", { class: "panel-icon" }, "🚪"),
                                     r("span", { class: "panel-title" }, "Exit Today")
                                   ], -1)),
-                                  r("div", Fh, [
-                                    r("div", Mh, [
+                                  r("div", Ph, [
+                                    r("div", _h, [
                                       c[49] || (c[49] = r("div", { class: "mini-header" }, "📊 Stocks", -1)),
-                                      r("div", Ph, [
+                                      r("div", zh, [
                                         c[46] || (c[46] = r("span", null, "Total Stock Purchases:", -1)),
-                                        r("span", _h, "$" + m(l.orderGroupsExitToday[v].stockPurchaseCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                        r("span", Ah, "$" + m(l.orderGroupsExitToday[v].stockPurchaseCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                       ]),
-                                      l.orderGroupsExitToday[v].stockSaleProceeds && l.orderGroupsExitToday[v].stockSaleProceeds > 0 ? (C(), y("div", zh, [
+                                      l.orderGroupsExitToday[v].stockSaleProceeds && l.orderGroupsExitToday[v].stockSaleProceeds > 0 ? (C(), y("div", Hh, [
                                         c[47] || (c[47] = r("span", null, "Less: Stock Sales:", -1)),
-                                        r("span", Ah, "-$" + m(Math.abs(l.orderGroupsExitToday[v].stockSaleProceeds).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                        r("span", Oh, "-$" + m(Math.abs(l.orderGroupsExitToday[v].stockSaleProceeds).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                       ])) : U("", !0),
-                                      r("div", Hh, [
+                                      r("div", $h, [
                                         c[48] || (c[48] = r("span", null, "Net Stock Cost:", -1)),
-                                        r("span", Oh, "$" + m(l.orderGroupsExitToday[v].netStockCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                        r("span", Bh, "$" + m(l.orderGroupsExitToday[v].netStockCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                       ])
                                     ]),
-                                    r("div", $h, [
+                                    r("div", Nh, [
                                       c[53] || (c[53] = r("div", { class: "mini-header" }, "📉 Puts", -1)),
-                                      l.orderGroupsExitToday[v].putPremiumReceived > 0 ? (C(), y("div", Bh, [
+                                      l.orderGroupsExitToday[v].putPremiumReceived > 0 ? (C(), y("div", Vh, [
                                         c[50] || (c[50] = r("span", null, "Put Premium Received:", -1)),
-                                        r("span", Nh, "$" + m(Math.abs(l.orderGroupsExitToday[v].putPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                        r("span", Ih, "$" + m(Math.abs(l.orderGroupsExitToday[v].putPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                       ])) : U("", !0),
-                                      l.orderGroupsExitToday[v].putBuybackCost && l.orderGroupsExitToday[v].putBuybackCost > 0 ? (C(), y("div", Vh, [
+                                      l.orderGroupsExitToday[v].putBuybackCost && l.orderGroupsExitToday[v].putBuybackCost > 0 ? (C(), y("div", Gh, [
                                         c[51] || (c[51] = r("span", null, "Less: Buyback Cost:", -1)),
-                                        r("span", Ih, "-$" + m(Math.abs(l.orderGroupsExitToday[v].putBuybackCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                        r("span", Wh, "-$" + m(Math.abs(l.orderGroupsExitToday[v].putBuybackCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                       ])) : U("", !0),
-                                      r("div", Gh, [
+                                      r("div", jh, [
                                         c[52] || (c[52] = r("span", null, "Net Put Cash Flow:", -1)),
-                                        r("span", Wh, "$" + m((l.orderGroupsExitToday[v].netPutCashFlow || 0).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                        r("span", Uh, "$" + m((l.orderGroupsExitToday[v].netPutCashFlow || 0).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                       ])
                                     ]),
-                                    r("div", jh, [
+                                    r("div", qh, [
                                       c[57] || (c[57] = r("div", { class: "mini-header" }, [
                                         j("📞 Calls "),
                                         r("span", { class: "exit-label" }, "(Current Value)")
                                       ], -1)),
-                                      l.orderGroupsExitToday[v].callPremiumReceived > 0 ? (C(), y("div", Uh, [
+                                      l.orderGroupsExitToday[v].callPremiumReceived > 0 ? (C(), y("div", Kh, [
                                         c[54] || (c[54] = r("span", null, "Call Current Value:", -1)),
-                                        r("span", qh, "$" + m(Math.abs(l.orderGroupsExitToday[v].callPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                        r("span", Xh, "$" + m(Math.abs(l.orderGroupsExitToday[v].callPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                       ])) : U("", !0),
-                                      l.orderGroupsExitToday[v].callBuybackCost && l.orderGroupsExitToday[v].callBuybackCost > 0 ? (C(), y("div", Kh, [
+                                      l.orderGroupsExitToday[v].callBuybackCost && l.orderGroupsExitToday[v].callBuybackCost > 0 ? (C(), y("div", Qh, [
                                         c[55] || (c[55] = r("span", null, "Less: Buyback Cost:", -1)),
-                                        r("span", Xh, "-$" + m(Math.abs(l.orderGroupsExitToday[v].callBuybackCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                        r("span", Jh, "-$" + m(Math.abs(l.orderGroupsExitToday[v].callBuybackCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                       ])) : U("", !0),
-                                      r("div", Qh, [
+                                      r("div", Yh, [
                                         c[56] || (c[56] = r("span", null, "Net Call Cash Flow:", -1)),
-                                        r("span", Jh, "$" + m((l.orderGroupsExitToday[v].netCallCashFlow || 0).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                        r("span", Zh, "$" + m((l.orderGroupsExitToday[v].netCallCashFlow || 0).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                       ])
                                     ]),
-                                    r("div", Yh, [
+                                    r("div", ed, [
                                       c[59] || (c[59] = r("div", { class: "mini-header" }, "🎯 Final Calculation", -1)),
                                       c[60] || (c[60] = r("div", { class: "mini-row formula" }, [
                                         r("span", null, "Total Net Cost = Stock - Puts - Calls")
                                       ], -1)),
-                                      r("div", Zh, [
+                                      r("div", td, [
                                         r("span", null, "= $" + m(l.orderGroupsExitToday[v].netStockCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + m(Math.abs(l.orderGroupsExitToday[v].netPutCashFlow || 0).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + m(Math.abs(l.orderGroupsExitToday[v].netCallCashFlow || 0).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                       ]),
-                                      r("div", ed, [
-                                        c[58] || (c[58] = r("span", null, "Total Net Cost:", -1)),
-                                        r("span", td, "$" + m(l.orderGroupsExitToday[v].netCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
-                                      ]),
                                       r("div", id, [
+                                        c[58] || (c[58] = r("span", null, "Total Net Cost:", -1)),
+                                        r("span", sd, "$" + m(l.orderGroupsExitToday[v].netCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                      ]),
+                                      r("div", od, [
                                         r("span", null, "Avg Price (" + m(l.orderGroupsExitToday[v].totalShares.toLocaleString()) + " shares):", 1),
-                                        r("span", sd, "$" + m(l.orderGroupsExitToday[v].adjustedAvgPricePerShare.toFixed(2)), 1)
+                                        r("span", nd, "$" + m(l.orderGroupsExitToday[v].adjustedAvgPricePerShare.toFixed(2)), 1)
                                       ])
                                     ]),
-                                    r("div", od, [
+                                    r("div", ad, [
                                       r("button", {
                                         class: "toggle-details-btn exit-btn",
                                         onClick: bt((A) => a(v), ["stop"])
@@ -12924,20 +12924,20 @@ const Ka = {
                                           class: ee(["toggle-arrow", { rotated: s.value.has(v) }])
                                         }, "▶", 2),
                                         j(" " + m(s.value.has(v) ? "Hide" : "Show") + " Detailed Breakdown ", 1)
-                                      ], 8, nd)
+                                      ], 8, rd)
                                     ]),
-                                    Ve(st, { name: "slide-fade" }, {
-                                      default: ot(() => {
+                                    Ge(et, { name: "slide-fade" }, {
+                                      default: tt(() => {
                                         var A, _, F, L, I, z;
                                         return [
-                                          s.value.has(v) ? (C(), y("div", ad, [
-                                            r("div", rd, [
+                                          s.value.has(v) ? (C(), y("div", ld, [
+                                            r("div", hd, [
                                               c[70] || (c[70] = r("div", { class: "section-label" }, "Section A: Stocks", -1)),
-                                              r("div", ld, [
-                                                r("div", hd, [
-                                                  r("div", dd, "📍 Stock Purchases (" + m(((A = l.orderGroupsExitToday[v].stockPurchases) == null ? void 0 : A.length) || 0) + ")", 1),
-                                                  l.orderGroupsExitToday[v].stockPurchases && l.orderGroupsExitToday[v].stockPurchases.length > 0 ? (C(), y("div", ud, [
-                                                    r("table", cd, [
+                                              r("div", dd, [
+                                                r("div", ud, [
+                                                  r("div", cd, "📍 Stock Purchases (" + m(((A = l.orderGroupsExitToday[v].stockPurchases) == null ? void 0 : A.length) || 0) + ")", 1),
+                                                  l.orderGroupsExitToday[v].stockPurchases && l.orderGroupsExitToday[v].stockPurchases.length > 0 ? (C(), y("div", fd, [
+                                                    r("table", md, [
                                                       c[63] || (c[63] = r("thead", null, [
                                                         r("tr", null, [
                                                           r("th", null, "Date"),
@@ -12947,36 +12947,36 @@ const Ka = {
                                                         ])
                                                       ], -1)),
                                                       r("tbody", null, [
-                                                        (C(!0), y(ie, null, le(f(l.orderGroupsExitToday[v].stockPurchases), (S, M) => (C(), y("tr", {
+                                                        (C(!0), y(te, null, re(f(l.orderGroupsExitToday[v].stockPurchases), (S, M) => (C(), y("tr", {
                                                           key: `exit-sp-${v}-${M}`
                                                         }, [
                                                           r("td", null, m(u(S.orderDate)), 1),
-                                                          r("td", fd, m(S.quantity.toLocaleString()), 1),
-                                                          r("td", md, "$" + m(Number(S.avgPrice).toFixed(2)), 1),
-                                                          r("td", pd, "$" + m(Number(S.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                                          r("td", pd, m(S.quantity.toLocaleString()), 1),
+                                                          r("td", gd, "$" + m(Number(S.avgPrice).toFixed(2)), 1),
+                                                          r("td", bd, "$" + m(Number(S.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                                         ]))), 128))
                                                       ]),
                                                       r("tfoot", null, [
-                                                        r("tr", gd, [
+                                                        r("tr", vd, [
                                                           c[61] || (c[61] = r("td", null, [
                                                             r("strong", null, "Total")
                                                           ], -1)),
-                                                          r("td", bd, [
+                                                          r("td", wd, [
                                                             r("strong", null, m(l.orderGroupsExitToday[v].stockPurchases.reduce((S, M) => S + M.quantity, 0).toLocaleString()), 1)
                                                           ]),
                                                           c[62] || (c[62] = r("td", null, null, -1)),
-                                                          r("td", vd, [
+                                                          r("td", yd, [
                                                             r("strong", null, "$" + m(l.orderGroupsExitToday[v].stockPurchases.reduce((S, M) => S + Number(M.totalCost), 0).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                                           ])
                                                         ])
                                                       ])
                                                     ])
-                                                  ])) : (C(), y("div", wd, "No stock purchases"))
+                                                  ])) : (C(), y("div", Cd, "No stock purchases"))
                                                 ]),
-                                                r("div", yd, [
-                                                  r("div", Cd, "💰 Stock Sales (" + m(((_ = l.orderGroupsExitToday[v].stockSales) == null ? void 0 : _.length) || 0) + ")", 1),
-                                                  l.orderGroupsExitToday[v].stockSales && l.orderGroupsExitToday[v].stockSales.length > 0 ? (C(), y("div", Ed, [
-                                                    r("table", xd, [
+                                                r("div", Ed, [
+                                                  r("div", xd, "💰 Stock Sales (" + m(((_ = l.orderGroupsExitToday[v].stockSales) == null ? void 0 : _.length) || 0) + ")", 1),
+                                                  l.orderGroupsExitToday[v].stockSales && l.orderGroupsExitToday[v].stockSales.length > 0 ? (C(), y("div", kd, [
+                                                    r("table", Rd, [
                                                       c[66] || (c[66] = r("thead", null, [
                                                         r("tr", null, [
                                                           r("th", null, "Date"),
@@ -12986,40 +12986,40 @@ const Ka = {
                                                         ])
                                                       ], -1)),
                                                       r("tbody", null, [
-                                                        (C(!0), y(ie, null, le(f(l.orderGroupsExitToday[v].stockSales), (S, M) => (C(), y("tr", {
+                                                        (C(!0), y(te, null, re(f(l.orderGroupsExitToday[v].stockSales), (S, M) => (C(), y("tr", {
                                                           key: `exit-ss-${v}-${M}`
                                                         }, [
                                                           r("td", null, m(u(S.orderDate)), 1),
-                                                          r("td", kd, m(S.quantity.toLocaleString()), 1),
-                                                          r("td", Rd, "$" + m(Number(S.avgPrice).toFixed(2)), 1),
-                                                          r("td", Td, "$" + m(Number(S.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                                          r("td", Td, m(S.quantity.toLocaleString()), 1),
+                                                          r("td", Sd, "$" + m(Number(S.avgPrice).toFixed(2)), 1),
+                                                          r("td", Ld, "$" + m(Number(S.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                                         ]))), 128))
                                                       ]),
                                                       r("tfoot", null, [
-                                                        r("tr", Sd, [
+                                                        r("tr", Dd, [
                                                           c[64] || (c[64] = r("td", null, [
                                                             r("strong", null, "Total")
                                                           ], -1)),
-                                                          r("td", Ld, [
+                                                          r("td", Fd, [
                                                             r("strong", null, m(l.orderGroupsExitToday[v].stockSales.reduce((S, M) => S + M.quantity, 0).toLocaleString()), 1)
                                                           ]),
                                                           c[65] || (c[65] = r("td", null, null, -1)),
-                                                          r("td", Dd, [
+                                                          r("td", Md, [
                                                             r("strong", null, "$" + m(l.orderGroupsExitToday[v].stockSales.reduce((S, M) => S + Number(M.totalCost), 0).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                                           ])
                                                         ])
                                                       ])
                                                     ])
-                                                  ])) : (C(), y("div", Fd, "No stock sales"))
+                                                  ])) : (C(), y("div", Pd, "No stock sales"))
                                                 ])
                                               ]),
-                                              r("div", Md, [
+                                              r("div", _d, [
                                                 r("div", null, [
                                                   c[67] || (c[67] = r("strong", null, "Net Stock:", -1)),
                                                   j(" $" + m(l.orderGroupsExitToday[v].stockPurchaseCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ", 1),
-                                                  l.orderGroupsExitToday[v].stockSaleProceeds > 0 ? (C(), y("span", Pd, "- $" + m(Math.abs(l.orderGroupsExitToday[v].stockSaleProceeds).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)) : U("", !0),
+                                                  l.orderGroupsExitToday[v].stockSaleProceeds > 0 ? (C(), y("span", zd, "- $" + m(Math.abs(l.orderGroupsExitToday[v].stockSaleProceeds).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)) : U("", !0),
                                                   c[68] || (c[68] = j(" = ", -1)),
-                                                  r("span", _d, "$" + m(l.orderGroupsExitToday[v].netStockCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                                  r("span", Ad, "$" + m(l.orderGroupsExitToday[v].netStockCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                                 ]),
                                                 r("div", null, [
                                                   c[69] || (c[69] = r("strong", null, "Current Shares:", -1)),
@@ -13027,13 +13027,13 @@ const Ka = {
                                                 ])
                                               ])
                                             ]),
-                                            r("div", zd, [
+                                            r("div", Hd, [
                                               c[79] || (c[79] = r("div", { class: "section-label" }, "Section B: Puts", -1)),
-                                              r("div", Ad, [
-                                                r("div", Hd, [
-                                                  r("div", Od, "📉 Put Premium Received (" + m(((F = l.orderGroupsExitToday[v].putSales) == null ? void 0 : F.length) || 0) + ")", 1),
-                                                  l.orderGroupsExitToday[v].putSales && l.orderGroupsExitToday[v].putSales.length > 0 ? (C(), y("div", $d, [
-                                                    r("table", Bd, [
+                                              r("div", Od, [
+                                                r("div", $d, [
+                                                  r("div", Bd, "📉 Put Premium Received (" + m(((F = l.orderGroupsExitToday[v].putSales) == null ? void 0 : F.length) || 0) + ")", 1),
+                                                  l.orderGroupsExitToday[v].putSales && l.orderGroupsExitToday[v].putSales.length > 0 ? (C(), y("div", Nd, [
+                                                    r("table", Vd, [
                                                       c[73] || (c[73] = r("thead", null, [
                                                         r("tr", null, [
                                                           r("th", null, "Option"),
@@ -13043,36 +13043,36 @@ const Ka = {
                                                         ])
                                                       ], -1)),
                                                       r("tbody", null, [
-                                                        (C(!0), y(ie, null, le(f(l.orderGroupsExitToday[v].putSales), (S, M) => (C(), y("tr", {
+                                                        (C(!0), y(te, null, re(f(l.orderGroupsExitToday[v].putSales), (S, M) => (C(), y("tr", {
                                                           key: `exit-ps-${v}-${M}`
                                                         }, [
                                                           r("td", null, m(p(S.symbol)), 1),
-                                                          r("td", Nd, m(S.quantity.toLocaleString()), 1),
-                                                          r("td", Vd, "$" + m(Number(S.avgPrice).toFixed(2)), 1),
-                                                          r("td", Id, "$" + m(Number(S.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                                          r("td", Id, m(S.quantity.toLocaleString()), 1),
+                                                          r("td", Gd, "$" + m(Number(S.avgPrice).toFixed(2)), 1),
+                                                          r("td", Wd, "$" + m(Number(S.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                                         ]))), 128))
                                                       ]),
                                                       r("tfoot", null, [
-                                                        r("tr", Gd, [
+                                                        r("tr", jd, [
                                                           c[71] || (c[71] = r("td", null, [
                                                             r("strong", null, "Total")
                                                           ], -1)),
-                                                          r("td", Wd, [
+                                                          r("td", Ud, [
                                                             r("strong", null, m(l.orderGroupsExitToday[v].putSales.reduce((S, M) => S + M.quantity, 0).toLocaleString()), 1)
                                                           ]),
                                                           c[72] || (c[72] = r("td", null, null, -1)),
-                                                          r("td", jd, [
+                                                          r("td", qd, [
                                                             r("strong", null, "$" + m(Math.abs(l.orderGroupsExitToday[v].putPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                                           ])
                                                         ])
                                                       ])
                                                     ])
-                                                  ])) : (C(), y("div", Ud, "No put sales"))
+                                                  ])) : (C(), y("div", Kd, "No put sales"))
                                                 ]),
-                                                r("div", qd, [
-                                                  r("div", Kd, "🔄 Put Buybacks (" + m(((L = l.orderGroupsExitToday[v].putBuybacks) == null ? void 0 : L.length) || 0) + ")", 1),
-                                                  l.orderGroupsExitToday[v].putBuybacks && l.orderGroupsExitToday[v].putBuybacks.length > 0 ? (C(), y("div", Xd, [
-                                                    r("table", Qd, [
+                                                r("div", Xd, [
+                                                  r("div", Qd, "🔄 Put Buybacks (" + m(((L = l.orderGroupsExitToday[v].putBuybacks) == null ? void 0 : L.length) || 0) + ")", 1),
+                                                  l.orderGroupsExitToday[v].putBuybacks && l.orderGroupsExitToday[v].putBuybacks.length > 0 ? (C(), y("div", Jd, [
+                                                    r("table", Yd, [
                                                       c[76] || (c[76] = r("thead", null, [
                                                         r("tr", null, [
                                                           r("th", null, "Option"),
@@ -13082,51 +13082,51 @@ const Ka = {
                                                         ])
                                                       ], -1)),
                                                       r("tbody", null, [
-                                                        (C(!0), y(ie, null, le(f(l.orderGroupsExitToday[v].putBuybacks), (S, M) => (C(), y("tr", {
+                                                        (C(!0), y(te, null, re(f(l.orderGroupsExitToday[v].putBuybacks), (S, M) => (C(), y("tr", {
                                                           key: `exit-pb-${v}-${M}`
                                                         }, [
                                                           r("td", null, m(p(S.symbol)), 1),
-                                                          r("td", Jd, m(S.quantity.toLocaleString()), 1),
-                                                          r("td", Yd, "$" + m(Number(S.avgPrice).toFixed(2)), 1),
-                                                          r("td", Zd, "$" + m(Number(S.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                                          r("td", Zd, m(S.quantity.toLocaleString()), 1),
+                                                          r("td", eu, "$" + m(Number(S.avgPrice).toFixed(2)), 1),
+                                                          r("td", tu, "$" + m(Number(S.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                                         ]))), 128))
                                                       ]),
                                                       r("tfoot", null, [
-                                                        r("tr", eu, [
+                                                        r("tr", iu, [
                                                           c[74] || (c[74] = r("td", null, [
                                                             r("strong", null, "Total")
                                                           ], -1)),
-                                                          r("td", tu, [
+                                                          r("td", su, [
                                                             r("strong", null, m(l.orderGroupsExitToday[v].putBuybacks.reduce((S, M) => S + M.quantity, 0).toLocaleString()), 1)
                                                           ]),
                                                           c[75] || (c[75] = r("td", null, null, -1)),
-                                                          r("td", iu, [
+                                                          r("td", ou, [
                                                             r("strong", null, "$" + m(Math.abs(l.orderGroupsExitToday[v].putBuybackCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                                           ])
                                                         ])
                                                       ])
                                                     ])
-                                                  ])) : (C(), y("div", su, "No put buybacks"))
+                                                  ])) : (C(), y("div", nu, "No put buybacks"))
                                                 ])
                                               ]),
-                                              r("div", ou, [
+                                              r("div", au, [
                                                 c[77] || (c[77] = r("strong", null, "Net Put Cash Flow:", -1)),
                                                 j(" $" + m(Math.abs(l.orderGroupsExitToday[v].putPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ", 1),
-                                                l.orderGroupsExitToday[v].putBuybackCost > 0 ? (C(), y("span", nu, "- $" + m(Math.abs(l.orderGroupsExitToday[v].putBuybackCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)) : U("", !0),
+                                                l.orderGroupsExitToday[v].putBuybackCost > 0 ? (C(), y("span", ru, "- $" + m(Math.abs(l.orderGroupsExitToday[v].putBuybackCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)) : U("", !0),
                                                 c[78] || (c[78] = j(" = ", -1)),
-                                                r("span", au, "$" + m((l.orderGroupsExitToday[v].netPutCashFlow || 0).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                                r("span", lu, "$" + m((l.orderGroupsExitToday[v].netPutCashFlow || 0).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                               ])
                                             ]),
-                                            r("div", ru, [
+                                            r("div", hu, [
                                               c[88] || (c[88] = r("div", { class: "section-label" }, [
                                                 j("Section C: Calls "),
                                                 r("span", { class: "exit-note" }, "(Current Value)")
                                               ], -1)),
-                                              r("div", lu, [
-                                                r("div", hu, [
-                                                  r("div", du, "📞 Call Current Value (" + m(((I = l.orderGroupsExitToday[v].callSales) == null ? void 0 : I.length) || 0) + ")", 1),
-                                                  l.orderGroupsExitToday[v].callSales && l.orderGroupsExitToday[v].callSales.length > 0 ? (C(), y("div", uu, [
-                                                    r("table", cu, [
+                                              r("div", du, [
+                                                r("div", uu, [
+                                                  r("div", cu, "📞 Call Current Value (" + m(((I = l.orderGroupsExitToday[v].callSales) == null ? void 0 : I.length) || 0) + ")", 1),
+                                                  l.orderGroupsExitToday[v].callSales && l.orderGroupsExitToday[v].callSales.length > 0 ? (C(), y("div", fu, [
+                                                    r("table", mu, [
                                                       c[82] || (c[82] = r("thead", null, [
                                                         r("tr", null, [
                                                           r("th", null, "Option"),
@@ -13136,36 +13136,36 @@ const Ka = {
                                                         ])
                                                       ], -1)),
                                                       r("tbody", null, [
-                                                        (C(!0), y(ie, null, le(f(l.orderGroupsExitToday[v].callSales), (S, M) => (C(), y("tr", {
+                                                        (C(!0), y(te, null, re(f(l.orderGroupsExitToday[v].callSales), (S, M) => (C(), y("tr", {
                                                           key: `exit-cs-${v}-${M}`
                                                         }, [
                                                           r("td", null, m(p(S.symbol)), 1),
-                                                          r("td", fu, m(S.quantity.toLocaleString()), 1),
-                                                          r("td", mu, "$" + m(Number(S.avgPrice).toFixed(2)), 1),
-                                                          r("td", pu, "$" + m(Number(S.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                                          r("td", pu, m(S.quantity.toLocaleString()), 1),
+                                                          r("td", gu, "$" + m(Number(S.avgPrice).toFixed(2)), 1),
+                                                          r("td", bu, "$" + m(Number(S.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                                         ]))), 128))
                                                       ]),
                                                       r("tfoot", null, [
-                                                        r("tr", gu, [
+                                                        r("tr", vu, [
                                                           c[80] || (c[80] = r("td", null, [
                                                             r("strong", null, "Total")
                                                           ], -1)),
-                                                          r("td", bu, [
+                                                          r("td", wu, [
                                                             r("strong", null, m(l.orderGroupsExitToday[v].callSales.reduce((S, M) => S + M.quantity, 0).toLocaleString()), 1)
                                                           ]),
                                                           c[81] || (c[81] = r("td", null, null, -1)),
-                                                          r("td", vu, [
+                                                          r("td", yu, [
                                                             r("strong", null, "$" + m(Math.abs(l.orderGroupsExitToday[v].callPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                                           ])
                                                         ])
                                                       ])
                                                     ])
-                                                  ])) : (C(), y("div", wu, "No call positions"))
+                                                  ])) : (C(), y("div", Cu, "No call positions"))
                                                 ]),
-                                                r("div", yu, [
-                                                  r("div", Cu, "🔄 Call Buybacks (" + m(((z = l.orderGroupsExitToday[v].callBuybacks) == null ? void 0 : z.length) || 0) + ")", 1),
-                                                  l.orderGroupsExitToday[v].callBuybacks && l.orderGroupsExitToday[v].callBuybacks.length > 0 ? (C(), y("div", Eu, [
-                                                    r("table", xu, [
+                                                r("div", Eu, [
+                                                  r("div", xu, "🔄 Call Buybacks (" + m(((z = l.orderGroupsExitToday[v].callBuybacks) == null ? void 0 : z.length) || 0) + ")", 1),
+                                                  l.orderGroupsExitToday[v].callBuybacks && l.orderGroupsExitToday[v].callBuybacks.length > 0 ? (C(), y("div", ku, [
+                                                    r("table", Ru, [
                                                       c[85] || (c[85] = r("thead", null, [
                                                         r("tr", null, [
                                                           r("th", null, "Option"),
@@ -13175,39 +13175,39 @@ const Ka = {
                                                         ])
                                                       ], -1)),
                                                       r("tbody", null, [
-                                                        (C(!0), y(ie, null, le(f(l.orderGroupsExitToday[v].callBuybacks), (S, M) => (C(), y("tr", {
+                                                        (C(!0), y(te, null, re(f(l.orderGroupsExitToday[v].callBuybacks), (S, M) => (C(), y("tr", {
                                                           key: `exit-cb-${v}-${M}`
                                                         }, [
                                                           r("td", null, m(p(S.symbol)), 1),
-                                                          r("td", ku, m(S.quantity.toLocaleString()), 1),
-                                                          r("td", Ru, "$" + m(Number(S.avgPrice).toFixed(2)), 1),
-                                                          r("td", Tu, "$" + m(Number(S.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                                          r("td", Tu, m(S.quantity.toLocaleString()), 1),
+                                                          r("td", Su, "$" + m(Number(S.avgPrice).toFixed(2)), 1),
+                                                          r("td", Lu, "$" + m(Number(S.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                                         ]))), 128))
                                                       ]),
                                                       r("tfoot", null, [
-                                                        r("tr", Su, [
+                                                        r("tr", Du, [
                                                           c[83] || (c[83] = r("td", null, [
                                                             r("strong", null, "Total")
                                                           ], -1)),
-                                                          r("td", Lu, [
+                                                          r("td", Fu, [
                                                             r("strong", null, m(l.orderGroupsExitToday[v].callBuybacks.reduce((S, M) => S + M.quantity, 0).toLocaleString()), 1)
                                                           ]),
                                                           c[84] || (c[84] = r("td", null, null, -1)),
-                                                          r("td", Du, [
+                                                          r("td", Mu, [
                                                             r("strong", null, "$" + m(Math.abs(l.orderGroupsExitToday[v].callBuybackCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                                           ])
                                                         ])
                                                       ])
                                                     ])
-                                                  ])) : (C(), y("div", Fu, "No call buybacks"))
+                                                  ])) : (C(), y("div", Pu, "No call buybacks"))
                                                 ])
                                               ]),
-                                              r("div", Mu, [
+                                              r("div", _u, [
                                                 c[86] || (c[86] = r("strong", null, "Net Call Cash Flow:", -1)),
                                                 j(" $" + m(Math.abs(l.orderGroupsExitToday[v].callPremiumReceived).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ", 1),
-                                                l.orderGroupsExitToday[v].callBuybackCost > 0 ? (C(), y("span", Pu, "- $" + m(Math.abs(l.orderGroupsExitToday[v].callBuybackCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)) : U("", !0),
+                                                l.orderGroupsExitToday[v].callBuybackCost > 0 ? (C(), y("span", zu, "- $" + m(Math.abs(l.orderGroupsExitToday[v].callBuybackCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)) : U("", !0),
                                                 c[87] || (c[87] = j(" = ", -1)),
-                                                r("span", _u, "$" + m((l.orderGroupsExitToday[v].netCallCashFlow || 0).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                                r("span", Au, "$" + m((l.orderGroupsExitToday[v].netCallCashFlow || 0).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                               ])
                                             ])
                                           ])) : U("", !0)
@@ -13216,7 +13216,7 @@ const Ka = {
                                       _: 2
                                     }, 1024)
                                   ])
-                                ])) : (C(), y("div", zu, [...c[90] || (c[90] = [
+                                ])) : (C(), y("div", Hu, [...c[90] || (c[90] = [
                                   r("div", { class: "panel-header exit" }, [
                                     r("span", { class: "panel-icon" }, "🚪"),
                                     r("span", { class: "panel-title" }, "Exit Today")
@@ -13228,10 +13228,10 @@ const Ka = {
                                   ], -1)
                                 ])]))
                               ]),
-                              l.orderGroupsExitToday && l.orderGroupsExitToday[v] ? (C(), y("div", Au, [
+                              l.orderGroupsExitToday && l.orderGroupsExitToday[v] ? (C(), y("div", Ou, [
                                 c[94] || (c[94] = r("div", { class: "diff-summary-header" }, "📈 Difference Analysis", -1)),
-                                r("div", Hu, [
-                                  r("div", Ou, [
+                                r("div", $u, [
+                                  r("div", Bu, [
                                     c[92] || (c[92] = r("span", { class: "diff-label" }, "Net Cost Difference:", -1)),
                                     r("span", {
                                       class: ee(["diff-value", {
@@ -13240,7 +13240,7 @@ const Ka = {
                                       }])
                                     }, m(l.orderGroupsExitToday[v].netCost < b.netCost ? "↓" : "↑") + " $" + m(Math.abs(l.orderGroupsExitToday[v].netCost - b.netCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 3)
                                   ]),
-                                  r("div", $u, [
+                                  r("div", Nu, [
                                     c[93] || (c[93] = r("span", { class: "diff-label" }, "Avg Price Difference:", -1)),
                                     r("span", {
                                       class: ee(["diff-value", {
@@ -13257,34 +13257,34 @@ const Ka = {
                       ], 64))), 128))
                     ]),
                     r("tfoot", null, [
-                      r("tr", Bu, [
+                      r("tr", Vu, [
                         c[95] || (c[95] = r("td", { class: "expand-cell" }, null, -1)),
                         c[96] || (c[96] = r("td", null, [
                           r("span", { class: "total-label" }, "📈 Total / Overall")
                         ], -1)),
-                        r("td", Nu, [
-                          r("span", Vu, m(l.totalShares.toLocaleString()), 1)
-                        ]),
                         r("td", Iu, [
-                          r("span", Gu, "$" + m(l.totalNetCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                          r("span", Gu, m(l.totalShares.toLocaleString()), 1)
+                        ]),
+                        r("td", Wu, [
+                          r("span", ju, "$" + m(l.totalNetCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ]),
                         c[97] || (c[97] = r("td", { class: "text-center" }, [
                           r("span", { class: "total-value" }, "-")
                         ], -1)),
-                        r("td", Wu, [
-                          r("span", ju, "$" + m(((T = l.overallAdjustedAvgPriceFromOrders) == null ? void 0 : T.toFixed(2)) || "-"), 1)
-                        ]),
                         r("td", Uu, [
-                          r("span", qu, "$" + m(((R = l.overallAdjustedAvgPriceFromOrdersExitToday) == null ? void 0 : R.toFixed(2)) || "-"), 1)
+                          r("span", qu, "$" + m(((T = l.overallAdjustedAvgPriceFromOrders) == null ? void 0 : T.toFixed(2)) || "-"), 1)
                         ]),
                         r("td", Ku, [
+                          r("span", Xu, "$" + m(((R = l.overallAdjustedAvgPriceFromOrdersExitToday) == null ? void 0 : R.toFixed(2)) || "-"), 1)
+                        ]),
+                        r("td", Qu, [
                           l.overallAdjustedAvgPriceFromOrders && l.overallAdjustedAvgPriceFromOrdersExitToday ? (C(), y("span", {
                             key: 0,
                             class: ee(["total-diff", {
                               positive: l.overallAdjustedAvgPriceFromOrdersExitToday < l.overallAdjustedAvgPriceFromOrders,
                               negative: l.overallAdjustedAvgPriceFromOrdersExitToday > l.overallAdjustedAvgPriceFromOrders
                             }])
-                          }, m(l.overallAdjustedAvgPriceFromOrdersExitToday < l.overallAdjustedAvgPriceFromOrders ? "↓" : "↑") + " $" + m(Math.abs(l.overallAdjustedAvgPriceFromOrdersExitToday - l.overallAdjustedAvgPriceFromOrders).toFixed(2)), 3)) : (C(), y("span", Xu, "-"))
+                          }, m(l.overallAdjustedAvgPriceFromOrdersExitToday < l.overallAdjustedAvgPriceFromOrders ? "↓" : "↑") + " $" + m(Math.abs(l.overallAdjustedAvgPriceFromOrdersExitToday - l.overallAdjustedAvgPriceFromOrders).toFixed(2)), 3)) : (C(), y("span", Ju, "-"))
                         ])
                       ])
                     ])
@@ -13292,7 +13292,7 @@ const Ka = {
                 ])
               ])) : U("", !0)
             ], 512), [
-              [xt, l.showCalculationDetails]
+              [kt, l.showCalculationDetails]
             ])
           ];
         }),
@@ -13300,209 +13300,215 @@ const Ka = {
       })
     ], 64));
   }
-}), Fs = (l, e) => {
+}), Ps = (l, e) => {
   const t = l.__vccOpts || l;
   for (const [i, s] of e)
     t[i] = s;
   return t;
-}, Ju = /* @__PURE__ */ Fs(Qu, [["__scopeId", "data-v-58928c2c"]]), Yu = { class: "current-positions-for-single-instrument-view" }, Zu = { class: "positions-table-container" }, ec = { class: "header-section" }, tc = {
+}, Zu = /* @__PURE__ */ Ps(Yu, [["__scopeId", "data-v-58928c2c"]]), ec = { class: "current-positions-for-single-instrument-view" }, tc = { class: "positions-table-container" }, ic = { class: "header-section" }, sc = {
   key: 0,
   class: "loading-state"
-}, ic = {
+}, oc = {
   key: 1,
   class: "error-state"
-}, sc = {
+}, nc = {
   key: 2,
   class: "summary-section"
-}, oc = { class: "summary-cards" }, nc = { class: "summary-card card-cyan" }, ac = {
+}, ac = { class: "summary-cards" }, rc = { class: "summary-card card-cyan" }, lc = {
   key: 0,
   class: "summary-value"
-}, rc = {
+}, hc = {
   key: 1,
   class: "summary-value error"
-}, lc = {
+}, dc = {
   key: 2,
   class: "summary-value-container-vertical"
-}, hc = { key: 0 }, dc = { key: 1 }, uc = { class: "toggle-icon" }, cc = { class: "summary-card card-blue" }, fc = { class: "current-pnl-box" }, mc = {
+}, uc = { key: 0 }, cc = { key: 1 }, fc = { class: "toggle-icon" }, mc = { class: "summary-card card-blue" }, pc = { class: "current-pnl-box" }, gc = {
   key: 0,
   class: "summary-value"
-}, pc = {
+}, bc = {
   key: 1,
   class: "summary-value error"
-}, gc = {
+}, vc = {
   key: 2,
   class: "summary-value-container-vertical"
-}, bc = { key: 0 }, vc = { class: "pnl-percentage" }, wc = { key: 1 }, yc = { class: "toggle-icon" }, Cc = { class: "exited-pnl-box" }, Ec = {
+}, wc = { key: 0 }, yc = { class: "pnl-percentage" }, Cc = { key: 1 }, Ec = { class: "toggle-icon" }, xc = { class: "exited-pnl-box" }, kc = {
   key: 0,
   class: "summary-value"
-}, xc = {
+}, Rc = {
   key: 1,
   class: "summary-value error"
-}, kc = {
+}, Tc = {
   key: 2,
   class: "summary-value-container-vertical"
-}, Rc = { key: 0 }, Tc = { key: 1 }, Sc = { class: "toggle-icon" }, Lc = { class: "summary-card highlight-1 card-green" }, Dc = { class: "summary-value-container" }, Fc = { class: "summary-value" }, Mc = { class: "accounts-count" }, Pc = { class: "toggle-icon" }, _c = { class: "summary-card card-purple" }, zc = {
+}, Sc = { key: 0 }, Lc = { key: 1 }, Dc = { class: "toggle-icon" }, Fc = { class: "summary-card highlight-1 card-green" }, Mc = { class: "summary-value-container" }, Pc = { class: "summary-value" }, _c = { class: "accounts-count" }, zc = { class: "toggle-icon" }, Ac = { class: "summary-card card-purple" }, Hc = {
   key: 0,
   class: "summary-value"
-}, Ac = {
+}, Oc = {
   key: 1,
   class: "summary-value error"
-}, Hc = {
+}, $c = {
   key: 2,
   class: "summary-value-container-vertical"
-}, Oc = { class: "summary-value" }, $c = {
+}, Bc = { class: "summary-value" }, Nc = {
   key: 0,
   class: "52-week-range"
-}, Bc = { class: "blue_color" }, Nc = { class: "blue_color" }, Vc = {
+}, Vc = { class: "blue_color" }, Ic = { class: "blue_color" }, Gc = {
   key: 1,
   class: "52-week-range"
-}, Ic = {
+}, Wc = {
   key: 2,
   class: "timestamp-info"
-}, Gc = {
+}, jc = {
   key: 3,
   class: "summary-value"
-}, Wc = { class: "summary-card card-orange" }, jc = {
+}, Uc = { class: "summary-card card-orange" }, qc = {
   key: 0,
   class: "summary-value"
-}, Uc = {
-  key: 1,
-  class: "summary-value error"
-}, qc = {
-  key: 2,
-  class: "summary-value-container-vertical"
 }, Kc = {
-  key: 0,
-  style: { "font-size": "1.2rem", "font-weight": "600" }
-}, Xc = { key: 1 }, Qc = {
-  key: 0,
-  style: { "font-size": "1.2rem", "font-weight": "600" }
-}, Jc = { class: "toggle-icon" }, Yc = { key: 1 }, Zc = { class: "summary-card card-teal" }, ef = {
-  key: 0,
-  class: "summary-value"
-}, tf = {
   key: 1,
   class: "summary-value error"
-}, sf = {
+}, Xc = {
   key: 2,
   class: "summary-value-container-vertical"
-}, of = {
+}, Qc = {
   key: 0,
-  class: "subtitle-info",
-  style: { "font-size": "0.85rem", color: "#6c757d", "margin-top": "0.25rem" }
-}, nf = { class: "blue_color" }, af = {
+  style: { "font-size": "1.2rem", "font-weight": "600" }
+}, Jc = { key: 1 }, Yc = {
+  key: 0,
+  style: { "font-size": "1.2rem", "font-weight": "600" }
+}, Zc = { class: "toggle-icon" }, ef = { key: 1 }, tf = { class: "summary-card card-teal" }, sf = {
+  key: 0,
+  class: "summary-value"
+}, of = {
   key: 1,
+  class: "summary-value error"
+}, nf = {
+  key: 2,
+  class: "summary-value-container-vertical"
+}, af = {
+  key: 0,
   class: "subtitle-info",
   style: { "font-size": "0.85rem", color: "#6c757d", "margin-top": "0.25rem" }
 }, rf = { class: "blue_color" }, lf = {
+  key: 1,
+  class: "subtitle-info",
+  style: { "font-size": "0.85rem", color: "#6c757d", "margin-top": "0.25rem" }
+}, hf = { class: "blue_color" }, df = {
   key: 2,
   class: "subtitle-info",
   style: { "font-size": "0.85rem", color: "#6c757d", "margin-top": "0.25rem" }
-}, hf = { class: "blue_color" }, df = { class: "table-wrapper" }, uf = { class: "pnl-details" }, cf = {
+}, uf = { class: "blue_color" }, cf = {
+  key: 3,
+  class: "timestamp-info"
+}, ff = { class: "table-wrapper" }, mf = { class: "pnl-details" }, pf = {
   key: 0,
   class: "pnl-breakdown"
-}, ff = { class: "pnl-section" }, mf = { class: "calc-line" }, pf = { class: "calc-line" }, gf = { class: "calc-line calculation-result" }, bf = { class: "pnl-section" }, vf = { class: "calc-line" }, wf = { class: "calc-line calculation-result" }, yf = { class: "pnl-section highlight-section" }, Cf = { class: "calc-line" }, Ef = { class: "calc-line" }, xf = {
+}, gf = { class: "pnl-section" }, bf = { class: "calc-line" }, vf = { class: "calc-line" }, wf = { class: "calc-line calculation-result" }, yf = { class: "pnl-section" }, Cf = { class: "calc-line" }, Ef = { class: "calc-line calculation-result" }, xf = { class: "pnl-section highlight-section" }, kf = { class: "calc-line" }, Rf = { class: "calc-line" }, Tf = {
   key: 1,
   class: "pnl-breakdown"
-}, kf = { class: "pnl-section" }, Rf = { class: "pnl-section-title" }, Tf = { class: "calc-line" }, Sf = { class: "calc-line" }, Lf = { class: "pnl-section-title" }, Df = { class: "calc-line" }, Ff = { class: "calc-line" }, Mf = { class: "calc-line" }, Pf = { class: "calc-line calculation-result" }, _f = { class: "pnl-section highlight-section" }, zf = { class: "calc-line" }, Af = { class: "calc-line calculation-result" }, Hf = {
+}, Sf = { class: "pnl-section" }, Lf = { class: "pnl-section-title" }, Df = { class: "calc-line" }, Ff = { class: "calc-line" }, Mf = { class: "pnl-section-title" }, Pf = { class: "calc-line" }, _f = { class: "calc-line" }, zf = { class: "calc-line" }, Af = { class: "calc-line calculation-result" }, Hf = { class: "pnl-section highlight-section" }, Of = { class: "calc-line" }, $f = { class: "calc-line calculation-result" }, Bf = {
   class: "calc-line",
   style: { "margin-top": "1rem" }
-}, Of = { class: "calc-line calculation-result" }, $f = {
+}, Nf = { class: "calc-line calculation-result" }, Vf = {
   class: "calc-line",
   style: { "margin-top": "1rem" }
-}, Bf = { class: "calc-line" }, Nf = {
+}, If = { class: "calc-line" }, Gf = {
   key: 0,
   class: "calc-line",
   style: { "margin-top": "1rem", color: "#dc3545", "font-weight": "bold" }
-}, Vf = { class: "exited-pnl-details" }, If = {
+}, Wf = { class: "exited-pnl-details" }, jf = {
   key: 0,
   class: "exited-pnl-breakdown"
-}, Gf = { class: "pnl-section" }, Wf = { class: "calc-line" }, jf = { class: "calc-line" }, Uf = { class: "calc-line calculation-result" }, qf = ["onClick"], Kf = { class: "expand-icon" }, Xf = { class: "account-title" }, Qf = { class: "account-summary" }, Jf = { class: "account-content" }, Yf = { class: "orders-table-wrapper" }, Zf = { class: "modern-table" }, em = { class: "text-right" }, tm = { class: "text-right" }, im = { class: "text-right" }, sm = { class: "total-row" }, om = {
+}, Uf = { class: "pnl-section" }, qf = { class: "calc-line" }, Kf = { class: "calc-line" }, Xf = { class: "calc-line calculation-result" }, Qf = ["onClick"], Jf = { class: "expand-icon" }, Yf = { class: "account-title" }, Zf = { class: "account-summary" }, em = { class: "account-content" }, tm = { class: "orders-table-wrapper" }, im = { class: "modern-table" }, sm = { class: "text-right" }, om = { class: "text-right" }, nm = { class: "text-right" }, am = { class: "total-row" }, rm = {
   key: 1,
   class: "no-data-message"
-}, nm = { class: "capital-details" }, am = {
+}, lm = { class: "capital-details" }, hm = {
   key: 0,
   class: "no-data-message"
-}, rm = {
+}, dm = {
   key: 1,
   class: "capital-breakdown"
-}, lm = { class: "capital-section" }, hm = { class: "calc-line" }, dm = { class: "calc-line" }, um = { class: "calc-line calculation-result" }, cm = {
+}, um = { class: "capital-section" }, cm = { class: "calc-line" }, fm = { class: "calc-line" }, mm = { class: "calc-line calculation-result" }, pm = {
   key: 2,
   class: "capital-breakdown"
-}, fm = { class: "capital-section-title" }, mm = { class: "calc-line" }, pm = { class: "calc-line" }, gm = { class: "calc-line" }, bm = { class: "calc-line calculation-result" }, vm = { class: "capital-section highlight-section" }, wm = { class: "calc-line" }, ym = { class: "calc-line calculation-result" }, Cm = { class: "modal-header" }, Em = { class: "modal-body" }, xm = {
+}, gm = { class: "capital-section-title" }, bm = { class: "calc-line" }, vm = { class: "calc-line" }, wm = { class: "calc-line" }, ym = { class: "calc-line calculation-result" }, Cm = { class: "capital-section highlight-section" }, Em = { class: "calc-line" }, xm = { class: "calc-line calculation-result" }, km = { class: "modal-header" }, Rm = { class: "modal-body" }, Tm = {
   key: 0,
   class: "position-info"
-}, km = { class: "attachment-tabs" }, Rm = { key: 1 }, Tm = { class: "trade-search" }, Sm = {
+}, Sm = { class: "attachment-tabs" }, Lm = { key: 1 }, Dm = { class: "trade-search" }, Fm = {
   key: 0,
   style: { padding: "1rem", "text-align": "center", color: "#6c757d" }
-}, Lm = {
+}, Mm = {
   key: 1,
   class: "trades-list"
-}, Dm = ["onClick"], Fm = ["checked", "onClick"], Mm = { class: "trade-details" }, Pm = { class: "trade-primary" }, _m = { style: { color: "#6c757d" } }, zm = { style: { color: "#6c757d" } }, Am = { class: "trade-secondary" }, Hm = { key: 0 }, Om = { key: 1 }, $m = { style: { color: "#6c757d", "margin-left": "6px" } }, Bm = {
+}, Pm = ["onClick"], _m = ["checked", "onClick"], zm = { class: "trade-details" }, Am = { class: "trade-primary" }, Hm = { style: { color: "#6c757d" } }, Om = { style: { color: "#6c757d" } }, $m = { class: "trade-secondary" }, Bm = { key: 0 }, Nm = { key: 1 }, Vm = { style: { color: "#6c757d", "margin-left": "6px" } }, Im = {
   key: 0,
   style: { padding: "1.5rem", "text-align": "center", color: "#6c757d" }
-}, Nm = { key: 2 }, Vm = { class: "trade-search" }, Im = {
+}, Gm = { key: 2 }, Wm = { class: "trade-search" }, jm = {
   key: 0,
   style: { padding: "1rem", "text-align": "center", color: "#6c757d" }
-}, Gm = {
+}, Um = {
   key: 1,
   class: "trades-list"
-}, Wm = ["onClick"], jm = ["checked", "onClick"], Um = { class: "trade-details" }, qm = { class: "trade-primary" }, Km = { style: { color: "#6c757d" } }, Xm = { style: { color: "#6c757d" } }, Qm = {
+}, qm = ["onClick"], Km = ["checked", "onClick"], Xm = { class: "trade-details" }, Qm = { class: "trade-primary" }, Jm = { style: { color: "#6c757d" } }, Ym = { style: { color: "#6c757d" } }, Zm = {
   key: 0,
   class: "expired-badge"
-}, Jm = { class: "trade-secondary" }, Ym = { key: 0 }, Zm = {
+}, ep = { class: "trade-secondary" }, tp = { key: 0 }, ip = {
   key: 0,
   style: { padding: "1.5rem", "text-align": "center", color: "#6c757d" }
-}, ep = { key: 3 }, tp = { class: "trade-search" }, ip = {
+}, sp = { key: 3 }, op = { class: "trade-search" }, np = {
   key: 0,
   style: { padding: "1rem", "text-align": "center", color: "#6c757d" }
-}, sp = {
+}, ap = {
   key: 1,
   class: "trades-list"
-}, op = ["onClick"], np = ["checked", "onClick"], ap = { class: "trade-details" }, rp = { class: "trade-primary" }, lp = { style: { color: "#6c757d" } }, hp = { style: { color: "#6c757d" } }, dp = { class: "trade-secondary" }, up = { key: 0 }, cp = {
+}, rp = ["onClick"], lp = ["checked", "onClick"], hp = { class: "trade-details" }, dp = { class: "trade-primary" }, up = { style: { color: "#6c757d" } }, cp = { style: { color: "#6c757d" } }, fp = { class: "trade-secondary" }, mp = { key: 0 }, pp = {
   key: 0,
   style: { padding: "1.5rem", "text-align": "center", color: "#6c757d" }
-}, fp = { class: "modal-footer" }, mp = ["disabled"], pp = /* @__PURE__ */ os({
+}, gp = { class: "modal-footer" }, bp = ["disabled"], vp = /* @__PURE__ */ as({
   __name: "CurrentPositions",
   props: {
-    symbolRoot: { default: "META" },
+    symbolRoot: { default: "COIN" },
     userId: { default: "4fbec15d-2316-4805-b2a4-5cd2115a5ac8" }
   },
   emits: ["capitalUsedChanged"],
   setup(l, { emit: e }) {
     const t = l, i = O(!1), s = O(!1), o = O(!1), n = O(!1), a = O("hold-orders"), h = e, d = Et();
     O(/* @__PURE__ */ new Set());
-    const { data: u, isLoading: f, isError: p, error: w, isSuccess: c, _cleanup: T } = co(
+    const { data: u, isLoading: f, isError: p, error: w, isSuccess: c, _cleanup: T } = mo(
       t.userId,
       t.symbolRoot
-    ), { data: R } = mo(t.symbolRoot, t.userId), { data: b } = go(t.symbolRoot, t.userId), v = te(() => {
+    ), { data: R } = go(t.symbolRoot, t.userId), { data: b } = vo(t.symbolRoot, t.userId), v = Y(() => {
       var g, H;
       const k = (H = (g = u.value) == null ? void 0 : g[0]) == null ? void 0 : H.conid;
       return k ? parseInt(k, 10) : null;
-    }), { marketData: A, isLoading: _, error: F } = Ba(v, t.symbolRoot), { financialData: L, isLoading: I, error: z } = Na(v, t.symbolRoot), S = te(() => {
+    }), { marketData: A, isLoading: _, error: F } = Va(v, t.symbolRoot), { financialData: L, isLoading: I, error: z } = Ia(v, t.symbolRoot), S = Y(() => {
       var k;
       return ((k = A.value) == null ? void 0 : k.market_price) ?? null;
-    }), M = te(() => {
+    }), M = Y(() => {
       var k;
       return ((k = L.value) == null ? void 0 : k.week_52_high) ?? null;
-    }), oe = te(() => {
+    }), se = Y(() => {
       var k;
       return ((k = L.value) == null ? void 0 : k.week_52_low) ?? null;
-    }), W = te(() => {
+    }), W = Y(() => {
       var k;
       return ((k = L.value) == null ? void 0 : k.pe_ratio) ?? null;
-    }), de = te(() => {
+    }), ue = Y(() => {
       var k;
       return ((k = L.value) == null ? void 0 : k.market_cap) ?? null;
-    }), ne = te(() => {
+    }), oe = Y(() => {
       var k;
       return ((k = L.value) == null ? void 0 : k.computed_peg_ratio) ?? null;
-    }), we = te(() => {
+    }), ye = Y(() => {
       var k;
       return ((k = A.value) == null ? void 0 : k.last_fetched_at) ?? null;
-    }), pe = te(() => {
-      if (!we.value) return null;
-      const k = new Date(we.value), H = {
+    }), fe = Y(() => {
+      var k;
+      return ((k = L.value) == null ? void 0 : k.last_updated_at) ?? null;
+    }), be = Y(() => {
+      if (!ye.value) return null;
+      const k = new Date(ye.value), H = {
         year: "numeric",
         month: "short",
         day: "numeric",
@@ -13515,60 +13521,74 @@ const Ka = {
       };
       let B = k.toLocaleString("en-US", H).replace(/,(\s+\d)/, " $1");
       return B = B.replace("GMT+5:30", "IST"), B = B.replace("GMT+530", "IST"), B;
+    }), Ce = Y(() => {
+      if (!fe.value) return null;
+      const k = new Date(fe.value), g = {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: !0,
+        timeZone: "America/Los_Angeles",
+        timeZoneName: "short"
+      };
+      return k.toLocaleString("en-US", g).replace(/,(\s+\d)/, " at$1");
     }), {
-      overallAdjustedAvgPriceFromOrders: ce,
-      totalNetCost: ye,
-      totalShares: ge,
-      orderGroups: Re,
-      isLoading: Se,
-      error: Le
-    } = Va(
+      overallAdjustedAvgPriceFromOrders: me,
+      totalNetCost: Re,
+      totalShares: Se,
+      orderGroups: Pe,
+      isLoading: $e,
+      error: Be
+    } = Ga(
       u,
       t.userId
     ), {
-      overallAdjustedAvgPriceFromOrders: De,
-      totalNetCost: Ie,
-      totalShares: Ge,
-      orderGroups: ae,
-      isLoading: Fe,
-      error: nt
-    } = Ia(
+      overallAdjustedAvgPriceFromOrders: Le,
+      totalNetCost: ne,
+      totalShares: _e,
+      orderGroups: ct,
+      isLoading: it,
+      error: st
+    } = Wa(
       u,
       t.userId
     ), {
-      positionTradesMap: We,
-      positionPositionsMap: je,
-      positionOrdersMap: x,
-      getPositionKey: K,
-      getAttachedTrades: J,
-      fetchAttachedPositionsForDisplay: Ee,
-      fetchTradesForSymbol: Wt,
-      fetchOrdersForSymbol: jt,
-      getAttachedOrders: Oe,
-      savePositionOrderMappings: Dt,
-      isReady: Ft,
-      refetchMappings: Z
-    } = Ua(t.userId), {
-      expandedPositions: $e,
-      processingPositions: Mt
-    } = qa(), Ue = te(() => {
+      positionTradesMap: x,
+      positionPositionsMap: Q,
+      positionOrdersMap: J,
+      getPositionKey: le,
+      getAttachedTrades: Gt,
+      fetchAttachedPositionsForDisplay: Wt,
+      fetchTradesForSymbol: Ne,
+      fetchOrdersForSymbol: Ft,
+      getAttachedOrders: oi,
+      savePositionOrderMappings: he,
+      isReady: xt,
+      refetchMappings: ft
+    } = Ka(t.userId), {
+      expandedPositions: De,
+      processingPositions: jt
+    } = Xa(), Ut = Y(() => {
       var H, $, B, E, N;
       if (u.value && u.value.length > 0) {
-        const Q = (H = u.value[0]) == null ? void 0 : H.asset_class;
-        return console.log("👀 Asset type from positions:", Q), Q || null;
+        const X = (H = u.value[0]) == null ? void 0 : H.asset_class;
+        return console.log("👀 Asset type from positions:", X), X || null;
       }
       const k = R.value && R.value.length > 0, g = b.value && b.value.length > 0;
       if (k || g) {
-        const Q = ((B = ($ = R.value) == null ? void 0 : $[0]) == null ? void 0 : B.asset_class) || ((N = (E = b.value) == null ? void 0 : E[0]) == null ? void 0 : N.asset_class);
-        return console.log("👀 Asset type from options:", Q), Q || "OPT";
+        const X = ((B = ($ = R.value) == null ? void 0 : $[0]) == null ? void 0 : B.asset_class) || ((N = (E = b.value) == null ? void 0 : E[0]) == null ? void 0 : N.asset_class);
+        return console.log("👀 Asset type from options:", X), X || "OPT";
       }
       return console.log("👀 Asset type: null (no positions)"), null;
     });
-    console.log("👀 Asset type detected:", Ue.value);
-    const ji = te(() => !u.value || u.value.length === 0 ? 0 : u.value.reduce((k, g) => k + (g.contract_quantity || 0), 0));
-    te(() => {
+    console.log("👀 Asset type detected:", Ut.value);
+    const qi = Y(() => !u.value || u.value.length === 0 ? 0 : u.value.reduce((k, g) => k + (g.contract_quantity || 0), 0));
+    Y(() => {
       var g, H;
-      if (Ue.value === "OPT") {
+      if (Ut.value === "OPT") {
         const $ = ((g = R.value) == null ? void 0 : g.reduce((E, N) => E + (N.unrealized_pnl || 0), 0)) || 0, B = ((H = b.value) == null ? void 0 : H.reduce((E, N) => E + (N.unrealized_pnl || 0), 0)) || 0;
         return console.log("📊 Options Unrealized P&L - PUT:", $, "CALL:", B, "Total:", $ + B), $ + B;
       }
@@ -13577,75 +13597,75 @@ const Ka = {
       return console.log("📊 Stock Unrealized P&L:", k), k;
     });
     const {
-      unrealizedPnL: _e,
-      pnlPercentage: Ms,
-      isProfitable: Be,
-      calculationBreakdown: X,
-      isLoading: Ps,
-      error: _s
-    } = Ga(
-      De,
-      te(() => ge.value),
+      unrealizedPnL: ze,
+      pnlPercentage: _s,
+      isProfitable: Ve,
+      calculationBreakdown: K,
+      isLoading: zs,
+      error: As
+    } = ja(
+      Le,
+      Y(() => Se.value),
       S,
       R,
       b
     ), {
-      totalExitedPnL: Me,
-      exitedOrdersBreakdown: Ut,
-      isLoading: zs,
-      error: As
-    } = Wa(
-      te(() => t.symbolRoot),
-      te(() => t.userId),
-      Ue
-    ), {
-      totalCapitalUsed: si,
-      calculationBreakdown: ze,
+      totalExitedPnL: Fe,
+      exitedOrdersBreakdown: qt,
       isLoading: Hs,
       error: Os
-    } = ja(
-      Ue,
-      te(() => ji.value),
+    } = Ua(
+      Y(() => t.symbolRoot),
+      Y(() => t.userId),
+      Ut
+    ), {
+      totalCapitalUsed: ni,
+      calculationBreakdown: Ae,
+      isLoading: $s,
+      error: Bs
+    } = qa(
+      Ut,
+      Y(() => qi.value),
       S
-    ), qt = O(!1);
-    function $s() {
-      qt.value = !qt.value;
+    ), Kt = O(!1);
+    function Ns() {
+      Kt.value = !Kt.value;
     }
     function mt(k) {
       if (!k) return [];
-      const g = String(k), H = g.match(/^([A-Z]+)\b/), $ = (H == null ? void 0 : H[1]) ?? "", B = g.match(/\s([CP])\b/), E = (B == null ? void 0 : B[1]) ?? "", N = g.match(/\s(\d+(?:\.\d+)?)\s+[CP]\b/), Q = (N == null ? void 0 : N[1]) ?? "", he = g.match(/\b(\d{6})[CP]/), ue = he ? Ui(he[1]) : "";
-      return [$, ue, Q, E].filter(Boolean);
+      const g = String(k), H = g.match(/^([A-Z]+)\b/), $ = (H == null ? void 0 : H[1]) ?? "", B = g.match(/\s([CP])\b/), E = (B == null ? void 0 : B[1]) ?? "", N = g.match(/\s(\d+(?:\.\d+)?)\s+[CP]\b/), X = (N == null ? void 0 : N[1]) ?? "", de = g.match(/\b(\d{6})[CP]/), ce = de ? Ki(de[1]) : "";
+      return [$, ce, X, E].filter(Boolean);
     }
-    function Pt(k) {
-      var ue;
+    function Mt(k) {
+      var ce;
       if (!k) return [];
-      const g = String(k).trim(), H = g.match(/^([A-Z]+)\s*/), $ = (H == null ? void 0 : H[1]) ?? "", B = g.slice(((ue = H == null ? void 0 : H[0]) == null ? void 0 : ue.length) || 0), E = B.match(/(\d{6})([CP])/);
-      let N = "", Q = "", he = "";
+      const g = String(k).trim(), H = g.match(/^([A-Z]+)\s*/), $ = (H == null ? void 0 : H[1]) ?? "", B = g.slice(((ce = H == null ? void 0 : H[0]) == null ? void 0 : ce.length) || 0), E = B.match(/(\d{6})([CP])/);
+      let N = "", X = "", de = "";
       if (E) {
-        N = Ui(E[1]), Q = E[2] === "C" ? "Call" : "Put";
-        const be = B.slice(E[0].length).match(/(\d+)/);
-        be && (he = (parseInt(be[1], 10) / 1e3).toString());
+        N = Ki(E[1]), X = E[2] === "C" ? "Call" : "Put";
+        const ve = B.slice(E[0].length).match(/(\d+)/);
+        ve && (de = (parseInt(ve[1], 10) / 1e3).toString());
       }
-      return [$, N, he, Q].filter(Boolean);
+      return [$, N, de, X].filter(Boolean);
     }
-    function Ui(k) {
+    function Ki(k) {
       if (!k || k.length !== 6) return "";
       const g = k.substring(0, 2), H = k.substring(2, 4), $ = k.substring(4, 6);
       return `20${g}-${H}-${$}`;
     }
-    function Ne(k) {
+    function Ie(k) {
       if (!k) return "";
       const g = /^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/.exec(String(k).trim());
       let H;
       if (g) {
-        const N = parseInt(g[1]), Q = parseInt(g[2]) - 1;
-        let he = parseInt(g[3]);
-        he < 100 && (he = 2e3 + he), H = new Date(he, Q, N);
+        const N = parseInt(g[1]), X = parseInt(g[2]) - 1;
+        let de = parseInt(g[3]);
+        de < 100 && (de = 2e3 + de), H = new Date(de, X, N);
       } else if (H = new Date(k), isNaN(H.getTime())) return String(k);
       const $ = H.getFullYear(), B = (H.getMonth() + 1).toString().padStart(2, "0"), E = H.getDate().toString().padStart(2, "0");
       return `${$}-${B}-${E}`;
     }
-    function Bs(k) {
+    function Vs(k) {
       if (!k) return "";
       const [g] = String(k).trim().split(";"), H = /^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/.exec(g);
       if (H) {
@@ -13666,7 +13686,7 @@ const Ka = {
         timeZone: "America/Los_Angeles"
       });
     }
-    function Ce(k) {
+    function Ee(k) {
       return new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
@@ -13674,20 +13694,20 @@ const Ka = {
         maximumFractionDigits: 2
       }).format(k);
     }
-    function oi(k) {
+    function ai(k) {
       return new Intl.NumberFormat("en-US", {
         minimumFractionDigits: 0,
         maximumFractionDigits: 2
       }).format(k);
     }
-    function Ns(k) {
-      if (console.log("🔄 Toggle expansion for key:", k), console.log("📊 Before toggle - expanded positions:", Array.from($e.value)), $e.value.has(k) ? ($e.value.delete(k), console.log("➖ Removed from expanded")) : ($e.value.add(k), console.log("➕ Added to expanded")), console.log("📊 After toggle - expanded positions:", Array.from($e.value)), console.log("🎯 Tabulator exists?", !!Ae.value), Ae.value) {
-        const g = Ae.value.getRows();
+    function Is(k) {
+      if (console.log("🔄 Toggle expansion for key:", k), console.log("📊 Before toggle - expanded positions:", Array.from(De.value)), De.value.has(k) ? (De.value.delete(k), console.log("➖ Removed from expanded")) : (De.value.add(k), console.log("➕ Added to expanded")), console.log("📊 After toggle - expanded positions:", Array.from(De.value)), console.log("🎯 Tabulator exists?", !!He.value), He.value) {
+        const g = He.value.getRows();
         console.log("📋 Total rows:", g.length);
         for (const H of g) {
           const $ = H.getData();
           if ($) {
-            const B = ni($);
+            const B = ri($);
             if (console.log("🔍 Checking row key:", B, "matches?", B === k), B === k) {
               console.log("✅ Found matching row, reformatting..."), H.reformat();
               break;
@@ -13696,10 +13716,10 @@ const Ka = {
         }
       }
     }
-    function ni(k) {
-      return K(k);
+    function ri(k) {
+      return le(k);
     }
-    const Vs = [
+    const Gs = [
       {
         title: "Account",
         field: "legal_entity",
@@ -13707,24 +13727,24 @@ const Ka = {
         headerHozAlign: "left",
         formatter: (k) => {
           const g = k.getRow().getData(), H = k.getValue() || g.internal_account_id;
-          if (!Ft.value)
+          if (!xt.value)
             return console.log("⏳ Formatter called but mappings not ready yet"), `<div style="display: flex; align-items: center; gap: 6px;">
           <span class="expand-arrow">&nbsp;</span>
           <span>${H}</span>
         </div>`;
-          const $ = ni(g), B = We.value.get($), E = je.value.get($), N = x.value.get($);
+          const $ = ri(g), B = x.value.get($), E = Q.value.get($), N = J.value.get($);
           console.log("🎨 Formatter for", $, {
             attachedTradeIds: (B == null ? void 0 : B.size) || 0,
             attachedPositionKeys: (E == null ? void 0 : E.size) || 0,
             attachedOrderIds: (N == null ? void 0 : N.size) || 0,
-            isReady: Ft.value
+            isReady: xt.value
           });
-          const Q = B && B.size > 0 || E && E.size > 0 || N && N.size > 0, he = $e.value.has($), ue = Q ? `<span class="expand-arrow ${he ? "expanded" : ""}" data-position-key="${$}" title="${he ? "Collapse" : "Expand"} attachments">
-            ${he ? "▼" : "▶"}
-          </span>` : '<span class="expand-arrow">&nbsp;</span>', at = ((B == null ? void 0 : B.size) || 0) + ((E == null ? void 0 : E.size) || 0) + ((N == null ? void 0 : N.size) || 0), be = at > 0 ? `<span class="trade-count">(${at})</span>` : "";
+          const X = B && B.size > 0 || E && E.size > 0 || N && N.size > 0, de = De.value.has($), ce = X ? `<span class="expand-arrow ${de ? "expanded" : ""}" data-position-key="${$}" title="${de ? "Collapse" : "Expand"} attachments">
+            ${de ? "▼" : "▶"}
+          </span>` : '<span class="expand-arrow">&nbsp;</span>', ot = ((B == null ? void 0 : B.size) || 0) + ((E == null ? void 0 : E.size) || 0) + ((N == null ? void 0 : N.size) || 0), ve = ot > 0 ? `<span class="trade-count">(${ot})</span>` : "";
           return `
         <div style="display: flex; align-items: center; gap: 6px;">
-          ${ue} 
+          ${ce} 
           <button class="attach-trades-btn" title="Attach trades or positions" style="border:none;background:transparent;cursor:pointer;padding:0;margin-right:4px;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;">
           <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -13732,7 +13752,7 @@ const Ka = {
         </svg>
       </button> 
           <span>${H}</span>
-          ${be}
+          ${ve}
         </div>
       `;
         },
@@ -13741,13 +13761,13 @@ const Ka = {
           if ($) {
             k.stopPropagation();
             const E = $.getAttribute("data-position-key");
-            E && Ns(E);
+            E && Is(E);
             return;
           }
           if (H.closest(".attach-trades-btn")) {
             k.stopPropagation();
             const E = g.getRow().getData();
-            E && Gs(E, "trades");
+            E && js(E, "trades");
             return;
           }
         }
@@ -13842,47 +13862,47 @@ const Ka = {
           return `<span style="color:${g < 0 ? "#dc3545" : g > 0 ? "#28a745" : "#000"}">$${Number(g).toLocaleString(void 0, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</span>`;
         }
       }
-    ], { tableDiv: Is, initializeTabulator: qi, isTableInitialized: ai, tabulator: Ae } = $a({
+    ], { tableDiv: Ws, initializeTabulator: Xi, isTableInitialized: li, tabulator: He } = Na({
       data: u,
-      columns: Vs,
+      columns: Gs,
       isSuccess: c,
       placeholder: "No positions found for this symbol",
       rowFormatter: async (k) => {
         try {
           const g = k.getData(), H = k.getElement();
           if (!g) return;
-          const $ = ni(g), B = We.value.get($), E = je.value.get($), N = x.value.get($), Q = $e.value.has($);
+          const $ = ri(g), B = x.value.get($), E = Q.value.get($), N = J.value.get($), X = De.value.has($);
           console.log("🎨 Row formatter running for:", $, {
-            isExpanded: Q,
+            isExpanded: X,
             attachedTradeIds: (B == null ? void 0 : B.size) || 0,
             attachedPositionKeys: (E == null ? void 0 : E.size) || 0,
-            processing: Mt.value.has($)
+            processing: jt.value.has($)
           });
-          const he = H.querySelector(".nested-tables-container");
-          if (he && (console.log("🗑️ Removing existing nested container"), he.remove()), Mt.value.has($)) {
+          const de = H.querySelector(".nested-tables-container");
+          if (de && (console.log("🗑️ Removing existing nested container"), de.remove()), jt.value.has($)) {
             console.log("⏸️ Position is being processed, skipping");
             return;
           }
-          if (Q && (B && B.size > 0 || E && E.size > 0 || N && N.size > 0)) {
-            console.log("📦 Creating nested tables for:", $), Mt.value.add($);
+          if (X && (B && B.size > 0 || E && E.size > 0 || N && N.size > 0)) {
+            console.log("📦 Creating nested tables for:", $), jt.value.add($);
             try {
-              const ue = document.createElement("div");
-              if (ue.className = "nested-tables-container", ue.style.cssText = "padding: 1rem; background: #f8f9fa; border-top: 1px solid #dee2e6;", B && B.size > 0) {
+              const ce = document.createElement("div");
+              if (ce.className = "nested-tables-container", ce.style.cssText = "padding: 1rem; background: #f8f9fa; border-top: 1px solid #dee2e6;", B && B.size > 0) {
                 console.log("📊 Adding trades section");
-                const be = document.createElement("h4");
-                be.textContent = `Attached Trades (${B.size})`, be.style.cssText = "margin: 0 0 0.5rem 0; font-size: 0.9rem; color: #495057;", ue.appendChild(be);
+                const ve = document.createElement("h4");
+                ve.textContent = `Attached Trades (${B.size})`, ve.style.cssText = "margin: 0 0 0.5rem 0; font-size: 0.9rem; color: #495057;", ce.appendChild(ve);
                 const xe = document.createElement("div");
-                xe.className = "nested-trades-table", xe.style.cssText = "margin-bottom: 1rem;", ue.appendChild(xe);
-                const rt = await J(g);
-                console.log("✅ Got trades data:", rt.length), new Yt(xe, {
-                  data: rt,
+                xe.className = "nested-trades-table", xe.style.cssText = "margin-bottom: 1rem;", ce.appendChild(xe);
+                const nt = await Gt(g);
+                console.log("✅ Got trades data:", nt.length), new Zt(xe, {
+                  data: nt,
                   layout: "fitColumns",
                   columns: [
                     {
                       title: "Financial instruments",
                       field: "symbol",
                       widthGrow: 1.8,
-                      formatter: (V) => Pt(V.getValue()).map((re) => `<span class="fi-tag">${re}</span>`).join(" ")
+                      formatter: (V) => Mt(V.getValue()).map((ae) => `<span class="fi-tag">${ae}</span>`).join(" ")
                     },
                     {
                       title: "Side",
@@ -13906,20 +13926,20 @@ const Ka = {
                       title: "Trade Date",
                       field: "tradeDate",
                       widthGrow: 1,
-                      formatter: (V) => Ne(V.getValue()),
+                      formatter: (V) => Ie(V.getValue()),
                       sorter: (V, G) => {
-                        const re = new Date(Ne(V)), gt = new Date(Ne(G));
-                        return re.getTime() - gt.getTime();
+                        const ae = new Date(Ie(V)), gt = new Date(Ie(G));
+                        return ae.getTime() - gt.getTime();
                       }
                     },
                     {
                       title: "Settlement Date",
                       field: "settleDateTarget",
                       widthGrow: 1,
-                      formatter: (V) => Ne(V.getValue()),
+                      formatter: (V) => Ie(V.getValue()),
                       sorter: (V, G) => {
-                        const re = new Date(Ne(V)), gt = new Date(Ne(G));
-                        return re.getTime() - gt.getTime();
+                        const ae = new Date(Ie(V)), gt = new Date(Ie(G));
+                        return ae.getTime() - gt.getTime();
                       }
                     },
                     {
@@ -13928,8 +13948,8 @@ const Ka = {
                       widthGrow: 1,
                       hozAlign: "right",
                       formatter: (V) => {
-                        const G = V.getRow().getData(), re = parseFloat((G == null ? void 0 : G.quantity) || 0) || 0, gt = parseFloat((G == null ? void 0 : G.multiplier) || 1) || 1, Ys = re * gt;
-                        return oi(Ys);
+                        const G = V.getRow().getData(), ae = parseFloat((G == null ? void 0 : G.quantity) || 0) || 0, gt = parseFloat((G == null ? void 0 : G.multiplier) || 1) || 1, eo = ae * gt;
+                        return ai(eo);
                       }
                     },
                     {
@@ -13937,55 +13957,55 @@ const Ka = {
                       field: "tradePrice",
                       widthGrow: 1,
                       hozAlign: "right",
-                      formatter: (V) => Ce(parseFloat(V.getValue()) || 0)
+                      formatter: (V) => Ee(parseFloat(V.getValue()) || 0)
                     },
                     {
                       title: "Total Premium",
                       field: "tradeMoney",
                       widthGrow: 1,
                       hozAlign: "right",
-                      formatter: (V) => Ce(parseFloat(V.getValue()) || 0)
+                      formatter: (V) => Ee(parseFloat(V.getValue()) || 0)
                     },
                     {
                       title: "Net Cash",
                       field: "netCash",
                       widthGrow: 1,
                       hozAlign: "right",
-                      formatter: (V) => Ce(parseFloat(V.getValue()) || 0)
+                      formatter: (V) => Ee(parseFloat(V.getValue()) || 0)
                     },
                     {
                       title: "MTM PnL",
                       field: "mtmPnl",
                       widthGrow: 1,
                       hozAlign: "right",
-                      formatter: (V) => Ce(parseFloat(V.getValue()) || 0)
+                      formatter: (V) => Ee(parseFloat(V.getValue()) || 0)
                     },
                     {
                       title: "Close Price",
                       field: "closePrice",
                       widthGrow: 1,
                       hozAlign: "right",
-                      formatter: (V) => Ce(parseFloat(V.getValue()) || 0)
+                      formatter: (V) => Ee(parseFloat(V.getValue()) || 0)
                     }
                   ]
                 });
               }
               if (E && E.size > 0) {
                 console.log("📊 Adding positions section");
-                const be = document.createElement("h4");
-                be.textContent = `Attached Positions (${E.size})`, be.style.cssText = "margin: 1rem 0 0.5rem 0; font-size: 0.9rem; color: #495057;", ue.appendChild(be);
+                const ve = document.createElement("h4");
+                ve.textContent = `Attached Positions (${E.size})`, ve.style.cssText = "margin: 1rem 0 0.5rem 0; font-size: 0.9rem; color: #495057;", ce.appendChild(ve);
                 const xe = document.createElement("div");
-                xe.className = "nested-positions-table", ue.appendChild(xe);
-                const rt = await Ee(g, E);
-                console.log("✅ Got positions data:", rt.length), new Yt(xe, {
-                  data: rt,
+                xe.className = "nested-positions-table", ce.appendChild(xe);
+                const nt = await Wt(g, E);
+                console.log("✅ Got positions data:", nt.length), new Zt(xe, {
+                  data: nt,
                   layout: "fitColumns",
                   columns: [
                     {
                       title: "Financial instruments",
                       field: "symbol",
                       widthGrow: 1.8,
-                      formatter: (V) => mt(V.getValue()).map((re) => `<span class="fi-tag">${re}</span>`).join(" ")
+                      formatter: (V) => mt(V.getValue()).map((ae) => `<span class="fi-tag">${ae}</span>`).join(" ")
                     },
                     {
                       title: "Accounting Qty",
@@ -14042,23 +14062,23 @@ const Ka = {
                   ]
                 });
               }
-              const at = x.value.get($);
-              if (console.log("👀 Attached order IDs for", $, at), Q && at && at.size > 0) {
+              const ot = J.value.get($);
+              if (console.log("👀 Attached order IDs for", $, ot), X && ot && ot.size > 0) {
                 console.log("📦 Adding orders section for:", $);
-                const be = document.createElement("h4");
-                be.textContent = `Attached Orders (${at.size})`, be.style.cssText = "margin: 1rem 0 0.5rem 0; font-size: 0.9rem; color: #495057;", ue.appendChild(be);
+                const ve = document.createElement("h4");
+                ve.textContent = `Attached Orders (${ot.size})`, ve.style.cssText = "margin: 1rem 0 0.5rem 0; font-size: 0.9rem; color: #495057;", ce.appendChild(ve);
                 const xe = document.createElement("div");
-                xe.className = "nested-orders-table", ue.appendChild(xe);
-                const rt = await Oe(g);
-                console.log("✅ Got orders data:", rt.length), new Yt(xe, {
-                  data: rt,
+                xe.className = "nested-orders-table", ce.appendChild(xe);
+                const nt = await oi(g);
+                console.log("✅ Got orders data:", nt.length), new Zt(xe, {
+                  data: nt,
                   layout: "fitColumns",
                   columns: [
                     {
                       title: "Financial instruments",
                       field: "symbol",
                       widthGrow: 1.8,
-                      formatter: (V) => Pt(V.getValue()).map((re) => `<span class="fi-tag">${re}</span>`).join(" ")
+                      formatter: (V) => Mt(V.getValue()).map((ae) => `<span class="fi-tag">${ae}</span>`).join(" ")
                     },
                     {
                       title: "Side",
@@ -14073,10 +14093,10 @@ const Ka = {
                       title: "Order Date",
                       field: "dateTime",
                       widthGrow: 1,
-                      formatter: (V) => Ne(V.getValue()),
+                      formatter: (V) => Ie(V.getValue()),
                       sorter: (V, G) => {
-                        const re = new Date(Ne(V)), gt = new Date(Ne(G));
-                        return re.getTime() - gt.getTime();
+                        const ae = new Date(Ie(V)), gt = new Date(Ie(G));
+                        return ae.getTime() - gt.getTime();
                       }
                     },
                     {
@@ -14088,8 +14108,8 @@ const Ka = {
                       formatter: (V) => {
                         const G = V.getValue();
                         if (G == null) return "-";
-                        const re = V.getData();
-                        return re.assetCategory === "OPT" ? re.quantity * 100 : re.assetCategory === "STK" ? re.quantity * 1 : oi(re.quantity);
+                        const ae = V.getData();
+                        return ae.assetCategory === "OPT" ? ae.quantity * 100 : ae.assetCategory === "STK" ? ae.quantity * 1 : ai(ae.quantity);
                       }
                     },
                     {
@@ -14097,30 +14117,30 @@ const Ka = {
                       field: "tradePrice",
                       widthGrow: 1,
                       hozAlign: "right",
-                      formatter: (V) => Ce(parseFloat(V.getValue()) || 0)
+                      formatter: (V) => Ee(parseFloat(V.getValue()) || 0)
                     },
                     {
                       title: "Trade Money",
                       field: "tradeMoney",
                       widthGrow: 1,
                       hozAlign: "right",
-                      formatter: (V) => Ce(parseFloat(V.getValue()) || 0)
+                      formatter: (V) => Ee(parseFloat(V.getValue()) || 0)
                     },
                     {
                       title: "Settlement Date",
                       field: "settleDateTarget",
                       widthGrow: 1,
-                      formatter: (V) => Zi(V.getValue())
+                      formatter: (V) => ts(V.getValue())
                     }
                   ]
                 });
               }
-              console.log("✅ Appending nested container to row"), H.appendChild(ue);
-            } catch (ue) {
-              console.error("❌ Error creating nested tables:", ue);
+              console.log("✅ Appending nested container to row"), H.appendChild(ce);
+            } catch (ce) {
+              console.error("❌ Error creating nested tables:", ce);
             } finally {
               setTimeout(() => {
-                Mt.value.delete($), console.log("✅ Removed from processing");
+                jt.value.delete($), console.log("✅ Removed from processing");
               }, 100);
             }
           } else
@@ -14129,115 +14149,115 @@ const Ka = {
           console.error("❌ Row formatter error:", g);
         }
       }
-    }), qe = O(!1), fe = O("trades"), Ke = O(null), Xe = O(null), Qe = O(/* @__PURE__ */ new Set()), Kt = O(""), Xt = O(""), Qt = O(""), Je = O(/* @__PURE__ */ new Set()), Ye = O(/* @__PURE__ */ new Set()), Ze = O(!1), _t = O([]), zt = O([]), At = O([]);
-    function Ki(k) {
-      Je.value.has(k) ? Je.value.delete(k) : Je.value.add(k);
-    }
-    function Xi(k) {
-      Ye.value.has(k) ? Ye.value.delete(k) : Ye.value.add(k);
-    }
+    }), We = O(!1), pe = O("trades"), je = O(null), Ue = O(null), qe = O(/* @__PURE__ */ new Set()), Xt = O(""), Qt = O(""), Jt = O(""), Ke = O(/* @__PURE__ */ new Set()), Xe = O(/* @__PURE__ */ new Set()), Qe = O(!1), Pt = O([]), _t = O([]), zt = O([]);
     function Qi(k) {
-      Qe.value.has(k) ? Qe.value.delete(k) : Qe.value.add(k);
+      Ke.value.has(k) ? Ke.value.delete(k) : Ke.value.add(k);
     }
-    async function ri(k) {
-      Ze.value = !0, _t.value = [];
-      try {
-        const g = mt(k.symbol)[0] || "";
-        if (!g) return;
-        const H = await Wt(g, k.internal_account_id), $ = Kt.value.trim().toLowerCase();
-        _t.value = $ ? H.filter((B) => (B.symbol || "").toLowerCase().includes($) || String(B.tradeID || "").toLowerCase().includes($)) : H;
-      } catch (g) {
-        console.error("❌ loadAttachableTradesForPosition error:", g), _t.value = [];
-      } finally {
-        Ze.value = !1;
-      }
+    function Ji(k) {
+      Xe.value.has(k) ? Xe.value.delete(k) : Xe.value.add(k);
     }
-    async function li(k) {
-      Ze.value = !0, zt.value = [];
-      try {
-        const g = mt(k.symbol)[0] || "";
-        if (!g) return;
-        const H = k.internal_account_id || k.legal_entity, $ = await ns(d, g, t.userId, H), B = Xt.value.trim().toLowerCase();
-        zt.value = B ? $.filter((E) => (E.symbol || "").toLowerCase().includes(B)) : $;
-      } catch (g) {
-        console.error("❌ loadAttachablePositionsForPosition error:", g), zt.value = [];
-      } finally {
-        Ze.value = !1;
-      }
+    function Yi(k) {
+      qe.value.has(k) ? qe.value.delete(k) : qe.value.add(k);
     }
     async function hi(k) {
-      Ze.value = !0, At.value = [];
+      Qe.value = !0, Pt.value = [];
       try {
         const g = mt(k.symbol)[0] || "";
         if (!g) return;
-        const H = await jt(g, k.internal_account_id), $ = Qt.value.trim().toLowerCase();
-        At.value = $ ? H.filter((B) => (B.symbol || "").toLowerCase().includes($) || String(B.orderID || "").toLowerCase().includes($)) : H;
+        const H = await Ne(g, k.internal_account_id), $ = Xt.value.trim().toLowerCase();
+        Pt.value = $ ? H.filter((B) => (B.symbol || "").toLowerCase().includes($) || String(B.tradeID || "").toLowerCase().includes($)) : H;
       } catch (g) {
-        console.error("❌ loadAttachableOrdersForPosition error:", g), At.value = [];
+        console.error("❌ loadAttachableTradesForPosition error:", g), Pt.value = [];
       } finally {
-        Ze.value = !1;
+        Qe.value = !1;
       }
     }
-    async function Gs(k, g = "trades") {
-      Ke.value = k, Xe.value = k, fe.value = g, Kt.value = "", Xt.value = "", Qt.value = "";
-      const H = K(k);
-      Je.value = new Set(We.value.get(H) || []), Ye.value = new Set(je.value.get(H) || []), Qe.value = new Set(x.value.get(H) || []), qe.value = !0, g === "trades" ? await ri(k) : g === "positions" ? await li(k) : await hi(k);
-    }
-    async function Ws() {
-      if (!Ke.value || !t.userId) return;
-      const k = K(Ke.value);
+    async function di(k) {
+      Qe.value = !0, _t.value = [];
       try {
-        await ro(d, t.userId, k, Je.value), Z && await Z(), qe.value = !1, Ae.value && Ae.value.redraw(!0), console.log("✅ Trades attached");
+        const g = mt(k.symbol)[0] || "";
+        if (!g) return;
+        const H = k.internal_account_id || k.legal_entity, $ = await rs(d, g, t.userId, H), B = Qt.value.trim().toLowerCase();
+        _t.value = B ? $.filter((E) => (E.symbol || "").toLowerCase().includes(B)) : $;
+      } catch (g) {
+        console.error("❌ loadAttachablePositionsForPosition error:", g), _t.value = [];
+      } finally {
+        Qe.value = !1;
+      }
+    }
+    async function ui(k) {
+      Qe.value = !0, zt.value = [];
+      try {
+        const g = mt(k.symbol)[0] || "";
+        if (!g) return;
+        const H = await Ft(g, k.internal_account_id), $ = Jt.value.trim().toLowerCase();
+        zt.value = $ ? H.filter((B) => (B.symbol || "").toLowerCase().includes($) || String(B.orderID || "").toLowerCase().includes($)) : H;
+      } catch (g) {
+        console.error("❌ loadAttachableOrdersForPosition error:", g), zt.value = [];
+      } finally {
+        Qe.value = !1;
+      }
+    }
+    async function js(k, g = "trades") {
+      je.value = k, Ue.value = k, pe.value = g, Xt.value = "", Qt.value = "", Jt.value = "";
+      const H = le(k);
+      Ke.value = new Set(x.value.get(H) || []), Xe.value = new Set(Q.value.get(H) || []), qe.value = new Set(J.value.get(H) || []), We.value = !0, g === "trades" ? await hi(k) : g === "positions" ? await di(k) : await ui(k);
+    }
+    async function Us() {
+      if (!je.value || !t.userId) return;
+      const k = le(je.value);
+      try {
+        await ho(d, t.userId, k, Ke.value), ft && await ft(), We.value = !1, He.value && He.value.redraw(!0), console.log("✅ Trades attached");
       } catch (g) {
         console.error("❌ Error saving attached trades:", g);
       }
     }
-    async function js() {
-      if (!Xe.value || !t.userId) return;
-      const k = K(Xe.value);
+    async function qs() {
+      if (!Ue.value || !t.userId) return;
+      const k = le(Ue.value);
       try {
-        await lo(d, t.userId, k, Ye.value), Z && await Z(), qe.value = !1, Ae.value && Ae.value.redraw(!0), console.log("✅ Positions attached");
+        await uo(d, t.userId, k, Xe.value), ft && await ft(), We.value = !1, He.value && He.value.redraw(!0), console.log("✅ Positions attached");
       } catch (g) {
         console.error("❌ Error saving attached positions:", g);
       }
     }
-    async function Us() {
-      if (!Ke.value || !t.userId) return;
-      const k = K(Ke.value);
+    async function Ks() {
+      if (!je.value || !t.userId) return;
+      const k = le(je.value);
       try {
-        await Dt(d, t.userId, k, Qe.value), Z && await Z(), qe.value = !1, Ae.value && Ae.value.redraw(!0), console.log("✅ Orders attached");
+        await he(d, t.userId, k, qe.value), ft && await ft(), We.value = !1, He.value && He.value.redraw(!0), console.log("✅ Orders attached");
       } catch (g) {
         console.error("❌ Error saving attached orders:", g);
       }
     }
-    function Ji(k) {
+    function Zi(k) {
       if (k.asset_class !== "OPT") return !1;
       const H = mt(k.symbol)[1];
       if (!H) return !1;
       const $ = new Date(H), B = /* @__PURE__ */ new Date();
       return B.setHours(0, 0, 0, 0), $ < B;
     }
-    Pe(qe, (k) => {
+    Me(We, (k) => {
       try {
         k ? document.body.classList.add("modal-open") : document.body.classList.remove("modal-open");
       } catch {
       }
     });
-    function qs() {
-      i.value = !i.value, i.value && !ai.value && u.value && u.value.length > 0 && (console.log("📊 Details shown, initializing table..."), Zt(() => {
-        qi();
+    function Xs() {
+      i.value = !i.value, i.value && !li.value && u.value && u.value.length > 0 && (console.log("📊 Details shown, initializing table..."), ei(() => {
+        Xi();
       }));
     }
-    function Yi() {
+    function es() {
       s.value = !s.value;
     }
-    function Ks() {
+    function Qs() {
       o.value = !o.value;
     }
-    function Xs() {
+    function Js() {
       n.value = !n.value;
     }
-    function Qs(k) {
+    function Ys(k) {
       if (!k) return "";
       const g = new Date(k);
       return new Intl.DateTimeFormat("en-US", {
@@ -14251,7 +14271,7 @@ const Ka = {
         timeZoneName: "short"
       }).format(g);
     }
-    function Zi(k) {
+    function ts(k) {
       const g = k;
       if (!g) return "";
       const H = /^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/.exec(String(g).trim());
@@ -14263,45 +14283,45 @@ const Ka = {
       } else if ($ = new Date(g), isNaN($.getTime())) return String(g);
       return $.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
     }
-    Pe(Ft, async (k) => {
-      console.log("👀 Mappings ready state changed:", k), k && Ae.value && ai.value && (console.log("🔄 Redrawing table with mappings"), Ae.value.redraw(!0));
-    }, { immediate: !0 }), Pe(i, async (k) => {
-      k && !ai.value && u.value && u.value.length > 0 && (console.log("📊 Details shown via watch, initializing table..."), await Zt(), qi());
-    }), Pe(() => si.value, (k) => {
+    Me(xt, async (k) => {
+      console.log("👀 Mappings ready state changed:", k), k && He.value && li.value && (console.log("🔄 Redrawing table with mappings"), He.value.redraw(!0));
+    }, { immediate: !0 }), Me(i, async (k) => {
+      k && !li.value && u.value && u.value.length > 0 && (console.log("📊 Details shown via watch, initializing table..."), await ei(), Xi());
+    }), Me(() => ni.value, (k) => {
       h("capitalUsedChanged", k);
-    }), io(() => {
+    }), oo(() => {
       console.log("📊 CurrentPositions component mounted");
-    }), ss(() => {
+    }), ns(() => {
       console.log("🧹 Cleaning up CurrentPositions component"), T();
     });
     const pt = O(/* @__PURE__ */ new Set());
-    function Js(k) {
+    function Zs(k) {
       pt.value.has(k) ? pt.value.delete(k) : pt.value.add(k), pt.value = new Set(pt.value);
     }
     return (k, g) => {
       var H, $, B;
-      return C(), y("div", Yu, [
-        r("div", Zu, [
-          r("div", ec, [
-            D(f) ? (C(), y("div", tc, [
+      return C(), y("div", ec, [
+        r("div", tc, [
+          r("div", ic, [
+            D(f) ? (C(), y("div", sc, [
               g[17] || (g[17] = r("div", { class: "spinner" }, null, -1)),
               r("p", null, "Loading positions for " + m(t.symbolRoot) + "...", 1)
-            ])) : D(p) ? (C(), y("div", ic, [
+            ])) : D(p) ? (C(), y("div", oc, [
               r("p", null, "❌ Error loading positions: " + m((H = D(w)) == null ? void 0 : H.message), 1)
-            ])) : (C(), y("div", sc, [
-              r("div", oc, [
-                r("div", nc, [
+            ])) : (C(), y("div", nc, [
+              r("div", ac, [
+                r("div", rc, [
                   g[20] || (g[20] = r("div", { class: "summary-label" }, "Capital/margin used", -1)),
-                  D(Hs) ? (C(), y("div", ac, [...g[18] || (g[18] = [
+                  D($s) ? (C(), y("div", lc, [...g[18] || (g[18] = [
                     r("span", { class: "loading-spinner" }, "⏳", -1),
                     j(" Loading... ", -1)
-                  ])])) : D(Os) ? (C(), y("div", rc, " ❌ Error ")) : (C(), y("div", lc, [
+                  ])])) : D(Bs) ? (C(), y("div", hc, " ❌ Error ")) : (C(), y("div", dc, [
                     r("div", {
                       class: "summary-value clickable-price",
-                      onClick: Xs
+                      onClick: Js
                     }, [
-                      D(si) !== null ? (C(), y("span", hc, " $" + m(D(si).toLocaleString(void 0, { minimumFractionDigits: 0, maximumFractionDigits: 0 })), 1)) : (C(), y("span", dc, "N/A")),
-                      r("span", uc, m(n.value ? "▼" : "▶"), 1)
+                      D(ni) !== null ? (C(), y("span", uc, " $" + m(D(ni).toLocaleString(void 0, { minimumFractionDigits: 0, maximumFractionDigits: 0 })), 1)) : (C(), y("span", cc, "N/A")),
+                      r("span", fc, m(n.value ? "▼" : "▶"), 1)
                     ]),
                     g[19] || (g[19] = r("div", {
                       class: "capital-subtitle",
@@ -14309,277 +14329,278 @@ const Ka = {
                     }, " Margin: Coming soon... ", -1))
                   ]))
                 ]),
-                r("div", cc, [
-                  r("div", fc, [
+                r("div", mc, [
+                  r("div", pc, [
                     g[23] || (g[23] = r("div", { class: "summary-label" }, "P&L", -1)),
-                    D(Ps) ? (C(), y("div", mc, [...g[21] || (g[21] = [
+                    D(zs) ? (C(), y("div", gc, [...g[21] || (g[21] = [
                       r("span", { class: "loading-spinner" }, "⏳", -1),
                       j(" Loading... ", -1)
-                    ])])) : D(_s) ? (C(), y("div", pc, " ❌ Error ")) : (C(), y("div", gc, [
+                    ])])) : D(As) ? (C(), y("div", bc, " ❌ Error ")) : (C(), y("div", vc, [
                       r("div", {
-                        class: ee(["summary-value clickable-price pnl-value", { profit: D(Be), loss: !D(Be) }]),
-                        onClick: Ks
+                        class: ee(["summary-value clickable-price pnl-value", { profit: D(Ve), loss: !D(Ve) }]),
+                        onClick: Qs
                       }, [
                         g[22] || (g[22] = r("span", { style: { "font-size": "0.85rem", color: "#6c757d", display: "block", "margin-bottom": "0.25rem" } }, " Current positions if exit today: ", -1)),
-                        D(_e) !== null ? (C(), y("span", bc, [
-                          j(m(D(_e) >= 0 ? "+" : "") + "$" + m(D(_e).toLocaleString(void 0, { minimumFractionDigits: 0, maximumFractionDigits: 0 })) + " ", 1),
-                          r("span", vc, "(" + m(($ = D(Ms)) == null ? void 0 : $.toFixed(2)) + "%)", 1)
-                        ])) : (C(), y("span", wc, "N/A")),
-                        r("span", yc, m(o.value ? "▼" : "▶"), 1)
+                        D(ze) !== null ? (C(), y("span", wc, [
+                          j(m(D(ze) >= 0 ? "+" : "") + "$" + m(D(ze).toLocaleString(void 0, { minimumFractionDigits: 0, maximumFractionDigits: 0 })) + " ", 1),
+                          r("span", yc, "(" + m(($ = D(_s)) == null ? void 0 : $.toFixed(2)) + "%)", 1)
+                        ])) : (C(), y("span", Cc, "N/A")),
+                        r("span", Ec, m(o.value ? "▼" : "▶"), 1)
                       ], 2)
                     ]))
                   ]),
-                  r("div", Cc, [
-                    D(zs) ? (C(), y("div", Ec, [...g[24] || (g[24] = [
+                  r("div", xc, [
+                    D(Hs) ? (C(), y("div", kc, [...g[24] || (g[24] = [
                       r("span", { class: "loading-spinner" }, "⏳", -1),
                       j(" Loading... ", -1)
-                    ])])) : D(As) ? (C(), y("div", xc, " ❌ Error ")) : (C(), y("div", kc, [
+                    ])])) : D(Os) ? (C(), y("div", Rc, " ❌ Error ")) : (C(), y("div", Tc, [
                       r("div", {
-                        class: ee(["summary-value clickable-price pnl-value", { profit: (D(Me) ?? 0) >= 0, loss: (D(Me) ?? 0) < 0 }]),
-                        onClick: $s
+                        class: ee(["summary-value clickable-price pnl-value", { profit: (D(Fe) ?? 0) >= 0, loss: (D(Fe) ?? 0) < 0 }]),
+                        onClick: Ns
                       }, [
                         g[25] || (g[25] = r("span", { style: { "font-size": "0.85rem", color: "#6c757d", display: "block", "margin-bottom": "0.25rem" } }, " Of the exited: ", -1)),
-                        D(Me) !== null ? (C(), y("span", Rc, m(D(Me) >= 0 ? "+" : "") + "$" + m(D(Me).toLocaleString(void 0, { minimumFractionDigits: 0, maximumFractionDigits: 0 })), 1)) : (C(), y("span", Tc, "N/A")),
-                        r("span", Sc, m(qt.value ? "▼" : "▶"), 1)
+                        D(Fe) !== null ? (C(), y("span", Sc, m(D(Fe) >= 0 ? "+" : "") + "$" + m(D(Fe).toLocaleString(void 0, { minimumFractionDigits: 0, maximumFractionDigits: 0 })), 1)) : (C(), y("span", Lc, "N/A")),
+                        r("span", Dc, m(Kt.value ? "▼" : "▶"), 1)
                       ], 2)
                     ]))
                   ])
                 ]),
-                r("div", Lc, [
+                r("div", Fc, [
                   g[26] || (g[26] = r("div", { class: "summary-label" }, "Total Contract Quantity", -1)),
-                  r("div", Dc, [
-                    r("div", Fc, m(ji.value.toLocaleString()), 1),
-                    r("div", Mc, [
+                  r("div", Mc, [
+                    r("div", Pc, m(qi.value.toLocaleString()), 1),
+                    r("div", _c, [
                       r("span", {
                         class: "clickable-accounts",
                         title: "Show positions table for all accounts",
-                        onClick: bt(qs, ["stop"]),
+                        onClick: bt(Xs, ["stop"]),
                         style: { cursor: "pointer", color: "#0d6efd" }
                       }, [
                         j(" (" + m(((B = D(u)) == null ? void 0 : B.length) || 0) + ") ", 1),
-                        r("span", Pc, m(i.value ? "▼" : "▶"), 1)
+                        r("span", zc, m(i.value ? "▼" : "▶"), 1)
                       ])
                     ])
                   ])
                 ]),
-                r("div", _c, [
+                r("div", Ac, [
                   g[30] || (g[30] = r("div", { class: "summary-label" }, "Current market price", -1)),
-                  D(_) ? (C(), y("div", zc, [...g[27] || (g[27] = [
+                  D(_) ? (C(), y("div", Hc, [...g[27] || (g[27] = [
                     r("span", { class: "loading-spinner" }, "⏳", -1),
                     j(" Loading... ", -1)
-                  ])])) : D(F) ? (C(), y("div", Ac, " ❌ Error ")) : S.value !== null ? (C(), y("div", Hc, [
-                    r("div", Oc, " $" + m(S.value.toFixed(2)), 1),
-                    oe.value !== null && M.value !== null ? (C(), y("div", $c, [
+                  ])])) : D(F) ? (C(), y("div", Oc, " ❌ Error ")) : S.value !== null ? (C(), y("div", $c, [
+                    r("div", Bc, " $" + m(S.value.toFixed(2)), 1),
+                    se.value !== null && M.value !== null ? (C(), y("div", Nc, [
                       g[28] || (g[28] = j(" 52W Range: ", -1)),
-                      r("span", Bc, "$" + m(oe.value.toFixed(2)), 1),
+                      r("span", Vc, "$" + m(se.value.toFixed(2)), 1),
                       g[29] || (g[29] = j(" - ", -1)),
-                      r("span", Nc, "$" + m(M.value.toFixed(2)), 1)
-                    ])) : (C(), y("div", Vc, " 52W Range: N/A ")),
-                    pe.value ? (C(), y("div", Ic, " Updated: " + m(pe.value), 1)) : U("", !0)
-                  ])) : (C(), y("div", Gc, " N/A "))
+                      r("span", Ic, "$" + m(M.value.toFixed(2)), 1)
+                    ])) : (C(), y("div", Gc, " 52W Range: N/A ")),
+                    be.value ? (C(), y("div", Wc, " Updated: " + m(be.value), 1)) : U("", !0)
+                  ])) : (C(), y("div", jc, " N/A "))
                 ]),
-                r("div", Wc, [
+                r("div", Uc, [
                   g[34] || (g[34] = r("div", { class: "summary-label" }, "Average cost per share", -1)),
-                  D(Se) || D(Fe) ? (C(), y("div", jc, [...g[31] || (g[31] = [
+                  D($e) || D(it) ? (C(), y("div", qc, [...g[31] || (g[31] = [
                     r("span", { class: "loading-spinner" }, "⏳", -1),
                     j(" Loading... ", -1)
-                  ])])) : D(Le) || D(nt) ? (C(), y("div", Uc, " ❌ Error ")) : (C(), y("div", qc, [
+                  ])])) : D(Be) || D(st) ? (C(), y("div", Kc, " ❌ Error ")) : (C(), y("div", Xc, [
                     r("div", {
                       class: "summary-value average-cost-price clickable-price",
                       onClick: g[0] || (g[0] = (E) => {
-                        a.value = "hold-orders", Yi();
+                        a.value = "hold-orders", es();
                       }),
                       style: { "margin-bottom": "0.5rem" }
                     }, [
                       g[32] || (g[32] = r("span", { style: { "font-size": "0.85rem", color: "#6c757d", display: "block", "margin-bottom": "0.25rem" } }, " If hold till expiry: ", -1)),
-                      D(ce) !== null ? (C(), y("span", Kc, " $" + m(D(ce).toFixed(2)), 1)) : (C(), y("span", Xc, "N/A"))
+                      D(me) !== null ? (C(), y("span", Qc, " $" + m(D(me).toFixed(2)), 1)) : (C(), y("span", Jc, "N/A"))
                     ]),
                     r("div", {
                       class: "summary-value average-cost-price clickable-price",
                       onClick: g[1] || (g[1] = (E) => {
-                        a.value = "exit-orders", Yi();
+                        a.value = "exit-orders", es();
                       }),
                       style: { "padding-top": "0.5rem", "border-top": "1px solid #dee2e6" }
                     }, [
                       g[33] || (g[33] = r("span", { style: { "font-size": "0.85rem", color: "#6c757d", display: "block", "margin-bottom": "0.25rem" } }, " If exit today: ", -1)),
-                      D(De) !== null ? (C(), y("span", Qc, [
-                        j(" $" + m(D(De).toFixed(2)) + " ", 1),
-                        r("span", Jc, m(s.value ? "▼" : "▶"), 1)
-                      ])) : (C(), y("span", Yc, "N/A"))
+                      D(Le) !== null ? (C(), y("span", Yc, [
+                        j(" $" + m(D(Le).toFixed(2)) + " ", 1),
+                        r("span", Zc, m(s.value ? "▼" : "▶"), 1)
+                      ])) : (C(), y("span", ef, "N/A"))
                     ])
                   ]))
                 ]),
-                r("div", Zc, [
-                  D(I) ? (C(), y("div", ef, [...g[35] || (g[35] = [
+                r("div", tf, [
+                  D(I) ? (C(), y("div", sf, [...g[35] || (g[35] = [
                     r("span", { class: "loading-spinner" }, "⏳", -1),
                     j(" Loading... ", -1)
-                  ])])) : D(z) ? (C(), y("div", tf, " ❌ Error ")) : (C(), y("div", sf, [
-                    W.value !== null ? (C(), y("div", of, [
+                  ])])) : D(z) ? (C(), y("div", of, " ❌ Error ")) : (C(), y("div", nf, [
+                    W.value !== null ? (C(), y("div", af, [
                       g[36] || (g[36] = j(" P/E Ratio: ", -1)),
-                      r("span", nf, m(W.value.toFixed(2)), 1)
+                      r("span", rf, m(W.value.toFixed(2)), 1)
                     ])) : U("", !0),
-                    ne.value !== null ? (C(), y("div", af, [
+                    oe.value !== null ? (C(), y("div", lf, [
                       g[37] || (g[37] = j(" PEG Ratio: ", -1)),
-                      r("span", rf, m(ne.value.toFixed(2)), 1)
+                      r("span", hf, m(oe.value.toFixed(2)), 1)
                     ])) : U("", !0),
-                    de.value !== null ? (C(), y("div", lf, [
+                    ue.value !== null ? (C(), y("div", df, [
                       g[38] || (g[38] = j(" Market Cap: ", -1)),
-                      r("span", hf, "$" + m((de.value / 1e9).toFixed(2)) + "B", 1)
-                    ])) : U("", !0)
+                      r("span", uf, "$" + m((ue.value / 1e9).toFixed(2)) + "B", 1)
+                    ])) : U("", !0),
+                    fe.value ? (C(), y("div", cf, " Updated: From IBKR on " + m(Ce.value), 1)) : U("", !0)
                   ]))
                 ])
               ]),
-              Ve(st, { name: "slide-fade" }, {
-                default: ot(() => [
-                  et(r("div", df, [
+              Ge(et, { name: "slide-fade" }, {
+                default: tt(() => [
+                  Je(r("div", ff, [
                     r("div", {
                       ref_key: "tableDiv",
-                      ref: Is
+                      ref: Ws
                     }, null, 512)
                   ], 512), [
-                    [xt, i.value]
+                    [kt, i.value]
                   ])
                 ]),
                 _: 1
               }),
-              Ve(Ju, {
+              Ge(Zu, {
                 "show-calculation-details": s.value,
                 "avg-price-calculation-tab": a.value,
                 "onUpdate:avgPriceCalculationTab": g[2] || (g[2] = (E) => a.value = E),
-                "order-groups": D(Re),
-                "overall-adjusted-avg-price-from-orders": D(ce),
-                "total-net-cost": D(ye),
-                "total-shares": D(ge),
-                "is-avg-price-from-orders-loading": D(Se),
-                "avg-price-from-orders-error": D(Le),
-                "order-groups-exit-today": D(ae),
-                "overall-adjusted-avg-price-from-orders-exit-today": D(De),
-                "total-net-cost-exit-today": D(Ie),
-                "total-shares-exit-today": D(Ge),
-                "is-avg-price-from-orders-loading-exit-today": D(Fe),
-                "avg-price-from-orders-error-exit-today": D(nt)
+                "order-groups": D(Pe),
+                "overall-adjusted-avg-price-from-orders": D(me),
+                "total-net-cost": D(Re),
+                "total-shares": D(Se),
+                "is-avg-price-from-orders-loading": D($e),
+                "avg-price-from-orders-error": D(Be),
+                "order-groups-exit-today": D(ct),
+                "overall-adjusted-avg-price-from-orders-exit-today": D(Le),
+                "total-net-cost-exit-today": D(ne),
+                "total-shares-exit-today": D(_e),
+                "is-avg-price-from-orders-loading-exit-today": D(it),
+                "avg-price-from-orders-error-exit-today": D(st)
               }, null, 8, ["show-calculation-details", "avg-price-calculation-tab", "order-groups", "overall-adjusted-avg-price-from-orders", "total-net-cost", "total-shares", "is-avg-price-from-orders-loading", "avg-price-from-orders-error", "order-groups-exit-today", "overall-adjusted-avg-price-from-orders-exit-today", "total-net-cost-exit-today", "total-shares-exit-today", "is-avg-price-from-orders-loading-exit-today", "avg-price-from-orders-error-exit-today"]),
-              Ve(st, { name: "slide-fade" }, {
-                default: ot(() => [
-                  et(r("div", uf, [
+              Ge(et, { name: "slide-fade" }, {
+                default: tt(() => [
+                  Je(r("div", mf, [
                     g[43] || (g[43] = r("h2", null, "Profit & Loss Calculation Details:", -1)),
-                    D(X) && "totalShares" in D(X) && D(X).totalShares != null ? (C(), y("div", cf, [
-                      r("div", ff, [
+                    D(K) && "totalShares" in D(K) && D(K).totalShares != null ? (C(), y("div", pf, [
+                      r("div", gf, [
                         g[39] || (g[39] = r("div", { class: "pnl-section-title" }, "📊 Total Cost Basis", -1)),
-                        r("div", mf, " Total Shares = " + m(D(X).totalShares.toLocaleString()), 1),
-                        r("div", pf, " Average Cost per Share = $" + m(D(X).avgCostPerShare.toFixed(2)), 1),
-                        r("div", gf, [
-                          r("strong", null, "Total Cost Basis = " + m(D(X).totalShares.toLocaleString()) + " × $" + m(D(X).avgCostPerShare.toFixed(2)) + " = $" + m(D(X).totalCostBasis.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
-                        ])
-                      ]),
-                      r("div", bf, [
-                        g[40] || (g[40] = r("div", { class: "pnl-section-title" }, "💰 Current Market Value", -1)),
-                        r("div", vf, " Current Price per Share = $" + m(D(X).currentPricePerShare.toFixed(2)), 1),
+                        r("div", bf, " Total Shares = " + m(D(K).totalShares.toLocaleString()), 1),
+                        r("div", vf, " Average Cost per Share = $" + m(D(K).avgCostPerShare.toFixed(2)), 1),
                         r("div", wf, [
-                          r("strong", null, "Current Market Value = " + m(D(X).totalShares.toLocaleString()) + " × $" + m(D(X).currentPricePerShare.toFixed(2)) + " = $" + m(D(X).currentMarketValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                          r("strong", null, "Total Cost Basis = " + m(D(K).totalShares.toLocaleString()) + " × $" + m(D(K).avgCostPerShare.toFixed(2)) + " = $" + m(D(K).totalCostBasis.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ])
                       ]),
                       r("div", yf, [
-                        g[41] || (g[41] = r("div", { class: "pnl-section-title" }, "🎯 Unrealized Profit & Loss", -1)),
-                        r("div", Cf, [
-                          r("strong", {
-                            class: ee({ "profit-text": D(Be), "loss-text": !D(Be) })
-                          }, " Unrealized P&L = $" + m(D(X).currentMarketValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + m(D(X).totalCostBasis.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " = " + m(D(_e) && D(_e) >= 0 ? "+" : "") + "$" + m(D(X).unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 3)
-                        ]),
+                        g[40] || (g[40] = r("div", { class: "pnl-section-title" }, "💰 Current Market Value", -1)),
+                        r("div", Cf, " Current Price per Share = $" + m(D(K).currentPricePerShare.toFixed(2)), 1),
                         r("div", Ef, [
+                          r("strong", null, "Current Market Value = " + m(D(K).totalShares.toLocaleString()) + " × $" + m(D(K).currentPricePerShare.toFixed(2)) + " = $" + m(D(K).currentMarketValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                        ])
+                      ]),
+                      r("div", xf, [
+                        g[41] || (g[41] = r("div", { class: "pnl-section-title" }, "🎯 Unrealized Profit & Loss", -1)),
+                        r("div", kf, [
                           r("strong", {
-                            class: ee({ "profit-text": D(Be), "loss-text": !D(Be) })
-                          }, " P&L Percentage = (" + m(D(_e) && D(_e) >= 0 ? "+" : "") + "$" + m(D(X).unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ÷ $" + m(D(X).totalCostBasis.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + ") × 100 = " + m(D(X).pnlPercentage.toFixed(2)) + "% ", 3)
+                            class: ee({ "profit-text": D(Ve), "loss-text": !D(Ve) })
+                          }, " Unrealized P&L = $" + m(D(K).currentMarketValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + m(D(K).totalCostBasis.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " = " + m(D(ze) && D(ze) >= 0 ? "+" : "") + "$" + m(D(K).unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 3)
+                        ]),
+                        r("div", Rf, [
+                          r("strong", {
+                            class: ee({ "profit-text": D(Ve), "loss-text": !D(Ve) })
+                          }, " P&L Percentage = (" + m(D(ze) && D(ze) >= 0 ? "+" : "") + "$" + m(D(K).unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ÷ $" + m(D(K).totalCostBasis.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + ") × 100 = " + m(D(K).pnlPercentage.toFixed(2)) + "% ", 3)
                         ])
                       ])
                     ])) : U("", !0),
-                    D(X) && "optionType" in D(X) && D(X).optionType != null ? (C(), y("div", xf, [
-                      r("div", kf, [
-                        r("div", Rf, "📊 SHORT " + m(D(X).optionType) + " OPTIONS SUMMARY", 1),
-                        r("div", Tf, " Total Contracts: " + m(D(X).totalContracts.toLocaleString()), 1),
-                        r("div", Sf, " Position Type: " + m(D(X).positionType), 1)
+                    D(K) && "optionType" in D(K) && D(K).optionType != null ? (C(), y("div", Tf, [
+                      r("div", Sf, [
+                        r("div", Lf, "📊 SHORT " + m(D(K).optionType) + " OPTIONS SUMMARY", 1),
+                        r("div", Df, " Total Contracts: " + m(D(K).totalContracts.toLocaleString()), 1),
+                        r("div", Ff, " Position Type: " + m(D(K).positionType), 1)
                       ]),
-                      (C(!0), y(ie, null, le(D(X).positions, (E, N) => (C(), y("div", {
+                      (C(!0), y(te, null, re(D(K).positions, (E, N) => (C(), y("div", {
                         key: `pos-${N}`,
                         class: "pnl-section"
                       }, [
-                        r("div", Lf, "Position " + m(N + 1) + ": " + m(E.account) + " - $" + m(E.strike) + " Strike (" + m(E.expiry) + ")", 1),
-                        r("div", Df, " Contracts Sold: " + m(Math.abs(E.quantity).toLocaleString()), 1),
-                        r("div", Ff, " Premium Received: $" + m(E.premiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
-                        r("div", Mf, " Current Market Value: $" + m(E.currentValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
-                        r("div", Pf, [
+                        r("div", Mf, "Position " + m(N + 1) + ": " + m(E.account) + " - $" + m(E.strike) + " Strike (" + m(E.expiry) + ")", 1),
+                        r("div", Pf, " Contracts Sold: " + m(Math.abs(E.quantity).toLocaleString()), 1),
+                        r("div", _f, " Premium Received: $" + m(E.premiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
+                        r("div", zf, " Current Market Value: $" + m(E.currentValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1),
+                        r("div", Af, [
                           r("strong", {
                             class: ee({ "profit-text": E.positionPnL >= 0, "loss-text": E.positionPnL < 0 })
                           }, " P&L: " + m(E.positionPnL >= 0 ? "+" : "") + "$" + m(E.positionPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 3)
                         ])
                       ]))), 128)),
-                      r("div", _f, [
+                      r("div", Hf, [
                         g[42] || (g[42] = r("div", { class: "pnl-section-title" }, "💰 TOTAL CALCULATION", -1)),
-                        r("div", zf, " Total Premium Received = " + m(D(X).positions.map((E) => `$${E.premiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")), 1),
-                        r("div", Af, [
-                          r("strong", null, "= $" + m(D(X).totalPremiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
-                        ]),
-                        r("div", Hf, " Current Market Liability = " + m(D(X).positions.map((E) => `$${E.currentValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")), 1),
-                        r("div", Of, [
-                          r("strong", null, "= $" + m(D(X).currentMarketLiability.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
-                        ]),
+                        r("div", Of, " Total Premium Received = " + m(D(K).positions.map((E) => `$${E.premiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")), 1),
                         r("div", $f, [
-                          r("strong", {
-                            class: ee({ "profit-text": D(Be), "loss-text": !D(Be) })
-                          }, " Unrealized P&L = $" + m(D(X).totalPremiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + m(D(X).currentMarketLiability.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " = " + m(D(_e) && D(_e) >= 0 ? "+" : "") + "$" + m(D(X).unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 3)
+                          r("strong", null, "= $" + m(D(K).totalPremiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ]),
-                        r("div", Bf, [
-                          r("strong", {
-                            class: ee({ "profit-text": D(Be), "loss-text": !D(Be) })
-                          }, " P&L % = (" + m(D(_e) && D(_e) >= 0 ? "+" : "") + "$" + m(D(X).unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ÷ $" + m(D(X).totalPremiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + ") × 100 = " + m(D(X).pnlPercentage.toFixed(2)) + "% ", 3)
+                        r("div", Bf, " Current Market Liability = " + m(D(K).positions.map((E) => `$${E.currentValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")), 1),
+                        r("div", Nf, [
+                          r("strong", null, "= $" + m(D(K).currentMarketLiability.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ]),
-                        D(X).pnlPercentage < -50 ? (C(), y("div", Nf, " ⚠️ WARNING: Loss exceeds 50% of premium received! ")) : U("", !0)
+                        r("div", Vf, [
+                          r("strong", {
+                            class: ee({ "profit-text": D(Ve), "loss-text": !D(Ve) })
+                          }, " Unrealized P&L = $" + m(D(K).totalPremiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " - $" + m(D(K).currentMarketLiability.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " = " + m(D(ze) && D(ze) >= 0 ? "+" : "") + "$" + m(D(K).unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 3)
+                        ]),
+                        r("div", If, [
+                          r("strong", {
+                            class: ee({ "profit-text": D(Ve), "loss-text": !D(Ve) })
+                          }, " P&L % = (" + m(D(ze) && D(ze) >= 0 ? "+" : "") + "$" + m(D(K).unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ÷ $" + m(D(K).totalPremiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + ") × 100 = " + m(D(K).pnlPercentage.toFixed(2)) + "% ", 3)
+                        ]),
+                        D(K).pnlPercentage < -50 ? (C(), y("div", Gf, " ⚠️ WARNING: Loss exceeds 50% of premium received! ")) : U("", !0)
                       ])
                     ])) : U("", !0)
                   ], 512), [
-                    [xt, o.value]
+                    [kt, o.value]
                   ])
                 ]),
                 _: 1
               }),
-              Ve(st, { name: "slide-fade" }, {
-                default: ot(() => [
-                  et(r("div", Vf, [
+              Ge(et, { name: "slide-fade" }, {
+                default: tt(() => [
+                  Je(r("div", Wf, [
                     g[50] || (g[50] = r("h2", null, "Exited Positions P&L Details:", -1)),
-                    D(Ut) ? (C(), y("div", If, [
-                      r("div", Gf, [
+                    D(qt) ? (C(), y("div", jf, [
+                      r("div", Uf, [
                         g[44] || (g[44] = r("div", { class: "pnl-section-title" }, "📊 Overall Summary", -1)),
-                        r("div", Wf, " Total Accounts: " + m(D(Ut).accountBreakdowns.length), 1),
-                        r("div", jf, " Total Orders: " + m(D(Ut).orderCount), 1),
-                        r("div", Uf, [
+                        r("div", qf, " Total Accounts: " + m(D(qt).accountBreakdowns.length), 1),
+                        r("div", Kf, " Total Orders: " + m(D(qt).orderCount), 1),
+                        r("div", Xf, [
                           r("strong", {
-                            class: ee({ "profit-text": D(Me) && D(Me) >= 0, "loss-text": D(Me) && D(Me) < 0 })
-                          }, " Total FIFO P&L: " + m(D(Me) && D(Me) >= 0 ? "+" : "") + "$" + m((D(Me) || 0).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 3)
+                            class: ee({ "profit-text": D(Fe) && D(Fe) >= 0, "loss-text": D(Fe) && D(Fe) < 0 })
+                          }, " Total FIFO P&L: " + m(D(Fe) && D(Fe) >= 0 ? "+" : "") + "$" + m((D(Fe) || 0).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 3)
                         ])
                       ]),
-                      (C(!0), y(ie, null, le(D(Ut).accountBreakdowns, (E, N) => (C(), y("div", {
+                      (C(!0), y(te, null, re(D(qt).accountBreakdowns, (E, N) => (C(), y("div", {
                         key: `account-${N}`,
                         class: "pnl-section account-section"
                       }, [
                         r("div", {
                           class: "pnl-section-title account-header clickable",
-                          onClick: (Q) => Js(E.internal_account_id)
+                          onClick: (X) => Zs(E.internal_account_id)
                         }, [
-                          r("span", Kf, m(pt.value.has(E.internal_account_id) ? "▼" : "▶"), 1),
-                          r("span", Xf, "📋 " + m(E.accountDisplayName), 1),
-                          r("span", Qf, [
+                          r("span", Jf, m(pt.value.has(E.internal_account_id) ? "▼" : "▶"), 1),
+                          r("span", Yf, "📋 " + m(E.accountDisplayName), 1),
+                          r("span", Zf, [
                             j(" (" + m(E.orderCount) + " orders • ", 1),
                             r("span", {
                               class: ee({ "profit-text": E.totalFifoPnlRealized >= 0, "loss-text": E.totalFifoPnlRealized < 0 })
                             }, m(E.totalFifoPnlRealized >= 0 ? "+" : "") + "$" + m(E.totalFifoPnlRealized.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 3),
                             g[45] || (g[45] = j(") ", -1))
                           ])
-                        ], 8, qf),
-                        Ve(st, { name: "slide-fade" }, {
-                          default: ot(() => [
-                            et(r("div", Jf, [
-                              r("div", Yf, [
-                                r("table", Zf, [
+                        ], 8, Qf),
+                        Ge(et, { name: "slide-fade" }, {
+                          default: tt(() => [
+                            Je(r("div", em, [
+                              r("div", tm, [
+                                r("table", im, [
                                   g[48] || (g[48] = r("thead", null, [
                                     r("tr", null, [
                                       r("th", null, "Order Date"),
@@ -14592,31 +14613,31 @@ const Ka = {
                                     ])
                                   ], -1)),
                                   r("tbody", null, [
-                                    (C(!0), y(ie, null, le(E.orders, (Q) => (C(), y("tr", {
-                                      key: Q.id
+                                    (C(!0), y(te, null, re(E.orders, (X) => (C(), y("tr", {
+                                      key: X.id
                                     }, [
-                                      r("td", null, m(Bs(Q.dateTime)), 1),
+                                      r("td", null, m(Vs(X.dateTime)), 1),
                                       r("td", null, [
-                                        (C(!0), y(ie, null, le(Pt(Q.symbol), (he) => (C(), y("span", {
-                                          key: he,
+                                        (C(!0), y(te, null, re(Mt(X.symbol), (de) => (C(), y("span", {
+                                          key: de,
                                           class: "fi-tag position-tag"
-                                        }, m(he), 1))), 128))
+                                        }, m(de), 1))), 128))
                                       ]),
                                       r("td", null, [
                                         r("span", {
-                                          class: ee(["trade-side-badge", Q.buySell.toLowerCase()])
-                                        }, m(Q.buySell), 3)
+                                          class: ee(["trade-side-badge", X.buySell.toLowerCase()])
+                                        }, m(X.buySell), 3)
                                       ]),
-                                      r("td", em, m(oi(Q.quantity)), 1),
-                                      r("td", tm, m(Ce(Q.tradePrice)), 1),
-                                      r("td", im, m(Ce(Q.tradeMoney)), 1),
+                                      r("td", sm, m(ai(X.quantity)), 1),
+                                      r("td", om, m(Ee(X.tradePrice)), 1),
+                                      r("td", nm, m(Ee(X.tradeMoney)), 1),
                                       r("td", {
-                                        class: ee(["text-right", { "profit-text": Q.fifoPnlRealized >= 0, "loss-text": Q.fifoPnlRealized < 0 }])
-                                      }, m(Q.fifoPnlRealized >= 0 ? "+" : "") + m(Ce(Q.fifoPnlRealized)), 3)
+                                        class: ee(["text-right", { "profit-text": X.fifoPnlRealized >= 0, "loss-text": X.fifoPnlRealized < 0 }])
+                                      }, m(X.fifoPnlRealized >= 0 ? "+" : "") + m(Ee(X.fifoPnlRealized)), 3)
                                     ]))), 128))
                                   ]),
                                   r("tfoot", null, [
-                                    r("tr", sm, [
+                                    r("tr", am, [
                                       g[46] || (g[46] = r("td", {
                                         colspan: "5",
                                         class: "total-label"
@@ -14626,7 +14647,7 @@ const Ka = {
                                       r("td", {
                                         class: ee(["text-right total-value", { "profit-text": E.totalFifoPnlRealized >= 0, "loss-text": E.totalFifoPnlRealized < 0 }])
                                       }, [
-                                        r("strong", null, m(E.totalFifoPnlRealized >= 0 ? "+" : "") + m(Ce(E.totalFifoPnlRealized)), 1)
+                                        r("strong", null, m(E.totalFifoPnlRealized >= 0 ? "+" : "") + m(Ee(E.totalFifoPnlRealized)), 1)
                                       ], 2),
                                       g[47] || (g[47] = r("td", null, null, -1))
                                     ])
@@ -14634,63 +14655,63 @@ const Ka = {
                                 ])
                               ])
                             ], 512), [
-                              [xt, pt.value.has(E.internal_account_id)]
+                              [kt, pt.value.has(E.internal_account_id)]
                             ])
                           ]),
                           _: 2
                         }, 1024)
                       ]))), 128))
-                    ])) : (C(), y("div", om, [...g[49] || (g[49] = [
+                    ])) : (C(), y("div", rm, [...g[49] || (g[49] = [
                       r("p", null, "No exited positions found", -1)
                     ])]))
                   ], 512), [
-                    [xt, qt.value]
+                    [kt, Kt.value]
                   ])
                 ]),
                 _: 1
               }),
-              Ve(st, { name: "slide-fade" }, {
-                default: ot(() => [
-                  et(r("div", nm, [
+              Ge(et, { name: "slide-fade" }, {
+                default: tt(() => [
+                  Je(r("div", lm, [
                     g[55] || (g[55] = r("h2", null, "Capital Used Calculation Details:", -1)),
-                    D(ze) ? D(ze).assetType === "STK" ? (C(), y("div", rm, [
-                      r("div", lm, [
+                    D(Ae) ? D(Ae).assetType === "STK" ? (C(), y("div", dm, [
+                      r("div", um, [
                         g[52] || (g[52] = r("div", { class: "capital-section-title" }, "📊 STOCK CAPITAL CALCULATION", -1)),
-                        r("div", hm, " Total Shares = " + m(D(ze).totalShares.toLocaleString()), 1),
-                        r("div", dm, " Current Price per Share = $" + m(D(ze).pricePerShare.toFixed(2)), 1),
-                        r("div", um, [
-                          r("strong", null, " Total Capital Used = " + m(D(ze).totalShares.toLocaleString()) + " × $" + m(D(ze).pricePerShare.toFixed(2)) + " = $" + m(D(ze).totalCapital.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                        r("div", cm, " Total Shares = " + m(D(Ae).totalShares.toLocaleString()), 1),
+                        r("div", fm, " Current Price per Share = $" + m(D(Ae).pricePerShare.toFixed(2)), 1),
+                        r("div", mm, [
+                          r("strong", null, " Total Capital Used = " + m(D(Ae).totalShares.toLocaleString()) + " × $" + m(D(Ae).pricePerShare.toFixed(2)) + " = $" + m(D(Ae).totalCapital.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ])
                       ])
-                    ])) : D(ze).assetType === "OPT" ? (C(), y("div", cm, [
+                    ])) : D(Ae).assetType === "OPT" ? (C(), y("div", pm, [
                       g[54] || (g[54] = r("div", { class: "capital-section" }, [
                         r("div", { class: "capital-section-title" }, "📊 OPTIONS CAPITAL CALCULATION"),
                         r("div", { class: "calc-line" }, " Capital = Sum of |Market Value| for all option positions ")
                       ], -1)),
-                      (C(!0), y(ie, null, le(D(ze).positions, (E, N) => (C(), y("div", {
+                      (C(!0), y(te, null, re(D(Ae).positions, (E, N) => (C(), y("div", {
                         key: `cap-${N}`,
                         class: "capital-section"
                       }, [
-                        r("div", fm, " Position " + m(N + 1) + ": " + m(E.account) + " - " + m(E.optionType), 1),
-                        r("div", mm, " Symbol: " + m(E.symbol), 1),
-                        r("div", pm, " Quantity: " + m(Math.abs(E.quantity).toLocaleString()) + " contracts ", 1),
-                        r("div", gm, " Market Price: $" + m(E.marketPrice.toFixed(2)) + " per contract ", 1),
-                        r("div", bm, [
+                        r("div", gm, " Position " + m(N + 1) + ": " + m(E.account) + " - " + m(E.optionType), 1),
+                        r("div", bm, " Symbol: " + m(E.symbol), 1),
+                        r("div", vm, " Quantity: " + m(Math.abs(E.quantity).toLocaleString()) + " contracts ", 1),
+                        r("div", wm, " Market Price: $" + m(E.marketPrice.toFixed(2)) + " per contract ", 1),
+                        r("div", ym, [
                           r("strong", null, " Market Value = " + m(Math.abs(E.quantity).toLocaleString()) + " × $" + m(E.marketPrice.toFixed(2)) + " = $" + m(Math.abs(E.marketValue).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ])
                       ]))), 128)),
-                      r("div", vm, [
+                      r("div", Cm, [
                         g[53] || (g[53] = r("div", { class: "capital-section-title" }, "💰 TOTAL CAPITAL USED", -1)),
-                        r("div", wm, " Total = " + m(D(ze).positions.map((E) => `$${Math.abs(E.marketValue).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")), 1),
-                        r("div", ym, [
-                          r("strong", null, " = $" + m(D(ze).totalOptionsCapital.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                        r("div", Em, " Total = " + m(D(Ae).positions.map((E) => `$${Math.abs(E.marketValue).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`).join(" + ")), 1),
+                        r("div", xm, [
+                          r("strong", null, " = $" + m(D(Ae).totalOptionsCapital.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                         ])
                       ])
-                    ])) : U("", !0) : (C(), y("div", am, [...g[51] || (g[51] = [
+                    ])) : U("", !0) : (C(), y("div", hm, [...g[51] || (g[51] = [
                       r("p", null, "No capital data available", -1)
                     ])]))
                   ], 512), [
-                    [xt, n.value]
+                    [kt, n.value]
                   ])
                 ]),
                 _: 1
@@ -14698,222 +14719,222 @@ const Ka = {
             ]))
           ])
         ]),
-        qe.value ? (C(), y("div", {
+        We.value ? (C(), y("div", {
           key: 0,
           class: "modal-overlay",
-          onClick: g[16] || (g[16] = (E) => qe.value = !1)
+          onClick: g[16] || (g[16] = (E) => We.value = !1)
         }, [
           r("div", {
             class: "modal-content trade-attach-modal",
             onClick: g[15] || (g[15] = bt(() => {
             }, ["stop"]))
           }, [
-            r("div", Cm, [
+            r("div", km, [
               g[56] || (g[56] = r("h3", null, "Attach to Position", -1)),
               r("button", {
                 class: "modal-close",
-                onClick: g[3] || (g[3] = (E) => qe.value = !1)
+                onClick: g[3] || (g[3] = (E) => We.value = !1)
               }, "×")
             ]),
-            r("div", Em, [
-              Xe.value ? (C(), y("div", xm, [
+            r("div", Rm, [
+              Ue.value ? (C(), y("div", Tm, [
                 g[57] || (g[57] = r("strong", null, "Position:", -1)),
-                (C(!0), y(ie, null, le(mt(Xe.value.symbol), (E) => (C(), y("span", {
+                (C(!0), y(te, null, re(mt(Ue.value.symbol), (E) => (C(), y("span", {
                   key: E,
                   class: "fi-tag position-tag"
                 }, m(E), 1))), 128)),
-                j(" • (Contract Qty: " + m(Xe.value.contract_quantity) + " · Avg price: $" + m(Xe.value.avgPrice) + ") ", 1)
+                j(" • (Contract Qty: " + m(Ue.value.contract_quantity) + " · Avg price: $" + m(Ue.value.avgPrice) + ") ", 1)
               ])) : U("", !0),
-              r("div", km, [
+              r("div", Sm, [
                 r("button", {
-                  class: ee(["tab-button", { active: fe.value === "trades" }]),
+                  class: ee(["tab-button", { active: pe.value === "trades" }]),
                   onClick: g[4] || (g[4] = (E) => {
-                    fe.value = "trades", ri(Ke.value);
+                    pe.value = "trades", hi(je.value);
                   })
                 }, "Trades", 2),
                 r("button", {
-                  class: ee(["tab-button", { active: fe.value === "positions" }]),
+                  class: ee(["tab-button", { active: pe.value === "positions" }]),
                   onClick: g[5] || (g[5] = (E) => {
-                    fe.value = "positions", li(Xe.value);
+                    pe.value = "positions", di(Ue.value);
                   })
                 }, "Positions", 2),
                 r("button", {
-                  class: ee(["tab-button", { active: fe.value === "orders" }]),
+                  class: ee(["tab-button", { active: pe.value === "orders" }]),
                   onClick: g[6] || (g[6] = (E) => {
-                    fe.value = "orders", hi(Ke.value);
+                    pe.value = "orders", ui(je.value);
                   })
                 }, "Orders", 2)
               ]),
-              fe.value === "trades" ? (C(), y("div", Rm, [
-                r("div", Tm, [
-                  et(r("input", {
-                    "onUpdate:modelValue": g[7] || (g[7] = (E) => Kt.value = E),
+              pe.value === "trades" ? (C(), y("div", Lm, [
+                r("div", Dm, [
+                  Je(r("input", {
+                    "onUpdate:modelValue": g[7] || (g[7] = (E) => Xt.value = E),
                     type: "text",
                     class: "search-input",
                     placeholder: "Search trades (e.g., 'Put' or 'Call, 250')...",
-                    onInput: g[8] || (g[8] = (E) => ri(Ke.value))
+                    onInput: g[8] || (g[8] = (E) => hi(je.value))
                   }, null, 544), [
-                    [di, Kt.value]
+                    [ci, Xt.value]
                   ]),
                   g[58] || (g[58] = r("div", { class: "search-hint" }, [
                     j("💡 "),
                     r("em", null, "Use commas to search multiple terms (AND logic)")
                   ], -1))
                 ]),
-                Ze.value ? (C(), y("div", Sm, "Loading trades...")) : (C(), y("div", Lm, [
-                  (C(!0), y(ie, null, le(_t.value, (E) => (C(), y("div", {
+                Qe.value ? (C(), y("div", Fm, "Loading trades...")) : (C(), y("div", Mm, [
+                  (C(!0), y(te, null, re(Pt.value, (E) => (C(), y("div", {
                     key: E.tradeID,
-                    class: ee(["trade-item", { selected: Je.value.has(String(E.tradeID)) }]),
-                    onClick: (N) => Ki(String(E.tradeID))
+                    class: ee(["trade-item", { selected: Ke.value.has(String(E.tradeID)) }]),
+                    onClick: (N) => Qi(String(E.tradeID))
                   }, [
                     r("input", {
                       type: "checkbox",
-                      checked: Je.value.has(String(E.tradeID)),
-                      onClick: bt((N) => Ki(String(E.tradeID)), ["stop"])
-                    }, null, 8, Fm),
-                    r("div", Mm, [
-                      r("div", Pm, [
+                      checked: Ke.value.has(String(E.tradeID)),
+                      onClick: bt((N) => Qi(String(E.tradeID)), ["stop"])
+                    }, null, 8, _m),
+                    r("div", zm, [
+                      r("div", Am, [
                         r("span", {
                           class: ee(["trade-side", (E.buySell || "").toLowerCase()])
                         }, m(E.buySell), 3),
                         r("strong", null, [
-                          (C(!0), y(ie, null, le(Pt(E.symbol), (N) => (C(), y("span", {
+                          (C(!0), y(te, null, re(Mt(E.symbol), (N) => (C(), y("span", {
                             key: N,
                             class: "fi-tag position-tag"
                           }, m(N), 1))), 128))
                         ]),
-                        r("span", _m, "Qty: " + m(E.quantity), 1),
-                        r("span", zm, "· Price: " + m(E.tradePrice), 1)
+                        r("span", Hm, "Qty: " + m(E.quantity), 1),
+                        r("span", Om, "· Price: " + m(E.tradePrice), 1)
                       ]),
-                      r("div", Am, [
-                        r("span", null, "Trade date: " + m(Ne(E.tradeDate)), 1),
-                        E.assetCategory ? (C(), y("span", Hm, "• " + m(E.assetCategory), 1)) : U("", !0),
-                        E.description ? (C(), y("span", Om, "• " + m(E.description), 1)) : U("", !0),
-                        r("span", $m, "• ID: " + m(E.tradeID), 1)
+                      r("div", $m, [
+                        r("span", null, "Trade date: " + m(Ie(E.tradeDate)), 1),
+                        E.assetCategory ? (C(), y("span", Bm, "• " + m(E.assetCategory), 1)) : U("", !0),
+                        E.description ? (C(), y("span", Nm, "• " + m(E.description), 1)) : U("", !0),
+                        r("span", Vm, "• ID: " + m(E.tradeID), 1)
                       ])
                     ])
-                  ], 10, Dm))), 128)),
-                  _t.value.length === 0 ? (C(), y("div", Bm, " No trades found ")) : U("", !0)
+                  ], 10, Pm))), 128)),
+                  Pt.value.length === 0 ? (C(), y("div", Im, " No trades found ")) : U("", !0)
                 ]))
-              ])) : fe.value === "positions" ? (C(), y("div", Nm, [
-                r("div", Vm, [
-                  et(r("input", {
-                    "onUpdate:modelValue": g[9] || (g[9] = (E) => Xt.value = E),
+              ])) : pe.value === "positions" ? (C(), y("div", Gm, [
+                r("div", Wm, [
+                  Je(r("input", {
+                    "onUpdate:modelValue": g[9] || (g[9] = (E) => Qt.value = E),
                     type: "text",
                     class: "search-input",
                     placeholder: "Search positions (e.g., 'Put' or 'Call, 250')...",
-                    onInput: g[10] || (g[10] = (E) => li(Xe.value))
+                    onInput: g[10] || (g[10] = (E) => di(Ue.value))
                   }, null, 544), [
-                    [di, Xt.value]
+                    [ci, Qt.value]
                   ]),
                   g[59] || (g[59] = r("div", { class: "search-hint" }, [
                     j("💡 "),
                     r("em", null, "Showing positions with same underlying symbol. Use commas to search multiple terms.")
                   ], -1))
                 ]),
-                Ze.value ? (C(), y("div", Im, "Loading positions...")) : (C(), y("div", Gm, [
-                  (C(!0), y(ie, null, le(zt.value, (E) => (C(), y("div", {
-                    key: D(K)(E),
-                    class: ee(["trade-item", { selected: Ye.value.has(D(K)(E)), expired: E.asset_class === "OPT" && Ji(E) }]),
-                    onClick: (N) => Xi(D(K)(E))
+                Qe.value ? (C(), y("div", jm, "Loading positions...")) : (C(), y("div", Um, [
+                  (C(!0), y(te, null, re(_t.value, (E) => (C(), y("div", {
+                    key: D(le)(E),
+                    class: ee(["trade-item", { selected: Xe.value.has(D(le)(E)), expired: E.asset_class === "OPT" && Zi(E) }]),
+                    onClick: (N) => Ji(D(le)(E))
                   }, [
                     r("input", {
                       type: "checkbox",
-                      checked: Ye.value.has(D(K)(E)),
-                      onClick: bt((N) => Xi(D(K)(E)), ["stop"])
-                    }, null, 8, jm),
-                    r("div", Um, [
-                      r("div", qm, [
+                      checked: Xe.value.has(D(le)(E)),
+                      onClick: bt((N) => Ji(D(le)(E)), ["stop"])
+                    }, null, 8, Km),
+                    r("div", Xm, [
+                      r("div", Qm, [
                         r("strong", null, [
-                          (C(!0), y(ie, null, le(mt(E.symbol), (N) => (C(), y("span", {
+                          (C(!0), y(te, null, re(mt(E.symbol), (N) => (C(), y("span", {
                             key: N,
                             class: "fi-tag position-tag"
                           }, m(N), 1))), 128))
                         ]),
-                        r("span", Km, "Qty: " + m(E.contract_quantity), 1),
-                        r("span", Xm, "· Avg price: " + m(Ce(E.avgPrice)), 1),
-                        Ji(E) ? (C(), y("span", Qm, "EXPIRED")) : U("", !0)
+                        r("span", Jm, "Qty: " + m(E.contract_quantity), 1),
+                        r("span", Ym, "· Avg price: " + m(Ee(E.avgPrice)), 1),
+                        Zi(E) ? (C(), y("span", Zm, "EXPIRED")) : U("", !0)
                       ]),
-                      r("div", Jm, [
+                      r("div", ep, [
                         r("span", null, m(E.asset_class), 1),
                         g[60] || (g[60] = r("span", null, "•", -1)),
                         r("span", null, m(E.internal_account_id || E.legal_entity), 1),
-                        E.market_value ? (C(), y("span", Ym, "• MV: " + m(Ce(E.market_value)), 1)) : U("", !0),
+                        E.market_value ? (C(), y("span", tp, "• MV: " + m(Ee(E.market_value)), 1)) : U("", !0),
                         g[61] || (g[61] = r("span", null, " • ", -1)),
-                        r("span", null, "Fetched at: " + m(Qs(E.fetched_at)), 1)
+                        r("span", null, "Fetched at: " + m(Ys(E.fetched_at)), 1)
                       ])
                     ])
-                  ], 10, Wm))), 128)),
-                  zt.value.length === 0 ? (C(), y("div", Zm, " No positions found ")) : U("", !0)
+                  ], 10, qm))), 128)),
+                  _t.value.length === 0 ? (C(), y("div", ip, " No positions found ")) : U("", !0)
                 ]))
-              ])) : (C(), y("div", ep, [
-                r("div", tp, [
-                  et(r("input", {
-                    "onUpdate:modelValue": g[11] || (g[11] = (E) => Qt.value = E),
+              ])) : (C(), y("div", sp, [
+                r("div", op, [
+                  Je(r("input", {
+                    "onUpdate:modelValue": g[11] || (g[11] = (E) => Jt.value = E),
                     type: "text",
                     class: "search-input",
                     placeholder: "Search orders (e.g., 'Put' or 'Call, 250')...",
-                    onInput: g[12] || (g[12] = (E) => hi(Ke.value))
+                    onInput: g[12] || (g[12] = (E) => ui(je.value))
                   }, null, 544), [
-                    [di, Qt.value]
+                    [ci, Jt.value]
                   ]),
                   g[62] || (g[62] = r("div", { class: "search-hint" }, [
                     j("💡 "),
                     r("em", null, "Showing orders with same underlying symbol. Use commas to search multiple terms.")
                   ], -1))
                 ]),
-                Ze.value ? (C(), y("div", ip, "Loading orders...")) : (C(), y("div", sp, [
-                  (C(!0), y(ie, null, le(At.value, (E) => (C(), y("div", {
+                Qe.value ? (C(), y("div", np, "Loading orders...")) : (C(), y("div", ap, [
+                  (C(!0), y(te, null, re(zt.value, (E) => (C(), y("div", {
                     key: E.id,
-                    class: ee(["trade-item", { selected: Qe.value.has(String(E.id)) }]),
-                    onClick: (N) => Qi(String(E.id))
+                    class: ee(["trade-item", { selected: qe.value.has(String(E.id)) }]),
+                    onClick: (N) => Yi(String(E.id))
                   }, [
                     r("input", {
                       type: "checkbox",
-                      checked: Qe.value.has(String(E.id)),
-                      onClick: bt((N) => Qi(String(E.id)), ["stop"])
-                    }, null, 8, np),
-                    r("div", ap, [
-                      r("div", rp, [
+                      checked: qe.value.has(String(E.id)),
+                      onClick: bt((N) => Yi(String(E.id)), ["stop"])
+                    }, null, 8, lp),
+                    r("div", hp, [
+                      r("div", dp, [
                         r("strong", null, [
-                          (C(!0), y(ie, null, le(Pt(E.symbol), (N) => (C(), y("span", {
+                          (C(!0), y(te, null, re(Mt(E.symbol), (N) => (C(), y("span", {
                             key: N,
                             class: "fi-tag position-tag"
                           }, m(N), 1))), 128))
                         ]),
-                        r("span", lp, "Qty: " + m(E.contract_quantity), 1),
-                        r("span", hp, "· Trade price: " + m(Ce(E.tradePrice)), 1)
+                        r("span", up, "Qty: " + m(E.contract_quantity), 1),
+                        r("span", cp, "· Trade price: " + m(Ee(E.tradePrice)), 1)
                       ]),
-                      r("div", dp, [
+                      r("div", fp, [
                         r("span", null, m(E.assetCategory), 1),
-                        E.tradeMoney ? (C(), y("span", up, "• Trade money: " + m(Ce(E.tradeMoney)), 1)) : U("", !0),
+                        E.tradeMoney ? (C(), y("span", mp, "• Trade money: " + m(Ee(E.tradeMoney)), 1)) : U("", !0),
                         g[63] || (g[63] = r("span", null, " • ", -1)),
-                        r("span", null, "Settlement Date: " + m(Zi(E.settleDateTarget)), 1)
+                        r("span", null, "Settlement Date: " + m(ts(E.settleDateTarget)), 1)
                       ])
                     ])
-                  ], 10, op))), 128)),
-                  At.value.length === 0 ? (C(), y("div", cp, " No orders found ")) : U("", !0)
+                  ], 10, rp))), 128)),
+                  zt.value.length === 0 ? (C(), y("div", pp, " No orders found ")) : U("", !0)
                 ]))
               ]))
             ]),
-            r("div", fp, [
+            r("div", gp, [
               r("button", {
                 class: "btn btn-secondary",
-                onClick: g[13] || (g[13] = (E) => qe.value = !1)
+                onClick: g[13] || (g[13] = (E) => We.value = !1)
               }, "Cancel"),
               r("button", {
                 class: "btn btn-primary",
-                disabled: fe.value === "trades" ? Je.value.size === 0 : fe.value === "positions" ? Ye.value.size === 0 : Qe.value.size === 0,
-                onClick: g[14] || (g[14] = (E) => fe.value === "trades" ? Ws() : fe.value === "positions" ? js() : Us())
-              }, " Attach " + m(fe.value === "trades" ? Je.value.size : fe.value === "positions" ? Ye.value.size : Qe.value.size) + " " + m(fe.value === "trades" ? "Trade(s)" : fe.value === "positions" ? "Position(s)" : "Order(s)"), 9, mp)
+                disabled: pe.value === "trades" ? Ke.value.size === 0 : pe.value === "positions" ? Xe.value.size === 0 : qe.value.size === 0,
+                onClick: g[14] || (g[14] = (E) => pe.value === "trades" ? Us() : pe.value === "positions" ? qs() : Ks())
+              }, " Attach " + m(pe.value === "trades" ? Ke.value.size : pe.value === "positions" ? Xe.value.size : qe.value.size) + " " + m(pe.value === "trades" ? "Trade(s)" : pe.value === "positions" ? "Position(s)" : "Order(s)"), 9, bp)
             ])
           ])
         ])) : U("", !0)
       ]);
     };
   }
-}), Cp = /* @__PURE__ */ Fs(pp, [["__scopeId", "data-v-52e37ff7"]]);
+}), kp = /* @__PURE__ */ Ps(vp, [["__scopeId", "data-v-a953beaa"]]);
 export {
-  Cp as currentPositions,
-  Cp as default
+  kp as currentPositions,
+  kp as default
 };
