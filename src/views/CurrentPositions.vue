@@ -124,7 +124,7 @@ const formattedLastUpdatedAt = computed(() => {
   
   const date = new Date(last_updated_at.value)
   
-  // Format: Nov 11, 2025 at 08:53:02 PM PST
+  // Format: Nov 30, 2025 at 07:35:20 AM PST
   const options: Intl.DateTimeFormatOptions = {
     year: 'numeric',
     month: 'short',
@@ -139,8 +139,8 @@ const formattedLastUpdatedAt = computed(() => {
   
   const formatted = date.toLocaleString('en-US', options)
   
-  // Clean up formatting
-  return formatted.replace(/,(\s+\d)/, ' at$1')
+  // Replace the comma before time with ' at'
+  return formatted.replace(/,(\s+\d)/, ' $1')
 })
 
 // Fetch average cost price from orders (Hold till expiry)

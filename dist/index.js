@@ -13534,7 +13534,7 @@ const Qa = {
         timeZone: "America/Los_Angeles",
         timeZoneName: "short"
       };
-      return k.toLocaleString("en-US", g).replace(/,(\s+\d)/, " at$1");
+      return k.toLocaleString("en-US", g).replace(/,(\s+\d)/, " $1");
     }), {
       overallAdjustedAvgPriceFromOrders: me,
       totalNetCost: Re,
@@ -14933,7 +14933,7 @@ const Qa = {
       ]);
     };
   }
-}), kp = /* @__PURE__ */ Ps(vp, [["__scopeId", "data-v-a953beaa"]]);
+}), kp = /* @__PURE__ */ Ps(vp, [["__scopeId", "data-v-d371652c"]]);
 export {
   kp as currentPositions,
   kp as default
