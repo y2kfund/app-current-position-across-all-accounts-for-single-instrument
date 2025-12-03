@@ -602,7 +602,7 @@ function parseOrderSymbol(symbolText: string): string {
                                         <table class="mini-data-table">
                                           <thead>
                                             <tr>
-                                              <th>Date</th>
+                                              <th>Settlement Date</th>
                                               <th>Qty</th>
                                               <th>Price</th>
                                               <th>Total</th>
@@ -645,7 +645,7 @@ function parseOrderSymbol(symbolText: string): string {
                                         <table class="mini-data-table">
                                           <thead>
                                             <tr>
-                                              <th>Date</th>
+                                              <th>Settlement Date</th>
                                               <th>Qty</th>
                                               <th>Price</th>
                                               <th>Proceeds</th>
@@ -699,6 +699,7 @@ function parseOrderSymbol(symbolText: string): string {
                                         <table class="mini-data-table">
                                           <thead>
                                             <tr>
+                                              <th>Settlement Date</th>
                                               <th>Option</th>
                                               <th>Qty</th>
                                               <th>Price</th>
@@ -707,6 +708,7 @@ function parseOrderSymbol(symbolText: string): string {
                                           </thead>
                                           <tbody>
                                             <tr v-for="(order, oi) in sortOrdersByDate(group.putSales)" :key="`hold-ps-${index}-${oi}`">
+                                              <td>{{ formatOrderDate(order.orderDate) }}</td>
                                               <td>{{ parseOrderSymbol(order.symbol) }}</td>
                                               <td class="text-right">{{ order.quantity.toLocaleString() }}</td>
                                               <td class="text-right">${{ Number(order.avgPrice).toFixed(2) }}</td>
@@ -716,6 +718,7 @@ function parseOrderSymbol(symbolText: string): string {
                                           <tfoot>
                                             <tr class="total-row">
                                               <td><strong>Total</strong></td>
+                                              <td></td>
                                               <td class="text-right"><strong>{{ group.putSales.reduce((sum: number, o: OrderCalculation) => sum + o.quantity, 0).toLocaleString() }}</strong></td>
                                               <td></td>
                                               <td class="text-right"><strong>${{ Math.abs(group.putPremiumReceived).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></td>
@@ -742,6 +745,7 @@ function parseOrderSymbol(symbolText: string): string {
                                         <table class="mini-data-table">
                                           <thead>
                                             <tr>
+                                              <th>Settlement Date</th>
                                               <th>Option</th>
                                               <th>Qty</th>
                                               <th>Price</th>
@@ -750,6 +754,7 @@ function parseOrderSymbol(symbolText: string): string {
                                           </thead>
                                           <tbody>
                                             <tr v-for="(order, oi) in sortOrdersByDate(group.putBuybacks)" :key="`hold-pb-${index}-${oi}`">
+                                              <td>{{ formatOrderDate(order.orderDate) }}</td>
                                               <td>{{ parseOrderSymbol(order.symbol) }}</td>
                                               <td class="text-right">{{ order.quantity.toLocaleString() }}</td>
                                               <td class="text-right">${{ Number(order.avgPrice).toFixed(2) }}</td>
@@ -759,6 +764,7 @@ function parseOrderSymbol(symbolText: string): string {
                                           <tfoot>
                                             <tr class="total-row">
                                               <td><strong>Total</strong></td>
+                                              <td></td>
                                               <td class="text-right"><strong>{{ group.putBuybacks.reduce((sum: number, o: OrderCalculation) => sum + o.quantity, 0).toLocaleString() }}</strong></td>
                                               <td></td>
                                               <td class="text-right"><strong>${{ Math.abs(group.putBuybackCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></td>
@@ -795,6 +801,7 @@ function parseOrderSymbol(symbolText: string): string {
                                         <table class="mini-data-table">
                                           <thead>
                                             <tr>
+                                              <th>Settlement Date</th>
                                               <th>Option</th>
                                               <th>Qty</th>
                                               <th>Price</th>
@@ -803,6 +810,7 @@ function parseOrderSymbol(symbolText: string): string {
                                           </thead>
                                           <tbody>
                                             <tr v-for="(order, oi) in sortOrdersByDate(group.callSales)" :key="`hold-cs-${index}-${oi}`">
+                                              <td>{{ formatOrderDate(order.orderDate) }}</td>
                                               <td>{{ parseOrderSymbol(order.symbol) }}</td>
                                               <td class="text-right">{{ order.quantity.toLocaleString() }}</td>
                                               <td class="text-right">${{ Number(order.avgPrice).toFixed(2) }}</td>
@@ -812,6 +820,7 @@ function parseOrderSymbol(symbolText: string): string {
                                           <tfoot>
                                             <tr class="total-row">
                                               <td><strong>Total</strong></td>
+                                              <td></td>
                                               <td class="text-right"><strong>{{ group.callSales.reduce((sum: number, o: OrderCalculation) => sum + o.quantity, 0).toLocaleString() }}</strong></td>
                                               <td></td>
                                               <td class="text-right"><strong>${{ Math.abs(group.callPremiumReceived).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></td>
@@ -838,6 +847,7 @@ function parseOrderSymbol(symbolText: string): string {
                                         <table class="mini-data-table">
                                           <thead>
                                             <tr>
+                                              <th>Settlement Date</th>
                                               <th>Option</th>
                                               <th>Qty</th>
                                               <th>Price</th>
@@ -846,6 +856,7 @@ function parseOrderSymbol(symbolText: string): string {
                                           </thead>
                                           <tbody>
                                             <tr v-for="(order, oi) in sortOrdersByDate(group.callBuybacks)" :key="`hold-cb-${index}-${oi}`">
+                                              <td>{{ formatOrderDate(order.orderDate) }}</td>
                                               <td>{{ parseOrderSymbol(order.symbol) }}</td>
                                               <td class="text-right">{{ order.quantity.toLocaleString() }}</td>
                                               <td class="text-right">${{ Number(order.avgPrice).toFixed(2) }}</td>
@@ -855,6 +866,7 @@ function parseOrderSymbol(symbolText: string): string {
                                           <tfoot>
                                             <tr class="total-row">
                                               <td><strong>Total</strong></td>
+                                              <td></td>
                                               <td class="text-right"><strong>{{ group.callBuybacks.reduce((sum: number, o: OrderCalculation) => sum + o.quantity, 0).toLocaleString() }}</strong></td>
                                               <td></td>
                                               <td class="text-right"><strong>${{ Math.abs(group.callBuybackCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></td>
@@ -991,7 +1003,7 @@ function parseOrderSymbol(symbolText: string): string {
                                         <table class="mini-data-table">
                                           <thead>
                                             <tr>
-                                              <th>Date</th>
+                                              <th>Settlement Date</th>
                                               <th>Qty</th>
                                               <th>Price</th>
                                               <th>Total</th>
@@ -1034,7 +1046,7 @@ function parseOrderSymbol(symbolText: string): string {
                                         <table class="mini-data-table">
                                           <thead>
                                             <tr>
-                                              <th>Date</th>
+                                              <th>Settlement Date</th>
                                               <th>Qty</th>
                                               <th>Price</th>
                                               <th>Proceeds</th>
@@ -1088,6 +1100,7 @@ function parseOrderSymbol(symbolText: string): string {
                                         <table class="mini-data-table">
                                           <thead>
                                             <tr>
+                                              <th>Settlement Date</th>
                                               <th>Option</th>
                                               <th>Qty</th>
                                               <th>Price</th>
@@ -1096,6 +1109,7 @@ function parseOrderSymbol(symbolText: string): string {
                                           </thead>
                                           <tbody>
                                             <tr v-for="(order, oi) in sortOrdersByDate(orderGroupsExitToday[index].putSales)" :key="`exit-ps-${index}-${oi}`">
+                                              <td>{{ formatOrderDate(order.orderDate) }}</td>
                                               <td>{{ parseOrderSymbol(order.symbol) }}</td>
                                               <td class="text-right">{{ order.quantity.toLocaleString() }}</td>
                                               <td class="text-right">${{ Number(order.avgPrice).toFixed(2) }}</td>
@@ -1105,6 +1119,7 @@ function parseOrderSymbol(symbolText: string): string {
                                           <tfoot>
                                             <tr class="total-row">
                                               <td><strong>Total</strong></td>
+                                              <td></td>
                                               <td class="text-right"><strong>{{ orderGroupsExitToday[index].putSales.reduce((sum: number, o: OrderCalculation) => sum + o.quantity, 0).toLocaleString() }}</strong></td>
                                               <td></td>
                                               <td class="text-right"><strong>${{ Math.abs(orderGroupsExitToday[index].putPremiumReceived).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></td>
@@ -1131,6 +1146,7 @@ function parseOrderSymbol(symbolText: string): string {
                                         <table class="mini-data-table">
                                           <thead>
                                             <tr>
+                                              <th>Settlement Date</th>
                                               <th>Option</th>
                                               <th>Qty</th>
                                               <th>Price</th>
@@ -1139,6 +1155,7 @@ function parseOrderSymbol(symbolText: string): string {
                                           </thead>
                                           <tbody>
                                             <tr v-for="(order, oi) in sortOrdersByDate(orderGroupsExitToday[index].putBuybacks)" :key="`exit-pb-${index}-${oi}`">
+                                              <td>{{ formatOrderDate(order.orderDate) }}</td>
                                               <td>{{ parseOrderSymbol(order.symbol) }}</td>
                                               <td class="text-right">{{ order.quantity.toLocaleString() }}</td>
                                               <td class="text-right">${{ Number(order.avgPrice).toFixed(2) }}</td>
@@ -1148,6 +1165,7 @@ function parseOrderSymbol(symbolText: string): string {
                                           <tfoot>
                                             <tr class="total-row">
                                               <td><strong>Total</strong></td>
+                                              <td></td>
                                               <td class="text-right"><strong>{{ orderGroupsExitToday[index].putBuybacks.reduce((sum: number, o: OrderCalculation) => sum + o.quantity, 0).toLocaleString() }}</strong></td>
                                               <td></td>
                                               <td class="text-right"><strong>${{ Math.abs(orderGroupsExitToday[index].putBuybackCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></td>
@@ -1184,6 +1202,7 @@ function parseOrderSymbol(symbolText: string): string {
                                         <table class="mini-data-table">
                                           <thead>
                                             <tr>
+                                              <th>Settlement Date</th>
                                               <th>Option</th>
                                               <th>Qty</th>
                                               <th>Price</th>
@@ -1192,6 +1211,7 @@ function parseOrderSymbol(symbolText: string): string {
                                           </thead>
                                           <tbody>
                                             <tr v-for="(order, oi) in sortOrdersByDate(orderGroupsExitToday[index].callSales)" :key="`exit-cs-${index}-${oi}`">
+                                              <td>{{ formatOrderDate(order.orderDate) }}</td>
                                               <td>{{ parseOrderSymbol(order.symbol) }}</td>
                                               <td class="text-right">{{ order.quantity.toLocaleString() }}</td>
                                               <td class="text-right">${{ Number(order.avgPrice).toFixed(2) }}</td>
@@ -1201,6 +1221,7 @@ function parseOrderSymbol(symbolText: string): string {
                                           <tfoot>
                                             <tr class="total-row">
                                               <td><strong>Total</strong></td>
+                                              <td></td>
                                               <td class="text-right"><strong>{{ orderGroupsExitToday[index].callSales.reduce((sum: number, o: OrderCalculation) => sum + o.quantity, 0).toLocaleString() }}</strong></td>
                                               <td></td>
                                               <td class="text-right"><strong>${{ Math.abs(orderGroupsExitToday[index].callPremiumReceived).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></td>
@@ -1227,6 +1248,7 @@ function parseOrderSymbol(symbolText: string): string {
                                         <table class="mini-data-table">
                                           <thead>
                                             <tr>
+                                              <th>Settlement Date</th>
                                               <th>Option</th>
                                               <th>Qty</th>
                                               <th>Price</th>
@@ -1235,6 +1257,7 @@ function parseOrderSymbol(symbolText: string): string {
                                           </thead>
                                           <tbody>
                                             <tr v-for="(order, oi) in sortOrdersByDate(orderGroupsExitToday[index].callBuybacks)" :key="`exit-cb-${index}-${oi}`">
+                                              <td>{{ formatOrderDate(order.orderDate) }}</td>
                                               <td>{{ parseOrderSymbol(order.symbol) }}</td>
                                               <td class="text-right">{{ order.quantity.toLocaleString() }}</td>
                                               <td class="text-right">${{ Number(order.avgPrice).toFixed(2) }}</td>
@@ -1244,6 +1267,7 @@ function parseOrderSymbol(symbolText: string): string {
                                           <tfoot>
                                             <tr class="total-row">
                                               <td><strong>Total</strong></td>
+                                              <td></td>
                                               <td class="text-right"><strong>{{ orderGroupsExitToday[index].callBuybacks.reduce((sum: number, o: OrderCalculation) => sum + o.quantity, 0).toLocaleString() }}</strong></td>
                                               <td></td>
                                               <td class="text-right"><strong>${{ Math.abs(orderGroupsExitToday[index].callBuybackCost).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</strong></td>

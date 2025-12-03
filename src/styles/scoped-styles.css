@@ -274,6 +274,11 @@
 
 .summary-table-fancy .detail-row td {
   padding: 0 1rem 0 0.75rem;
+  text-align: right;
+}
+
+.summary-table-fancy .detail-row td:first-child {
+  text-align: left;
 }
 
 .summary-table-fancy .detail-content {
