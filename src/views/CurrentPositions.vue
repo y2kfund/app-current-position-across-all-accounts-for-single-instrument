@@ -1529,7 +1529,6 @@ function toggleAccountExpansion(accountId: string) {
                 <div 
                   class="summary-value average-cost-price clickable-price" 
                   @click="avgPriceCalculationTab = 'hold-orders'; toggleCalculationDetails()"
-                  style="margin-bottom: 0.5rem;"
                 >
                   <span style="font-size: 0.85rem; color: #6c757d; display: block; margin-bottom: 0.25rem;">
                     If hold till expiry:

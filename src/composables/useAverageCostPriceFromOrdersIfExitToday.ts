@@ -291,7 +291,6 @@ export function useAverageCostPriceFromOrdersIfExitToday(
                   .from('positions')
                   .select('id, unrealized_pnl, price, market_value')
                   .eq('internal_account_id', order.account)
-                  .eq('contract_quantity', contractQuantity)
                   .eq('conid', order.conid)
                   .order('id', { ascending: false }) // Get most recent
                   .limit(1)
