@@ -9,6 +9,7 @@ import { useMarketPrice } from '../composables/useMarketPrice'
 import { useFinancialData } from '../composables/useFinancialData'
 import { useAverageCostPriceFromOrdersIfHoldTillExpiry } from '../composables/useAverageCostPriceFromOrdersIfHoldTillExpiry'
 import { useAverageCostPriceFromOrdersIfExitToday } from '../composables/useAverageCostPriceFromOrdersIfExitToday'
+import { useAverageCostPriceFromIBKR } from '../composables/useAverageCostPriceFromIBKR'
 import { useProfitAndLoss } from '../composables/useProfitAndLoss'
 import { useExitedPositionsPnL } from '../composables/useExitedPositionsPnL'
 import { useCapitalUsed } from '../composables/useCapitalUsed'
@@ -167,6 +168,19 @@ const {
   isLoading: isAvgPriceFromOrdersLoadingExitToday,
   error: avgPriceFromOrdersErrorExitToday
 } = useAverageCostPriceFromOrdersIfExitToday(
+  positions,
+  props.userId
+)
+
+// Fetch average cost price from IBKR positions
+const {
+  averageCostPriceFromIBKR,
+  totalCostFromIBKR,
+  totalSharesFromIBKR,
+  positionBreakdown: ibkrPositionBreakdown,
+  isLoading: isAvgPriceFromIBKRLoading,
+  error: avgPriceFromIBKRError
+} = useAverageCostPriceFromIBKR(
   positions,
   props.userId
 )
@@ -1536,7 +1550,23 @@ function toggleAccountExpansion(accountId: string) {
                     If exit today:
                   </span>
                   <span v-if="overallAdjustedAvgPriceFromOrdersExitToday !== null" style="font-size: 1.2rem; font-weight: 600;">
-                    ${{ overallAdjustedAvgPriceFromOrdersExitToday.toFixed(2) }} <span class="toggle-icon">{{ showCalculationDetails ? '▼' : '▶' }}</span>
+                    ${{ overallAdjustedAvgPriceFromOrdersExitToday.toFixed(2) }}
+                  </span>
+                  
+                  <span v-else>N/A</span>
+                </div>
+
+                <!-- Average Cost Price from IBKR Postions Data -->
+                <div 
+                  class="summary-value average-cost-price clickable-price" 
+                  @click="avgPriceCalculationTab = 'exit-orders'; toggleCalculationDetails()"
+                  style="padding-top: 0.5rem; border-top: 1px solid #dee2e6;"
+                >
+                  <span style="font-size: 0.85rem; color: #6c757d; display: block; margin-bottom: 0.25rem;">
+                    From IBKR:
+                  </span>
+                  <span v-if="averageCostPriceFromIBKR !== null" style="font-size: 1.2rem; font-weight: 600;">
+                    ${{ averageCostPriceFromIBKR.toFixed(2) }} <span class="toggle-icon">{{ showCalculationDetails ? '▼' : '▶' }}</span>
                   </span>
                   
                   <span v-else>N/A</span>
