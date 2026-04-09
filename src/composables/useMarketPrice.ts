@@ -26,8 +26,8 @@ export function useMarketPrice(conid: Ref<number | null> , symbolRoot: string) {
 
     try {
       let query = supabase
-        .schema('hf')
-        .from('market_price')
+        .schema('fund_ai')
+        .from('p_positions_market_price')
         .select('symbol, conid, market_price, week_52_high, week_52_low, pe_ratio, eps, market_cap, computed_peg_ratio, last_fetched_at')
       
       // If conid is available, search by conid

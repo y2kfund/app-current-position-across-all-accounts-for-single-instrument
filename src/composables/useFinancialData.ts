@@ -25,8 +25,8 @@ export function useFinancialData(conid: Ref<number | null> , symbolRoot: string)
 
     try {
       let query = supabase
-        .schema('hf')
-        .from('financial_data')
+        .schema('fund_ai')
+        .from('p_positions_financial_data')
         .select('symbol, conid, week_52_high, week_52_low, pe_ratio, eps, market_cap, computed_peg_ratio, last_updated_at')
       
       // If conid is available, search by conid

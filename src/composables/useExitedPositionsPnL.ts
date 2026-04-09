@@ -41,10 +41,10 @@ export function useExitedPositionsPnL(
 
   async function getAccountDisplayName(internalAccountId: string): Promise<string> {
     try {
-      // First try to get alias from user_account_alias
+      // First try to get alias from core_accounts_alias
       const { data: aliasData, error: aliasError } = await supabase
-        .schema('hf')
-        .from('user_account_alias')
+        .schema('fund_ai')
+        .from('core_accounts_alias')
         .select('alias')
         .eq('user_id', userId.value)
         .eq('internal_account_id', internalAccountId)
@@ -54,10 +54,10 @@ export function useExitedPositionsPnL(
         return aliasData.alias
       }
 
-      // If no alias found, get legal_entity from user_accounts_master
+      // If no alias found, get legal_entity from core_accounts_master
       const { data: masterData, error: masterError } = await supabase
-        .schema('hf')
-        .from('user_accounts_master')
+        .schema('fund_ai')
+        .from('core_accounts_master')
         .select('legal_entity')
         .eq('internal_account_id', internalAccountId)
         .single()
@@ -92,12 +92,12 @@ export function useExitedPositionsPnL(
         assetClass: assetClass.value
       })
 
-      // Step 1: Fetch attached order IDs from position_order_mappings
+      // Step 1: Fetch attached order IDs from p_positions_order_mappings
       const mappingKeyPattern = `%|${symbolRoot.value}|%|${assetClass.value}|%`
       
       const { data: mappings, error: mappingsError } = await supabase
-        .schema('hf')
-        .from('position_order_mappings')
+        .schema('fund_ai')
+        .from('p_positions_order_mappings')
         .select('order_id')
         .eq('user_id', userId.value)
         .like('mapping_key', mappingKeyPattern)
@@ -116,8 +116,8 @@ export function useExitedPositionsPnL(
       const symbolPattern = `${symbolRoot.value}%`
       
       let query = supabase
-        .schema('hf')
-        .from('orders')
+        .schema('fund_ai')
+        .from('p_trades_orders')
         .select('id, symbol, buySell, quantity, tradePrice, tradeMoney, fifoPnlRealized, dateTime, internal_account_id')
         .like('symbol', symbolPattern)
 

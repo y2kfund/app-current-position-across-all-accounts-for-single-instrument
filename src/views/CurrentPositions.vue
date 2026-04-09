@@ -25,7 +25,7 @@ interface currentPositionsProps {
 }
 
 const props = withDefaults(defineProps<currentPositionsProps>(), {
-  symbolRoot: 'META',
+  symbolRoot: 'UNH',
   userId: '4fbec15d-2316-4805-b2a4-5cd2115a5ac8'
 })
 

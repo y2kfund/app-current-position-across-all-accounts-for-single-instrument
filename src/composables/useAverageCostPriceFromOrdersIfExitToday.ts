@@ -129,10 +129,10 @@ export function useAverageCostPriceFromOrdersIfExitToday(
 
       console.log('🔑 Generated mapping keys:', mappingKeys)
 
-      // Step 2: Fetch attached order IDs from position_order_mappings
+      // Step 2: Fetch attached order IDs from p_positions_order_mappings
       const { data: mappingsData, error: mappingsError } = await supabase
-        .schema('hf')
-        .from('position_order_mappings')
+        .schema('fund_ai')
+        .from('p_positions_order_mappings')
         .select('mapping_key, order_id')
         .eq('user_id', userId)
         .in('mapping_key', mappingKeys)
@@ -144,7 +144,7 @@ export function useAverageCostPriceFromOrdersIfExitToday(
       const mappings: PositionMapping[] = mappingsData || []
       console.log('🔗 Found order mappings:', mappings.length)
 
-      // Step 3: Fetch orders from 'orders' table by ibOrderID
+      // Step 3: Fetch orders from p_trades_orders by ibOrderID
       const orderIds = [...new Set(mappings.map(m => m.order_id))] // Remove duplicates
       
       let orders: Order[] = []
@@ -152,8 +152,8 @@ export function useAverageCostPriceFromOrdersIfExitToday(
         console.log('📦 Fetching orders with IDs:', orderIds)
         
         const { data: ordersData, error: ordersError } = await supabase
-          .schema('hf')
-          .from('orders')
+          .schema('fund_ai')
+          .from('p_trades_orders')
           .select('*')
           .in('ibOrderID', orderIds)
 
@@ -287,8 +287,8 @@ export function useAverageCostPriceFromOrdersIfExitToday(
             if (order.conid) {
               try {
                 const { data: positionData, error: posError } = await supabase
-                  .schema('hf')
-                  .from('positions')
+                  .schema('fund_ai')
+                  .from('p_positions_positions')
                   .select('id, unrealized_pnl, price, market_value')
                   .eq('internal_account_id', order.account)
                   .eq('conid', order.conid)

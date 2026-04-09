@@ -1,7 +1,7 @@
 var so = Object.defineProperty;
 var oo = (l, e, t) => e in l ? so(l, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : l[e] = t;
 var A = (l, e, t) => oo(l, typeof e != "symbol" ? e + "" : e, t);
-import { inject as no, isRef as as, computed as Z, ref as N, watch as Pe, nextTick as ti, onBeforeUnmount as rs, defineComponent as ls, createElementBlock as w, openBlock as C, Fragment as re, createVNode as je, Transition as it, withCtx as st, createCommentVNode as q, toDisplayString as m, withDirectives as Ze, createElementVNode as r, createTextVNode as J, renderList as ue, normalizeClass as ae, withModifiers as pe, vShow as kt, onMounted as ao, unref as F, vModelText as mi } from "vue";
+import { inject as no, isRef as as, computed as Z, ref as N, watch as _e, nextTick as ti, onBeforeUnmount as rs, defineComponent as ls, createElementBlock as w, openBlock as C, Fragment as re, createVNode as je, Transition as it, withCtx as st, createCommentVNode as q, toDisplayString as m, withDirectives as Ze, createElementVNode as r, createTextVNode as J, renderList as ue, normalizeClass as ae, withModifiers as pe, vShow as kt, onMounted as ao, unref as F, vModelText as mi } from "vue";
 import { useQueryClient as Wi, useQuery as ji } from "@tanstack/vue-query";
 import { useSupabase as xt, generatePositionMappingKey as It, usePositionTradeMappingsQuery as ro, usePositionPositionMappingsQuery as lo, usePositionOrderMappingsQuery as ho, savePositionOrderMappings as uo, fetchPositionsBySymbolRoot as hs, savePositionTradeMappings as co, savePositionPositionMappings as fo } from "@y2kfund/core";
 const mo = Symbol.for("y2kfund.supabase");
@@ -15,7 +15,7 @@ async function qi(l, e) {
     return console.log("⚠️ No userId provided, showing all positions"), [];
   try {
     console.log("👤 Fetching accessible accounts for user:", e);
-    const { data: t, error: i } = await l.schema("hf").from("user_account_access").select("internal_account_id").eq("user_id", e).eq("is_active", !0);
+    const { data: t, error: i } = await l.schema("fund_ai").from("core_accounts_access").select("internal_account_id").eq("user_id", e).eq("is_active", !0);
     if (i)
       return console.error("❌ Error fetching user account access:", i), [];
     if (!t || t.length === 0)
@@ -42,14 +42,14 @@ function go(l, e) {
       });
       const h = await qi(t, l);
       l && h.length === 0 ? console.log("⚠️ User has no account access restrictions - showing all accounts") : h.length > 0 && console.log("🔒 User has access to accounts:", h);
-      const { data: d, error: u } = await t.schema("hf").from("positions").select("fetched_at").order("fetched_at", { ascending: !1 }).limit(1).single();
+      const { data: d, error: u } = await t.schema("fund_ai").from("p_positions_positions").select("fetched_at").order("fetched_at", { ascending: !1 }).limit(1).single();
       if (u)
         throw console.error("❌ Error fetching latest fetched_at:", u), u;
       if (!d || !d.fetched_at)
         return console.log("⚠️ No positions found in database"), [];
       const f = d.fetched_at;
       console.log("📅 Latest fetched_at:", f);
-      let p = t.schema("hf").from("positions").select("*").eq("fetched_at", f).eq("asset_class", "STK").eq("symbol", `${a}`).order("symbol", { ascending: !0 });
+      let p = t.schema("fund_ai").from("p_positions_positions").select("*").eq("fetched_at", f).eq("asset_class", "STK").eq("symbol", `${a}`).order("symbol", { ascending: !0 });
       h.length > 0 && (p = p.in("internal_account_id", h));
       const { data: y, error: E } = await p;
       if (E)
@@ -60,22 +60,22 @@ function go(l, e) {
       const L = Array.from(
         new Set(y.map((c) => c.internal_account_id))
       ), [M, S] = await Promise.all([
-        t.schema("hf").from("user_accounts_master").select("internal_account_id, legal_entity").in("internal_account_id", L),
-        l ? t.schema("hf").from("user_account_alias").select("internal_account_id, alias").eq("user_id", l).in("internal_account_id", L) : { data: [], error: null }
+        t.schema("fund_ai").from("core_accounts_master").select("internal_account_id, legal_entity").in("internal_account_id", L),
+        l ? t.schema("fund_ai").from("core_accounts_alias").select("internal_account_id, alias").eq("user_id", l).in("internal_account_id", L) : { data: [], error: null }
       ]);
       M.error && console.warn("⚠️ Error fetching account names:", M.error), S.error && console.warn("⚠️ Error fetching account aliases:", S.error);
-      const P = new Map(
+      const _ = new Map(
         (M.data || []).map((c) => [c.internal_account_id, c.legal_entity])
       ), $ = new Map(
         (S.data || []).map((c) => [c.internal_account_id, c.alias])
-      ), _ = y.map((c) => {
-        let k = P.get(c.internal_account_id);
+      ), P = y.map((c) => {
+        let k = _.get(c.internal_account_id);
         return $.has(c.internal_account_id) && (k = $.get(c.internal_account_id)), {
           ...c,
           legal_entity: k
         };
       });
-      return console.log("✅ Successfully enriched positions with account info"), _;
+      return console.log("✅ Successfully enriched positions with account info"), P;
     },
     enabled: !!e && e.trim().length > 0,
     // Only run if symbol provided
@@ -86,8 +86,8 @@ function go(l, e) {
   }), n = t.channel(`instrument-details:${e}`).on(
     "postgres_changes",
     {
-      schema: "hf",
-      table: "positions",
+      schema: "fund_ai",
+      table: "p_positions_positions",
       event: "*"
     },
     () => {
@@ -113,20 +113,20 @@ async function bo(l, e, t, i) {
   });
   let n = i;
   if (!n) {
-    const { data: L, error: M } = await l.schema("hf").from("positions").select("fetched_at").order("fetched_at", { ascending: !1 }).limit(1).single();
+    const { data: L, error: M } = await l.schema("fund_ai").from("p_positions_positions").select("fetched_at").order("fetched_at", { ascending: !1 }).limit(1).single();
     if (M)
       throw console.error("❌ Error fetching latest fetched_at:", M), M;
     n = L.fetched_at;
   }
   console.log("📅 Using fetched_at:", n);
-  let a = l.schema("hf").from("positions").select("*").eq("fetched_at", n).ilike("symbol", `%${e}% P %`);
+  let a = l.schema("fund_ai").from("p_positions_positions").select("*").eq("fetched_at", n).ilike("symbol", `%${e}% P %`);
   o.length > 0 && (a = a.in("internal_account_id", o));
   const { data: h, error: d } = await a;
   if (d)
     throw console.error("❌ Error fetching put positions:", d), d;
   const [u, f] = await Promise.all([
-    l.schema("hf").from("user_accounts_master").select("internal_account_id, legal_entity"),
-    t ? l.schema("hf").from("user_account_alias").select("internal_account_id, alias").eq("user_id", t) : { data: [], error: null }
+    l.schema("fund_ai").from("core_accounts_master").select("internal_account_id, legal_entity"),
+    t ? l.schema("fund_ai").from("core_accounts_alias").select("internal_account_id, alias").eq("user_id", t) : { data: [], error: null }
   ]);
   if (u.error)
     throw console.error("❌ Accounts query error:", u.error), u.error;
@@ -166,8 +166,8 @@ function vo(l, e, t) {
     "postgres_changes",
     {
       event: "*",
-      schema: "hf",
-      table: "positions",
+      schema: "fund_ai",
+      table: "p_positions_positions",
       filter: `symbol=ilike.%${l}%C%`
     },
     () => {
@@ -189,20 +189,20 @@ async function yo(l, e, t, i) {
   });
   let n = i;
   if (!n) {
-    const { data: L, error: M } = await l.schema("hf").from("positions").select("fetched_at").order("fetched_at", { ascending: !1 }).limit(1).single();
+    const { data: L, error: M } = await l.schema("fund_ai").from("p_positions_positions").select("fetched_at").order("fetched_at", { ascending: !1 }).limit(1).single();
     if (M)
       throw console.error("❌ Error fetching latest fetched_at:", M), M;
     n = L.fetched_at;
   }
   console.log("📅 Using fetched_at:", n);
-  let a = l.schema("hf").from("positions").select("*").eq("fetched_at", n).ilike("symbol", `%${e}% C %`);
+  let a = l.schema("fund_ai").from("p_positions_positions").select("*").eq("fetched_at", n).ilike("symbol", `%${e}% C %`);
   o.length > 0 && (a = a.in("internal_account_id", o));
   const { data: h, error: d } = await a;
   if (d)
     throw console.error("❌ Error fetching call positions:", d), d;
   const [u, f] = await Promise.all([
-    l.schema("hf").from("user_accounts_master").select("internal_account_id, legal_entity"),
-    t ? l.schema("hf").from("user_account_alias").select("internal_account_id, alias").eq("user_id", t) : { data: [], error: null }
+    l.schema("fund_ai").from("core_accounts_master").select("internal_account_id, legal_entity"),
+    t ? l.schema("fund_ai").from("core_accounts_alias").select("internal_account_id, alias").eq("user_id", t) : { data: [], error: null }
   ]);
   if (u.error)
     throw console.error("❌ Accounts query error:", u.error), u.error;
@@ -242,8 +242,8 @@ function wo(l, e, t) {
     "postgres_changes",
     {
       event: "*",
-      schema: "hf",
-      table: "positions",
+      schema: "fund_ai",
+      table: "p_positions_positions",
       filter: `symbol=ilike.%${l}%C%`
     },
     () => {
@@ -849,7 +849,7 @@ const lt = class lt extends Y {
 A(lt, "moduleName", "clipboard"), A(lt, "moduleExtensions", Mo), //load defaults
 A(lt, "pasteActions", So), A(lt, "pasteParsers", Lo);
 let Ci = lt;
-class Po {
+class _o {
   constructor(e) {
     return this._row = e, new Proxy(this, {
       get: function(t, i, s) {
@@ -1772,7 +1772,7 @@ class Ee extends we {
     return this.component || (this.component = new ii(this)), this.component;
   }
 }
-var _o = {
+var Po = {
   avg: function(l, e, t) {
     var i = 0, s = typeof t.precision < "u" ? t.precision : 2;
     return l.length && (i = l.reduce(function(o, n) {
@@ -1965,7 +1965,7 @@ const ht = class ht extends Y {
   //generate stats row
   generateRow(e, t) {
     var i = this.generateRowData(e, t), s;
-    return this.table.modExists("mutator") && this.table.modules.mutator.disable(), s = new Ee(i, this, "calc"), this.table.modExists("mutator") && this.table.modules.mutator.enable(), s.getElement().classList.add("tabulator-calcs", "tabulator-calcs-" + e), s.component = !1, s.getComponent = () => (s.component || (s.component = new Po(s)), s.component), s.generateCells = () => {
+    return this.table.modExists("mutator") && this.table.modules.mutator.disable(), s = new Ee(i, this, "calc"), this.table.modExists("mutator") && this.table.modules.mutator.enable(), s.getElement().classList.add("tabulator-calcs", "tabulator-calcs-" + e), s.component = !1, s.getComponent = () => (s.component || (s.component = new _o(s)), s.component), s.generateCells = () => {
       var o = [];
       this.table.columnManager.columnsByIndex.forEach((n) => {
         this.genColumn.setField(n.getField()), this.genColumn.hozAlign = n.hozAlign, n.definition[e + "CalcFormatter"] && this.table.modExists("format") ? this.genColumn.modules.format = {
@@ -2026,7 +2026,7 @@ const ht = class ht extends Y {
   }
 };
 A(ht, "moduleName", "columnCalcs"), //load defaults
-A(ht, "calculations", _o);
+A(ht, "calculations", Po);
 let Ei = ht;
 class ps extends Y {
   constructor(e) {
@@ -2311,12 +2311,12 @@ function $o(l, e, t) {
   var i = this, s = e.sheetName || "Sheet1", o = this.dependencyRegistry.lookup("XLSX"), n = o.utils.book_new(), a = new we(this), h = "compress" in e ? e.compress : !0, d = e.writeOptions || { bookType: "xlsx", bookSST: !0, compression: h }, u;
   d.type = "binary", n.SheetNames = [], n.Sheets = {};
   function f() {
-    var E = [], L = [], M = {}, S = { s: { c: 0, r: 0 }, e: { c: l[0] ? l[0].columns.reduce((P, $) => P + ($ && $.width ? $.width : 1), 0) : 0, r: l.length } };
-    return l.forEach((P, $) => {
-      var _ = [];
-      P.columns.forEach(function(c, k) {
-        c ? (_.push(!(c.value instanceof Date) && typeof c.value == "object" ? JSON.stringify(c.value) : c.value), (c.width > 1 || c.height > -1) && (c.height > 1 || c.width > 1) && L.push({ s: { r: $, c: k }, e: { r: $ + c.height - 1, c: k + c.width - 1 } })) : _.push("");
-      }), E.push(_);
+    var E = [], L = [], M = {}, S = { s: { c: 0, r: 0 }, e: { c: l[0] ? l[0].columns.reduce((_, $) => _ + ($ && $.width ? $.width : 1), 0) : 0, r: l.length } };
+    return l.forEach((_, $) => {
+      var P = [];
+      _.columns.forEach(function(c, k) {
+        c ? (P.push(!(c.value instanceof Date) && typeof c.value == "object" ? JSON.stringify(c.value) : c.value), (c.width > 1 || c.height > -1) && (c.height > 1 || c.width > 1) && L.push({ s: { r: $, c: k }, e: { r: $ + c.height - 1, c: k + c.width - 1 } })) : P.push("");
+      }), E.push(P);
     }), o.utils.sheet_add_aoa(M, E), M["!ref"] = o.utils.encode_range(S), L.length && (M["!merges"] = L), M;
   }
   if (e.sheetOnly) {
@@ -3097,19 +3097,19 @@ function Qo(l, e, t, i, s) {
 function Xo(l, e, t, i, s) {
   var o = this, n = l.getElement(), a = l.getValue(), h = n.getElementsByTagName("svg").length || 5, d = n.getElementsByTagName("svg")[0] ? n.getElementsByTagName("svg")[0].getAttribute("width") : 14, u = [], f = document.createElement("div"), p = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   function y(S) {
-    u.forEach(function(P, $) {
-      $ < S ? (o.table.browser == "ie" ? P.setAttribute("class", "tabulator-star-active") : P.classList.replace("tabulator-star-inactive", "tabulator-star-active"), P.innerHTML = '<polygon fill="#488CE9" stroke="#014AAE" stroke-width="37.6152" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="259.216,29.942 330.27,173.919 489.16,197.007 374.185,309.08 401.33,467.31 259.216,392.612 117.104,467.31 144.25,309.08 29.274,197.007 188.165,173.919 "/>') : (o.table.browser == "ie" ? P.setAttribute("class", "tabulator-star-inactive") : P.classList.replace("tabulator-star-active", "tabulator-star-inactive"), P.innerHTML = '<polygon fill="#010155" stroke="#686868" stroke-width="37.6152" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="259.216,29.942 330.27,173.919 489.16,197.007 374.185,309.08 401.33,467.31 259.216,392.612 117.104,467.31 144.25,309.08 29.274,197.007 188.165,173.919 "/>');
+    u.forEach(function(_, $) {
+      $ < S ? (o.table.browser == "ie" ? _.setAttribute("class", "tabulator-star-active") : _.classList.replace("tabulator-star-inactive", "tabulator-star-active"), _.innerHTML = '<polygon fill="#488CE9" stroke="#014AAE" stroke-width="37.6152" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="259.216,29.942 330.27,173.919 489.16,197.007 374.185,309.08 401.33,467.31 259.216,392.612 117.104,467.31 144.25,309.08 29.274,197.007 188.165,173.919 "/>') : (o.table.browser == "ie" ? _.setAttribute("class", "tabulator-star-inactive") : _.classList.replace("tabulator-star-active", "tabulator-star-inactive"), _.innerHTML = '<polygon fill="#010155" stroke="#686868" stroke-width="37.6152" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="259.216,29.942 330.27,173.919 489.16,197.007 374.185,309.08 401.33,467.31 259.216,392.612 117.104,467.31 144.25,309.08 29.274,197.007 188.165,173.919 "/>');
     });
   }
   function E(S) {
-    var P = document.createElement("span"), $ = p.cloneNode(!0);
-    u.push($), P.addEventListener("mouseenter", function(_) {
-      _.stopPropagation(), _.stopImmediatePropagation(), y(S);
-    }), P.addEventListener("mousemove", function(_) {
-      _.stopPropagation(), _.stopImmediatePropagation();
-    }), P.addEventListener("click", function(_) {
-      _.stopPropagation(), _.stopImmediatePropagation(), t(S), n.blur();
-    }), P.appendChild($), f.appendChild(P);
+    var _ = document.createElement("span"), $ = p.cloneNode(!0);
+    u.push($), _.addEventListener("mouseenter", function(P) {
+      P.stopPropagation(), P.stopImmediatePropagation(), y(S);
+    }), _.addEventListener("mousemove", function(P) {
+      P.stopPropagation(), P.stopImmediatePropagation();
+    }), _.addEventListener("click", function(P) {
+      P.stopPropagation(), P.stopImmediatePropagation(), t(S), n.blur();
+    }), _.appendChild($), f.appendChild(_);
   }
   function L(S) {
     a = S, y(S);
@@ -3453,8 +3453,8 @@ const Ht = class Ht extends Y {
     }
     function p(S) {
       if (s.currentCell === e && !h) {
-        var P = s.chain("edit-success", [e, S], !0, !0);
-        return P === !0 || s.table.options.validationMode === "highlight" ? (h = !0, s.clearEditor(), e.modules.edit || (e.modules.edit = {}), e.modules.edit.edited = !0, s.editedCells.indexOf(e) == -1 && s.editedCells.push(e), S = s.transformEmptyValues(S, e), e.setValue(S, !0), P === !0) : (h = !0, s.invalidEdit = !0, s.focusCellNoEvent(e, !0), n(), setTimeout(() => {
+        var _ = s.chain("edit-success", [e, S], !0, !0);
+        return _ === !0 || s.table.options.validationMode === "highlight" ? (h = !0, s.clearEditor(), e.modules.edit || (e.modules.edit = {}), e.modules.edit.edited = !0, s.editedCells.indexOf(e) == -1 && s.editedCells.push(e), S = s.transformEmptyValues(S, e), e.setValue(S, !0), _ === !0) : (h = !0, s.invalidEdit = !0, s.focusCellNoEvent(e, !0), n(), setTimeout(() => {
           h = !1;
         }, 10), !1);
       }
@@ -4030,8 +4030,8 @@ const et = class et extends Y {
         }), d.addEventListener("click", function(S) {
           S.stopPropagation(), d.focus();
         }), d.addEventListener("focus", (S) => {
-          var P = this.table.columnManager.contentsElement.scrollLeft, $ = this.table.rowManager.element.scrollLeft;
-          P !== $ && (this.table.rowManager.scrollHorizontal(P), this.table.columnManager.scrollHorizontal(P));
+          var _ = this.table.columnManager.contentsElement.scrollLeft, $ = this.table.rowManager.element.scrollLeft;
+          _ !== $ && (this.table.rowManager.scrollHorizontal(_), this.table.columnManager.scrollHorizontal(_));
         }), f = !1, p = function(S) {
           f && clearTimeout(f), f = setTimeout(function() {
             o(d.value);
@@ -5228,7 +5228,7 @@ var Dn = {
 }, Mn = {
   undo: ["ctrl + 90", "meta + 90"],
   redo: ["ctrl + 89", "meta + 89"]
-}, Pn = {
+}, _n = {
   undo: function(l) {
     var e = !1;
     this.table.options.history && this.table.modExists("history") && this.table.modExists("edit") && (e = this.table.modules.edit.currentCell, e || (l.preventDefault(), this.table.modules.history.undo()));
@@ -5237,10 +5237,10 @@ var Dn = {
     var e = !1;
     this.table.options.history && this.table.modExists("history") && this.table.modExists("edit") && (e = this.table.modules.edit.currentCell, e || (l.preventDefault(), this.table.modules.history.redo()));
   }
-}, _n = {
+}, Pn = {
   keybindings: {
     bindings: Mn,
-    actions: Pn
+    actions: _n
   }
 };
 const ct = class ct extends Y {
@@ -5312,7 +5312,7 @@ const ct = class ct extends Y {
     });
   }
 };
-A(ct, "moduleName", "history"), A(ct, "moduleExtensions", _n), //load defaults
+A(ct, "moduleName", "history"), A(ct, "moduleExtensions", Pn), //load defaults
 A(ct, "undoers", Dn), A(ct, "redoers", Fn);
 let Li = ct;
 class ys extends Y {
@@ -6229,7 +6229,7 @@ const Lt = class Lt extends Y {
 };
 A(Lt, "moduleName", "mutator"), //load defaults
 A(Lt, "mutators", Gn);
-let Pi = Lt;
+let _i = Lt;
 function Wn(l, e, t, i, s) {
   var o = document.createElement("span"), n = document.createElement("span"), a = document.createElement("span"), h = document.createElement("span"), d = document.createElement("span"), u = document.createElement("span");
   return this.table.modules.localize.langBind("pagination|counter|showing", (f) => {
@@ -6523,7 +6523,7 @@ const Ot = class Ot extends Y {
 };
 A(Ot, "moduleName", "page"), //load defaults
 A(Ot, "pageCounters", Un);
-let _i = Ot;
+let Pi = Ot;
 var qn = {
   local: function(l, e) {
     var t = localStorage.getItem(l + "-" + e);
@@ -8906,8 +8906,8 @@ var gi = /* @__PURE__ */ Object.freeze({
   MenuModule: Cs,
   MoveColumnsModule: Es,
   MoveRowsModule: Mi,
-  MutatorModule: Pi,
-  PageModule: _i,
+  MutatorModule: _i,
+  PageModule: Pi,
   PersistenceModule: zi,
   PopupModule: xs,
   PrintModule: ks,
@@ -8987,7 +8987,7 @@ var gi = /* @__PURE__ */ Object.freeze({
   dataReceiveParams: {},
   dependencies: {}
 };
-class Ps {
+class _s {
   constructor(e, t, i = {}) {
     this.table = e, this.msgType = t, this.registeredDefaults = Object.assign({}, i);
   }
@@ -9336,7 +9336,7 @@ class Ca extends oi {
 }
 class Ea extends we {
   constructor(e) {
-    super(e), this.blockHozScrollEvent = !1, this.headersElement = null, this.contentsElement = null, this.rowHeader = null, this.element = null, this.columns = [], this.columnsByIndex = [], this.columnsByField = {}, this.scrollLeft = 0, this.optionsList = new Ps(this.table, "column definition", ms), this.redrawBlock = !1, this.redrawBlockUpdate = null, this.renderer = null;
+    super(e), this.blockHozScrollEvent = !1, this.headersElement = null, this.contentsElement = null, this.rowHeader = null, this.element = null, this.columns = [], this.columnsByIndex = [], this.columnsByField = {}, this.scrollLeft = 0, this.optionsList = new _s(this.table, "column definition", ms), this.redrawBlock = !1, this.redrawBlockUpdate = null, this.renderer = null;
   }
   ////////////// Setup Functions /////////////////
   initialize() {
@@ -9737,7 +9737,7 @@ class ka extends oi {
   //////////////////////////////////////
   //full virtual render
   _virtualRenderFill(e, t, i) {
-    var s = this.tableElement, o = this.elementVertical, n = 0, a = 0, h = 0, d = 0, u = 0, f = 0, p = this.rows(), y = p.length, E = 0, L, M, S = [], P = 0, $ = 0, _ = this.table.rowManager.fixedHeight, c = this.elementVertical.clientHeight, k = this.table.options.rowHeight, B = !0;
+    var s = this.tableElement, o = this.elementVertical, n = 0, a = 0, h = 0, d = 0, u = 0, f = 0, p = this.rows(), y = p.length, E = 0, L, M, S = [], _ = 0, $ = 0, P = this.table.rowManager.fixedHeight, c = this.elementVertical.clientHeight, k = this.table.options.rowHeight, B = !0;
     if (e = e || 0, i = i || 0, !e)
       this.clear();
     else {
@@ -9745,7 +9745,7 @@ class ka extends oi {
       d = (y - e + 1) * this.vDomRowHeight, d < c && (e -= Math.ceil((c - d) / this.vDomRowHeight), e < 0 && (e = 0)), n = Math.min(Math.max(Math.floor(this.vDomWindowBuffer / this.vDomRowHeight), this.vDomWindowMinMarginRows), e), e -= n;
     }
     if (y && le.elVisible(this.elementVertical)) {
-      for (this.vDomTop = e, this.vDomBottom = e - 1, _ || this.table.options.maxHeight ? (k && ($ = c / k + this.vDomWindowBuffer / k), $ = Math.max(this.vDomWindowMinTotalRows, Math.ceil($))) : $ = y; ($ == y || a <= c + this.vDomWindowBuffer || P < this.vDomWindowMinTotalRows) && this.vDomBottom < y - 1; ) {
+      for (this.vDomTop = e, this.vDomBottom = e - 1, P || this.table.options.maxHeight ? (k && ($ = c / k + this.vDomWindowBuffer / k), $ = Math.max(this.vDomWindowMinTotalRows, Math.ceil($))) : $ = y; ($ == y || a <= c + this.vDomWindowBuffer || _ < this.vDomWindowMinTotalRows) && this.vDomBottom < y - 1; ) {
         for (S = [], M = document.createDocumentFragment(), f = 0; f < $ && this.vDomBottom < y - 1; )
           E = this.vDomBottom + 1, L = p[E], this.styleRow(L, E), L.initialize(!1, !0), !L.heightInitialized && !this.table.options.rowHeight && L.clearCellHeight(), M.appendChild(L.getElement()), S.push(L), this.vDomBottom++, f++;
         if (!S.length)
@@ -9755,10 +9755,10 @@ class ka extends oi {
         }), S.forEach((v) => {
           v.heightInitialized || v.setCellHeight();
         }), S.forEach((v) => {
-          h = v.getHeight(), P < n ? u += h : a += h, h > this.vDomWindowBuffer && (this.vDomWindowBuffer = h * 2), P++;
-        }), B = this.table.rowManager.adjustTableSize(), c = this.elementVertical.clientHeight, B && (_ || this.table.options.maxHeight) && (k = a / P, $ = Math.max(this.vDomWindowMinTotalRows, Math.ceil(c / k + this.vDomWindowBuffer / k)));
+          h = v.getHeight(), _ < n ? u += h : a += h, h > this.vDomWindowBuffer && (this.vDomWindowBuffer = h * 2), _++;
+        }), B = this.table.rowManager.adjustTableSize(), c = this.elementVertical.clientHeight, B && (P || this.table.options.maxHeight) && (k = a / _, $ = Math.max(this.vDomWindowMinTotalRows, Math.ceil(c / k + this.vDomWindowBuffer / k)));
       }
-      e ? (this.vDomTopPad = t ? this.vDomRowHeight * this.vDomTop + i : this.scrollTop - u, this.vDomBottomPad = this.vDomBottom == y - 1 ? 0 : Math.max(this.vDomScrollHeight - this.vDomTopPad - a - u, 0)) : (this.vDomTopPad = 0, this.vDomRowHeight = Math.floor((a + u) / P), this.vDomBottomPad = this.vDomRowHeight * (y - this.vDomBottom - 1), this.vDomScrollHeight = u + a + this.vDomBottomPad - c), s.style.paddingTop = this.vDomTopPad + "px", s.style.paddingBottom = this.vDomBottomPad + "px", t && (this.scrollTop = this.vDomTopPad + u + i - (this.elementVertical.scrollWidth > this.elementVertical.clientWidth ? this.elementVertical.offsetHeight - c : 0)), this.scrollTop = Math.min(this.scrollTop, this.elementVertical.scrollHeight - c), this.elementVertical.scrollWidth > this.elementVertical.clientWidth && t && (this.scrollTop += this.elementVertical.offsetHeight - c), this.vDomScrollPosTop = this.scrollTop, this.vDomScrollPosBottom = this.scrollTop, o.scrollTop = this.scrollTop, this.dispatch("render-virtual-fill");
+      e ? (this.vDomTopPad = t ? this.vDomRowHeight * this.vDomTop + i : this.scrollTop - u, this.vDomBottomPad = this.vDomBottom == y - 1 ? 0 : Math.max(this.vDomScrollHeight - this.vDomTopPad - a - u, 0)) : (this.vDomTopPad = 0, this.vDomRowHeight = Math.floor((a + u) / _), this.vDomBottomPad = this.vDomRowHeight * (y - this.vDomBottom - 1), this.vDomScrollHeight = u + a + this.vDomBottomPad - c), s.style.paddingTop = this.vDomTopPad + "px", s.style.paddingBottom = this.vDomBottomPad + "px", t && (this.scrollTop = this.vDomTopPad + u + i - (this.elementVertical.scrollWidth > this.elementVertical.clientWidth ? this.elementVertical.offsetHeight - c : 0)), this.scrollTop = Math.min(this.scrollTop, this.elementVertical.scrollHeight - c), this.elementVertical.scrollWidth > this.elementVertical.clientWidth && t && (this.scrollTop += this.elementVertical.offsetHeight - c), this.vDomScrollPosTop = this.scrollTop, this.vDomScrollPosBottom = this.scrollTop, o.scrollTop = this.scrollTop, this.dispatch("render-virtual-fill");
     }
   }
   _addTopRow(e, t) {
@@ -10571,7 +10571,7 @@ class Ma {
     return e[0] = "InternalEvent:" + t, (this.debug === !0 || this.debug.includes(t)) && console.log(...e), this._confirm(...arguments);
   }
 }
-class Pa extends we {
+class _a extends we {
   constructor(e) {
     super(e);
   }
@@ -10589,7 +10589,7 @@ class Pa extends we {
     this._warnUser(e);
   }
 }
-class _a extends we {
+class Pa extends we {
   constructor(e) {
     super(e), this.deps = {}, this.props = {};
   }
@@ -10645,7 +10645,7 @@ function Ha(l, e) {
     return typeof E == "string" ? E.indexOf("%") > -1 ? L = t / 100 * parseInt(E) : L = parseInt(E) : L = E, L;
   }
   function y(E, L, M, S) {
-    var P = [], $ = 0, _ = 0, c = 0, k = o, B = 0, v = 0, b = [];
+    var _ = [], $ = 0, P = 0, c = 0, k = o, B = 0, v = 0, b = [];
     function U(G) {
       return M * (G.column.definition.widthGrow || 1);
     }
@@ -10654,10 +10654,10 @@ function Ha(l, e) {
     }
     return E.forEach(function(G, O) {
       var W = S ? Q(G) : U(G);
-      G.column.minWidth >= W ? P.push(G) : G.column.maxWidth && G.column.maxWidth < W ? (G.width = G.column.maxWidth, L -= G.column.maxWidth, k -= S ? G.column.definition.widthShrink || 1 : G.column.definition.widthGrow || 1, k && (M = Math.floor(L / k))) : (b.push(G), v += S ? G.column.definition.widthShrink || 1 : G.column.definition.widthGrow || 1);
-    }), P.length ? (P.forEach(function(G) {
+      G.column.minWidth >= W ? _.push(G) : G.column.maxWidth && G.column.maxWidth < W ? (G.width = G.column.maxWidth, L -= G.column.maxWidth, k -= S ? G.column.definition.widthShrink || 1 : G.column.definition.widthGrow || 1, k && (M = Math.floor(L / k))) : (b.push(G), v += S ? G.column.definition.widthShrink || 1 : G.column.definition.widthGrow || 1);
+    }), _.length ? (_.forEach(function(G) {
       $ += S ? G.width - G.column.minWidth : G.column.minWidth, G.width = G.column.minWidth;
-    }), _ = L - $, c = v ? Math.floor(_ / v) : _, B = y(b, _, c, S)) : (B = v ? L - Math.floor(L / v) * v : L, b.forEach(function(G) {
+    }), P = L - $, c = v ? Math.floor(P / v) : P, B = y(b, P, c, S)) : (B = v ? L - Math.floor(L / v) * v : L, b.forEach(function(G) {
       G.width = S ? Q(G) : U(G);
     })), B;
   }
@@ -10817,7 +10817,7 @@ const Nt = class Nt extends Y {
 A(Nt, "moduleName", "localize"), //load defaults
 A(Nt, "langs", Oa);
 let Ni = Nt;
-class _s extends Y {
+class Ps extends Y {
   constructor(e) {
     super(e);
   }
@@ -10842,10 +10842,10 @@ class _s extends Y {
     console.warn("Inter-table Comms Error - no such module:", t);
   }
 }
-A(_s, "moduleName", "comms");
+A(Ps, "moduleName", "comms");
 var Ba = /* @__PURE__ */ Object.freeze({
   __proto__: null,
-  CommsModule: _s,
+  CommsModule: Ps,
   LayoutModule: Bi,
   LocalizeModule: Ni
 });
@@ -10985,7 +10985,7 @@ const tt = class tt extends Vi {
     tt.initializeModuleBinder(), tt._registerModule(...arguments);
   }
   constructor(e, t, i) {
-    super(), tt.initializeModuleBinder(i), this.options = {}, this.columnManager = null, this.rowManager = null, this.footerManager = null, this.alertManager = null, this.vdomHoz = null, this.externalEvents = null, this.eventBus = null, this.interactionMonitor = !1, this.browser = "", this.browserSlow = !1, this.browserMobile = !1, this.rtl = !1, this.originalElement = null, this.componentFunctionBinder = new La(this), this.dataLoader = !1, this.modules = {}, this.modulesCore = [], this.modulesRegular = [], this.deprecationAdvisor = new Pa(this), this.optionsList = new Ps(this, "table constructor"), this.dependencyRegistry = new _a(this), this.initialized = !1, this.destroyed = !1, this.initializeElement(e) && (this.initializeCoreSystems(t), setTimeout(() => {
+    super(), tt.initializeModuleBinder(i), this.options = {}, this.columnManager = null, this.rowManager = null, this.footerManager = null, this.alertManager = null, this.vdomHoz = null, this.externalEvents = null, this.eventBus = null, this.interactionMonitor = !1, this.browser = "", this.browserSlow = !1, this.browserMobile = !1, this.rtl = !1, this.originalElement = null, this.componentFunctionBinder = new La(this), this.dataLoader = !1, this.modules = {}, this.modulesCore = [], this.modulesRegular = [], this.deprecationAdvisor = new _a(this), this.optionsList = new _s(this, "table constructor"), this.dependencyRegistry = new Pa(this), this.initialized = !1, this.destroyed = !1, this.initializeElement(e) && (this.initializeCoreSystems(t), setTimeout(() => {
       this._create();
     })), this.constructor.registry.register(this);
   }
@@ -11339,12 +11339,12 @@ function Va(l) {
       console.error("❌ Error creating Tabulator:", n);
     }
   }
-  return Pe([() => l.isSuccess.value, e], async ([n, a]) => {
+  return _e([() => l.isSuccess.value, e], async ([n, a]) => {
     var h;
     console.log("👀 Watch triggered - isSuccess:", n, "divRef:", !!a, "isTableInitialized:", s.value), n && a && !s.value && (await ti(), a.offsetParent !== null ? (console.log("🎯 Conditions met, initializing table with", (h = l.data.value) == null ? void 0 : h.length, "rows"), o()) : (console.log("⏸️ Element not visible yet, will retry"), setTimeout(() => {
       a.offsetParent !== null && !s.value && (console.log("🚀 Initializing after visibility check"), o());
     }, 100)));
-  }, { immediate: !0 }), Pe(() => l.data.value, async (n) => {
+  }, { immediate: !0 }), _e(() => l.data.value, async (n) => {
     if (!(!t.value || !n)) {
       console.log("🔄 Data changed, updating table with", n.length, "rows");
       try {
@@ -11367,7 +11367,7 @@ function Ga(l, e) {
   const t = xt(), i = N(null), s = N(!1), o = N(null), n = async (h) => {
     s.value = !0, o.value = null;
     try {
-      let d = t.schema("hf").from("market_price").select("symbol, conid, market_price, week_52_high, week_52_low, pe_ratio, eps, market_cap, computed_peg_ratio, last_fetched_at");
+      let d = t.schema("fund_ai").from("p_positions_market_price").select("symbol, conid, market_price, week_52_high, week_52_low, pe_ratio, eps, market_cap, computed_peg_ratio, last_fetched_at");
       if (h && h > 0)
         console.log(`🔍 Fetching market price for conid: ${h}`), d = d.eq("conid", h);
       else if (e)
@@ -11392,7 +11392,7 @@ function Ga(l, e) {
       s.value = !1;
     }
   };
-  return Pe(
+  return _e(
     l,
     (h) => {
       h && h > 0 ? (console.log(`🎯 Conid changed to: ${h}, fetching price...`), n(h)) : e ? (console.log(`🎯 No conid available, using symbolRoot: ${e}`), n(null)) : (console.log("⚠️ No valid conid or symbolRoot available"), i.value = null, o.value = null);
@@ -11411,7 +11411,7 @@ function Wa(l, e) {
   const t = xt(), i = N(null), s = N(!1), o = N(null), n = async (h) => {
     s.value = !0, o.value = null;
     try {
-      let d = t.schema("hf").from("financial_data").select("symbol, conid, week_52_high, week_52_low, pe_ratio, eps, market_cap, computed_peg_ratio, last_updated_at");
+      let d = t.schema("fund_ai").from("p_positions_financial_data").select("symbol, conid, week_52_high, week_52_low, pe_ratio, eps, market_cap, computed_peg_ratio, last_updated_at");
       if (h && h > 0)
         d = d.eq("conid", h);
       else if (e)
@@ -11436,7 +11436,7 @@ function Wa(l, e) {
       s.value = !1;
     }
   };
-  return Pe(
+  return _e(
     l,
     (h) => {
       h && h > 0 ? (console.log(`🎯 Conid changed to: ${h}, fetching price...`), n(h)) : e ? (console.log(`🎯 No conid available, using symbolRoot: ${e}`), n(null)) : (console.log("⚠️ No valid conid or symbolRoot available"), i.value = null, o.value = null);
@@ -11474,7 +11474,7 @@ function ja(l, e) {
         })
       );
       console.log("🔑 Generated mapping keys:", f);
-      const { data: p, error: y } = await t.schema("hf").from("position_order_mappings").select("mapping_key, order_id").eq("user_id", e).in("mapping_key", f);
+      const { data: p, error: y } = await t.schema("fund_ai").from("p_positions_order_mappings").select("mapping_key, order_id").eq("user_id", e).in("mapping_key", f);
       if (y)
         throw new Error(`Failed to fetch order mappings: ${y.message}`);
       const E = p || [];
@@ -11483,7 +11483,7 @@ function ja(l, e) {
       let M = [];
       if (L.length > 0) {
         console.log("📦 Fetching orders with IDs:", L);
-        const { data: k, error: B } = await t.schema("hf").from("orders").select("*").in("ibOrderID", L);
+        const { data: k, error: B } = await t.schema("fund_ai").from("p_trades_orders").select("*").in("ibOrderID", L);
         if (B)
           throw new Error(`Failed to fetch orders: ${B.message}`);
         M = (k || []).map((v) => {
@@ -11512,7 +11512,7 @@ function ja(l, e) {
       E.forEach((k) => {
         S.has(k.mapping_key) || S.set(k.mapping_key, []), S.get(k.mapping_key).push(k.order_id);
       });
-      const P = [];
+      const _ = [];
       l.value.forEach((k) => {
         const B = It({
           internal_account_id: k.internal_account_id,
@@ -11539,12 +11539,12 @@ function ja(l, e) {
           };
           T.secType === "STK" && T.side === "BUY" ? (U.push(ve), D += Math.abs(oe), console.log(`   📈 Stock purchase: ${T.symbol} ${T.side} ${se} @ $${T.avgFillPrice} = $${Math.abs(oe).toFixed(2)}`)) : T.secType === "STK" && T.side === "SELL" ? (Q.push(ve), z += Math.abs(oe), console.log(`   💰 Stock sale: ${T.symbol} ${T.side} ${se} @ $${T.avgFillPrice} = $${Math.abs(oe).toFixed(2)} (proceeds)`)) : T.secType === "OPT" && T.right === "P" && T.side === "SELL" ? (G.push(ve), ce += Math.abs(oe), console.log(`   📉 Put sale: ${T.symbol} SELL PUT @ $${T.strike} ${T.side} ${se} @ $${T.avgFillPrice} = +$${Math.abs(oe).toFixed(2)} (premium)`)) : T.secType === "OPT" && T.right === "P" && T.side === "BUY" ? (O.push(ve), be += Math.abs(oe), console.log(`   🔙 Put buyback: ${T.symbol} BUY PUT @ $${T.strike} ${T.side} ${se} @ $${T.avgFillPrice} = -$${Math.abs(oe).toFixed(2)} (close cost)`)) : T.secType === "OPT" && T.right === "C" && T.side === "SELL" ? (W.push(ve), Te += Math.abs(oe), console.log(`   📞 Call sale: ${T.symbol} SELL CALL @ $${T.strike} ${T.side} ${se} @ $${T.avgFillPrice} = +$${Math.abs(oe).toFixed(2)} (premium)`)) : T.secType === "OPT" && T.right === "C" && T.side === "BUY" ? (te.push(ve), Le += Math.abs(oe), console.log(`   🔙 Call buyback: ${T.symbol} BUY CALL @ $${T.strike} ${T.side} ${se} @ $${T.avgFillPrice} = -$${Math.abs(oe).toFixed(2)} (close cost)`)) : console.log(`   ❓ Other order: ${T.symbol} ${T.secType} ${T.side} ${se} @ $${T.avgFillPrice}`);
         });
-        const _e = D - z, Ne = ce - be, Ie = Te - Le, De = _e - Ne - Ie;
+        const Pe = D - z, Ne = ce - be, Ie = Te - Le, De = Pe - Ne - Ie;
         let he = 0;
         const ze = U.reduce((T, se) => T + Math.abs(se.quantity), 0), mt = Q.reduce((T, se) => T + Math.abs(se.quantity), 0), ot = ze - mt;
         ot > 0 ? (he = ot, console.log(`   ✅ Using shares from stock orders: ${ze} purchased - ${mt} sold = ${he}`)) : ze > 0 ? (he = ze, console.log(`   ✅ Using shares from stock purchases: ${he}`)) : (he = k.accounting_quantity ?? k.qty, console.log(`   ℹ️ No stock orders found, using position quantity: ${he}`));
         const nt = he > 0 ? De / he : 0;
-        console.log(`📊 Position Summary for ${k.legal_entity || k.internal_account_id}:`), console.log(`   Stock Purchase Cost: $${D.toFixed(2)}`), console.log(`   Stock Sale Proceeds: -$${z.toFixed(2)}`), console.log(`   Net Stock Cost: $${_e.toFixed(2)}`), console.log(`   Put Premium Received: +$${ce.toFixed(2)}`), console.log(`   Put Buyback Cost: -$${be.toFixed(2)}`), console.log(`   Net Put Cash Flow: $${Ne.toFixed(2)}`), console.log(`   Call Premium Received: +$${Te.toFixed(2)}`), console.log(`   Call Buyback Cost: -$${Le.toFixed(2)}`), console.log(`   Net Call Cash Flow: $${Ie.toFixed(2)}`), console.log(`   Total Net Cost: $${De.toFixed(2)} (Net Stock - Net Put - Net Call)`), console.log(`   Position Shares: ${he}`), console.log(`   Adjusted Avg Price: $${nt.toFixed(2)} per share`), P.push({
+        console.log(`📊 Position Summary for ${k.legal_entity || k.internal_account_id}:`), console.log(`   Stock Purchase Cost: $${D.toFixed(2)}`), console.log(`   Stock Sale Proceeds: -$${z.toFixed(2)}`), console.log(`   Net Stock Cost: $${Pe.toFixed(2)}`), console.log(`   Put Premium Received: +$${ce.toFixed(2)}`), console.log(`   Put Buyback Cost: -$${be.toFixed(2)}`), console.log(`   Net Put Cash Flow: $${Ne.toFixed(2)}`), console.log(`   Call Premium Received: +$${Te.toFixed(2)}`), console.log(`   Call Buyback Cost: -$${Le.toFixed(2)}`), console.log(`   Net Call Cash Flow: $${Ie.toFixed(2)}`), console.log(`   Total Net Cost: $${De.toFixed(2)} (Net Stock - Net Put - Net Call)`), console.log(`   Position Shares: ${he}`), console.log(`   Adjusted Avg Price: $${nt.toFixed(2)} per share`), _.push({
           mainPosition: {
             symbol: k.symbol,
             account: k.legal_entity || k.internal_account_id,
@@ -11569,7 +11569,7 @@ function ja(l, e) {
           stockPurchaseCost: D,
           stockSales: Q,
           stockSaleProceeds: z,
-          netStockCost: _e,
+          netStockCost: Pe,
           putSales: G,
           putPremiumReceived: ce,
           putBuybacks: O,
@@ -11578,23 +11578,23 @@ function ja(l, e) {
           callPremiumReceived: Te,
           callBuybacks: te,
           callBuybackCost: Le,
-          totalStockCost: _e,
+          totalStockCost: Pe,
           netPutCashFlow: Ne,
           netCallCashFlow: Ie,
           netCost: De,
           totalShares: he,
           adjustedAvgPricePerShare: nt
         });
-      }), n.value = P;
-      const $ = P.reduce((k, B) => k + B.netCost, 0), _ = P.reduce((k, B) => k + B.totalShares, 0), c = _ > 0 ? $ / _ : null;
-      s.value = $, o.value = _, i.value = c, c !== null && (console.log(`🎯 Overall Adjusted Average from Orders: $${c.toFixed(2)} per share`), console.log(`   Total Net Cost: $${$.toFixed(2)}`), console.log(`   Total Shares: ${_}`));
+      }), n.value = _;
+      const $ = _.reduce((k, B) => k + B.netCost, 0), P = _.reduce((k, B) => k + B.totalShares, 0), c = P > 0 ? $ / P : null;
+      s.value = $, o.value = P, i.value = c, c !== null && (console.log(`🎯 Overall Adjusted Average from Orders: $${c.toFixed(2)} per share`), console.log(`   Total Net Cost: $${$.toFixed(2)}`), console.log(`   Total Shares: ${P}`));
     } catch (f) {
       h.value = f instanceof Error ? f.message : "Failed to calculate average cost price from orders", console.error("❌ Error calculating average cost price from orders:", f), i.value = null;
     } finally {
       a.value = !1;
     }
   };
-  return Pe(
+  return _e(
     () => l.value,
     () => {
       l.value && l.value.length > 0 && e ? u() : i.value = null;
@@ -11634,7 +11634,7 @@ function Ua(l, e) {
         })
       );
       console.log("🔑 Generated mapping keys:", f);
-      const { data: p, error: y } = await t.schema("hf").from("position_order_mappings").select("mapping_key, order_id").eq("user_id", e).in("mapping_key", f);
+      const { data: p, error: y } = await t.schema("fund_ai").from("p_positions_order_mappings").select("mapping_key, order_id").eq("user_id", e).in("mapping_key", f);
       if (y)
         throw new Error(`Failed to fetch order mappings: ${y.message}`);
       const E = p || [];
@@ -11643,7 +11643,7 @@ function Ua(l, e) {
       let M = [];
       if (L.length > 0) {
         console.log("📦 Fetching orders with IDs:", L);
-        const { data: k, error: B } = await t.schema("hf").from("orders").select("*").in("ibOrderID", L);
+        const { data: k, error: B } = await t.schema("fund_ai").from("p_trades_orders").select("*").in("ibOrderID", L);
         if (B)
           throw new Error(`Failed to fetch orders: ${B.message}`);
         M = (k || []).map((v) => {
@@ -11674,7 +11674,7 @@ function Ua(l, e) {
       E.forEach((k) => {
         S.has(k.mapping_key) || S.set(k.mapping_key, []), S.get(k.mapping_key).push(k.order_id);
       });
-      const P = [];
+      const _ = [];
       for (const k of l.value) {
         const B = It({
           internal_account_id: k.internal_account_id,
@@ -11713,7 +11713,7 @@ function Ua(l, e) {
             let Ve = Gt, Ft = "order-only";
             if (T.conid)
               try {
-                const { data: fe, error: Wt } = await t.schema("hf").from("positions").select("id, unrealized_pnl, price, market_value").eq("internal_account_id", T.account).eq("conid", T.conid).order("id", { ascending: !1 }).limit(1).maybeSingle();
+                const { data: fe, error: Wt } = await t.schema("fund_ai").from("p_positions_positions").select("id, unrealized_pnl, price, market_value").eq("internal_account_id", T.account).eq("conid", T.conid).order("id", { ascending: !1 }).limit(1).maybeSingle();
                 if (Wt)
                   console.warn(`      ⚠️ Error querying position: ${Wt.message}`);
                 else if (fe && fe.price !== 0 && fe.market_value !== 0 && fe.unrealized_pnl !== null && fe.unrealized_pnl !== void 0)
@@ -11744,12 +11744,12 @@ function Ua(l, e) {
             W.push(ni), Te += Ve, console.log(`      📊 Added to call sales: $${Ve.toFixed(2)} (source: ${Ft})`);
           } else T.secType === "OPT" && T.right === "C" && T.side === "BUY" ? (te.push(ve), Le += Math.abs(oe), console.log(`   🔙 Call buyback: ${T.symbol} BUY CALL @ $${T.strike} ${T.side} ${se} @ $${T.avgFillPrice} = -$${Math.abs(oe).toFixed(2)} (close cost)`)) : console.log(`   ❓ Other order: ${T.symbol} ${T.secType} ${T.side} ${se} @ $${T.avgFillPrice}`);
         }
-        const _e = D - z, Ne = ce - be, Ie = Te - Le, De = _e - Ne - Ie;
+        const Pe = D - z, Ne = ce - be, Ie = Te - Le, De = Pe - Ne - Ie;
         let he = 0;
         const ze = U.reduce((T, se) => T + Math.abs(se.quantity), 0), mt = Q.reduce((T, se) => T + Math.abs(se.quantity), 0), ot = ze - mt;
         ot > 0 ? (he = ot, console.log(`   ✅ Using shares from stock orders: ${ze} purchased - ${mt} sold = ${he}`)) : ze > 0 ? (he = ze, console.log(`   ✅ Using shares from stock purchases: ${he}`)) : (he = k.accounting_quantity ?? k.qty, console.log(`   ℹ️ No stock orders found, using position quantity: ${he}`));
         const nt = he > 0 ? De / he : 0;
-        console.log(`📊 Position Summary for ${k.legal_entity || k.internal_account_id}:`), console.log(`   Stock Purchase Cost: $${D.toFixed(2)}`), console.log(`   Stock Sale Proceeds: -$${z.toFixed(2)}`), console.log(`   Net Stock Cost: $${_e.toFixed(2)}`), console.log(`   Put Premium Received: +$${ce.toFixed(2)}`), console.log(`   Put Buyback Cost: -$${be.toFixed(2)}`), console.log(`   Net Put Cash Flow: $${Ne.toFixed(2)}`), console.log(`   Call Premium Received: +$${Te.toFixed(2)}`), console.log(`   Call Buyback Cost: -$${Le.toFixed(2)}`), console.log(`   Net Call Cash Flow: $${Ie.toFixed(2)}`), console.log(`   Total Net Cost: $${De.toFixed(2)} (Net Stock - Net Put - Net Call)`), console.log(`   Position Shares: ${he}`), console.log(`   Adjusted Avg Price: $${nt.toFixed(2)} per share`), P.push({
+        console.log(`📊 Position Summary for ${k.legal_entity || k.internal_account_id}:`), console.log(`   Stock Purchase Cost: $${D.toFixed(2)}`), console.log(`   Stock Sale Proceeds: -$${z.toFixed(2)}`), console.log(`   Net Stock Cost: $${Pe.toFixed(2)}`), console.log(`   Put Premium Received: +$${ce.toFixed(2)}`), console.log(`   Put Buyback Cost: -$${be.toFixed(2)}`), console.log(`   Net Put Cash Flow: $${Ne.toFixed(2)}`), console.log(`   Call Premium Received: +$${Te.toFixed(2)}`), console.log(`   Call Buyback Cost: -$${Le.toFixed(2)}`), console.log(`   Net Call Cash Flow: $${Ie.toFixed(2)}`), console.log(`   Total Net Cost: $${De.toFixed(2)} (Net Stock - Net Put - Net Call)`), console.log(`   Position Shares: ${he}`), console.log(`   Adjusted Avg Price: $${nt.toFixed(2)} per share`), _.push({
           mainPosition: {
             symbol: k.symbol,
             account: k.legal_entity || k.internal_account_id,
@@ -11774,7 +11774,7 @@ function Ua(l, e) {
           stockPurchaseCost: D,
           stockSales: Q,
           stockSaleProceeds: z,
-          netStockCost: _e,
+          netStockCost: Pe,
           putSales: G,
           putPremiumReceived: ce,
           putBuybacks: O,
@@ -11783,7 +11783,7 @@ function Ua(l, e) {
           callPremiumReceived: Te,
           callBuybacks: te,
           callBuybackCost: Le,
-          totalStockCost: _e,
+          totalStockCost: Pe,
           netPutCashFlow: Ne,
           netCallCashFlow: Ie,
           netCost: De,
@@ -11791,16 +11791,16 @@ function Ua(l, e) {
           adjustedAvgPricePerShare: nt
         });
       }
-      n.value = P;
-      const $ = P.reduce((k, B) => k + B.netCost, 0), _ = P.reduce((k, B) => k + B.totalShares, 0), c = _ > 0 ? $ / _ : null;
-      s.value = $, o.value = _, i.value = c, c !== null && (console.log(`🎯 Overall Adjusted Average from Orders: $${c.toFixed(2)} per share`), console.log(`   Total Net Cost: $${$.toFixed(2)}`), console.log(`   Total Shares: ${_}`));
+      n.value = _;
+      const $ = _.reduce((k, B) => k + B.netCost, 0), P = _.reduce((k, B) => k + B.totalShares, 0), c = P > 0 ? $ / P : null;
+      s.value = $, o.value = P, i.value = c, c !== null && (console.log(`🎯 Overall Adjusted Average from Orders: $${c.toFixed(2)} per share`), console.log(`   Total Net Cost: $${$.toFixed(2)}`), console.log(`   Total Shares: ${P}`));
     } catch (f) {
       h.value = f instanceof Error ? f.message : "Failed to calculate average cost price from orders", console.error("❌ Error calculating average cost price from orders:", f), i.value = null;
     } finally {
       a.value = !1;
     }
   };
-  return Pe(
+  return _e(
     () => l.value,
     () => {
       l.value && l.value.length > 0 && e ? u() : i.value = null;
@@ -11849,8 +11849,8 @@ function Ka(l, e, t, i = N(void 0), s = N(void 0)) {
     if (E.length === 0)
       return console.log("⚠️ No options positions available for P&L calculation"), null;
     console.log("📊 Calculating options P&L for positions:", E.length);
-    let L = 0, M = 0, S = 0, P = 0;
-    const $ = [], _ = /* @__PURE__ */ new Set(), c = /* @__PURE__ */ new Set();
+    let L = 0, M = 0, S = 0, _ = 0;
+    const $ = [], P = /* @__PURE__ */ new Set(), c = /* @__PURE__ */ new Set();
     E.forEach((b) => {
       const U = b.accounting_quantity ?? b.qty, Q = b.legal_entity || b.internal_account_id;
       let G = null, O = null, W = "UNKNOWN";
@@ -11865,9 +11865,9 @@ function Ka(l, e, t, i = N(void 0), s = N(void 0)) {
           G = parseFloat(Te) / 1e3;
         }
       }
-      _.add(W), c.add(U < 0 ? "SHORT" : "LONG");
+      P.add(W), c.add(U < 0 ? "SHORT" : "LONG");
       const D = Math.abs(b.computed_cash_flow_on_entry || 0), z = Math.abs(b.market_value || 0), ce = b.unrealized_pnl || 0;
-      L += Math.abs(U), M += D, S += z, P += ce, $.push({
+      L += Math.abs(U), M += D, S += z, _ += ce, $.push({
         account: Q,
         strike: G,
         expiry: O,
@@ -11878,34 +11878,34 @@ function Ka(l, e, t, i = N(void 0), s = N(void 0)) {
         symbol: b.symbol
       }), console.log(`📍 Position: ${b.symbol} (${Q})`), console.log(`   Quantity: ${U}`), console.log(`   Premium Received: $${D.toFixed(2)}`), console.log(`   Current Value: $${z.toFixed(2)}`), console.log(`   P&L: $${ce.toFixed(2)}`);
     });
-    const k = _.size === 1 ? Array.from(_)[0] : "MIXED", B = c.size === 1 ? Array.from(c)[0] : "MIXED", v = M > 0 ? P / M * 100 : 0;
-    return console.log("💰 Options P&L Summary:"), console.log(`   Total Contracts: ${L}`), console.log(`   Total Premium Received: $${M.toFixed(2)}`), console.log(`   Current Market Liability: $${S.toFixed(2)}`), console.log(`   Unrealized P&L: $${P.toFixed(2)}`), console.log(`   P&L Percentage: ${v.toFixed(2)}%`), {
+    const k = P.size === 1 ? Array.from(P)[0] : "MIXED", B = c.size === 1 ? Array.from(c)[0] : "MIXED", v = M > 0 ? _ / M * 100 : 0;
+    return console.log("💰 Options P&L Summary:"), console.log(`   Total Contracts: ${L}`), console.log(`   Total Premium Received: $${M.toFixed(2)}`), console.log(`   Current Market Liability: $${S.toFixed(2)}`), console.log(`   Unrealized P&L: $${_.toFixed(2)}`), console.log(`   P&L Percentage: ${v.toFixed(2)}%`), {
       totalContracts: L,
       optionType: k,
       positionType: B,
       totalPremiumReceived: M,
       currentMarketLiability: S,
-      unrealizedPnL: P,
+      unrealizedPnL: _,
       pnlPercentage: v,
       positions: $
     };
   }, y = Z(() => {
     if (e.value > 0 && l.value !== null && t.value !== null) {
       console.log("📈 Calculating STOCK P&L");
-      const E = e.value, L = l.value, M = t.value, S = E * L, P = E * M, $ = P - S, _ = S !== 0 ? $ / S * 100 : 0;
+      const E = e.value, L = l.value, M = t.value, S = E * L, _ = E * M, $ = _ - S, P = S !== 0 ? $ / S * 100 : 0;
       return {
         totalShares: E,
         avgCostPerShare: L,
         totalCostBasis: S,
         currentPricePerShare: M,
-        currentMarketValue: P,
+        currentMarketValue: _,
         unrealizedPnL: $,
-        pnlPercentage: _
+        pnlPercentage: P
       };
     } else
       return console.log("📊 No stock positions, calculating OPTIONS P&L"), p();
   });
-  return Pe(
+  return _e(
     y,
     (E) => {
       E ? "totalShares" in E ? (o.value = E.totalCostBasis, n.value = E.currentMarketValue, a.value = E.unrealizedPnL, h.value = E.pnlPercentage, d.value = E.unrealizedPnL >= 0, console.log("💰 STOCK P&L Calculation:"), console.log(`   Total Shares: ${E.totalShares.toLocaleString()}`), console.log(`   Avg Cost per Share: $${E.avgCostPerShare.toFixed(2)}`), console.log(`   Total Cost Basis: $${E.totalCostBasis.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`), console.log(`   Current Price per Share: $${E.currentPricePerShare.toFixed(2)}`), console.log(`   Current Market Value: $${E.currentMarketValue.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`), console.log(`   Unrealized P&L: ${E.unrealizedPnL >= 0 ? "+" : ""}$${E.unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`), console.log(`   P&L Percentage: ${E.pnlPercentage.toFixed(2)}%`)) : (o.value = E.totalPremiumReceived, n.value = E.currentMarketLiability, a.value = E.unrealizedPnL, h.value = E.pnlPercentage, d.value = E.unrealizedPnL >= 0, console.log("💰 OPTIONS P&L Updated:"), console.log(`   Total Contracts: ${E.totalContracts}`), console.log(`   ${E.positionType} ${E.optionType}`), console.log(`   Premium Received: $${E.totalPremiumReceived.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`), console.log(`   Current Liability: $${E.currentMarketLiability.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`), console.log(`   Unrealized P&L: ${E.unrealizedPnL >= 0 ? "+" : ""}$${E.unrealizedPnL.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`), console.log(`   P&L Percentage: ${E.pnlPercentage.toFixed(2)}%`)) : (o.value = null, n.value = null, a.value = null, h.value = null, d.value = !1, console.log("⚠️ P&L Calculation: Missing required data"));
@@ -11926,10 +11926,10 @@ function Qa(l, e, t = N("STK")) {
   const i = xt(), s = N(null), o = N(null), n = N(!1), a = N(null);
   async function h(u) {
     try {
-      const { data: f, error: p } = await i.schema("hf").from("user_account_alias").select("alias").eq("user_id", e.value).eq("internal_account_id", u).single();
+      const { data: f, error: p } = await i.schema("fund_ai").from("core_accounts_alias").select("alias").eq("user_id", e.value).eq("internal_account_id", u).single();
       if (!p && (f != null && f.alias))
         return f.alias;
-      const { data: y, error: E } = await i.schema("hf").from("user_accounts_master").select("legal_entity").eq("internal_account_id", u).single();
+      const { data: y, error: E } = await i.schema("fund_ai").from("core_accounts_master").select("legal_entity").eq("internal_account_id", u).single();
       return !E && (y != null && y.legal_entity) ? y.legal_entity : u;
     } catch (f) {
       return console.error("Error fetching account display name:", f), u;
@@ -11947,7 +11947,7 @@ function Qa(l, e, t = N("STK")) {
         userId: e.value,
         assetClass: t.value
       });
-      const u = `%|${l.value}|%|${t.value}|%`, { data: f, error: p } = await i.schema("hf").from("position_order_mappings").select("order_id").eq("user_id", e.value).like("mapping_key", u);
+      const u = `%|${l.value}|%|${t.value}|%`, { data: f, error: p } = await i.schema("fund_ai").from("p_positions_order_mappings").select("order_id").eq("user_id", e.value).like("mapping_key", u);
       if (p)
         throw new Error(`Failed to fetch position mappings: ${p.message}`);
       const y = new Set(
@@ -11955,16 +11955,16 @@ function Qa(l, e, t = N("STK")) {
       );
       console.log("📎 Found attached order IDs:", y.size);
       const E = `${l.value}%`;
-      let L = i.schema("hf").from("orders").select("id, symbol, buySell, quantity, tradePrice, tradeMoney, fifoPnlRealized, dateTime, internal_account_id").like("symbol", E);
+      let L = i.schema("fund_ai").from("p_trades_orders").select("id, symbol, buySell, quantity, tradePrice, tradeMoney, fifoPnlRealized, dateTime, internal_account_id").like("symbol", E);
       y.size > 0 && (L = L.not("id", "in", `(${Array.from(y).join(",")})`));
       const { data: M, error: S } = await L;
       if (S)
         throw new Error(`Failed to fetch orders: ${S.message}`);
       console.log("📦 Fetched exited orders:", (M == null ? void 0 : M.length) || 0);
-      const P = /* @__PURE__ */ new Map();
+      const _ = /* @__PURE__ */ new Map();
       for (const c of M || []) {
         const k = c.internal_account_id || "Unknown";
-        P.has(k) || P.set(k, []), P.get(k).push({
+        _.has(k) || _.set(k, []), _.get(k).push({
           id: c.id,
           symbol: c.symbol,
           buySell: c.buySell,
@@ -11977,10 +11977,10 @@ function Qa(l, e, t = N("STK")) {
         });
       }
       const $ = [];
-      let _ = 0;
-      for (const [c, k] of P) {
+      let P = 0;
+      for (const [c, k] of _) {
         const B = k.reduce((b, U) => b + U.fifoPnlRealized, 0);
-        _ += B;
+        P += B;
         const v = await h(c);
         $.push({
           internal_account_id: c,
@@ -11990,18 +11990,18 @@ function Qa(l, e, t = N("STK")) {
           orders: k
         });
       }
-      $.sort((c, k) => c.accountDisplayName.localeCompare(k.accountDisplayName)), s.value = _, o.value = {
-        totalFifoPnlRealized: _,
+      $.sort((c, k) => c.accountDisplayName.localeCompare(k.accountDisplayName)), s.value = P, o.value = {
+        totalFifoPnlRealized: P,
         orderCount: (M == null ? void 0 : M.length) || 0,
         accountBreakdowns: $
-      }, console.log("💰 Exited Positions P&L Summary:"), console.log(`   Total Orders: ${o.value.orderCount}`), console.log(`   Total Accounts: ${$.length}`), console.log(`   Total MTM P&L: $${_.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+      }, console.log("💰 Exited Positions P&L Summary:"), console.log(`   Total Orders: ${o.value.orderCount}`), console.log(`   Total Accounts: ${$.length}`), console.log(`   Total MTM P&L: $${P.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
     } catch (u) {
       console.error("❌ Error calculating exited positions P&L:", u), a.value = u.message, s.value = null, o.value = null;
     } finally {
       n.value = !1;
     }
   }
-  return Pe(
+  return _e(
     [l, e, t],
     () => {
       d();
@@ -12049,40 +12049,40 @@ function Xa(l, e, t, i, s, o) {
 }
 function Ja(l) {
   const e = xt(), t = ro(l), i = lo(l), s = ho(l), o = Z(() => {
-    const P = t.data.value;
-    return P || /* @__PURE__ */ new Map();
+    const _ = t.data.value;
+    return _ || /* @__PURE__ */ new Map();
   }), n = Z(() => {
-    const P = i.data.value;
-    return P || /* @__PURE__ */ new Map();
+    const _ = i.data.value;
+    return _ || /* @__PURE__ */ new Map();
   }), a = Z(() => {
-    const P = s.data.value;
-    return P || /* @__PURE__ */ new Map();
+    const _ = s.data.value;
+    return _ || /* @__PURE__ */ new Map();
   }), h = N(/* @__PURE__ */ new Map()), d = N(/* @__PURE__ */ new Map());
   N(/* @__PURE__ */ new Map());
-  function u(P) {
+  function u(_) {
     return It({
-      internal_account_id: P.internal_account_id,
-      symbol: P.symbol,
-      contract_quantity: P.contract_quantity,
-      asset_class: P.asset_class || "OPT",
-      conid: P.conid || ""
+      internal_account_id: _.internal_account_id,
+      symbol: _.symbol,
+      contract_quantity: _.contract_quantity,
+      asset_class: _.asset_class || "OPT",
+      conid: _.conid || ""
     });
   }
-  function f(P) {
-    if (!P) return null;
-    const $ = P.match(/^([A-Z]+)\b/);
+  function f(_) {
+    if (!_) return null;
+    const $ = _.match(/^([A-Z]+)\b/);
     return ($ == null ? void 0 : $[1]) || null;
   }
-  async function p(P, $) {
+  async function p(_, $) {
     if (!l) return [];
-    if (d.value.has(P))
-      return d.value.get(P) || [];
+    if (d.value.has(_))
+      return d.value.get(_) || [];
     try {
-      console.log("🔍 Fetching trades for symbol root:", P);
-      const { data: _, error: c } = await e.schema("hf").from("trades").select("*").ilike("symbol", `${P}%`);
+      console.log("🔍 Fetching trades for symbol root:", _);
+      const { data: P, error: c } = await e.schema("fund_ai").from("p_trades_trades").select("*").ilike("symbol", `${_}%`);
       if (c)
         throw console.error("❌ Error fetching trades:", c), c;
-      const k = (_ || []).sort((v, b) => {
+      const k = (P || []).sort((v, b) => {
         const U = (O) => {
           if (!O) return 0;
           const W = O.split("/");
@@ -12090,19 +12090,19 @@ function Ja(l) {
         }, Q = U(v.tradeDate);
         return U(b.tradeDate) - Q;
       });
-      console.log(`✅ Fetched ${(k == null ? void 0 : k.length) || 0} trades for ${P}`);
+      console.log(`✅ Fetched ${(k == null ? void 0 : k.length) || 0} trades for ${_}`);
       const B = k || [];
-      return d.value.set(P, B), B;
-    } catch (_) {
-      return console.error("❌ Error fetching trades:", _), [];
+      return d.value.set(_, B), B;
+    } catch (P) {
+      return console.error("❌ Error fetching trades:", P), [];
     }
   }
-  async function y(P, $) {
+  async function y(_, $) {
     if (!l) return [];
     try {
-      const { data: _, error: c } = await e.schema("hf").from("orders").select("*").ilike("symbol", `${P}%`).eq("internal_account_id", $);
+      const { data: P, error: c } = await e.schema("fund_ai").from("p_trades_orders").select("*").ilike("symbol", `${_}%`).eq("internal_account_id", $);
       if (c) throw c;
-      const k = (_ || []).sort((v, b) => {
+      const k = (P || []).sort((v, b) => {
         const U = (O) => {
           if (!O) return 0;
           const W = O.split("/");
@@ -12110,37 +12110,37 @@ function Ja(l) {
         }, Q = U(v.settleDateTarget);
         return U(b.settleDateTarget) - Q;
       });
-      return _ || [];
-    } catch (_) {
-      return console.error("❌ Error fetching orders:", _), [];
+      return P || [];
+    } catch (P) {
+      return console.error("❌ Error fetching orders:", P), [];
     }
   }
-  async function E(P) {
-    const $ = u(P), _ = o.value.get($);
-    if (console.log("🔍 Getting attached trades for key:", $), console.log("🔍 Trade IDs from map:", _ ? Array.from(_) : "none"), !_ || _.size === 0)
+  async function E(_) {
+    const $ = u(_), P = o.value.get($);
+    if (console.log("🔍 Getting attached trades for key:", $), console.log("🔍 Trade IDs from map:", P ? Array.from(P) : "none"), !P || P.size === 0)
       return [];
-    const c = f(P.symbol);
+    const c = f(_.symbol);
     if (!c) return [];
-    const k = await p(c, P.internal_account_id);
+    const k = await p(c, _.internal_account_id);
     console.log(`📊 Total trades fetched: ${k.length}`), console.log("📊 Sample trade IDs:", k.slice(0, 3).map((v) => v.tradeID));
     const B = k.filter((v) => {
       const b = v.tradeID;
-      return b && _.has(String(b));
+      return b && P.has(String(b));
     });
     return console.log(`✅ Found ${B.length} attached trades`), B;
   }
-  async function L(P) {
-    const $ = u(P), _ = a.value.get($);
-    if (!_ || _.size === 0) return [];
-    const c = f(P.symbol);
-    return c ? (await y(c, P.internal_account_id)).filter((B) => B.id && _.has(String(B.id))) : [];
+  async function L(_) {
+    const $ = u(_), P = a.value.get($);
+    if (!P || P.size === 0) return [];
+    const c = f(_.symbol);
+    return c ? (await y(c, _.internal_account_id)).filter((B) => B.id && P.has(String(B.id))) : [];
   }
-  async function M(P, $) {
+  async function M(_, $) {
     try {
-      const _ = u(P);
-      if (h.value.has(_))
-        return h.value.get(_) || [];
-      const c = f(P.symbol), k = P.internal_account_id || P.legal_entity;
+      const P = u(_);
+      if (h.value.has(P))
+        return h.value.get(P) || [];
+      const c = f(_.symbol), k = _.internal_account_id || _.legal_entity;
       if (!c || !k || !l) return [];
       const v = (await hs(
         e,
@@ -12151,9 +12151,9 @@ function Ja(l) {
         const U = u(b);
         return $.has(U);
       });
-      return v.length > 0 && h.value.set(_, v), v;
-    } catch (_) {
-      return console.error("❌ Error fetching attached positions:", _), [];
+      return v.length > 0 && h.value.set(P, v), v;
+    } catch (P) {
+      return console.error("❌ Error fetching attached positions:", P), [];
     }
   }
   const S = Z(() => t.isSuccess.value && i.isSuccess.value);
@@ -12223,7 +12223,7 @@ const Za = {
 }, Rr = {
   key: 0,
   class: "detail-row"
-}, Tr = { colspan: "8" }, Sr = { class: "detail-content" }, Lr = { class: "side-by-side-comparison" }, Dr = { class: "comparison-panel hold-panel" }, Fr = { class: "panel-content" }, Mr = { class: "mini-section stock-mini" }, Pr = { class: "mini-row" }, _r = { class: "value" }, zr = {
+}, Tr = { colspan: "8" }, Sr = { class: "detail-content" }, Lr = { class: "side-by-side-comparison" }, Dr = { class: "comparison-panel hold-panel" }, Fr = { class: "panel-content" }, Mr = { class: "mini-section stock-mini" }, _r = { class: "mini-row" }, Pr = { class: "value" }, zr = {
   key: 0,
   class: "mini-row"
 }, Ar = { class: "value" }, Hr = { class: "mini-row result" }, $r = { class: "value" }, Or = { class: "mini-section put-mini" }, Br = {
@@ -12250,7 +12250,7 @@ const Za = {
 }, El = { class: "table-half" }, xl = { class: "table-title-row" }, kl = { class: "table-title" }, Rl = ["onClick"], Tl = {
   key: 0,
   class: "mini-table-wrapper"
-}, Sl = { class: "mini-data-table" }, Ll = { class: "text-right" }, Dl = { class: "text-right" }, Fl = { class: "text-right" }, Ml = { class: "total-row" }, Pl = { class: "text-right" }, _l = { class: "text-right" }, zl = {
+}, Sl = { class: "mini-data-table" }, Ll = { class: "text-right" }, Dl = { class: "text-right" }, Fl = { class: "text-right" }, Ml = { class: "total-row" }, _l = { class: "text-right" }, Pl = { class: "text-right" }, zl = {
   key: 1,
   class: "no-data-mini"
 }, Al = { class: "section-summary stock-summary-box" }, Hl = { key: 0 }, $l = { class: "result-value" }, Ol = { class: "detail-section section-put" }, Bl = { class: "section-tables" }, Nl = { class: "table-half" }, Il = { class: "table-title-row" }, Vl = { class: "table-title" }, Gl = ["onClick"], Wl = {
@@ -12271,7 +12271,7 @@ const Za = {
 }, Eh = { class: "mini-data-table" }, xh = { class: "text-right" }, kh = { class: "text-right" }, Rh = { class: "text-right" }, Th = { class: "total-row" }, Sh = { class: "text-right" }, Lh = { class: "text-right" }, Dh = {
   key: 1,
   class: "no-data-mini"
-}, Fh = { class: "table-half" }, Mh = { class: "table-title-row" }, Ph = { class: "table-title" }, _h = ["onClick"], zh = {
+}, Fh = { class: "table-half" }, Mh = { class: "table-title-row" }, _h = { class: "table-title" }, Ph = ["onClick"], zh = {
   key: 0,
   class: "mini-table-wrapper"
 }, Ah = { class: "mini-data-table" }, Hh = { class: "text-right" }, $h = { class: "text-right" }, Oh = { class: "text-right" }, Bh = { class: "total-row" }, Nh = { class: "text-right" }, Ih = { class: "text-right" }, Vh = {
@@ -12301,7 +12301,7 @@ const Za = {
 }, kd = { class: "detail-section section-stock" }, Rd = { class: "section-tables" }, Td = { class: "table-half" }, Sd = { class: "table-title-row" }, Ld = { class: "table-title" }, Dd = ["onClick"], Fd = {
   key: 0,
   class: "mini-table-wrapper"
-}, Md = { class: "mini-data-table" }, Pd = { class: "text-right" }, _d = { class: "text-right" }, zd = { class: "text-right" }, Ad = { class: "total-row" }, Hd = { class: "text-right" }, $d = { class: "text-right" }, Od = {
+}, Md = { class: "mini-data-table" }, _d = { class: "text-right" }, Pd = { class: "text-right" }, zd = { class: "text-right" }, Ad = { class: "total-row" }, Hd = { class: "text-right" }, $d = { class: "text-right" }, Od = {
   key: 1,
   class: "no-data-mini"
 }, Bd = { class: "table-half" }, Nd = { class: "table-title-row" }, Id = { class: "table-title" }, Vd = ["onClick"], Gd = {
@@ -12322,7 +12322,7 @@ const Za = {
 }, Cu = { class: "mini-data-table" }, Eu = { class: "text-right" }, xu = { class: "text-right" }, ku = { class: "text-right" }, Ru = { class: "total-row" }, Tu = { class: "text-right" }, Su = { class: "text-right" }, Lu = {
   key: 1,
   class: "no-data-mini"
-}, Du = { class: "section-summary put-summary-box" }, Fu = { key: 0 }, Mu = { class: "result-value" }, Pu = { class: "detail-section section-call" }, _u = { class: "section-tables" }, zu = { class: "table-half" }, Au = { class: "table-title-row" }, Hu = { class: "table-title" }, $u = ["onClick"], Ou = {
+}, Du = { class: "section-summary put-summary-box" }, Fu = { key: 0 }, Mu = { class: "result-value" }, _u = { class: "detail-section section-call" }, Pu = { class: "section-tables" }, zu = { class: "table-half" }, Au = { class: "table-title-row" }, Hu = { class: "table-title" }, $u = ["onClick"], Ou = {
   key: 0,
   class: "mini-table-wrapper"
 }, Bu = { class: "mini-data-table" }, Nu = { class: "text-right" }, Iu = { class: "text-right" }, Vu = { class: "text-right" }, Gu = { class: "total-row" }, Wu = { class: "text-right" }, ju = { class: "text-right" }, Uu = {
@@ -12365,28 +12365,28 @@ const Za = {
   setup(l, { emit: e }) {
     N(/* @__PURE__ */ new Set());
     const t = N(/* @__PURE__ */ new Set()), i = N(/* @__PURE__ */ new Set()), s = N(/* @__PURE__ */ new Set());
-    function o(_) {
-      t.value.has(_) ? t.value.delete(_) : t.value.add(_), t.value = new Set(t.value);
+    function o(P) {
+      t.value.has(P) ? t.value.delete(P) : t.value.add(P), t.value = new Set(t.value);
     }
-    function n(_) {
-      i.value.has(_) ? i.value.delete(_) : i.value.add(_), i.value = new Set(i.value);
+    function n(P) {
+      i.value.has(P) ? i.value.delete(P) : i.value.add(P), i.value = new Set(i.value);
     }
-    function a(_) {
-      s.value.has(_) ? s.value.delete(_) : s.value.add(_), s.value = new Set(s.value);
+    function a(P) {
+      s.value.has(P) ? s.value.delete(P) : s.value.add(P), s.value = new Set(s.value);
     }
     const h = N(""), d = N(!1);
-    function u(_) {
-      h.value = _, d.value = !0, setTimeout(() => {
+    function u(P) {
+      h.value = P, d.value = !0, setTimeout(() => {
         d.value = !1;
       }, 2e3);
     }
-    async function f(_, c) {
+    async function f(P, c) {
       try {
-        const k = "Date	Quantity	Avg Price	Total Cost", v = P(_).map((O) => {
+        const k = "Date	Quantity	Avg Price	Total Cost", v = _(P).map((O) => {
           const W = S(O.orderDate), te = O.quantity.toLocaleString(), D = Number(O.avgPrice).toFixed(2), z = Number(O.totalCost).toFixed(2);
           return `${W}	${te}	${D}	${z}`;
         }).join(`
-`), b = _.reduce((O, W) => O + W.quantity, 0).toLocaleString(), U = _.reduce((O, W) => O + Number(W.totalCost), 0).toFixed(2), Q = `Total	${b}		${U}`, G = `${k}
+`), b = P.reduce((O, W) => O + W.quantity, 0).toLocaleString(), U = P.reduce((O, W) => O + Number(W.totalCost), 0).toFixed(2), Q = `Total	${b}		${U}`, G = `${k}
 ${v}
 ${Q}`;
         await navigator.clipboard.writeText(G), console.log("✅ Stock purchases copied to clipboard"), u("✅ Stock purchases copied!");
@@ -12394,13 +12394,13 @@ ${Q}`;
         console.error("Failed to copy to clipboard:", k), u("❌ Failed to copy");
       }
     }
-    async function p(_, c) {
+    async function p(P, c) {
       try {
-        const k = "Date	Quantity	Avg Price	Total Proceeds", v = P(_).map((O) => {
+        const k = "Date	Quantity	Avg Price	Total Proceeds", v = _(P).map((O) => {
           const W = S(O.orderDate), te = O.quantity.toLocaleString(), D = Number(O.avgPrice).toFixed(2), z = Number(O.totalCost).toFixed(2);
           return `${W}	${te}	${D}	${z}`;
         }).join(`
-`), b = _.reduce((O, W) => O + W.quantity, 0).toLocaleString(), U = _.reduce((O, W) => O + Number(W.totalCost), 0).toFixed(2), Q = `Total	${b}		${U}`, G = `${k}
+`), b = P.reduce((O, W) => O + W.quantity, 0).toLocaleString(), U = P.reduce((O, W) => O + Number(W.totalCost), 0).toFixed(2), Q = `Total	${b}		${U}`, G = `${k}
 ${v}
 ${Q}`;
         await navigator.clipboard.writeText(G), console.log("✅ Stock sales copied to clipboard"), u("✅ Stock sales copied!");
@@ -12408,13 +12408,13 @@ ${Q}`;
         console.error("Failed to copy to clipboard:", k), u("❌ Failed to copy");
       }
     }
-    async function y(_, c, k) {
+    async function y(P, c, k) {
       try {
-        const B = "Option	Date	Quantity	Avg Price	Total Premium", b = P(_).map((O) => {
+        const B = "Option	Date	Quantity	Avg Price	Total Premium", b = _(P).map((O) => {
           const W = $(O.symbol), te = S(O.orderDate), D = O.quantity.toLocaleString(), z = Number(O.avgPrice).toFixed(2), ce = Number(O.totalCost).toFixed(2);
           return `${W}	${te}	${D}	${z}	${ce}`;
         }).join(`
-`), Q = `Total		${_.reduce((O, W) => O + W.quantity, 0).toLocaleString()}		${Math.abs(k).toFixed(2)}`, G = `${B}
+`), Q = `Total		${P.reduce((O, W) => O + W.quantity, 0).toLocaleString()}		${Math.abs(k).toFixed(2)}`, G = `${B}
 ${b}
 ${Q}`;
         await navigator.clipboard.writeText(G), console.log("✅ Put sales copied to clipboard"), u("✅ Put premium copied!");
@@ -12422,13 +12422,13 @@ ${Q}`;
         console.error("Failed to copy to clipboard:", B), u("❌ Failed to copy");
       }
     }
-    async function E(_, c, k) {
+    async function E(P, c, k) {
       try {
-        const B = "Option	Date	Quantity	Avg Price	Total Cost", b = P(_).map((O) => {
+        const B = "Option	Date	Quantity	Avg Price	Total Cost", b = _(P).map((O) => {
           const W = $(O.symbol), te = S(O.orderDate), D = O.quantity.toLocaleString(), z = Number(O.avgPrice).toFixed(2), ce = Number(O.totalCost).toFixed(2);
           return `${W}	${te}	${D}	${z}	${ce}`;
         }).join(`
-`), Q = `Total		${_.reduce((O, W) => O + W.quantity, 0).toLocaleString()}		${Math.abs(k).toFixed(2)}`, G = `${B}
+`), Q = `Total		${P.reduce((O, W) => O + W.quantity, 0).toLocaleString()}		${Math.abs(k).toFixed(2)}`, G = `${B}
 ${b}
 ${Q}`;
         await navigator.clipboard.writeText(G), console.log("✅ Put buybacks copied to clipboard"), u("✅ Put buybacks copied!");
@@ -12436,13 +12436,13 @@ ${Q}`;
         console.error("Failed to copy to clipboard:", B), u("❌ Failed to copy");
       }
     }
-    async function L(_, c, k) {
+    async function L(P, c, k) {
       try {
-        const B = "Option	Date	Quantity	Avg Price	Total Premium", b = P(_).map((O) => {
+        const B = "Option	Date	Quantity	Avg Price	Total Premium", b = _(P).map((O) => {
           const W = $(O.symbol), te = S(O.orderDate), D = O.quantity.toLocaleString(), z = Number(O.avgPrice).toFixed(2), ce = Number(O.totalCost).toFixed(2);
           return `${W}	${te}	${D}	${z}	${ce}`;
         }).join(`
-`), Q = `Total		${_.reduce((O, W) => O + W.quantity, 0).toLocaleString()}		${Math.abs(k).toFixed(2)}`, G = `${B}
+`), Q = `Total		${P.reduce((O, W) => O + W.quantity, 0).toLocaleString()}		${Math.abs(k).toFixed(2)}`, G = `${B}
 ${b}
 ${Q}`;
         await navigator.clipboard.writeText(G), console.log("✅ Call sales copied to clipboard"), u("✅ Call premium copied!");
@@ -12450,13 +12450,13 @@ ${Q}`;
         console.error("Failed to copy to clipboard:", B), u("❌ Failed to copy");
       }
     }
-    async function M(_, c, k) {
+    async function M(P, c, k) {
       try {
-        const B = "Option	Date	Quantity	Avg Price	Total Cost", b = P(_).map((O) => {
+        const B = "Option	Date	Quantity	Avg Price	Total Cost", b = _(P).map((O) => {
           const W = $(O.symbol), te = S(O.orderDate), D = O.quantity.toLocaleString(), z = Number(O.avgPrice).toFixed(2), ce = Number(O.totalCost).toFixed(2);
           return `${W}	${te}	${D}	${z}	${ce}`;
         }).join(`
-`), Q = `Total		${_.reduce((O, W) => O + W.quantity, 0).toLocaleString()}		${Math.abs(k).toFixed(2)}`, G = `${B}
+`), Q = `Total		${P.reduce((O, W) => O + W.quantity, 0).toLocaleString()}		${Math.abs(k).toFixed(2)}`, G = `${B}
 ${b}
 ${Q}`;
         await navigator.clipboard.writeText(G), console.log("✅ Call buybacks copied to clipboard"), u("✅ Call buybacks copied!");
@@ -12464,10 +12464,10 @@ ${Q}`;
         console.error("Failed to copy to clipboard:", B), u("❌ Failed to copy");
       }
     }
-    function S(_) {
-      if (!_) return "N/A";
+    function S(P) {
+      if (!P) return "N/A";
       try {
-        const c = _.split("/");
+        const c = P.split("/");
         if (c.length === 3) {
           const k = c[0], B = c[1], v = c[2], b = new Date(parseInt(v), parseInt(B) - 1, parseInt(k)), U = { year: "numeric", month: "short", day: "numeric" };
           return b.toLocaleDateString("en-US", U);
@@ -12475,10 +12475,10 @@ ${Q}`;
       } catch (c) {
         console.error("Error formatting date:", c);
       }
-      return _;
+      return P;
     }
-    function P(_) {
-      return [..._].sort((c, k) => {
+    function _(P) {
+      return [...P].sort((c, k) => {
         if (!c.orderDate) return 1;
         if (!k.orderDate) return -1;
         const B = (U) => {
@@ -12488,9 +12488,9 @@ ${Q}`;
         return B(k.orderDate).getTime() - v.getTime();
       });
     }
-    function $(_) {
-      if (!_) return "";
-      const c = String(_).trim(), k = c.match(/^([A-Z]+)\s+(\d{6})([CP])(\d{8})$/);
+    function $(P) {
+      if (!P) return "";
+      const c = String(P).trim(), k = c.match(/^([A-Z]+)\s+(\d{6})([CP])(\d{8})$/);
       if (k) {
         k[1];
         const B = k[2], v = k[3], b = k[4], U = B.substring(0, 2), Q = B.substring(2, 4), G = B.substring(4, 6), O = `20${U}-${Q}-${G}`, W = (parseInt(b, 10) / 1e3).toString();
@@ -12498,7 +12498,7 @@ ${Q}`;
       }
       return c;
     }
-    return (_, c) => (C(), w(re, null, [
+    return (P, c) => (C(), w(re, null, [
       je(it, { name: "toast-fade" }, {
         default: st(() => [
           d.value ? (C(), w("div", Za, m(h.value), 1)) : q("", !0)
@@ -12614,9 +12614,9 @@ ${Q}`;
                                   r("div", Fr, [
                                     r("div", Mr, [
                                       c[5] || (c[5] = r("div", { class: "mini-header" }, "📊 Stocks", -1)),
-                                      r("div", Pr, [
+                                      r("div", _r, [
                                         c[2] || (c[2] = r("span", null, "Total Stock Purchases:", -1)),
-                                        r("span", _r, "$" + m(v.stockPurchaseCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
+                                        r("span", Pr, "$" + m(v.stockPurchaseCost.toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                       ]),
                                       v.stockSaleProceeds && v.stockSaleProceeds > 0 ? (C(), w("div", zr, [
                                         c[3] || (c[3] = r("span", null, "Less: Stock Sales:", -1)),
@@ -12714,7 +12714,7 @@ ${Q}`;
                                                         ])
                                                       ], -1)),
                                                       r("tbody", null, [
-                                                        (C(!0), w(re, null, ue(P(v.stockPurchases), (D, z) => (C(), w("tr", {
+                                                        (C(!0), w(re, null, ue(_(v.stockPurchases), (D, z) => (C(), w("tr", {
                                                           key: `hold-sp-${b}-${z}`
                                                         }, [
                                                           r("td", null, m(S(D.orderDate)), 1),
@@ -12761,7 +12761,7 @@ ${Q}`;
                                                         ])
                                                       ], -1)),
                                                       r("tbody", null, [
-                                                        (C(!0), w(re, null, ue(P(v.stockSales), (D, z) => (C(), w("tr", {
+                                                        (C(!0), w(re, null, ue(_(v.stockSales), (D, z) => (C(), w("tr", {
                                                           key: `hold-ss-${b}-${z}`
                                                         }, [
                                                           r("td", null, m(S(D.orderDate)), 1),
@@ -12775,11 +12775,11 @@ ${Q}`;
                                                           c[20] || (c[20] = r("td", null, [
                                                             r("strong", null, "Total")
                                                           ], -1)),
-                                                          r("td", Pl, [
+                                                          r("td", _l, [
                                                             r("strong", null, m(v.stockSales.reduce((D, z) => D + z.quantity, 0).toLocaleString()), 1)
                                                           ]),
                                                           c[21] || (c[21] = r("td", null, null, -1)),
-                                                          r("td", _l, [
+                                                          r("td", Pl, [
                                                             r("strong", null, "$" + m(v.stockSales.reduce((D, z) => D + Number(z.totalCost), 0).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                                           ])
                                                         ])
@@ -12827,7 +12827,7 @@ ${Q}`;
                                                         ])
                                                       ], -1)),
                                                       r("tbody", null, [
-                                                        (C(!0), w(re, null, ue(P(v.putSales), (D, z) => (C(), w("tr", {
+                                                        (C(!0), w(re, null, ue(_(v.putSales), (D, z) => (C(), w("tr", {
                                                           key: `hold-ps-${b}-${z}`
                                                         }, [
                                                           r("td", null, m(S(D.orderDate)), 1),
@@ -12877,7 +12877,7 @@ ${Q}`;
                                                         ])
                                                       ], -1)),
                                                       r("tbody", null, [
-                                                        (C(!0), w(re, null, ue(P(v.putBuybacks), (D, z) => (C(), w("tr", {
+                                                        (C(!0), w(re, null, ue(_(v.putBuybacks), (D, z) => (C(), w("tr", {
                                                           key: `hold-pb-${b}-${z}`
                                                         }, [
                                                           r("td", null, m(S(D.orderDate)), 1),
@@ -12939,7 +12939,7 @@ ${Q}`;
                                                         ])
                                                       ], -1)),
                                                       r("tbody", null, [
-                                                        (C(!0), w(re, null, ue(P(v.callSales), (D, z) => (C(), w("tr", {
+                                                        (C(!0), w(re, null, ue(_(v.callSales), (D, z) => (C(), w("tr", {
                                                           key: `hold-cs-${b}-${z}`
                                                         }, [
                                                           r("td", null, m(S(D.orderDate)), 1),
@@ -12969,13 +12969,13 @@ ${Q}`;
                                                 ]),
                                                 r("div", Fh, [
                                                   r("div", Mh, [
-                                                    r("span", Ph, "🔄 Call Buybacks (" + m(((te = v.callBuybacks) == null ? void 0 : te.length) || 0) + ")", 1),
+                                                    r("span", _h, "🔄 Call Buybacks (" + m(((te = v.callBuybacks) == null ? void 0 : te.length) || 0) + ")", 1),
                                                     v.callBuybacks && v.callBuybacks.length > 0 ? (C(), w("button", {
                                                       key: 0,
                                                       class: "copy-button",
                                                       onClick: pe((D) => M(v.callBuybacks, b, v.callBuybackCost), ["stop"]),
                                                       title: "Copy to clipboard (Excel-ready)"
-                                                    }, " 📋 Copy ", 8, _h)) : q("", !0)
+                                                    }, " 📋 Copy ", 8, Ph)) : q("", !0)
                                                   ]),
                                                   v.callBuybacks && v.callBuybacks.length > 0 ? (C(), w("div", zh, [
                                                     r("table", Ah, [
@@ -12989,7 +12989,7 @@ ${Q}`;
                                                         ])
                                                       ], -1)),
                                                       r("tbody", null, [
-                                                        (C(!0), w(re, null, ue(P(v.callBuybacks), (D, z) => (C(), w("tr", {
+                                                        (C(!0), w(re, null, ue(_(v.callBuybacks), (D, z) => (C(), w("tr", {
                                                           key: `hold-cb-${b}-${z}`
                                                         }, [
                                                           r("td", null, m(S(D.orderDate)), 1),
@@ -13149,12 +13149,12 @@ ${Q}`;
                                                         ])
                                                       ], -1)),
                                                       r("tbody", null, [
-                                                        (C(!0), w(re, null, ue(P(l.orderGroupsExitToday[b].stockPurchases), (D, z) => (C(), w("tr", {
+                                                        (C(!0), w(re, null, ue(_(l.orderGroupsExitToday[b].stockPurchases), (D, z) => (C(), w("tr", {
                                                           key: `exit-sp-${b}-${z}`
                                                         }, [
                                                           r("td", null, m(S(D.orderDate)), 1),
-                                                          r("td", Pd, m(D.quantity.toLocaleString()), 1),
-                                                          r("td", _d, "$" + m(Number(D.avgPrice).toFixed(2)), 1),
+                                                          r("td", _d, m(D.quantity.toLocaleString()), 1),
+                                                          r("td", Pd, "$" + m(Number(D.avgPrice).toFixed(2)), 1),
                                                           r("td", zd, "$" + m(Number(D.totalCost).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                                         ]))), 128))
                                                       ]),
@@ -13196,7 +13196,7 @@ ${Q}`;
                                                         ])
                                                       ], -1)),
                                                       r("tbody", null, [
-                                                        (C(!0), w(re, null, ue(P(l.orderGroupsExitToday[b].stockSales), (D, z) => (C(), w("tr", {
+                                                        (C(!0), w(re, null, ue(_(l.orderGroupsExitToday[b].stockSales), (D, z) => (C(), w("tr", {
                                                           key: `exit-ss-${b}-${z}`
                                                         }, [
                                                           r("td", null, m(S(D.orderDate)), 1),
@@ -13262,7 +13262,7 @@ ${Q}`;
                                                         ])
                                                       ], -1)),
                                                       r("tbody", null, [
-                                                        (C(!0), w(re, null, ue(P(l.orderGroupsExitToday[b].putSales), (D, z) => (C(), w("tr", {
+                                                        (C(!0), w(re, null, ue(_(l.orderGroupsExitToday[b].putSales), (D, z) => (C(), w("tr", {
                                                           key: `exit-ps-${b}-${z}`
                                                         }, [
                                                           r("td", null, m(S(D.orderDate)), 1),
@@ -13312,7 +13312,7 @@ ${Q}`;
                                                         ])
                                                       ], -1)),
                                                       r("tbody", null, [
-                                                        (C(!0), w(re, null, ue(P(l.orderGroupsExitToday[b].putBuybacks), (D, z) => (C(), w("tr", {
+                                                        (C(!0), w(re, null, ue(_(l.orderGroupsExitToday[b].putBuybacks), (D, z) => (C(), w("tr", {
                                                           key: `exit-pb-${b}-${z}`
                                                         }, [
                                                           r("td", null, m(S(D.orderDate)), 1),
@@ -13349,12 +13349,12 @@ ${Q}`;
                                                 r("span", Mu, "$" + m((l.orderGroupsExitToday[b].netPutCashFlow || 0).toLocaleString(void 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })), 1)
                                               ])
                                             ]),
-                                            r("div", Pu, [
+                                            r("div", _u, [
                                               c[96] || (c[96] = r("div", { class: "section-label" }, [
                                                 J("Section C: Calls "),
                                                 r("span", { class: "exit-note" }, "(Current Value)")
                                               ], -1)),
-                                              r("div", _u, [
+                                              r("div", Pu, [
                                                 r("div", zu, [
                                                   r("div", Au, [
                                                     r("span", Hu, "📞 Call Current Value (" + m(((W = l.orderGroupsExitToday[b].callSales) == null ? void 0 : W.length) || 0) + ")", 1),
@@ -13377,7 +13377,7 @@ ${Q}`;
                                                         ])
                                                       ], -1)),
                                                       r("tbody", null, [
-                                                        (C(!0), w(re, null, ue(P(l.orderGroupsExitToday[b].callSales), (D, z) => (C(), w("tr", {
+                                                        (C(!0), w(re, null, ue(_(l.orderGroupsExitToday[b].callSales), (D, z) => (C(), w("tr", {
                                                           key: `exit-cs-${b}-${z}`
                                                         }, [
                                                           r("td", null, m(S(D.orderDate)), 1),
@@ -13427,7 +13427,7 @@ ${Q}`;
                                                         ])
                                                       ], -1)),
                                                       r("tbody", null, [
-                                                        (C(!0), w(re, null, ue(P(l.orderGroupsExitToday[b].callBuybacks), (D, z) => (C(), w("tr", {
+                                                        (C(!0), w(re, null, ue(_(l.orderGroupsExitToday[b].callBuybacks), (D, z) => (C(), w("tr", {
                                                           key: `exit-cb-${b}-${z}`
                                                         }, [
                                                           r("td", null, m(S(D.orderDate)), 1),
@@ -13565,10 +13565,10 @@ ${Q}`;
 }, Mc = {
   key: 1,
   class: "error-state"
-}, Pc = {
+}, _c = {
   key: 2,
   class: "summary-section"
-}, _c = { class: "summary-cards" }, zc = { class: "summary-card card-cyan" }, Ac = {
+}, Pc = { class: "summary-cards" }, zc = { class: "summary-card card-cyan" }, Ac = {
   key: 0,
   class: "summary-value"
 }, Hc = {
@@ -13634,10 +13634,10 @@ ${Q}`;
 }, Sf = { key: 1 }, Lf = {
   key: 0,
   style: { "font-size": "1.2rem", "font-weight": "600" }
-}, Df = { class: "toggle-icon" }, Ff = { key: 1 }, Mf = { class: "summary-card card-teal" }, Pf = {
+}, Df = { class: "toggle-icon" }, Ff = { key: 1 }, Mf = { class: "summary-card card-teal" }, _f = {
   key: 0,
   class: "summary-value"
-}, _f = {
+}, Pf = {
   key: 1,
   class: "summary-value error"
 }, zf = {
@@ -13677,7 +13677,7 @@ ${Q}`;
 }, ym = { class: "exited-pnl-details" }, wm = {
   key: 0,
   class: "exited-pnl-breakdown"
-}, Cm = { class: "pnl-section" }, Em = { class: "calc-line" }, xm = { class: "calc-line" }, km = { class: "calc-line calculation-result" }, Rm = ["onClick"], Tm = { class: "expand-icon" }, Sm = { class: "account-title" }, Lm = { class: "account-summary" }, Dm = { class: "account-content" }, Fm = { class: "orders-table-wrapper" }, Mm = { class: "modern-table" }, Pm = { class: "text-right" }, _m = { class: "text-right" }, zm = { class: "text-right" }, Am = { class: "total-row" }, Hm = {
+}, Cm = { class: "pnl-section" }, Em = { class: "calc-line" }, xm = { class: "calc-line" }, km = { class: "calc-line calculation-result" }, Rm = ["onClick"], Tm = { class: "expand-icon" }, Sm = { class: "account-title" }, Lm = { class: "account-summary" }, Dm = { class: "account-content" }, Fm = { class: "orders-table-wrapper" }, Mm = { class: "modern-table" }, _m = { class: "text-right" }, Pm = { class: "text-right" }, zm = { class: "text-right" }, Am = { class: "total-row" }, Hm = {
   key: 1,
   class: "no-data-message"
 }, $m = { class: "capital-details" }, Om = {
@@ -13713,7 +13713,7 @@ ${Q}`;
 }, Dp = { class: "trade-secondary" }, Fp = { key: 0 }, Mp = {
   key: 0,
   style: { padding: "1.5rem", "text-align": "center", color: "#6c757d" }
-}, Pp = { key: 3 }, _p = { class: "trade-search" }, zp = {
+}, _p = { key: 3 }, Pp = { class: "trade-search" }, zp = {
   key: 0,
   style: { padding: "1rem", "text-align": "center", color: "#6c757d" }
 }, Ap = {
@@ -13735,11 +13735,11 @@ ${Q}`;
     const { data: u, isLoading: f, isError: p, error: y, isSuccess: E, _cleanup: L } = go(
       t.userId,
       t.symbolRoot
-    ), { data: M } = vo(t.symbolRoot, t.userId), { data: S } = wo(t.symbolRoot, t.userId), P = Z(() => {
+    ), { data: M } = vo(t.symbolRoot, t.userId), { data: S } = wo(t.symbolRoot, t.userId), _ = Z(() => {
       var g, H;
       const R = (H = (g = u.value) == null ? void 0 : g[0]) == null ? void 0 : H.conid;
       return R ? parseInt(R, 10) : null;
-    }), { marketData: $, isLoading: _, error: c } = Ga(P, t.symbolRoot), { financialData: k, isLoading: B, error: v } = Wa(P, t.symbolRoot), b = Z(() => {
+    }), { marketData: $, isLoading: P, error: c } = Ga(_, t.symbolRoot), { financialData: k, isLoading: B, error: v } = Wa(_, t.symbolRoot), b = Z(() => {
       var R;
       return ((R = $.value) == null ? void 0 : R.market_price) ?? null;
     }), U = Z(() => {
@@ -13796,7 +13796,7 @@ ${Q}`;
       overallAdjustedAvgPriceFromOrders: be,
       totalNetCost: Te,
       totalShares: Le,
-      orderGroups: _e,
+      orderGroups: Pe,
       isLoading: Ne,
       error: Ie
     } = ja(
@@ -14411,7 +14411,7 @@ ${Q}`;
           console.error("❌ Row formatter error:", g);
         }
       }
-    }), Ue = N(!1), ye = N("trades"), qe = N(null), Ke = N(null), Qe = N(/* @__PURE__ */ new Set()), Xt = N(""), Jt = N(""), Yt = N(""), Xe = N(/* @__PURE__ */ new Set()), Je = N(/* @__PURE__ */ new Set()), Ye = N(!1), Pt = N([]), _t = N([]), zt = N([]);
+    }), Ue = N(!1), ye = N("trades"), qe = N(null), Ke = N(null), Qe = N(/* @__PURE__ */ new Set()), Xt = N(""), Jt = N(""), Yt = N(""), Xe = N(/* @__PURE__ */ new Set()), Je = N(/* @__PURE__ */ new Set()), Ye = N(!1), _t = N([]), Pt = N([]), zt = N([]);
     function Yi(R) {
       Xe.value.has(R) ? Xe.value.delete(R) : Xe.value.add(R);
     }
@@ -14422,27 +14422,27 @@ ${Q}`;
       Qe.value.has(R) ? Qe.value.delete(R) : Qe.value.add(R);
     }
     async function di(R) {
-      Ye.value = !0, Pt.value = [];
+      Ye.value = !0, _t.value = [];
       try {
         const g = gt(R.symbol)[0] || "";
         if (!g) return;
         const H = await Ft(g, R.internal_account_id), I = Xt.value.trim().toLowerCase();
-        Pt.value = I ? H.filter((V) => (V.symbol || "").toLowerCase().includes(I) || String(V.tradeID || "").toLowerCase().includes(I)) : H;
+        _t.value = I ? H.filter((V) => (V.symbol || "").toLowerCase().includes(I) || String(V.tradeID || "").toLowerCase().includes(I)) : H;
       } catch (g) {
-        console.error("❌ loadAttachableTradesForPosition error:", g), Pt.value = [];
+        console.error("❌ loadAttachableTradesForPosition error:", g), _t.value = [];
       } finally {
         Ye.value = !1;
       }
     }
     async function ui(R) {
-      Ye.value = !0, _t.value = [];
+      Ye.value = !0, Pt.value = [];
       try {
         const g = gt(R.symbol)[0] || "";
         if (!g) return;
         const H = R.internal_account_id || R.legal_entity, I = await hs(d, g, t.userId, H), V = Jt.value.trim().toLowerCase();
-        _t.value = V ? I.filter((x) => (x.symbol || "").toLowerCase().includes(V)) : I;
+        Pt.value = V ? I.filter((x) => (x.symbol || "").toLowerCase().includes(V)) : I;
       } catch (g) {
-        console.error("❌ loadAttachablePositionsForPosition error:", g), _t.value = [];
+        console.error("❌ loadAttachablePositionsForPosition error:", g), Pt.value = [];
       } finally {
         Ye.value = !1;
       }
@@ -14499,7 +14499,7 @@ ${Q}`;
       const I = new Date(H), V = /* @__PURE__ */ new Date();
       return V.setHours(0, 0, 0, 0), I < V;
     }
-    Pe(Ue, (R) => {
+    _e(Ue, (R) => {
       try {
         R ? document.body.classList.add("modal-open") : document.body.classList.remove("modal-open");
       } catch {
@@ -14545,11 +14545,11 @@ ${Q}`;
       } else if (I = new Date(g), isNaN(I.getTime())) return String(g);
       return I.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
     }
-    Pe(jt, async (R) => {
+    _e(jt, async (R) => {
       console.log("👀 Mappings ready state changed:", R), R && Oe.value && hi.value && (console.log("🔄 Redrawing table with mappings"), Oe.value.redraw(!0));
-    }, { immediate: !0 }), Pe(i, async (R) => {
+    }, { immediate: !0 }), _e(i, async (R) => {
       R && !hi.value && u.value && u.value.length > 0 && (console.log("📊 Details shown via watch, initializing table..."), await ti(), Ji());
-    }), Pe(() => ai.value, (R) => {
+    }), _e(() => ai.value, (R) => {
       h("capitalUsedChanged", R);
     }), ao(() => {
       console.log("📊 CurrentPositions component mounted");
@@ -14570,8 +14570,8 @@ ${Q}`;
               r("p", null, "Loading positions for " + m(t.symbolRoot) + "...", 1)
             ])) : F(p) ? (C(), w("div", Mc, [
               r("p", null, "❌ Error loading positions: " + m((H = F(y)) == null ? void 0 : H.message), 1)
-            ])) : (C(), w("div", Pc, [
-              r("div", _c, [
+            ])) : (C(), w("div", _c, [
+              r("div", Pc, [
                 r("div", zc, [
                   g[21] || (g[21] = r("div", { class: "summary-label" }, "Capital/margin used", -1)),
                   F(Ns) ? (C(), w("div", Ac, [...g[19] || (g[19] = [
@@ -14646,7 +14646,7 @@ ${Q}`;
                 ]),
                 r("div", hf, [
                   g[31] || (g[31] = r("div", { class: "summary-label" }, "Current market price", -1)),
-                  F(_) ? (C(), w("div", df, [...g[28] || (g[28] = [
+                  F(P) ? (C(), w("div", df, [...g[28] || (g[28] = [
                     r("span", { class: "loading-spinner" }, "⏳", -1),
                     J(" Loading... ", -1)
                   ])])) : F(c) ? (C(), w("div", uf, " ❌ Error ")) : b.value !== null ? (C(), w("div", cf, [
@@ -14701,10 +14701,10 @@ ${Q}`;
                   ]))
                 ]),
                 r("div", Mf, [
-                  F(B) ? (C(), w("div", Pf, [...g[37] || (g[37] = [
+                  F(B) ? (C(), w("div", _f, [...g[37] || (g[37] = [
                     r("span", { class: "loading-spinner" }, "⏳", -1),
                     J(" Loading... ", -1)
-                  ])])) : F(v) ? (C(), w("div", _f, " ❌ Error ")) : (C(), w("div", zf, [
+                  ])])) : F(v) ? (C(), w("div", Pf, " ❌ Error ")) : (C(), w("div", zf, [
                     G.value !== null ? (C(), w("div", Af, [
                       g[38] || (g[38] = J(" P/E Ratio: ", -1)),
                       r("span", Hf, m(G.value.toFixed(2)), 1)
@@ -14738,7 +14738,7 @@ ${Q}`;
                 "show-calculation-details": s.value,
                 "avg-price-calculation-tab": a.value,
                 "onUpdate:avgPriceCalculationTab": g[3] || (g[3] = (x) => a.value = x),
-                "order-groups": F(_e),
+                "order-groups": F(Pe),
                 "overall-adjusted-avg-price-from-orders": F(be),
                 "total-net-cost": F(Te),
                 "total-shares": F(Le),
@@ -14899,8 +14899,8 @@ ${Q}`;
                                           class: ae(["trade-side-badge", ie.buySell.toLowerCase()])
                                         }, m(ie.buySell), 3)
                                       ]),
-                                      r("td", Pm, m(ri(ie.quantity)), 1),
-                                      r("td", _m, m(xe(ie.tradePrice)), 1),
+                                      r("td", _m, m(ri(ie.quantity)), 1),
+                                      r("td", Pm, m(xe(ie.tradePrice)), 1),
                                       r("td", zm, m(xe(ie.tradeMoney)), 1),
                                       r("td", {
                                         class: ae(["text-right", { "profit-text": ie.fifoPnlRealized >= 0, "loss-text": ie.fifoPnlRealized < 0 }])
@@ -15053,7 +15053,7 @@ ${Q}`;
                   ], -1))
                 ]),
                 Ye.value ? (C(), w("div", np, "Loading trades...")) : (C(), w("div", ap, [
-                  (C(!0), w(re, null, ue(Pt.value, (x) => (C(), w("div", {
+                  (C(!0), w(re, null, ue(_t.value, (x) => (C(), w("div", {
                     key: x.tradeID,
                     class: ae(["trade-item", { selected: Xe.value.has(String(x.tradeID)) }]),
                     onClick: (j) => Yi(String(x.tradeID))
@@ -15085,7 +15085,7 @@ ${Q}`;
                       ])
                     ])
                   ], 10, rp))), 128)),
-                  Pt.value.length === 0 ? (C(), w("div", bp, " No trades found ")) : q("", !0)
+                  _t.value.length === 0 ? (C(), w("div", bp, " No trades found ")) : q("", !0)
                 ]))
               ])) : ye.value === "positions" ? (C(), w("div", vp, [
                 r("div", yp, [
@@ -15104,7 +15104,7 @@ ${Q}`;
                   ], -1))
                 ]),
                 Ye.value ? (C(), w("div", wp, "Loading positions...")) : (C(), w("div", Cp, [
-                  (C(!0), w(re, null, ue(_t.value, (x) => (C(), w("div", {
+                  (C(!0), w(re, null, ue(Pt.value, (x) => (C(), w("div", {
                     key: F(Fe)(x),
                     class: ae(["trade-item", { selected: Je.value.has(F(Fe)(x)), expired: x.asset_class === "OPT" && ts(x) }]),
                     onClick: (j) => Zi(F(Fe)(x))
@@ -15136,10 +15136,10 @@ ${Q}`;
                       ])
                     ])
                   ], 10, Ep))), 128)),
-                  _t.value.length === 0 ? (C(), w("div", Mp, " No positions found ")) : q("", !0)
+                  Pt.value.length === 0 ? (C(), w("div", Mp, " No positions found ")) : q("", !0)
                 ]))
-              ])) : (C(), w("div", Pp, [
-                r("div", _p, [
+              ])) : (C(), w("div", _p, [
+                r("div", Pp, [
                   Ze(r("input", {
                     "onUpdate:modelValue": g[12] || (g[12] = (x) => Yt.value = x),
                     type: "text",

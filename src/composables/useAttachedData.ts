@@ -100,10 +100,10 @@ export function useAttachedData(userId: string | undefined | null) {
     try {
       console.log('🔍 Fetching trades for symbol root:', symbolRoot)
       
-      // Fetch from trades table (NOT trades table)
+      // Fetch from p_trades_trades
       const { data: trades, error } = await supabase
-        .schema('hf')
-        .from('trades')
+        .schema('fund_ai')
+        .from('p_trades_trades')
         .select('*')
         //.eq('internal_account_id', accountId)
         .ilike('symbol', `${symbolRoot}%`)
@@ -150,8 +150,8 @@ export function useAttachedData(userId: string | undefined | null) {
     }*/
     try {
       const { data: orders, error } = await supabase
-        .schema('hf')
-        .from('orders')
+        .schema('fund_ai')
+        .from('p_trades_orders')
         .select('*')
         .ilike('symbol', `${symbolRoot}%`)
         .eq('internal_account_id', accountId)
